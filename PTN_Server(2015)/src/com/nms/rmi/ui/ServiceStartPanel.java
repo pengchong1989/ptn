@@ -126,22 +126,22 @@ public class ServiceStartPanel extends JPanel {
 				Features features=null;
 				List<String> ipList = licenseClientUtil.getIp();
 				ConstantUtil.allip = ipList;	
-				   for(int i=0;i<ConstantUtil.allip.size();i++){
-				       features = licenseClientUtil.getFeatures(ServerConstant.LICENSEPATH+ServerConstant.LICENSEFILENAME,ConstantUtil.allip.get(i).toString());
-				        f.add(features);
-				   }
+//				   for(int i=0;i<ConstantUtil.allip.size();i++){
+//				       features = licenseClientUtil.getFeatures(ServerConstant.LICENSEPATH+ServerConstant.LICENSEFILENAME,ConstantUtil.allip.get(i).toString());
+//				        f.add(features);
+//				   }
 				 					
 			        Set<Features> s=new HashSet<Features>(f);	
 			      //s.size()为0时表示所有网卡都被禁用；s.size()为1时,null == f.get(0)判断license与网卡不匹配
-			        if(s.size()==0  ){
-			        	resultStr = ResourceUtil.srcStr(StringKeysLbl.LBL_RMI_CARD);
-						serviceStartPanel.buttonResult(true, false, resultStr);
-					    return;			   
-		 	    	}else if(s.size()==1 && null == f.get(0)){		 	    	
-		 	    		resultStr = ResourceUtil.srcStr(StringKeysLbl.LBL_RMI_ROOTKEY);
-						serviceStartPanel.buttonResult(true, false, resultStr);
-					    return;		 	    		
-		 	    	}else{		 			 	    		
+//			        if(s.size()==0  ){
+//			        	resultStr = ResourceUtil.srcStr(StringKeysLbl.LBL_RMI_CARD);
+//						serviceStartPanel.buttonResult(true, false, resultStr);
+//					    return;			   
+//		 	    	}else if(s.size()==1 && null == f.get(0)){		 	    	
+//		 	    		resultStr = ResourceUtil.srcStr(StringKeysLbl.LBL_RMI_ROOTKEY);
+//						serviceStartPanel.buttonResult(true, false, resultStr);
+//					    return;		 	    		
+//		 	    	}else{		 			 	    		
 		 	    	//没有设置IP是将第一个值给serviceIp	
 		 			if(ConstantUtil.serviceIp.equals("127.0.0.1") ){
 		 				ConstantUtil.serviceIp=ipList.get(0);
@@ -160,7 +160,7 @@ public class ServiceStartPanel extends JPanel {
 		 				 }
 		 				
 		 			}
-			}
+//			}
 		} catch (Exception e) {
 			ExceptionManage.dispose(e,this.getClass());
 		}

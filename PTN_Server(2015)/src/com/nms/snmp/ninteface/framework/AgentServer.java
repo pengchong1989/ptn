@@ -26,7 +26,7 @@ public class AgentServer {
 		                                           new File("SNMP4JTestAgentConfig.cfg"),
 		                                           new CommandProcessor(new OctetString(MPv3.createLocalEngineID())));
 		    SnmpNotifyMgr.getInstance().init(agent);
-		    agent.start();
+//		    agent.start();
 		    SnmpNotifyMgr.getInstance().start();
 	 }
 }

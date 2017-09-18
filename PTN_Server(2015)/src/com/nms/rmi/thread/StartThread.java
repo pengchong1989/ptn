@@ -58,28 +58,30 @@ public class StartThread implements Runnable {
 		try {
 			String resultStr = ResourceUtil.srcStr(StringKeysLbl.LBL_RMI_RUN); // 返回启动结果
 			try {
-				   licenseClientUtil = new LicenseClientUtil();
-			        features = licenseClientUtil.getFeatures(ServerConstant.LICENSEPATH+ServerConstant.LICENSEFILENAME,ConstantUtil.serviceIp);			     
-					if(null != features){							
-						Date currTime = new Date();
-						Date licenseTime=features.getFeatureList().get(0).getExpiresDate();
-						//如果许可的时间正常即可使用，如过期则提示
-						if(currTime.getTime() < licenseTime.getTime())
-						{
-							ServerConstant.features=features;
-						}
-						else //过期
-						{
-							resultStr = ResourceUtil.srcStr(StringKeysLbl.TIP_RMI_ROOTKEY);
-							serviceStartPanel.buttonResult(true, false, resultStr);
-							return;
-						}
-						
-					}
+//				   licenseClientUtil = new LicenseClientUtil();
+//			        features = licenseClientUtil.getFeatures(ServerConstant.LICENSEPATH+ServerConstant.LICENSEFILENAME,ConstantUtil.serviceIp);			     
+//					if(null != features){							
+//						Date currTime = new Date();
+//						Date licenseTime=features.getFeatureList().get(0).getExpiresDate();
+//						//如果许可的时间正常即可使用，如过期则提示
+//						if(currTime.getTime() < licenseTime.getTime())
+//						{
+//							ServerConstant.features=features;
+//						}
+//						else //过期
+//						{
+//							resultStr = ResourceUtil.srcStr(StringKeysLbl.TIP_RMI_ROOTKEY);
+//							serviceStartPanel.buttonResult(true, false, resultStr);
+//							return;
+//						}
+//						
+//					}
 
-		} catch (IOException e) {
-			DialogBoxUtil.errorDialog(null ,ResourceUtil.srcStr(StringKeysLbl.LBL_RMI_IMPORT_FAIL));
-		} catch (Exception e) {
+//		} catch (IOException e) {
+//			DialogBoxUtil.errorDialog(null ,ResourceUtil.srcStr(StringKeysLbl.LBL_RMI_IMPORT_FAIL));
+//		} 
+				}
+			catch (Exception e) {
 			ExceptionManage.dispose(e,this.getClass());
 		}
 

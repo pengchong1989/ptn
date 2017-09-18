@@ -36,7 +36,7 @@ public class SnmpNotifyMgr {
 	public void init(Agent agent) {
 		this.agent = agent;
 		SnmpConfig.getInstanse().init();
-		agent.init();
+//		agent.init();
 		SnmpNotifyHanderMgr.getInstance().init();
 		registerListener();
 		exec.submit(this.alarmTask);

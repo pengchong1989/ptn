@@ -38,7 +38,7 @@ import com.nms.drivechenxiao.analysis.ne.AnalysisOSPFInterfaces;
 import com.nms.drivechenxiao.analysis.ne.AnalysisRedistribute;
 import com.nms.drivechenxiao.analysis.oam.AnalysisEthEfmOam;
 import com.nms.drivechenxiao.analysis.oam.AnalysisOAM;
-import com.nms.drivechenxiao.analysis.proc.AnalysisPersvr;
+//import com.nms.drivechenxiao.analysis.proc.AnalysisPersvr;
 import com.nms.drivechenxiao.analysis.protocols.AnalysisCard;
 import com.nms.drivechenxiao.analysis.protocols.AnalysisClrtoexp;
 import com.nms.drivechenxiao.analysis.protocols.AnalysisCos2vlanpri;
@@ -3464,18 +3464,18 @@ public class CXDriveService extends CXPtnDirveService implements CXDriveServiceI
 		cXDriveUtilObject.setActionId(cXActionObject.getActionId() + "");// 操作ID
 		cXDriveUtilObject.setOperationObject(operationObject);// 赋值回调函数
 
-		AnalysisPersvr analysisPersvr = new AnalysisPersvr();
-		int seqId = super.getSeqId();
-		byte[] selsetPersvr = analysisPersvr.getPersvr(cXActionObject.getSlot(), cXActionObject.getPersvrTime(), 0, seqId);
-		cXDriveUtilObject.setSeqId(seqId + "");
-		cXDriveUtilObject.setSendCommands(selsetPersvr);
-		cXDriveUtilObject.setCXNEObject(cXNEObject);// 赋值网元对象
-		analysisPersvr = null;
-
-		cXDriveUtilObject.setObjType(CXDriveUtilObject.OBJ_PERFORMANCE);
-		cXDriveUtilObject.setOperType(CXDriveUtilObject.OPER_SELETE);
-
-		super.cXMonitorSendCommandThreadMap.get(cXNEObject.getNeIp()).addDriveUtilObject(cXDriveUtilObject);
+//		AnalysisPersvr analysisPersvr = new AnalysisPersvr();
+//		int seqId = super.getSeqId();
+//		byte[] selsetPersvr = analysisPersvr.getPersvr(cXActionObject.getSlot(), cXActionObject.getPersvrTime(), 0, seqId);
+//		cXDriveUtilObject.setSeqId(seqId + "");
+//		cXDriveUtilObject.setSendCommands(selsetPersvr);
+//		cXDriveUtilObject.setCXNEObject(cXNEObject);// 赋值网元对象
+//		analysisPersvr = null;
+//
+//		cXDriveUtilObject.setObjType(CXDriveUtilObject.OBJ_PERFORMANCE);
+//		cXDriveUtilObject.setOperType(CXDriveUtilObject.OPER_SELETE);
+//
+//		super.cXMonitorSendCommandThreadMap.get(cXNEObject.getNeIp()).addDriveUtilObject(cXDriveUtilObject);
 	}
 	/**查询历史性能数据
 	 * ip : 目标机器 ip地址
@@ -3491,20 +3491,20 @@ public class CXDriveService extends CXPtnDirveService implements CXDriveServiceI
 		cXDriveUtilObject.setSendDate(new Date());// 赋值发送时间
 		cXDriveUtilObject.setActionId(cXActionObject.getActionId() + "");// 操作ID
 		cXDriveUtilObject.setOperationObject(operationObject);// 赋值回调函数
-
-		AnalysisPersvr analysisPersvr = new AnalysisPersvr();
-		int seqId = super.getSeqId(); //persvrobjectList
-		cXActionObject.setPersvrobjectList( analysisPersvr.analysisPersvrFile(cXNEObject.getNeIp(),cXActionObject.getPersvrTime(),cXActionObject.getPersvrFileName()) );
-//		byte[] selsetPersvr = analysisPersvr.getPersvr(cXActionObject.getSlot(), cXActionObject.getPersvrTime(), 0, seqId);
-//		cXDriveUtilObject.setSeqId(seqId + "");
-//		cXDriveUtilObject.setSendCommands(selsetPersvr);
-//		cXDriveUtilObject.setCXNEObject(cXNEObject);// 赋值网元对象
-		analysisPersvr = null;
-
-		cXDriveUtilObject.setObjType(CXDriveUtilObject.OBJ_PERFORMANCE);
-		cXDriveUtilObject.setOperType(CXDriveUtilObject.OPER_SELETE);
-
-		super.cXMonitorSendCommandThreadMap.get(cXNEObject.getNeIp()).addDriveUtilObject(cXDriveUtilObject);
+//
+//		AnalysisPersvr analysisPersvr = new AnalysisPersvr();
+//		int seqId = super.getSeqId(); //persvrobjectList
+//		cXActionObject.setPersvrobjectList( analysisPersvr.analysisPersvrFile(cXNEObject.getNeIp(),cXActionObject.getPersvrTime(),cXActionObject.getPersvrFileName()) );
+////		byte[] selsetPersvr = analysisPersvr.getPersvr(cXActionObject.getSlot(), cXActionObject.getPersvrTime(), 0, seqId);
+////		cXDriveUtilObject.setSeqId(seqId + "");
+////		cXDriveUtilObject.setSendCommands(selsetPersvr);
+////		cXDriveUtilObject.setCXNEObject(cXNEObject);// 赋值网元对象
+//		analysisPersvr = null;
+//
+//		cXDriveUtilObject.setObjType(CXDriveUtilObject.OBJ_PERFORMANCE);
+//		cXDriveUtilObject.setOperType(CXDriveUtilObject.OPER_SELETE);
+//
+//		super.cXMonitorSendCommandThreadMap.get(cXNEObject.getNeIp()).addDriveUtilObject(cXDriveUtilObject);
 	}
 	/**
 	 * 修改NE信息

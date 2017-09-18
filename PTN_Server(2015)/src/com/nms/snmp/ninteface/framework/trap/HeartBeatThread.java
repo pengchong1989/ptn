@@ -10,7 +10,7 @@ import org.snmp4j.smi.OctetString;
 import org.snmp4j.smi.VariableBinding;
 
 import com.nms.snmp.ninteface.framework.SnmpConfig;
-import com.nms.snmp.ninteface.mib.DataxHeartBeatMib;
+//import com.nms.snmp.ninteface.mib.DataxHeartBeatMib;
 import com.nms.ui.manager.ExceptionManage;
 
 public class HeartBeatThread extends Thread {
@@ -40,21 +40,21 @@ public class HeartBeatThread extends Thread {
 		String strCurrentTime = sdf.format(date);
 		int interval = SnmpConfig.getInstanse().getHeartBeatInterval();
 		
-		DataxHeartBeatMib  heartBeatMib = SnmpNotifyMgr.getInstance().getAgent().getDataxHeartBeatMib();
-		
-		OID systemNameOid = new OID(heartBeatMib.oidTrapVarSystemName);
-		systemNameOid.append(heartBeatMib.colSystemName);
-		
-		OID sendTimeOid = new OID(heartBeatMib.oidTrapVarSendTime);
-		sendTimeOid.append(heartBeatMib.colSendTime);
-		
-		OID sendInterValOid = new OID(heartBeatMib.oidTrapVarSendInterVal);
-		sendInterValOid.append(heartBeatMib.colSendInterVal);
-		
-		VariableBinding[] vbs = new VariableBinding[3];
-		vbs[0] = new VariableBinding(systemNameOid, new OctetString(emsName));
-		vbs[1] = new VariableBinding(sendTimeOid, new OctetString(strCurrentTime));
-		vbs[2] = new VariableBinding(sendInterValOid, new Integer32(interval));
+//		DataxHeartBeatMib  heartBeatMib = SnmpNotifyMgr.getInstance().getAgent().getDataxHeartBeatMib();
+//		
+//		OID systemNameOid = new OID(heartBeatMib.oidTrapVarSystemName);
+//		systemNameOid.append(heartBeatMib.colSystemName);
+//		
+//		OID sendTimeOid = new OID(heartBeatMib.oidTrapVarSendTime);
+//		sendTimeOid.append(heartBeatMib.colSendTime);
+//		
+//		OID sendInterValOid = new OID(heartBeatMib.oidTrapVarSendInterVal);
+//		sendInterValOid.append(heartBeatMib.colSendInterVal);
+//		
+//		VariableBinding[] vbs = new VariableBinding[3];
+//		vbs[0] = new VariableBinding(systemNameOid, new OctetString(emsName));
+//		vbs[1] = new VariableBinding(sendTimeOid, new OctetString(strCurrentTime));
+//		vbs[2] = new VariableBinding(sendInterValOid, new Integer32(interval));
 				
 //		heartBeatMib.dataxHeartBeatEvent(SnmpNotifyMgr.getInstance().getAgent().getNotificationOriginator(), new OctetString(), vbs);
 //		LOG.info("[pushHeartBeat] successfully");

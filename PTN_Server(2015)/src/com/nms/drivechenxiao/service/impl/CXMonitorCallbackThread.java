@@ -39,7 +39,7 @@ import com.nms.drivechenxiao.analysis.ne.AnalysisOSPF;
 import com.nms.drivechenxiao.analysis.ne.AnalysisOSPFInterfaces;
 import com.nms.drivechenxiao.analysis.ne.AnalysisRedistribute;
 import com.nms.drivechenxiao.analysis.oam.AnalysisEthEfmOam;
-import com.nms.drivechenxiao.analysis.proc.AnalysisPersvr;
+//import com.nms.drivechenxiao.analysis.proc.AnalysisPersvr;
 import com.nms.drivechenxiao.analysis.proc.Analysislog;
 import com.nms.drivechenxiao.analysis.protocols.AnalysisCard;
 import com.nms.drivechenxiao.analysis.protocols.AnalysisClrtoexp;
@@ -233,22 +233,22 @@ public class CXMonitorCallbackThread extends Thread {
 					}
 					analysisAlarm = null;
 				} else if (CXDriveUtilObject.OBJ_PERFORMANCE.equals(cXDriveUtilObject.getObjType())) {
-					AnalysisPersvr analysisPersvr = new AnalysisPersvr();
-					try {
-						if(48==responseSendCommands[31]){
-							message="111";
-							message = getPropertiesValue(persvrid_en, message);				
-							System.out.println(cXDriveUtilObject.getObjType() + ":" + cXDriveUtilObject.getOperType() + " 回调函数：" + message);
-						}else{
-							List<PersvrObject> persvrObjectList = analysisPersvr.analysisSelectPersvr(responseSendCommands, cXDriveUtilObject.getCXNEObject());
-							cXPtnDataObject.setPersvrObjectList(persvrObjectList);
-						}
-						
-					} catch (Exception e) {
-						CoreOper.print16String(responseSendCommands);
-						System.out.println("性能解析失败!" + e.toString());
-					}
-					analysisPersvr = null;
+//					AnalysisPersvr analysisPersvr = new AnalysisPersvr();
+//					try {
+//						if(48==responseSendCommands[31]){
+//							message="111";
+//							message = getPropertiesValue(persvrid_en, message);				
+//							System.out.println(cXDriveUtilObject.getObjType() + ":" + cXDriveUtilObject.getOperType() + " 回调函数：" + message);
+//						}else{
+//							List<PersvrObject> persvrObjectList = analysisPersvr.analysisSelectPersvr(responseSendCommands, cXDriveUtilObject.getCXNEObject());
+//							cXPtnDataObject.setPersvrObjectList(persvrObjectList);
+//						}
+//						
+//					} catch (Exception e) {
+//						CoreOper.print16String(responseSendCommands);
+//						System.out.println("性能解析失败!" + e.toString());
+//					}
+//					analysisPersvr = null;
 				} else if (CXDriveUtilObject.OBJ_SLOT.equals(cXDriveUtilObject.getObjType())) {
 					AnalysisSlot analysisSlot = new AnalysisSlot();
 					try {
@@ -719,18 +719,18 @@ public class CXMonitorCallbackThread extends Thread {
 					}
 					analysis = null;
 				}else if (CXDriveUtilObject.OBJ_POWER.equals(cXDriveUtilObject.getObjType())) {//光功率
-					AnalysisPersvr analysisPersvr = new AnalysisPersvr();
-					AnalysisPower analysis = new AnalysisPower();
-					try {
-						List<PersvrObject> persvrObjectList = analysisPersvr.analysisSelectPersvr(responseSendCommands, cXDriveUtilObject.getCXNEObject());
-						List<PowerObject> powList=analysis.getPowerObject(persvrObjectList);
-						cXPtnDataObject.setPowerObjectList(powList);
-					} catch (Exception e) {
-						CoreOper.print16String(responseSendCommands);
-						System.out.println("power 解析失败!" + e.toString());
-					}
-					analysisPersvr = null;
-					analysis=null;
+//					AnalysisPersvr analysisPersvr = new AnalysisPersvr();
+//					AnalysisPower analysis = new AnalysisPower();
+//					try {
+//						List<PersvrObject> persvrObjectList = analysisPersvr.analysisSelectPersvr(responseSendCommands, cXDriveUtilObject.getCXNEObject());
+//						List<PowerObject> powList=analysis.getPowerObject(persvrObjectList);
+//						cXPtnDataObject.setPowerObjectList(powList);
+//					} catch (Exception e) {
+//						CoreOper.print16String(responseSendCommands);
+//						System.out.println("power 解析失败!" + e.toString());
+//					}
+//					analysisPersvr = null;
+//					analysis=null;
 				}else if (CXDriveUtilObject.OBJ_CARDPRO.equals(cXDriveUtilObject.getObjType())) {//板卡保护
 					AnalysisCard analysis = new AnalysisCard();
 					try {
