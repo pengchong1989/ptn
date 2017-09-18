@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!-- 700B设备槽位对应的图片途径和-->
-<xml-body>
-
-<equipment imagePath="/com/nms/ui/images/topo/sztc/rack.png" x="50" y="50">
-	<slot imagePath="/com/nms/ui/images/topo/sztc/slot.png" x="72" y="56" type="703C"  bestCardName="703C_CARD" number="1" masterCardAddress="257"></slot>
-</equipment>
-
-</xml-body>

@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<config>
-	<!-- 告警-->
-	   <!-- INotifyHandler msgObjName="alarm" className="com.nms.snmp.ninteface.impl.trap.AlarmTrap" --> 
-	   <INotifyCvtHandler msgObjName="alarm" className="com.nms.snmp.ninteface.impl.trap.AlarmTrap"/>
-</config>

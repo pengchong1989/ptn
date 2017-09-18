@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!-- 设备名称对应的xml路径 -->
-<xml-body>
-	<equipment typeName="PAS100/200" manufacturer="WUHAN" xmlPath="config/topo/equipment/equipment_710.xml" imagePath="/com/nms/ui/images/topo/soz/" ></equipment>
-    <equipment typeName="IPA500" manufacturer="WUHAN" xmlPath="config/topo/equipment/equipment_703B.xml" imagePath="/com/nms/ui/images/topo/sztb/" ></equipment>
-</xml-body>
