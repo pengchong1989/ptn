@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<driveRoot xmlns="http://drive.bean.com">
+	<attribute length="2" description="CRC校验错门限" value="1" mapping="(3)"/>
+	<attribute length="2" description="丢包个数门限" value="1" mapping="(3)"/>
+	<attribute length="2" description="收坏包数门限" value="1" mapping="(3)"/>
+	<attribute length="2" description="对齐错门限" value="1" mapping="(3)"/>
+	<attribute length="2" description="TMP通道信号劣化门限" value="1" mapping="(3)"/>
+	<attribute length="2" description="TMP通道信号失效门限" value="1" mapping="(3)"/>
+	<attribute length="2" description="TMC通道信号劣化门限" value="1" mapping="(3)"/>
+	<attribute length="2" description="TMC通道信号失效门限" value="1" mapping="(3)"/>
+	<attribute length="2" description="TMS通道信号劣化门限" value="1" mapping="(3)"/>
+	<attribute length="2" description="TMS通道信号失效门限" value="1" mapping="(3)"/>
+	<attribute length="1" description="设备温度过高门限" value="1" mapping="(3)"/>
+	<attribute length="1" description="设备温度过低门限" value="1" mapping="(3)"/>
+	<attribute length="18" description="备用" value="1" mapping="(3)"/>
+	<attribute length="11" description="校验码" value="0" mapping="(00)"/>
+</driveRoot>

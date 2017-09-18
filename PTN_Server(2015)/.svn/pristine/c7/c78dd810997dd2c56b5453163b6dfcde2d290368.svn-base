@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nms.db.dao.ptn.CccInfoMapper" >
+<resultMap id="BaseResultMap" type="CccInfo" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="serviceId" property="serviceId" jdbcType="INTEGER" />
+    <result column="pwId" property="pwId" jdbcType="INTEGER" />
+    <result column="serviceType" property="serviceType" jdbcType="INTEGER" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="aXcId" property="aXcId" jdbcType="INTEGER" />
+    <result column="activeStatus" property="activeStatus" jdbcType="INTEGER" />
+    <result column="aAcId" property="aAcId" jdbcType="INTEGER" />
+    <result column="zAcId" property="zAcId" jdbcType="INTEGER" />
+    <result column="createUser" property="createUser" jdbcType="VARCHAR" />
+    <result column="createTime" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="aSiteId" property="aSiteId" jdbcType="INTEGER" />
+    <result column="zSiteId" property="zSiteId" jdbcType="INTEGER" />
+    <result column="isSingle" property="isSingle" jdbcType="INTEGER" />
+    <result column="cestype" property="cestype" jdbcType="INTEGER" />
+    <result column="jobstatus" property="jobStatus" jdbcType="VARCHAR" />
+    <result column="clientId" property="clientId" jdbcType="INTEGER" />
+    <result column="branchMainSite" property="branchMainSite" jdbcType="INTEGER" />
+    <result column="branchProtectSite" property="branchProtectSite" jdbcType="INTEGER" />
+    <result column="zmostAcIds" property="zmostAcId" jdbcType="VARCHAR" />
+    <result column="amostAcIds" property="amostAcId" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  <sql id="Base_Column_List" >
+    id, serviceId, pwId, serviceType, name, aXcId, zXcId, activeStatus, rootSite, branchSite, 
+    aAcId, zAcId, createUser, createTime, aSiteId, zSiteId, isSingle, cestype, jobstatus, 
+    clientId, branchMainSite, branchProtectSite, zmostAcIds, amostAcIds
+  </sql>
+  
+  <insert id="insert" parameterType="CccInfo" useGeneratedKeys="true" keyProperty="id">
+    insert into serviceinfo
+    (serviceId,serviceType,name,aXcId,activeStatus, createUser , 
+    createTime,clientId,asiteid,amostAcIds) 
+    values(#{serviceId},#{serviceType},#{name},#{aXcId},#{activeStatus},
+    #{createUser},#{createTime},#{clientId},#{aSiteId},#{amostAcId})
+  </insert> 
+        
+   <select id="selectMaxServiceId" resultType="java.lang.Integer">
+    select max(serviceid) as serviceid from serviceinfo where serviceType=52			  
+  </select>
+  
+   <select id="queryByAcIdAndSiteIdCondition" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from serviceinfo
+    where serviceType=52 and aSiteId=#{siteId}
+  </select>
+  
+  <select id="isRelatedAcByEline" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+    select * from serviceinfo where (serviceType = 1 or serviceType = 40 ) and (aAcId =#{acId} or zAcId =#{acId})			  
+  </select>
+
+  <select id="isRelatedAc" resultMap="BaseResultMap">
+    select * from serviceinfo where (serviceType = 2 or serviceType =3)			  
+  </select>
+
+  <update id="update" parameterType="CccInfo">
+     update serviceinfo set 
+     serviceId=#{serviceId},name=#{name},aXcId=#{aXcId},activeStatus=#{activeStatus},createUser=#{createUser} ,
+     createTime=#{createTime} , clientId=#{clientId},amostAcIds=#{amostAcId} where id=#{id} and serviceType=52
+  </update>
+
+
+  <select id="queryByCondition" resultMap="BaseResultMap" parameterType="CccInfo" >
+    select 
+    <include refid="Base_Column_List" />
+    from serviceinfo
+    WHERE serviceType= 52 and serviceId =#{serviceId}
+  </select>
+  
+   <update id="updateStatus" parameterType="map">
+     update serviceinfo set activeStatus=#{status} where serviceType=52 and aSiteId=#{siteId}
+  </update>
+  
+   <delete id="delete" parameterType="java.lang.Integer" >
+    delete from serviceInfo where serviceId=#{serviceId} and serviceType =52
+  </delete>
+  
+  <update id="updateStatusIds" parameterType="map">
+     update serviceinfo set activeStatus=#{status} where serviceType=52
+     <if test="ids!=null">
+     and serviceId in 
+       <foreach item="item" index="index" collection="ids" open="(" separator= ", " close=" )">
+        #{item}
+     </foreach>  
+     </if>
+  </update>
+  
+   <select id="queryNodeBySite" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from serviceinfo where serviceType=52 and aSiteid=#{siteId} and aXcId != 0			  
+  </select> 
+  
+    <select id="querySynchro" resultMap="BaseResultMap" parameterType="map" >
+    select 
+    <include refid="Base_Column_List" />
+    from serviceinfo where serviceType=52 and asiteId=#{siteId} and axcid=#{xcid}			  
+  </select> 
+  
+  
+   <select id="query_nameBySingle" resultType="java.lang.Integer" parameterType="map" >
+   select count(*) as selectcount from serviceinfo where serviceType=52 and aSiteId=#{siteId} and name=#{afterName}
+	<if test="beforeName!=null"> and name!=#{beforeName}</if>		  
+  </select> 
+  
+    <delete id="deleteBySiteId" parameterType="java.lang.Integer" >
+    delete from serviceInfo where aSiteId=#{siteId} and serviceType =52
+  </delete>
+</mapper>

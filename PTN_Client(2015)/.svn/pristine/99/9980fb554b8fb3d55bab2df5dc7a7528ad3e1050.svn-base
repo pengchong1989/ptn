@@ -1,0 +1,192 @@
+package com.nms.model.system;
+
+import java.sql.Connection;
+import java.util.List;
+
+import com.nms.db.bean.system.UdaAttr;
+import com.nms.db.bean.system.UdaGroup;
+import com.nms.db.dao.system.UdaAttrDao;
+import com.nms.db.dao.system.UdaGroupDao;
+import com.nms.model.util.ObjectService;
+import com.nms.ui.manager.ExceptionManage;
+
+public class UdaGroupService extends ObjectService {
+	public void setConnection(Connection connection) {
+		super.connection = connection;
+	}
+
+	public void setPtnuser(String ptnuser) {
+		super.ptnuser = ptnuser;
+	}
+
+	private UdaGroupDao udaGroupDao = new UdaGroupDao();
+
+	/**
+	 * 新增或修改udaGroup对象，通过udaGroup.getId()来判断是修改还是新增
+	 * 
+	 * @param udaGroup
+	 *            实体
+	 * @return 执行成功的记录数
+	 * @throws Exception
+	 */
+	public int saveOrUpdate(UdaGroup udaGroup) throws Exception {
+
+		if (udaGroup == null) {
+			throw new Exception("udaGroup is null");
+		}
+
+		int result = 0;
+		try {
+
+			if (udaGroup.getId() == 0) {
+				result = this.udaGroupDao.insert(udaGroup, connection);
+			} else {
+				result = this.udaGroupDao.update(udaGroup, connection);
+			}
+
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		}
+		return result;
+	}
+
+	/**
+	 * 根据udagroup删除
+	 * 
+	 * @param udagroup
+	 *            删除条件
+	 * @throws Exception
+	 */
+	public void delete(UdaGroup udagroup) throws Exception {
+		try {
+			connection.setAutoCommit(false);
+			new UdaGroupDao().delete(udagroup.getId(), connection);
+
+			UdaAttr udaattr = new UdaAttr();
+			udaattr.setGroupId(udagroup.getId());
+
+			new UdaAttrDao().delete(udaattr.getId(), connection);
+			if(!connection.getAutoCommit()){
+				connection.commit();
+			}
+		} catch (Exception e) {
+			connection.rollback();
+			ExceptionManage.dispose(e,this.getClass());
+		} finally {
+			connection.setAutoCommit(true);
+		}
+	}
+
+	/**
+	 * 查询UdaGroup全部
+	 * 
+	 * @return UdaGroup集合
+	 * @throws Exception
+	 */
+	public List<UdaGroup> select() throws Exception {
+		UdaGroup udaGroup =  null;
+		UdaAttrDao udaAttrDao =null;
+		UdaAttr udaattr = null;
+		List<UdaGroup> udagroupgroupList =null;
+		List<UdaAttr> udaattrList = null;
+		try {
+			udaAttrDao = new UdaAttrDao();
+			udagroupgroupList = new UdaGroupDao().queryByCondition(new UdaGroup(), connection);
+			if (null != udagroupgroupList && udagroupgroupList.size() != 0) {
+				for (int i = 0; i < udagroupgroupList.size(); i++) {
+					if (udagroupgroupList.get(i).getParentId() == -1) {
+						udaGroup = new UdaGroup();
+						udaGroup.setParentId(udagroupgroupList.get(i).getId());
+						List<UdaGroup> childUdaGroupList = udaGroupDao
+								.queryByCondition(udaGroup, connection);
+						if (null != childUdaGroupList) {
+							for (int j = 0; j < childUdaGroupList.size(); j++) {
+								udaattr = new UdaAttr();
+								udaattr.setGroupId(childUdaGroupList.get(j)
+										.getId());
+								udaattrList = udaAttrDao.queryByCondition(
+											udaattr, connection);
+								childUdaGroupList.get(j).setUdaAttrList(
+											udaattrList);
+							}
+						}
+						udagroupgroupList.get(i).setChildUdaGroupList(
+								childUdaGroupList);
+					} else {
+						udaattr = new UdaAttr();
+						udaattr.setGroupId(udagroupgroupList.get(i).getId());						
+						udaattrList = udaAttrDao.queryByCondition(udaattr,
+								connection);
+						udagroupgroupList.get(i).setUdaAttrList(udaattrList);
+					}
+				}
+			}
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		} finally{
+			udaGroup = null;
+			udaAttrDao = null;
+			udaattr =null;
+			udaattrList =null;
+		}
+		return udagroupgroupList;
+	}
+
+	/**
+	 * 根据条件查询
+	 * 
+	 * @param udagroup
+	 *            查询条件
+	 * @return UdaGroup 集合
+	 * @throws Exception
+	 */
+	public List<UdaGroup> select(UdaGroup udagroup) throws Exception {
+		
+		UdaAttrDao udaAttrDao = null;
+		UdaAttr udaattr = null;
+		List<UdaAttr> udaattrList = null;
+		List<UdaGroup> udagroupgroupList = null;
+		try {
+			udaAttrDao = new UdaAttrDao();
+			udagroupgroupList = new UdaGroupDao().queryByCondition(udagroup, connection);
+			if (null != udagroupgroupList && udagroupgroupList.size() != 0) {
+				for (int i = 0; i < udagroupgroupList.size(); i++) {
+//					if (udagroupgroupList.get(i).getParentId() == -1) {
+//						udaGroup = new UdaGroup();
+//						udaGroup.setParentId(udagroupgroupList.get(i).getId());
+//						List<UdaGroup> childUdaGroupList = udaGroupDao
+//								.queryByCondition(udaGroup, connection);
+//						if (null != childUdaGroupList) {
+//							for (int j = 0; j < childUdaGroupList.size(); j++) {
+//								udaattr = new UdaAttr();
+//								udaattr.setGroupId(childUdaGroupList.get(j)
+//										.getId());
+//							    udaattrList = udaAttrDao.queryByCondition(
+//											udaattr, connection);
+//								childUdaGroupList.get(j).setUdaAttrList(
+//											udaattrList);
+//
+//							}
+//						}
+//						udagroupgroupList.get(i).setChildUdaGroupList(
+//								childUdaGroupList);
+//					} else {
+						udaattr = new UdaAttr();
+						udaattr.setGroupId(udagroupgroupList.get(i).getId());
+						udaattrList = udaAttrDao.queryByCondition(udaattr,
+								connection);
+						udagroupgroupList.get(i).setUdaAttrList(udaattrList);
+					}
+//				}
+			}
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		} finally{
+			udaAttrDao = null;
+			udaattr = null;
+			udaattrList =null;
+		}
+		return udagroupgroupList;
+	}
+	
+}

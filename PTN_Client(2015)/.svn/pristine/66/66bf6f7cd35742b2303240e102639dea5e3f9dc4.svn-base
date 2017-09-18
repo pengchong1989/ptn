@@ -1,0 +1,584 @@
+﻿package com.nms.db.dao.system.user;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
+
+import com.nms.db.bean.system.user.UserInst;
+import com.nms.db.fac.f.DButil;
+import com.nms.ui.manager.ExceptionManage;
+
+public class UserInstDao {
+	/**
+	 * 新增 userinst(用户表)
+	 * 
+	 * @param userinst
+	 *            实体
+	 * @param connection
+	 *            数据库连接
+	 * @return 执行成功插入的记录数
+	 * @throws Exception
+	 */
+	public int insert(UserInst userinst, Connection connection) throws Exception {
+
+		if (null == userinst) {
+			throw new Exception("userinst is null");
+		}
+
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		int result = 0;
+		ResultSet resultSet = null;
+
+		try {
+			sql = "insert into user_inst(User_Name,User_Pass,roleInfo_id , isAll,user_inface, pswExpires,deadTime, beforeRemind,startip,endip) values(?,?,?,?,?,?,?,?,?,?)";
+			preparedStatement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+			preparedStatement.setString(1, userinst.getUser_Name());
+			preparedStatement.setString(2, userinst.getUser_Pass());
+			preparedStatement.setInt(3, userinst.getRoleInfo_id());
+			preparedStatement.setInt(4, userinst.getIsAll());
+			preparedStatement.setString(5, userinst.getUser_Inface());
+			preparedStatement.setString(6, userinst.getPswExpires());
+			if(userinst.getPswExpires()!=null && !userinst.getPswExpires().equals(""))
+			{
+				int days = Integer.parseInt(userinst.getPswExpires());
+				Calendar c = Calendar.getInstance();
+				c.add(Calendar.DAY_OF_MONTH, days);
+				String deadTime = String.valueOf(c.getTimeInMillis());
+				preparedStatement.setString(7, deadTime);
+			}
+			preparedStatement.setInt(8, userinst.getBeforeRemind());
+			preparedStatement.setString(9, userinst.getStartIp());
+			preparedStatement.setString(10, userinst.getEndIp());
+			preparedStatement.executeUpdate();
+			resultSet = preparedStatement.getGeneratedKeys();
+			if (resultSet.next()) {
+				result = resultSet.getInt(1);
+			}
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (null != resultSet) {
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				resultSet = null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+			
+			sql = null;
+		}
+
+		return result;
+	}
+
+	/**
+	 * 修改userInst(用户表)
+	 * 
+	 * @param userInst
+	 *            实体
+	 * @param connection
+	 *            数据库连接
+	 * @return 修改的记录数
+	 * @throws Exception
+	 */
+	public int update(UserInst userInst, Connection connection) throws Exception {
+		if (null == userInst) {
+			throw new Exception("userInst is null");
+		}
+
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		int result = 0;
+
+		try {
+			sql = "update user_inst set User_Name=?,User_Pass=?,roleInfo_id=? , isAll= ?,user_inface=? ,pswExpires=? ,deadTime=? ,beforeRemind=? ,startip=?, endip=?where User_Id=?";
+			preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.setString(1, userInst.getUser_Name());
+			preparedStatement.setString(2, userInst.getUser_Pass());
+			preparedStatement.setInt(3, userInst.getRoleInfo_id());
+			preparedStatement.setInt(4, userInst.getIsAll());
+			preparedStatement.setString(5, userInst.getUser_Inface());
+			preparedStatement.setString(6, userInst.getPswExpires());
+			if(userInst.getPswExpires()!=null && !userInst.getPswExpires().equals(""))
+			{
+				int days = Integer.parseInt(userInst.getPswExpires());
+				Calendar c = Calendar.getInstance();
+				c.add(Calendar.DAY_OF_MONTH, days);
+				String deadTime = String.valueOf(c.getTimeInMillis());
+				preparedStatement.setString(7, deadTime);
+			}
+			preparedStatement.setInt(8, userInst.getBeforeRemind());
+			preparedStatement.setString(9, userInst.getStartIp());
+			preparedStatement.setString(10, userInst.getEndIp());
+			preparedStatement.setInt(11, userInst.getUser_Id());
+			
+			result = preparedStatement.executeUpdate();
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+
+		return result;
+	}
+
+	/**
+	 * 通过主键删除userInst
+	 * 
+	 * @param User_Id
+	 *            主键
+	 * @param connection
+	 *            数据库连接
+	 * @return 删除的记录数
+	 * @throws Exception
+	 */
+	public int delete(int User_Id, Connection connection) throws Exception {
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		int result = 0;
+
+		try {
+			sql = "delete from user_inst where User_Id=?";
+			preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.setInt(1, User_Id);
+
+			result = preparedStatement.executeUpdate();
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+
+		return result;
+	}
+
+	/**
+	 * 根据条件查询
+	 * 
+	 * @param userinstCondition
+	 *            查询条件
+	 * @param connection
+	 *            数据库连接
+	 * @return List<UserInst> 集合
+	 * @throws Exception
+	 */
+	public List<UserInst> queryByCondition(UserInst userinstCondition, Connection connection) throws Exception {
+
+		if (null == userinstCondition) {
+			throw new Exception("userinstCondition is null");
+		}
+
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		List<UserInst> usetinstList = null;
+		String sql = null;
+		ResultSet resultSet = null;
+		PreparedStatement preparedStatement = null;
+		UserInst userInst = null;
+
+		try {
+			usetinstList = new ArrayList<UserInst>();
+//			sql = "select u.User_Id , u.User_Name, u.User_Pass, u.roleInfo_id , u.isAll ,u.user_inface, u.pswExpires ,u.beforeRemind,u.deadTime ,a.startip, a.endip ,a.userid from user_inst u, im_setting a where 1=1 ";
+			sql = "select User_Id , User_Name, User_Pass, roleInfo_id, isAll, user_inface, pswExpires ,beforeRemind,deadTime, startip, endip from user_inst where 1=1 ";
+			if(null!=userinstCondition){
+				if (userinstCondition.getUser_Id() > 0 ) {
+					sql += " and User_Id=" + userinstCondition.getUser_Id();
+				}
+
+				if (userinstCondition.getUser_Name() != null) {
+					sql += " and User_Name=" + DButil.toSingleMark(userinstCondition.getUser_Name());
+				}
+				if (userinstCondition.getUser_Pass() != null) {
+					sql += " and User_Pass=" + DButil.toSingleMark(userinstCondition.getUser_Pass());
+				}
+			}
+			preparedStatement = connection.prepareStatement(sql);
+			resultSet = preparedStatement.executeQuery();
+
+			while (resultSet.next()) {
+				userInst = new UserInst();
+				userInst.setUser_Id(resultSet.getInt("User_Id"));
+				userInst.setUser_Name(resultSet.getString("User_Name"));
+				userInst.setUser_Pass(resultSet.getString("User_Pass"));
+				userInst.setRoleInfo_id(resultSet.getInt("roleInfo_id"));
+				userInst.setIsAll(resultSet.getInt("isAll"));
+				userInst.setUser_Inface(resultSet.getString("user_inface"));
+				userInst.setPswExpires(resultSet.getString("pswExpires"));
+				userInst.setBeforeRemind(resultSet.getInt("beforeRemind"));
+				userInst.setDeadTime(resultSet.getString("deadTime"));
+				userInst.setStartIp(resultSet.getString("startip"));
+				userInst.setEndIp(resultSet.getString("endip"));
+				usetinstList.add(userInst);
+			}
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (resultSet != null) {
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				resultSet = null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+			userInst = null;
+		}
+
+		return usetinstList;
+
+	}
+
+	public List<UserInst> queryByuserid(UserInst userinstCondition, Connection connection) throws Exception {
+
+		if (null == userinstCondition) {
+			throw new Exception("userinstCondition is null");
+		}
+
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		List<UserInst> usetinstList = null;
+		String sql = null;
+		ResultSet resultSet = null;
+		PreparedStatement preparedStatement = null;
+		UserInst userInst = null;
+
+		try {
+			usetinstList = new ArrayList<UserInst>();
+			sql = "select User_Id , User_Name, User_Pass, roleInfo_id ,pswExpires, beforeRemind,startip,endip from user_inst where 1=1  ";
+
+			if (userinstCondition.getUser_Id() > 0) {
+				sql += " and User_Id<>" + userinstCondition.getUser_Id();
+			}
+
+			if (userinstCondition.getUser_Name() != null) {
+				sql += " and User_Name=" + DButil.toSingleMark(userinstCondition.getUser_Name());
+			}
+			//根据角色名 查找
+			if(userinstCondition.getRoleInfo_id()>0){
+				sql += " and roleInfo_id= "+userinstCondition.getRoleInfo_id();
+			}
+		
+			preparedStatement = connection.prepareStatement(sql);
+			resultSet = preparedStatement.executeQuery();
+
+			while (resultSet.next()) {
+				userInst = new UserInst();
+				userInst.setUser_Id(resultSet.getInt("User_Id"));
+				userInst.setUser_Name(resultSet.getString("User_Name"));
+				userInst.setUser_Pass(resultSet.getString("User_Pass"));
+				userInst.setRoleInfo_id(resultSet.getInt("roleInfo_id"));
+				userInst.setPswExpires(resultSet.getString("pswExpires"));
+				userInst.setBeforeRemind((resultSet.getInt("beforeRemind")));
+				userInst.setStartIp(resultSet.getString("startip"));
+				userInst.setEndIp(resultSet.getString("endip"));
+				usetinstList.add(userInst);
+			}
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (resultSet != null) {
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				resultSet = null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+			userInst = null;
+		}
+
+		return usetinstList;
+
+	}
+	
+	
+	/**
+	 * 查询除admin的所有用户
+	 * @param userinst  （id）
+	 * @param connection
+	 * @return
+	 * @throws Exception
+	 */
+	
+	public List<UserInst> querByname(UserInst userinst,Connection connection) throws Exception{
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+		if (null == userinst) {
+			throw new Exception("userinst is null");
+		}
+		List<UserInst> userInstList=null;
+		ResultSet resultSet = null;
+		PreparedStatement preparedStatement = null;
+		UserInst userInst = null;
+		String sql="select u.user_id , u.user_name from user_inst u where u.user_name!='admin'";
+				
+		try{
+			userInstList=new ArrayList<UserInst>();
+		
+			preparedStatement = connection.prepareStatement(sql);
+			resultSet = preparedStatement.executeQuery();
+			while (resultSet.next()) {
+				userInst = new UserInst();
+				userInst.setUser_Id(resultSet.getInt("User_Id"));
+				userInst.setUser_Name(resultSet.getString("User_Name"));				
+				userInstList.add(userInst);
+			}
+		}catch (Exception e) {
+			throw e;
+		}finally{
+			userInst=null;
+			if (resultSet != null) {
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				resultSet = null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+		}
+		return userInstList;
+	}
+
+	
+	/**
+	 * 级联查询
+	 * 	  查找用户 信息，，
+	 * 		及（关联的）角色 名
+	 * @param userinst  （id）
+	 * @param connection
+	 * @return
+	 * @throws Exception
+	 */
+	public List<UserInst> querByroleId(UserInst userinst,Connection connection) throws Exception{
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+		if (null == userinst) {
+			throw new Exception("userinst is null");
+		}
+		List<UserInst> userInstList=null;
+		ResultSet resultSet = null;
+		PreparedStatement preparedStatement = null;
+		UserInst userInst = null;
+		String sql="select u.user_id , u.user_name, u.user_pass,u.isAll,u.user_inface, u.roleInfo_id ,u.pswExpires,u.beforeRemind,u.startip,u.endip,i.roleName,i.roleEnName" +
+				" from user_inst u ,roleinfo i where 1=1 and i.id=u.roleInfo_id";
+		try{
+			userInstList=new ArrayList<UserInst>();
+			/**
+			 * 关联查询
+			 */
+			if(userinst.getUser_Id()>0){
+				sql+="  and u.user_id= " +userinst.getUser_Id();
+			}
+			/**
+			 * 通过 用户  角色标签（即角色名）查询
+			 */
+			if(!(null==userinst.getUser_Group()||"".equals(userinst.getUser_Group()))){
+				sql +=" and i.roleName = "  +DButil.toSingleMark(userinst.getUser_Group());
+			}
+			if(!(null==userinst.getUser_Group()||"".equals(userinst.getUser_Group()))){
+				sql +=" and i.roleEnName = "  +DButil.toSingleMark(userinst.getUser_GroupEn());
+			}
+			preparedStatement = connection.prepareStatement(sql);
+			resultSet = preparedStatement.executeQuery();
+			while (resultSet.next()) {
+				userInst = new UserInst();
+				userInst.setUser_Id(resultSet.getInt("User_Id"));
+				userInst.setUser_Name(resultSet.getString("User_Name"));
+				userInst.setUser_Pass(resultSet.getString("User_Pass"));
+				userInst.setRoleInfo_id(resultSet.getInt("roleInfo_id"));
+				userInst.setIsAll(resultSet.getInt("u.isAll"));
+				userInst.setUser_Inface(resultSet.getString("u.user_inface"));
+				userInst.setPswExpires((resultSet.getString("u.pswExpires")));
+				userInst.setBeforeRemind((resultSet.getInt("u.beforeRemind")));
+				userInst.setStartIp((resultSet.getString("u.startip")));
+				userInst.setEndIp((resultSet.getString("u.endip")));
+				userInst.setUser_Group(resultSet.getString("i.roleName"));
+				userInst.setUser_GroupEn(resultSet.getString("i.roleEnName"));
+				userInstList.add(userInst);
+			}
+		}catch (Exception e) {
+			throw e;
+		}finally{
+			userInst = null;
+			if (resultSet != null) {
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				resultSet = null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+		}
+		return userInstList;
+	}
+
+	/**
+	 * 根据条件查询
+	 * 
+	 * @param userinstCondition
+	 *            查询条件
+	 * @param connection
+	 *            数据库连接
+	 * @return List<UserInst> 集合
+	 * @throws Exception
+	 */
+	public List<UserInst> queryByUserName(UserInst userinstCondition, Connection connection) throws Exception {
+
+		if (null == userinstCondition) {
+			throw new Exception("userinstCondition is null");
+		}
+
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		List<UserInst> usetinstList = null;
+		String sql = null;
+		ResultSet resultSet = null;
+		PreparedStatement preparedStatement = null;
+		UserInst userInst = null;
+
+		try {
+			usetinstList = new ArrayList<UserInst>();
+			sql = "select User_Id , User_Name, User_Pass, roleInfo_id , isAll ,user_inface  from user_inst where 1=1  ";
+			if(null!=userinstCondition){
+				if (userinstCondition.getUser_Id() > 0) {
+					sql += " and User_Id=" + userinstCondition.getUser_Id();
+				}
+
+				if (userinstCondition.getUser_Name() != null) {
+					sql += " and User_Name like '%" + userinstCondition.getUser_Name()+"%'";
+				}
+			}
+			
+           
+			preparedStatement = connection.prepareStatement(sql);
+			resultSet = preparedStatement.executeQuery();
+
+			while (resultSet.next()) {
+				userInst = new UserInst();
+				userInst.setUser_Id(resultSet.getInt("User_Id"));
+				userInst.setUser_Name(resultSet.getString("User_Name"));
+				userInst.setUser_Pass(resultSet.getString("User_Pass"));
+				userInst.setRoleInfo_id(resultSet.getInt("roleInfo_id"));
+				userInst.setIsAll(resultSet.getInt("isAll"));
+				userInst.setUser_Inface(resultSet.getString("user_inface"));
+				usetinstList.add(userInst);
+			}
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (resultSet != null) {
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				resultSet = null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+			userInst = null;
+		}
+
+		return usetinstList;
+
+	}
+}

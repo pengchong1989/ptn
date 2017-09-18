@@ -1,0 +1,1378 @@
+package com.nms.db.dao.ptn.path.eth;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.nms.db.bean.ptn.path.eth.ElanInfo;
+import com.nms.ui.manager.DateUtil;
+import com.nms.ui.manager.ExceptionManage;
+
+public class ElanDao {
+	/**
+	 * 插入Sql
+	 */
+	private final String INSERTSQL = "insert into serviceinfo(serviceId,pwId,serviceType,name," + "aXcId,zXcId,activeStatus,aAcId , zAcId , createUser , createTime , aSiteId , zSiteId,issingle,jobstatus ,clientId,amostAcIds,zmostAcIds) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+	/**
+	 * 更新Sql
+	 */
+	private final String UPDATESQL = "update serviceinfo set serviceId=?,pwId=?," + "name=?,aXcId=?,zXcId=?,activeStatus=? ,createUser=? ,createTime=? , aSiteId=?, zSiteId=?,jobstatus=? ,isSingle=? ,aacid=?,zacid=? ,clientId = ?,amostAcIds=?,zmostAcIds=? where id=? and serviceType=2";
+	/**
+	 * 删除Sql
+	 */
+	private final String DELETESQL = "delete from serviceinfo where serviceId=? and serviceType=2";
+	
+	/**
+	 * 删除Sql 同步组件Id
+	 */
+	private final String DELETESQLBYID = "delete from serviceinfo where id=? and serviceType=2";
+
+	/**
+	 * 查询Sql
+	 */
+	private final String SELECTSQL = "SELECT jobstatus,issingle,id, serviceId, pwId, serviceType," + " name, aXcId, zXcId, activeStatus ,aAcId , zAcId , createUser , createTime,aSiteId, zSiteId , clientId,amostAcIds,zmostAcIds FROM serviceinfo WHERE serviceType=2";
+
+	/**
+	 * 根据名称查询
+	 */
+	private final String SELECT_BY_NAME = "select count(*) as selectcount from serviceinfo where serviceType=2 and (aSiteId = ? or zSiteId = ?) and name=?";
+
+	/**
+	 * 新增elaninfo
+	 * 
+	 * @param elaninfo
+	 *            实体
+	 * @param connection
+	 *            数据库连接
+	 * @return 插入的记录数
+	 * @throws Exception
+	 */
+	public int insert(ElanInfo elaninfo, Connection connection) throws Exception {
+		if (null == elaninfo) {
+			throw new Exception("elaninfo is null");
+		}
+
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		int result = 0;
+		ResultSet resultSet = null;
+		try {
+			elaninfo.setCreateTime(DateUtil.getDate(DateUtil.FULLTIME));
+
+			sql = INSERTSQL;
+			preparedStatement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+			preparedStatement.setInt(1, elaninfo.getServiceId());
+			preparedStatement.setInt(2, elaninfo.getPwId());
+			preparedStatement.setInt(3, elaninfo.getServiceType());
+			preparedStatement.setString(4, elaninfo.getName());
+			preparedStatement.setInt(5, elaninfo.getAxcId());
+			preparedStatement.setInt(6, elaninfo.getZxcId());
+			preparedStatement.setInt(7, elaninfo.getActiveStatus());
+			preparedStatement.setInt(8, elaninfo.getaAcId());
+			preparedStatement.setInt(9, elaninfo.getzAcId());
+			preparedStatement.setString(10, elaninfo.getCreateUser());
+			preparedStatement.setString(11, elaninfo.getCreateTime());
+			preparedStatement.setInt(12, elaninfo.getaSiteId());
+			preparedStatement.setInt(13, elaninfo.getzSiteId());
+			preparedStatement.setInt(14, elaninfo.getIsSingle());
+			preparedStatement.setString(15, elaninfo.getJobStatus());
+			preparedStatement.setInt(16, elaninfo.getClientId());
+			preparedStatement.setString(17, elaninfo.getAmostAcId());
+			preparedStatement.setString(18, elaninfo.getZmostAcId());
+			preparedStatement.executeUpdate();
+			resultSet = preparedStatement.getGeneratedKeys();
+			if (resultSet.next()) {
+				result = resultSet.getInt(1);
+			}
+
+		} catch (Exception e) {
+			ExceptionManage.dispose(e, this.getClass());
+		} finally {
+			if (resultSet != null) {
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e, this.getClass());
+				}
+				resultSet = null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+
+			sql = null;
+		}
+
+		return result;
+	}
+
+	/**
+	 * 修改elaninfo
+	 * 
+	 * @param elaninfo
+	 *            实体
+	 * @param connection
+	 *            数据库连接
+	 * @return 修改的记录数
+	 * @throws Exception
+	 */
+	public int update(ElanInfo elaninfo, Connection connection) throws Exception {
+		if (null == elaninfo) {
+			throw new Exception("elaninfo is null");
+		}
+
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		int result = 0;
+
+		try {
+			sql = UPDATESQL;
+
+			preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.setInt(1, elaninfo.getServiceId());
+			preparedStatement.setInt(2, elaninfo.getPwId());
+			preparedStatement.setString(3, elaninfo.getName());
+			preparedStatement.setInt(4, elaninfo.getAxcId());
+			preparedStatement.setInt(5, elaninfo.getZxcId());
+			preparedStatement.setInt(6, elaninfo.getActiveStatus());
+			preparedStatement.setString(7, elaninfo.getCreateUser());
+			preparedStatement.setString(8, elaninfo.getCreateTime());
+			preparedStatement.setInt(9, elaninfo.getaSiteId());
+			preparedStatement.setInt(10, elaninfo.getzSiteId());
+			preparedStatement.setString(11, elaninfo.getJobStatus());
+			preparedStatement.setInt(12, elaninfo.getIsSingle());
+			preparedStatement.setInt(13, elaninfo.getaAcId());
+			preparedStatement.setInt(14, elaninfo.getzAcId());
+			preparedStatement.setInt(15, elaninfo.getClientId());
+			preparedStatement.setString(16, elaninfo.getAmostAcId());
+			preparedStatement.setString(17, elaninfo.getZmostAcId());
+			preparedStatement.setInt(18, elaninfo.getId());
+			result = preparedStatement.executeUpdate();
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+
+		return result;
+	}
+
+	/**
+	 * 通过主键删除elaninfo
+	 * 
+	 * @param id
+	 *           业务ID
+	 * @param connection
+	 *            数据库连接
+	 * @return 删除的记录数
+	 * @throws Exception
+	 */
+	public int delete(int id, Connection connection) throws Exception {
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		int result = 0;
+
+		try {
+			sql = DELETESQL;
+			preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.setInt(1, id);
+
+			result = preparedStatement.executeUpdate();
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+
+		return result;
+	}
+
+	/**
+	 * 通过主键删除elaninfo
+	 * 
+	 * @param id
+	 *            主键
+	 * @param connection
+	 *            数据库连接
+	 * @return 删除的记录数
+	 * @throws Exception
+	 */
+	public int deleteById(int id, Connection connection) throws Exception {
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		int result = 0;
+
+		try {
+			sql = DELETESQLBYID;
+			preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.setInt(1, id);
+
+			result = preparedStatement.executeUpdate();
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+
+		return result;
+	}
+	/**
+	 * 通过条件查询
+	 * 
+	 * @param elaninfocondition
+	 *            查询条件
+	 * @param connection
+	 *            数据库连接
+	 * @return List<ElineInfo>集合
+	 * @throws Exception
+	 */
+	public List<ElanInfo> queryByCondition(ElanInfo elaninfocondition, Connection connection) throws Exception {
+		if (null == elaninfocondition) {
+			throw new Exception("elaninfocondition is null");
+		}
+
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		String sql = null;
+		List<ElanInfo> list = null;
+		try {
+			sql = SELECTSQL;
+			if (elaninfocondition.getServiceId() > 0) {
+				sql += " and serviceId=" + elaninfocondition.getServiceId();
+			}
+			list = this.excuteQuery(connection, sql);
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			sql = null;
+		}
+		return list;
+	}
+
+	public List<ElanInfo> queryAll(Connection connection) throws Exception {
+
+		String sql = null;
+		List<ElanInfo> infoList = null;
+		try {
+			sql = SELECTSQL;
+			sql += " and issingle=0";
+			infoList = this.excuteQuery(connection, sql);
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			sql = null;
+		}
+		return infoList;
+	}
+
+	/**
+	 * 查询某网元下的所有elan
+	 * 
+	 * @param siteid
+	 * @param connection
+	 * @param isSingle
+	 *            是否查询单网元。 true为是。
+	 * @return
+	 * @throws Exception
+	 */
+	public List<ElanInfo> queryNodeBySite(int siteid, boolean isSingle, Connection connection) throws Exception {
+
+		String sql = null;
+		List<ElanInfo> infoList = null;
+		try {
+			sql = SELECTSQL;
+			sql += " and ( asiteid=" + siteid + " or zsiteid=" + siteid + " )";
+
+			if (isSingle) {
+				sql += " and issingle =1 ";
+			}
+			infoList = this.excuteQuery(connection, sql);
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			sql = null;
+		}
+		return infoList;
+	}
+
+	/**
+	 * 通过pwId查询
+	 */
+	public List<ElanInfo> queryByElanIdCondition(List<Integer> idList, Connection connection) throws Exception {
+
+		if (null == idList) {
+			throw new Exception("ElanCondition is null");
+		}
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+		List<ElanInfo> elaninfoList = null;
+		String sql = null;
+		String pwId = null;
+		String ids = null;
+
+		try {
+			pwId = idList.toString();
+			ids = pwId.substring(1, pwId.length() - 1);
+			elaninfoList = new ArrayList<ElanInfo>();
+			sql = "SELECT * FROM serviceinfo WHERE pwId in " + "(" + ids + ") and serviceType=2";
+			elaninfoList = this.excuteQuery(connection, sql);
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			sql = null;
+			pwId = null;
+			ids = null;
+		}
+		return elaninfoList;
+
+	}
+
+	public void updateStatus(List<Integer> ServiceIds, int status, Connection connection) throws Exception {
+
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		String sql = null;
+		String ids = null;
+		PreparedStatement preparedStatement = null;
+		try {
+
+			if (null == ServiceIds) {
+				sql = "update serviceinfo set activeStatus=? where serviceType=2";
+			} else {
+				ids = ServiceIds.toString();
+				sql = "update serviceinfo set activeStatus=? where serviceId in (" + ids.subSequence(1, ids.length() - 1) + ")  and serviceType=2";
+			}
+
+			preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.setInt(1, status);
+
+			preparedStatement.executeUpdate();
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+			ids = null;
+		}
+	}
+
+	public void updateStatus(int siteId, int status, Connection connection) throws Exception {
+
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		try {
+
+			sql = "update serviceinfo set activeStatus=? where serviceType=2 and (aSiteId = ? or zSiteId = ?)";
+
+			preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.setInt(1, status);
+			preparedStatement.setInt(2, siteId);
+			preparedStatement.setInt(3, siteId);
+
+			preparedStatement.executeUpdate();
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+	}
+
+	/**
+	 * 查询一个最大的serviceid
+	 * 
+	 * @return
+	 * @throws Exception
+	 */
+	public int selectMaxServiceId(Connection connection) throws Exception {
+
+		String sql = null;
+		int serviceid = 0;
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+		try {
+			sql = "select max(serviceid) as serviceid from serviceinfo where serviceType=2";
+
+			preparedStatement = connection.prepareStatement(sql);
+			resultSet = preparedStatement.executeQuery();
+			if (resultSet.next()) {
+				serviceid = resultSet.getInt("serviceid");
+			}
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (resultSet != null) {
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				resultSet = null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+		return serviceid;
+
+	}
+
+	/**
+	 * 执行查询语句
+	 * 
+	 * @param connection
+	 *            数据库连接
+	 * @param sql
+	 *            sql语句
+	 * @return 查询集合
+	 * @throws Exception
+	 */
+	private List<ElanInfo> excuteQuery(Connection connection, String sql) throws Exception {
+		List<ElanInfo> elaninfoList = null;
+		ResultSet resultSet = null;
+		PreparedStatement preparedStatement = null;
+		ElanInfo elaninfo = null;
+		try {
+			elaninfoList = new ArrayList<ElanInfo>();
+			preparedStatement = connection.prepareStatement(sql);
+			resultSet = preparedStatement.executeQuery();
+
+			while (resultSet.next()) {
+				elaninfo = new ElanInfo();
+				elaninfo.setId(resultSet.getInt("id"));
+				elaninfo.setServiceId(resultSet.getInt("serviceId"));
+				elaninfo.setPwId(resultSet.getInt("pwId"));
+				elaninfo.setServiceType(resultSet.getInt("serviceType"));
+				elaninfo.setName(resultSet.getString("name"));
+				elaninfo.setAxcId(resultSet.getInt("aXcId"));
+				elaninfo.setZxcId(resultSet.getInt("zXcId"));
+				elaninfo.setActiveStatus(resultSet.getInt("activeStatus"));
+				elaninfo.setaAcId(resultSet.getInt("aAcId"));
+				elaninfo.setzAcId(resultSet.getInt("zAcId"));
+				elaninfo.setCreateUser(resultSet.getString("createUser"));
+				elaninfo.setCreateTime(DateUtil.strDate(resultSet.getString("createTime"), DateUtil.FULLTIME));
+				elaninfo.setaSiteId(resultSet.getInt("aSiteId"));
+				elaninfo.setzSiteId(resultSet.getInt("zSiteId"));
+				elaninfo.setIsSingle(resultSet.getInt("issingle"));
+				elaninfo.setJobStatus(resultSet.getString("jobStatus"));
+				elaninfo.setClientId(resultSet.getInt("clientId"));
+				elaninfo.setAmostAcId(resultSet.getString("amostAcIds"));
+				elaninfo.setZmostAcId(resultSet.getString("zmostAcIds"));
+				elaninfoList.add(elaninfo);
+			}
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (resultSet != null) {
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				resultSet = null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+			elaninfo = null;
+		}
+
+		return elaninfoList;
+	}
+
+	/**
+	 * 通过siteid 和 xcid 查询
+	 * 
+	 * @author kk
+	 * 
+	 * @param elanInfo
+	 *            数据库elan对象
+	 * @param connection
+	 *            数据库连接
+	 * @return
+	 * @throws Exception
+	 * 
+	 * @Exception 异常对象
+	 */
+	public List<ElanInfo> query_synchro(ElanInfo elanInfo, Connection connection) throws Exception {
+
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+		if (null == elanInfo) {
+			throw new Exception("elanInfo is null");
+		}
+
+		String sql = null;
+		List<ElanInfo> elanInfoList = null;
+		try {
+
+			sql = "select * from serviceinfo where serviceType=2 and ((asiteid=" + elanInfo.getaSiteId() + " and axcid=" + elanInfo.getAxcId() + ") or (zsiteid=" + elanInfo.getaSiteId() + " and zxcid=" + elanInfo.getAxcId() + "))";
+			elanInfoList = this.excuteQuery(connection, sql);
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			sql = null;
+		}
+
+		return elanInfoList;
+	}
+
+	/**
+	 * 通过siteid 和 xcid 查询
+	 * 
+	 * @author kk
+	 * 
+	 * @param siteID
+	 *            和 xcID 数据库elan对象
+	 * @param connection
+	 *            数据库连接
+	 * @return
+	 * @throws Exception
+	 * 
+	 * @Exception 异常对象
+	 */
+	public List<ElanInfo> query_elanInfo(int siteID, int xcID, Connection connection) throws Exception {
+
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		String sql = null;
+		List<ElanInfo> elanInfoList = null;
+		try {
+
+			sql = "select * from serviceinfo where serviceType=2 and ((asiteid=" + siteID + " and axcid=" + xcID + ") or (zsiteid=" + siteID + " and zxcid=" + xcID + "))";
+			elanInfoList = this.excuteQuery(connection, sql);
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			sql = null;
+		}
+
+		return elanInfoList;
+	}
+
+	/**
+	 * 查询名称是否重复
+	 * 
+	 * @author kk
+	 * 
+	 * @param
+	 * 
+	 * @return
+	 * @throws Exception
+	 * 
+	 * @Exception 异常对象
+	 */
+	public int query_name(String afterName, String beforeName, Connection connection) throws Exception {
+		if (null == afterName) {
+			throw new Exception("afterName is null");
+		}
+
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		String sql = null;
+		List<Object> paramList = new ArrayList<Object>();
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+		int result = 0;
+		try {
+			sql = "select count(*) as selectcount from serviceinfo where serviceType=2 and name=?";
+			paramList.add(afterName);
+			if (null != beforeName) {
+				sql += " and name!=?";
+				paramList.add(beforeName);
+			}
+			preparedStatement = connection.prepareStatement(sql);
+			for (int i = 0; i < paramList.size(); i++) {
+				preparedStatement.setObject(i + 1, paramList.get(i));
+			}
+			resultSet = preparedStatement.executeQuery();
+			if (resultSet.next()) {
+				result = resultSet.getInt("selectcount");
+			}
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (resultSet != null) {
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				resultSet = null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+			paramList = null;
+			sql = null;
+		}
+
+		return result;
+	}
+
+	/**
+	 * 单网元名称验证
+	 * 
+	 * @param afterName
+	 * @param beforeName
+	 * @param connection
+	 * @param siteId
+	 * @return
+	 * @throws Exception
+	 */
+	public int query_nameBySingle(String afterName, String beforeName, Connection connection, int siteId) throws Exception {
+		if (null == afterName) {
+			throw new Exception("afterName is null");
+		}
+
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		String sql = null;
+		List<Object> paramList = new ArrayList<Object>();
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+		int result = 0;
+		try {
+			sql = this.SELECT_BY_NAME;
+			paramList.add(siteId);
+			paramList.add(siteId);
+			paramList.add(afterName);
+			if (null != beforeName) {
+				sql += " and name!=?";
+				paramList.add(beforeName);
+			}
+			preparedStatement = connection.prepareStatement(sql);
+			for (int i = 0; i < paramList.size(); i++) {
+				preparedStatement.setObject(i + 1, paramList.get(i));
+			}
+			resultSet = preparedStatement.executeQuery();
+			if (resultSet.next()) {
+				result = resultSet.getInt("selectcount");
+			}
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (resultSet != null) {
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				resultSet = null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+			paramList = null;
+			sql = null;
+		}
+
+		return result;
+	}
+
+	/**
+	 * 通过acId,siteId查询
+	 * 
+	 * @param acId
+	 * @param connection
+	 * @return
+	 */
+	public List<ElanInfo> queryByAcIdAndSiteIdCondition(int acId, int siteId, Connection connection) {
+		List<ElanInfo> elanInfos = new ArrayList<ElanInfo>();
+		String sql = "select*from serviceinfo where serviceType=2 and ((aSiteId = ? )or (zSiteId=?))";
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+		try {
+			preparedStatement = connection.prepareStatement(sql);
+//			preparedStatement.setInt(1, acId);
+			preparedStatement.setInt(1, siteId);
+//			preparedStatement.setInt(3, acId);
+			preparedStatement.setInt(2, siteId);
+			resultSet = preparedStatement.executeQuery();
+			while (resultSet.next()) {
+				ElanInfo elaninfo = new ElanInfo();
+				elaninfo.setId(resultSet.getInt("id"));
+				elaninfo.setServiceId(resultSet.getInt("serviceId"));
+				elaninfo.setPwId(resultSet.getInt("pwId"));
+				elaninfo.setServiceType(resultSet.getInt("serviceType"));
+				elaninfo.setName(resultSet.getString("name"));
+				elaninfo.setAxcId(resultSet.getInt("aXcId"));
+				elaninfo.setZxcId(resultSet.getInt("zXcId"));
+				elaninfo.setActiveStatus(resultSet.getInt("activeStatus"));
+				elaninfo.setaAcId(resultSet.getInt("aAcId"));
+				elaninfo.setzAcId(resultSet.getInt("zAcId"));
+				elaninfo.setCreateUser(resultSet.getString("createUser"));
+				elaninfo.setCreateTime(resultSet.getString("createTime"));
+				elaninfo.setaSiteId(resultSet.getInt("aSiteId"));
+				elaninfo.setzSiteId(resultSet.getInt("zSiteId"));
+				elaninfo.setIsSingle(resultSet.getInt("issingle"));
+				elaninfo.setJobStatus(resultSet.getString("jobStatus"));
+				elaninfo.setAmostAcId(resultSet.getString("amostAcIds"));
+				elaninfo.setZmostAcId(resultSet.getString("zmostAcIds"));
+				elanInfos.add(elaninfo);
+			}
+		} catch (Exception e) {
+			ExceptionManage.dispose(e, this.getClass());
+		} finally {
+			if (resultSet != null) {
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e, this.getClass());
+				}
+				resultSet = null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e, this.getClass());
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+		return elanInfos;
+	}
+
+	/**
+	 * 通过serviceId查询一组elan
+	 * 
+	 * @param serviceId
+	 * @param connection
+	 * @return
+	 */
+	public List<ElanInfo> queryByServiceIdCondition(int serviceId, Connection connection) {
+		List<ElanInfo> elanInfos = new ArrayList<ElanInfo>();
+		String sql = "select * from serviceinfo where serviceType=2 and serviceId=?";
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+		try {
+			preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.setInt(1, serviceId);
+			resultSet = preparedStatement.executeQuery();
+			while (resultSet.next()) {
+				ElanInfo elaninfo = new ElanInfo();
+				elaninfo.setId(resultSet.getInt("id"));
+				elaninfo.setServiceId(resultSet.getInt("serviceId"));
+				elaninfo.setPwId(resultSet.getInt("pwId"));
+				elaninfo.setServiceType(resultSet.getInt("serviceType"));
+				elaninfo.setName(resultSet.getString("name"));
+				elaninfo.setAxcId(resultSet.getInt("aXcId"));
+				elaninfo.setZxcId(resultSet.getInt("zXcId"));
+				elaninfo.setActiveStatus(resultSet.getInt("activeStatus"));
+				elaninfo.setaAcId(resultSet.getInt("aAcId"));
+				elaninfo.setzAcId(resultSet.getInt("zAcId"));
+				elaninfo.setCreateUser(resultSet.getString("createUser"));
+				elaninfo.setCreateTime(resultSet.getString("createTime"));
+				elaninfo.setaSiteId(resultSet.getInt("aSiteId"));
+				elaninfo.setzSiteId(resultSet.getInt("zSiteId"));
+				elaninfo.setIsSingle(resultSet.getInt("issingle"));
+				elaninfo.setJobStatus(resultSet.getString("jobStatus"));
+				elaninfo.setClientId(resultSet.getInt("clientid"));
+				elaninfo.setAmostAcId(resultSet.getString("amostAcIds"));
+				elaninfo.setZmostAcId(resultSet.getString("zmostAcIds"));
+				elanInfos.add(elaninfo);
+			}
+		} catch (Exception e) {
+			ExceptionManage.dispose(e, this.getClass());
+		} finally {
+			if (resultSet != null) {
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e, this.getClass());
+				}
+				resultSet = null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e, this.getClass());
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+		return elanInfos;
+	}
+
+	/**
+	 * 条件查询
+	 * 
+	 * @param elaninfocondition
+	 * @param connection
+	 * @return
+	 * @throws Exception
+	 */
+	public List<ElanInfo> select(ElanInfo elaninfocondition, Connection connection) throws Exception {
+		if (null == elaninfocondition) {
+			throw new Exception("elaninfocondition is null");
+		}
+
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		String sql = null;
+		List<ElanInfo> list = null;                           	
+		try {                                                
+			sql = "SELECT jobstatus,issingle,id, serviceId, pwId, serviceType," + " name, aXcId, zXcId, activeStatus ,aAcId , zAcId , createUser , createTime,aSiteId, zSiteId , clientId,amostAcIds,zmostAcIds FROM serviceinfo WHERE serviceType=2 and  issingle=0";
+			if (elaninfocondition.getId() > 0) {
+				sql += " and id= " + elaninfocondition.getId();
+			}
+			// if (elaninfocondition.getServiceId() > 0) {
+			// sql += " and serviceId=" + elaninfocondition.getServiceId();
+			// }
+			// if(elaninfocondition.getName()!=null||!elaninfocondition.getName().equals("")){
+			// sql+=" and name= " + DButil.toSingleMark(elaninfocondition.getName());
+			// }
+			list = this.excuteQuery(connection, sql);
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			sql = null;
+		}
+		return list;
+	}
+
+	public List<ElanInfo> selectServiceInfoById(int id, Connection connection) throws Exception {
+		try {
+			String sql = "select * from serviceinfo where id=" + id;
+			return this.excuteQuery(connection, sql);
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+
+	/**
+	 * 根据网元ID和是否为单网元查询
+	 * 
+	 * @param siteId
+	 *            网元主键
+	 * @param isSingle
+	 *            是否为单网元 1=单网元 0=网络
+	 * @param connection
+	 * @return
+	 * @throws Exception
+	 */
+	public List<ElanInfo> selectBySiteAndisSingle(int siteId, int isSingle, Connection connection) throws Exception {
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		List<ElanInfo> elanInfoList = null;
+		try {
+			sql = "select * from serviceinfo where serviceType = 2 and isSingle=? and (aSiteId = ? or zSiteId = ?)";
+
+			preparedStatement = connection.prepareStatement(sql.toString());
+			preparedStatement.setInt(1, isSingle);
+			preparedStatement.setInt(2, siteId);
+			preparedStatement.setInt(3, siteId);
+
+			elanInfoList = this.excuteQuery(preparedStatement);
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+				}
+				preparedStatement = null;
+			}
+		}
+		return elanInfoList;
+	}
+
+	/**
+	 * 执行查询语句
+	 * 
+	 * @param connection
+	 *            数据库连接
+	 * @param sql
+	 *            sql语句
+	 * @return 查询集合
+	 * @throws Exception
+	 */
+	private List<ElanInfo> excuteQuery(PreparedStatement preparedStatement) throws Exception {
+		List<ElanInfo> elaninfoList = null;
+		ResultSet resultSet = null;
+		ElanInfo elaninfo = null;
+		try {
+			elaninfoList = new ArrayList<ElanInfo>();
+			resultSet = preparedStatement.executeQuery();
+
+			while (resultSet.next()) {
+				elaninfo = new ElanInfo();
+				elaninfo.setId(resultSet.getInt("id"));
+				elaninfo.setServiceId(resultSet.getInt("serviceId"));
+				elaninfo.setPwId(resultSet.getInt("pwId"));
+				elaninfo.setServiceType(resultSet.getInt("serviceType"));
+				elaninfo.setName(resultSet.getString("name"));
+				elaninfo.setAxcId(resultSet.getInt("aXcId"));
+				elaninfo.setZxcId(resultSet.getInt("zXcId"));
+				elaninfo.setActiveStatus(resultSet.getInt("activeStatus"));
+				elaninfo.setaAcId(resultSet.getInt("aAcId"));
+				elaninfo.setzAcId(resultSet.getInt("zAcId"));
+				elaninfo.setCreateUser(resultSet.getString("createUser"));
+				elaninfo.setCreateTime(resultSet.getString("createTime"));
+				elaninfo.setaSiteId(resultSet.getInt("aSiteId"));
+				elaninfo.setzSiteId(resultSet.getInt("zSiteId"));
+				elaninfo.setIsSingle(resultSet.getInt("issingle"));
+				elaninfo.setJobStatus(resultSet.getString("jobStatus"));
+				elaninfo.setClientId(resultSet.getInt("clientId"));
+				elaninfo.setAmostAcId(resultSet.getString("amostAcIds"));
+				elaninfo.setZmostAcId(resultSet.getString("zmostAcIds"));
+				elaninfoList.add(elaninfo);
+			}
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (resultSet != null) {
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+				}
+				resultSet = null;
+			}
+			elaninfo = null;
+		}
+
+		return elaninfoList;
+	}
+
+	/**
+	 * 根据主键查询此组ElanInfo业务
+	 * 
+	 * @param id
+	 *            主键
+	 * @param connection
+	 *            数据库连接
+	 * @return
+	 * @throws Exception
+	 */
+	public List<ElanInfo> queryById(int id, Connection connection) throws Exception {
+
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+		List<ElanInfo> elanInfoList = null;
+		try {
+			sql = "select * FROM serviceinfo s1 WHERE s1.serviceId = (SELECT s2.serviceId FROM serviceinfo s2 WHERE s2.id=?) AND s1.serviceType=2";
+
+			preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.setInt(1, id);
+			elanInfoList = this.excuteQuery(preparedStatement);
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (resultSet != null) {
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+				}
+				resultSet = null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+				}
+				preparedStatement = null;
+			}
+		}
+		return elanInfoList;
+	}
+
+	/**
+	 * 列表过滤查询
+	 * 
+	 * @param etreeInfo
+	 *            查询条件
+	 * @param connection
+	 *            数据库连接
+	 * @return
+	 * @throws Exception
+	 */
+	public List<ElanInfo> filterSelect(ElanInfo elanInfo, Connection connection) throws Exception {
+
+		if (null == elanInfo) {
+			throw new Exception("elanInfo is null");
+		}
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		List<ElanInfo> elanInfoList = null;
+		StringBuffer sql = new StringBuffer();
+		List<Object> parameterList = new ArrayList<Object>();
+		PreparedStatement preparedStatement = null;
+		try {
+			sql.append("SELECT * FROM serviceinfo s WHERE serviceType=2 ");
+
+			if (null != elanInfo.getName() && !"".equals(elanInfo.getName())) {
+				sql.append(" AND `name` LIKE ?");
+				parameterList.add("%" + elanInfo.getName() + "%");
+			}
+
+			if (elanInfo.getPwId() > 0) {
+				sql.append(" AND pwId=?");
+				parameterList.add(elanInfo.getPwId());
+			}
+
+			if (elanInfo.getActiveStatus() > 0) {
+				sql.append(" AND activeStatus=?");
+				parameterList.add(elanInfo.getActiveStatus());
+			}
+
+			if (elanInfo.getaSiteId() > 0) {
+				sql.append(" AND (aSiteId=? OR zSiteId=?)");
+				parameterList.add(elanInfo.getaSiteId());
+				parameterList.add(elanInfo.getaSiteId());
+			}
+			
+			
+//			if(elanInfo.getAportId()>0)
+//			{
+//				sql.append(" and (s.aAcId in (SELECT id FROM acinfo WHERE portId=?) or s.zAcId in (SELECT id FROM acinfo WHERE portId=?))");
+//				parameterList.add(elanInfo.getAportId());
+//				parameterList.add(elanInfo.getAportId());
+//			}
+
+
+			preparedStatement = connection.prepareStatement(sql.toString());
+			// 添加参数
+			if (parameterList.size() > 0) {
+				for (int i = 0; i < parameterList.size(); i++) {
+					preparedStatement.setObject(i + 1, parameterList.get(i));
+				}
+			}
+			elanInfoList = this.excuteQuery(preparedStatement);
+			
+			
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+				}
+				preparedStatement = null;
+			}
+			parameterList = null;
+			sql = null;
+		}
+		return elanInfoList;
+	}
+
+	public List<ElanInfo> selectBySiteId(int siteId, Connection connection) throws Exception {
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		List<ElanInfo> elanInfoList = null;
+		try {
+			sql = "select * from serviceinfo where serviceType = 2 and (aSiteId = ? or zSiteId = ?)";
+
+			preparedStatement = connection.prepareStatement(sql.toString());
+			preparedStatement.setInt(1, siteId);
+			preparedStatement.setInt(2, siteId);
+
+			elanInfoList = this.excuteQuery(preparedStatement);
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+				}
+				preparedStatement = null;
+			}
+		}
+		return elanInfoList;
+	}
+	
+	
+	public boolean isRelatedPW(int pwId, Connection connection) throws Exception {
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+		boolean falg = false;
+		try {
+			sql = "select * from serviceinfo where (serviceType = 3 or serviceType =1 or serviceType =40 ) and pwId = ?";
+
+			preparedStatement = connection.prepareStatement(sql.toString());
+			preparedStatement.setInt(1, pwId);
+			resultSet = preparedStatement.executeQuery();
+			if(resultSet.next()){
+				return true;
+			}
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (resultSet != null) {
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+				}
+				resultSet = null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+				}
+				preparedStatement = null;
+			}
+		}
+		return falg;
+	}
+	
+	/**
+	 * 
+	 * 判断ac是否别其他的所使用
+	 * @param pwId
+	 * @param connection
+	 * @return
+	 * @throws Exception
+	 */
+	
+	public List<String> isRelatedAc(Connection connection) throws Exception {
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+		List<String> azAcList = new ArrayList<String>();
+		try {
+			sql = "select * from serviceinfo where (serviceType = 3)";
+			
+			preparedStatement = connection.prepareStatement(sql.toString());
+			resultSet = preparedStatement.executeQuery();
+			while (resultSet.next()) {
+				if(null != resultSet.getString("amostAcIds") && !resultSet.getString("amostAcIds").equals(""))
+				{
+					azAcList.add(resultSet.getString("amostAcIds"));	
+				}
+				if(null != resultSet.getString("zmostAcIds")&&!resultSet.getString("zmostAcIds").equals(""))
+				{
+					azAcList.add(resultSet.getString("zmostAcIds"));	
+				}
+			}
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (resultSet != null) {
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+				}
+				resultSet = null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+				}
+				preparedStatement = null;
+			}
+		}
+		return azAcList;
+	}
+	
+	/**
+	 * 
+	 * 判断ac是否别其他的所使用
+	 * @param pwId
+	 * @param connection
+	 * @return
+	 * @throws Exception
+	 */
+	
+	public boolean isRelatedAc(int acId, Connection connection) throws Exception {
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+		try {
+			sql = "select * from serviceinfo where (serviceType = 1 or serviceType = 40 ) and (aAcId = ? or zAcId = ?)";
+			preparedStatement = connection.prepareStatement(sql.toString());
+			preparedStatement.setInt(1, acId);
+			preparedStatement.setInt(2, acId);
+			resultSet = preparedStatement.executeQuery();
+			if(resultSet.next()){
+				return true;
+			}
+		} finally {
+			if (resultSet != null) {
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+				}
+				resultSet = null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+				}
+				preparedStatement = null;
+			}
+		}
+		return false;
+	}
+	/**
+	 * 通过条件查询
+	 * 
+	 * @param elaninfocondition
+	 *            查询条件
+	 * @param connection
+	 *            数据库连接
+	 * @return List<ElineInfo>集合
+	 * @throws Exception
+	 */
+	public List<ElanInfo> queryElan(ElanInfo elaninfocondition, Connection connection) throws Exception {
+		if (null == elaninfocondition) {
+			throw new Exception("elaninfocondition is null");
+		}
+
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		String sql = null;
+		List<ElanInfo> list = null;
+		try {
+			sql = "SELECT * FROM serviceinfo WHERE (serviceType=2 or serviceType=3)";;
+			if (elaninfocondition.getServiceId() > 0) {
+				sql += " and serviceId=" + elaninfocondition.getServiceId();
+			}
+			if (elaninfocondition.getName() !=null) {
+				sql += " and name=" +"'"+ elaninfocondition.getName()+"'";
+			}
+			
+			list = this.excuteQuery(connection, sql);
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			sql = null;
+		}
+		return list;
+	}
+
+}

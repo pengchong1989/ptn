@@ -1,0 +1,213 @@
+package com.nms.db.dao.system;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+
+import com.nms.ui.manager.ExceptionManage;
+import com.nms.ui.ptn.performance.model.PerformanceRAMInfo;
+
+public class PerformaceRamDao {
+	/**
+	 * 新增UPerformanceRAMInfo performanceRAMInfo
+	 * @param performanceRAMInfo 实体
+	 * @param connection数据库连接
+	 * @return 插入的记录数
+	 * @throws Exception
+	 */
+	public int insert(PerformanceRAMInfo performanceRAMInfo, Connection connection)
+			throws Exception {
+
+		if (null == performanceRAMInfo) {
+			throw new Exception("performanceRAMInfo is null");
+		}
+
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		int result = 0;
+
+		try {
+			sql = "insert into performanceRamInfo(timeSelect,timeValue,ramPerformanceSelect,ramValue,user_name) values(?,?,?,?,?)";
+			preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.setString(1, performanceRAMInfo.getTimeSelect());
+			preparedStatement.setString(2,performanceRAMInfo.getTimeValue());
+			preparedStatement.setString(3,performanceRAMInfo.getRamPerformanceSelect());
+			preparedStatement.setString(4,performanceRAMInfo.getRamValue());
+			preparedStatement.setString(5,performanceRAMInfo.getUserName());
+
+			result = preparedStatement.executeUpdate();
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+
+			sql = null;
+		}
+
+		return result;
+	}
+
+	/**
+	 * 修改PerformanceRAMInfo performanceRAMInfo
+	 * @param udaGroup 实体
+	 * @param connection 数据库连接
+	 * @return 插入的记录数
+	 * @throws Exception
+	 */
+	public int update(PerformanceRAMInfo performanceRAMInfo, Connection connection)throws Exception {
+		
+		if (null == performanceRAMInfo) {
+			throw new Exception("performanceRAMInfo is null");
+		}
+
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		int result = 0;
+
+		try {
+			sql = "update performanceRamInfo set timeSelect=?,timeValue=?,ramPerformanceSelect=?,ramValue=?,user_name=? where id=?";
+			preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.setString(1,performanceRAMInfo.getTimeSelect());
+			preparedStatement.setString(2,performanceRAMInfo.getTimeValue());
+			preparedStatement.setString(3,performanceRAMInfo.getRamPerformanceSelect());
+			preparedStatement.setString(4,performanceRAMInfo.getRamValue());
+			preparedStatement.setString(5,performanceRAMInfo.getUserName());
+			preparedStatement.setInt(6,performanceRAMInfo.getId());
+			
+			result = preparedStatement.executeUpdate();
+		} catch (Exception e) {
+			throw e;
+		} finally {
+
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}finally{
+					preparedStatement = null;
+				}
+			}
+			sql = null;
+		}
+
+		return result;
+	}
+
+	/**
+	 * 通过主键删除performanceRAMInfo
+	 * @param id 主键
+	 * @param connection 数据库连接
+	 * @return 删除记录数
+	 * @throws Exception
+	 */
+	public int delete(int id, Connection connection) throws Exception {
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		int result = 0;
+		try {
+			sql = "delete from performanceRamInfo where id=?";
+			preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.setInt(1, id);
+
+			result = preparedStatement.executeUpdate();
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}finally{
+					preparedStatement = null;
+				}
+			}
+			sql = null;
+		}
+
+		return result;
+	}
+
+   /**
+    * 根据条件查询PerformanceRAMInfo performanceRAMInfo
+    * @param performanceRAMInfo 查询条件
+    * @param connection 数据库连接
+    * @return UdaGroup集合
+    * @throws Exception
+    */
+	public PerformanceRAMInfo queryByCondition(String userName,Connection connection) throws Exception {
+
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+		PerformanceRAMInfo performanceRAMInfo=null;
+		String sql = null;
+		ResultSet resultSet = null;
+		PreparedStatement preparedStatement = null;
+
+		try {
+			performanceRAMInfo = new PerformanceRAMInfo();
+			sql = "select * from performanceRamInfo where user_name = ?";
+			preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.setString(1, userName);
+			resultSet = preparedStatement.executeQuery();
+
+			while (resultSet.next()) {
+				performanceRAMInfo.setId(resultSet.getInt("id"));
+				performanceRAMInfo.setTimeSelect(resultSet.getString("timeSelect"));
+				performanceRAMInfo.setTimeValue(resultSet.getString("timeValue"));
+				performanceRAMInfo.setRamPerformanceSelect(resultSet.getString("ramPerformanceSelect"));
+				performanceRAMInfo.setRamValue(resultSet.getString("ramValue"));
+				performanceRAMInfo.setUserName(resultSet.getString("user_name"));
+			}
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (resultSet != null) {
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}finally{
+					resultSet = null;
+				}
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}finally{
+					preparedStatement = null;
+				}
+			}
+			sql = null;
+		}
+		return performanceRAMInfo;
+	}
+}

@@ -1,0 +1,35 @@
+package com.nms.db.dao.system.code;
+
+import java.util.List;
+
+import com.nms.db.bean.system.code.CodeGroup;
+
+
+
+public interface CodeGroupMapper {
+    int deleteByPrimaryKey(Integer id);
+
+    int insert(CodeGroup record);
+
+    int insertSelective(CodeGroup record);
+
+    CodeGroup selectByPrimaryKey(Integer id);
+
+    int updateByPrimaryKeySelective(CodeGroup record);
+
+    int updateByPrimaryKey(CodeGroup record);
+    
+    /**
+	 * 通过条件查询CodeGroup
+	 * 
+	 * @param codegroupCondition
+	 *            查询条件
+	 * @param connection
+	 *            数据库链接
+	 * @return CodeGroup集合
+	 * @throws Exception
+	 */
+	public List<CodeGroup> queryByCondition(CodeGroup codegroupCondition);
+	
+	public List<CodeGroup> queryByConditionall();
+}

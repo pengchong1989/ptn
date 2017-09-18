@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<driveRoot  xmlns="http://drive.bean.com">
+	<attribute length="2" description="Vlan值" value="0" mapping="1~4094（默认1）"/>
+	<attribute length="1" description="黑名单MAC1" value="0" mapping="（默认00-00-00-00-00-00）"/>	
+	<attribute length="1" description="黑名单MAC2" value="0" mapping="（默认00-00-00-00-00-00）"/>	
+	<attribute length="1" description="黑名单MAC3" value="0" mapping="（默认00-00-00-00-00-00）"/>	
+	<attribute length="1" description="黑名单MAC4" value="0" mapping="（默认00-00-00-00-00-00）"/>	
+	<attribute length="1" description="黑名单MAC5" value="0" mapping="（默认00-00-00-00-00-00）"/>	
+	<attribute length="1" description="黑名单MAC6" value="0" mapping="（默认00-00-00-00-00-00）"/>	
+	<attribute length="1" description="端口号" value="0" mapping="端口号：PORT1/PORT2/……/PORTn = 1/2/……/n"/>	
+	<attribute length="1" description="备用" value="0" mapping="(00)"/>	
+</driveRoot> 

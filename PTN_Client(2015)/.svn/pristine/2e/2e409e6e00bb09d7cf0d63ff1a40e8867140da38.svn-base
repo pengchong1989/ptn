@@ -1,0 +1,51 @@
+#ACL配置信息#######################################################
+AclInfo=AclInfo
+#端口号
+portName=LBL_PORT_NUM
+#vlan值
+vlanId=LBL_VLAN
+#act动作
+act=LBL_ACL_ACT,Code,ACLACT|value
+#direction入出方向
+direction=LBL_ACL_DIRECTION
+#是否匹配源MAC地址
+isSourceMac=LBL_ACL_SOURCEMAC
+#源MAC地址
+sourceMac=LBL_SOURCE_MACADDRESS
+#是否匹目的MAC地址
+isPurposeMac=LBL_ACL_PURPOSEMAC
+#目的MAC地址
+purposeMac=LBL_PURPOSE_MACADDRESS
+#是否匹配源IP地址
+isSourceIp=LBL_ACL_SOURCEIP
+#源ip地址
+sourceIp=LBL_SOURCE_IP_ADDRESS
+#目的ip地址
+purposeIp=LBL_PURPOSE_IPADDRESS
+#是否匹配cos
+isMatchCos =LBL_ACL_MATCHCOS
+#COS
+cosValue=LBL_COS
+#是否匹配DSCP
+isMatchDSCP=LBL_ACL_MATCHDSCP
+#DSCP
+dscpValue =LBL_DSCP
+#是否匹配TOS
+isMatchTOS=LBL_ACL_MATCHDTOS
+#TOS
+tosValue =LBL_TOS
+#是否匹配源端口
+isSourcePort =LBL_ACL_SOURCEPORT
+#源端口号
+sourcePort =LBL_SOURCEPORT
+#是否匹配目的端口
+isPurposePort =LBL_ACL_PURPOSEPORT
+#目的端口号
+purposePort =LBL_PURPOSEPORT
+#规则应用对象
+ruleObject =LBL_ACL_RULEOBJECT,Code,ACLRULEOBJECT|value
+#传输层协议类型
+treatyType =LBL_TREATYTYPE,Code,TransportLayerType|value
+
+
+

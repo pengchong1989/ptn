@@ -1,0 +1,18 @@
+package com.nms.db.dao.ptn;
+
+import com.nms.db.bean.ptn.clock.PtpPortinfo;
+
+
+public interface PtpPortMapper {
+    int deleteByPrimaryKey(Integer id);
+
+    int insert(PtpPortinfo record);
+
+    int insertSelective(PtpPortinfo record);
+
+    PtpPortinfo selectByPrimaryKey(Integer id);
+
+    int updateByPrimaryKeySelective(PtpPortinfo record);
+
+    int updateByPrimaryKey(PtpPortinfo record);
+}

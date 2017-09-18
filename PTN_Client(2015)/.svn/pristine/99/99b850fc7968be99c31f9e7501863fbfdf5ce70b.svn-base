@@ -1,0 +1,34 @@
+package com.nms.db.dao.ptn.path.eth;
+
+import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
+
+import com.nms.db.bean.ptn.path.eth.EtreeInfo;
+
+public interface EtreeInfoMapper {
+    int deleteByPrimaryKey(Integer id);
+
+    int insert(EtreeInfo record);
+
+    int insertSelective(EtreeInfo record);
+
+    EtreeInfo selectByPrimaryKey(Integer id);
+
+    int updateByPrimaryKeySelective(EtreeInfo record);
+
+    int updateByPrimaryKey(EtreeInfo record);
+
+	public List<EtreeInfo> selectBySiteAndisSingle(EtreeInfo condition);
+
+	/**
+	 * 验证Pw是否被某业务使用(不仅仅是eline)
+	 * @param pwId
+	 * @return
+	 */
+	List<EtreeInfo> queryByPwId(int pwId);
+	
+	public List<EtreeInfo> queryAllEtree(@Param("serviceType")int serviceType,@Param("name")String name);
+	
+	public List<EtreeInfo> queryAllEtrees(@Param("serviceType")int serviceType,@Param("name")String name,@Param("branchsite")int branchsite);
+}

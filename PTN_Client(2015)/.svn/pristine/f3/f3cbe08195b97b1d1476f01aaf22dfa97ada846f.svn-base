@@ -1,0 +1,291 @@
+package com.nms.db.dao.equipment.shelf;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.nms.db.bean.equipment.shelf.EquipInst;
+import com.nms.ui.manager.ExceptionManage;
+
+public class EquipInstDao {
+	/**
+	 * 新增equipinst
+	 * 
+	 * @param equipinst
+	 *            实体
+	 * @param connection
+	 *            数据库连接
+	 * @return 执行成功插入的记录数
+	 * @throws Exception
+	 */
+	public int insert(EquipInst equipinst, Connection connection)
+			throws Exception {
+
+		if (null == equipinst) {
+			throw new Exception("equipinst is null");
+		}
+
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		int result = 0;
+		ResultSet resultSet = null;
+
+		try {
+			sql = "insert into equip_inst(siteId,imagePath,equipx,equipy) values(?,?,?,?)";
+			preparedStatement = connection.prepareStatement(sql,
+					Statement.RETURN_GENERATED_KEYS);
+			preparedStatement.setInt(1, equipinst.getSiteId());
+			preparedStatement.setString(2, equipinst.getImagePath());
+			preparedStatement.setInt(3, equipinst.getEquipx());
+			preparedStatement.setInt(4, equipinst.getEquipy());
+			preparedStatement.executeUpdate();
+
+			resultSet = preparedStatement.getGeneratedKeys();
+			if (resultSet.next()) {
+				result = resultSet.getInt(1);
+			}
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+
+			if (resultSet != null) {
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				resultSet = null;
+			}
+
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+
+			sql = null;
+		}
+
+		return result;
+	}
+
+	/**
+	 * 修改equipinst
+	 * 
+	 * @param equipinst
+	 *            实体
+	 * @param connection
+	 *            数据库连接
+	 * @return 修改的记录数
+	 * @throws Exception
+	 */
+	public int update(EquipInst equipinst, Connection connection)
+			throws Exception {
+		if (null == equipinst) {
+			throw new Exception("equipinst is null");
+		}
+
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		int result = 0;
+
+		try {
+			sql = "update equip_inst set siteId=?,imagePath=?,equipx=?,equipy=? where id=?";
+			preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.setInt(1, equipinst.getSiteId());
+			preparedStatement.setString(2, equipinst.getImagePath());
+			preparedStatement.setInt(3, equipinst.getEquipx());
+			preparedStatement.setInt(4, equipinst.getEquipy());
+			preparedStatement.setInt(5, equipinst.getId());
+			result = preparedStatement.executeUpdate();
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+
+		return result;
+	}
+
+	/**
+	 * 通过主键删除对象
+	 * 
+	 * @param id
+	 *            主键
+	 * @param connection
+	 *            数据库连接
+	 * @return 删除的记录数
+	 * @throws Exception
+	 */
+	public int delete(int id, Connection connection) throws Exception {
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		int result = 0;
+
+		try {
+			sql = "delete from equip_inst where id=?";
+			preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.setInt(1, id);
+
+			result = preparedStatement.executeUpdate();
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+
+		return result;
+	}
+
+	public int deleteBySiteId(int siteId, Connection connection) throws Exception {
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		int result = 0;
+
+		try {
+			sql = "delete from equip_inst where siteId=?";
+			preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.setInt(1, siteId);
+
+			result = preparedStatement.executeUpdate();
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+
+		return result;
+	}
+
+	/**
+	 * 根据条件查询
+	 * 
+	 * @param equipinstCondition
+	 *            查询条件
+	 * @param connection
+	 *            数据库连接
+	 * @return List<EquipInst> 集合
+	 * @throws Exception
+	 */
+	public List<EquipInst> queryByCondition(EquipInst equipinstCondition,
+			Connection connection) throws Exception {
+
+		if (null == equipinstCondition) {
+			throw new Exception("equipinstCondition is null");
+		}
+
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		List<EquipInst> equipinstList = null;
+		String sql = null;
+		ResultSet resultSet = null;
+		PreparedStatement preparedStatement = null;
+		EquipInst equipinst = null;
+
+		try {
+			equipinstList = new ArrayList<EquipInst>();
+			sql = "select id,siteId,imagePath , equipx,equipy from equip_inst where 1=1";
+
+			if (equipinstCondition.getId() > 0) {
+				sql += " and id=" + equipinstCondition.getId();
+			}
+
+			if (equipinstCondition.getSiteId() > 0) {
+				sql += " and siteId=" + equipinstCondition.getSiteId();
+			}
+
+			preparedStatement = connection.prepareStatement(sql);
+			resultSet = preparedStatement.executeQuery();
+
+			while (resultSet.next()) {
+				equipinst = new EquipInst();
+				equipinst.setId(resultSet.getInt("id"));
+				equipinst.setSiteId(resultSet.getInt("siteId"));
+				equipinst.setImagePath(resultSet.getString("imagePath"));
+				equipinst.setEquipx(resultSet.getInt("equipx"));
+				equipinst.setEquipy(resultSet.getInt("equipy"));
+				equipinstList.add(equipinst);
+			}
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (resultSet != null) {
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				resultSet = null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+			equipinst = null;
+		}
+
+		return equipinstList;
+
+	}
+}

@@ -1,0 +1,148 @@
+package com.nms.db.dao.system.roleManage;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.nms.db.bean.system.roleManage.RoleInfo;
+import com.nms.db.bean.system.roleManage.RoleManage;
+import com.nms.ui.manager.ExceptionManage;
+
+/**
+ * 角色权限 表  
+ * @author Administrator
+ *
+ */
+public class RoleManageDao {
+	 
+	/**
+	 * 查询权限表
+	 * @param roleroleManage
+	 * @param connection
+	 * @return
+	 * @throws Exception
+	 */
+	public List<RoleManage> select(RoleManage roleManage,Connection connection) throws Exception {
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+		PreparedStatement preparedStatement = null;
+		 ResultSet resultSet=null;
+		 List<RoleManage> roleroleManageList=null; 
+		String sql="select id,name,name_en,label,parentId,isVisible from rolemanage where 1=1";
+		try {
+			if(roleManage.getId()>0){
+				sql += " and id= " +roleManage.getId();
+			}
+			if(roleManage.getParentId()>0){
+				sql +=" and parentId = " + roleManage.getParentId();
+			}
+			if(!(null==roleManage.getName()||"".equals(roleManage.getName()))){
+				sql +=" and name = '" +roleManage.getName()+"'";
+			}
+			if(!(null==roleManage.getName_en()||"".equals(roleManage.getName_en()))){
+				sql +=" and name_en = '" +roleManage.getName_en()+"'";
+			}
+			preparedStatement = connection.prepareStatement(sql);
+			resultSet= preparedStatement.executeQuery();
+			roleroleManageList=new ArrayList<RoleManage>();
+			while(resultSet.next()){
+				roleManage=new RoleManage();
+				roleManage.setId(resultSet.getInt("id"));
+				roleManage.setName(resultSet.getString("name"));
+				roleManage.setName_en(resultSet.getString("name_en"));
+				roleManage.setLabel(resultSet.getString("label"));
+				roleManage.setParentId(resultSet.getInt("parentId"));
+				roleManage.setIsVisible(resultSet.getInt("isVisible"));
+				roleroleManageList.add(roleManage);
+			}
+		
+		} catch (Exception e) {
+			throw e;
+		}finally {
+			if (resultSet != null) {
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				resultSet = null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+			roleManage=null;
+		}
+		return roleroleManageList;
+	}
+	/**
+	 * 根據  角色 ID 查詢 關聯表
+	 * 			在 菜單權限結果集中
+	 * 			取得    此角色的 權限信息
+	 * @param roleInfo
+	 * @param connection
+	 * @return
+	 * @throws Exception
+	 */
+	public List<RoleManage> byRoleInfoSelect(RoleInfo roleInfo,Connection connection) throws Exception {
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+		if(null==roleInfo){
+			throw new Exception("roleInfo is null");
+		}
+		String sql="select * from rolemanage where id in (select manageId from rolerelevance where infoId=? )";
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet=null;
+		List<RoleManage> roleroleManageList=null;
+		RoleManage roleManage=null;
+		try {
+			if(roleInfo.getId()>0){
+				preparedStatement = connection.prepareStatement(sql);
+				preparedStatement.setInt(1, roleInfo.getId());
+				resultSet= preparedStatement.executeQuery();
+				roleroleManageList=new ArrayList<RoleManage>();
+				while(resultSet.next()){
+					roleManage=new RoleManage();
+					roleManage.setId(resultSet.getInt("id"));
+					roleManage.setName(resultSet.getString("name"));
+					roleManage.setName_en(resultSet.getString("name_en"));
+					roleManage.setLabel(resultSet.getString("label"));
+					roleManage.setParentId(resultSet.getInt("parentId"));
+					roleManage.setIsVisible(resultSet.getInt("isVisible"));
+					roleroleManageList.add(roleManage);
+				}
+			}
+		
+		} catch (Exception e) {
+			throw e;
+		}finally {
+			if (resultSet != null) {
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				resultSet = null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+			roleManage=null;
+		}
+		return roleroleManageList;
+	}
+	
+}

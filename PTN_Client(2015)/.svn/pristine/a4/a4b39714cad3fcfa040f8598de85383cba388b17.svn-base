@@ -1,0 +1,177 @@
+package com.nms.model.ptn.path.pw;
+
+import java.sql.Connection;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.nms.db.bean.ptn.path.pw.PwNniInfo;
+import com.nms.db.dao.ptn.path.pw.PwNniDao;
+import com.nms.model.util.ObjectService;
+import com.nms.ui.manager.ExceptionManage;
+
+public class PwNniBufferService extends ObjectService {
+
+	public void setConnection(Connection connection) {
+		super.connection = connection;
+	}
+
+	public void setPtnuser(String ptnuser) {
+		super.ptnuser = ptnuser;
+	}
+	private PwNniDao pwNniBfInfoDao = new PwNniDao();
+
+	public int saveOrUpdate(PwNniInfo pwinfo) throws Exception {
+
+		if (pwinfo == null) {
+			throw new Exception("pwinfo is null");
+		}
+
+		int result = 0;
+		try {
+			connection.setAutoCommit(false);			
+			if (pwinfo.getId() == 0) {		
+				result = this.pwNniBfInfoDao.insert(pwinfo, connection);			
+			} else {
+				result = this.pwNniBfInfoDao.update(pwinfo, connection);
+			}
+			if(!connection.getAutoCommit()){
+				connection.commit();
+			}
+		} catch (Exception e) {
+			connection.rollback();
+			ExceptionManage.dispose(e,this.getClass());
+		}
+		finally{
+			connection.setAutoCommit(true);
+		}
+		return result;
+	}
+
+	public int delete(int pwNniId) throws Exception {
+
+		int result = 0;
+
+		try {
+			result = pwNniBfInfoDao.delete(pwNniId, connection);
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		}
+		return result;
+
+	}
+
+	public List<PwNniInfo> select() throws Exception {
+		List<PwNniInfo> pwinfoList = null;
+
+		try {
+			pwinfoList = pwNniBfInfoDao.queryAll(connection);
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		}
+		return pwinfoList;
+	}
+
+	public List<PwNniInfo> select(PwNniInfo pwinfo) throws Exception {
+		List<PwNniInfo> pwinfoList = null;
+
+		try {
+			pwinfoList = pwNniBfInfoDao.queryByCondition(pwinfo, connection);
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		}
+		return pwinfoList;
+	}
+	/**
+	 * 集合查询
+	 * @param pwinfoList
+	 * @return
+	 * @throws Exception
+	 */
+	public List<PwNniInfo> select(List<PwNniInfo> pwinfoList) throws Exception {
+		if(pwinfoList==null){
+			throw new Exception("查询失败，参数为空");
+		}
+		List<PwNniInfo> pwNniInfoList=null;
+		List<PwNniInfo> pwList=null;
+		try {
+			pwNniInfoList=new ArrayList<PwNniInfo>();
+			if(pwinfoList.size()>0){
+				for(PwNniInfo pwinfo:pwinfoList){
+					pwList = pwNniBfInfoDao.queryByCondition(pwinfo, connection);	
+					pwNniInfoList.addAll(pwList);
+				}
+			}	
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		}
+		return pwNniInfoList;
+	}
+	/**
+	 * 更新 pw的 VLAN属性
+	 * @param pwinfo
+	 * @return
+	 * @throws Exception
+	 */
+	public int updateVlan(PwNniInfo pwinfo) throws Exception {
+		if(!(pwinfo.getSiteId()>0&&pwinfo.getPwId()>0)){
+			throw new Exception("更新Vlan失败，未找到网元或者PW!!");
+		}
+		int result = 0;
+
+		try {
+			result = pwNniBfInfoDao.updateVlan(pwinfo, connection);
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		}
+		return result;
+
+	}
+	/**
+	 * 集合
+	 * 更新 pw的 VLAN属性
+	 * @param pwinfo
+	 * @return
+	 * @throws Exception
+	 */
+	public int updateVlan(List<PwNniInfo> pwinfoList) throws Exception {
+		
+		int result = 0;
+		int count=0;
+		try {
+			if(pwinfoList!=null&&pwinfoList.size()>0){
+				for(PwNniInfo info:pwinfoList){
+					count = pwNniBfInfoDao.updateVlan(info, connection);
+					if(count>0){
+						result++;
+					}
+				}				
+			}
+			
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		}
+		return result;
+
+	}
+	
+	/**
+	 * 更新 pw的 lanId属性
+	 * @param pwinfo
+	 * @return
+	 * @throws Exception
+	 */
+	public int updateLanId(PwNniInfo pwinfo) throws Exception {
+		if(pwinfo.getId()==0){
+			throw new Exception("更新PW LANID出错");
+		}
+		int result = 0;
+
+		try {
+			result = pwNniBfInfoDao.updateLanId(pwinfo, connection);
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		}
+		return result;
+
+	}
+}

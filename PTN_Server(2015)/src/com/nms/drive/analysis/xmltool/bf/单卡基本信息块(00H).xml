@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<driveRoot  xmlns="http://drive.bean.com">
+	<attribute length="1" description="BDINF" value="254" mapping="(FE)=单卡类型扩展标志"/>
+  <attribute length="1" description="BDINF" value="0" mapping="((00)-0FF)=单卡地址"/>
+  <attribute length="1" description="BDINF" value="10" mapping="(10)=单卡号"/>
+  <attribute length="1" description="BDINF" value="10" mapping="(10)=单卡软件版本"/>
+  <attribute length="1" description="BDINF" value="0" mapping="(00)=备用"/>
+  <attribute length="1" description="Time" value="7" mapping="(07H)=年"/>
+  <attribute length="1" description="Time" value="207" mapping="(CFH)=年"/>
+  <attribute length="1" description="Time" value="3" mapping="(03)=月"/>
+  <attribute length="1" description="Time" value="1" mapping="(01)=日"/>
+  <attribute length="1" description="Time" value="8" mapping="(08)=时"/>
+  <attribute length="1" description="Time" value="0" mapping="(00)=分"/>
+  <attribute length="1" description="Time" value="0" mapping="(00)=秒"/>
+  <attribute length="1" description="ACT" value="1" mapping="(01)/00=激活/不激活"/>
+  <attribute length="1" description="MODE" value="0" mapping="(00)/01/02=ADM/TM/REG"/>
+  <attribute length="1" description="MODE" value="0" mapping="(00)/01=东/西"/>
+  <attribute length="1" description="MODE" value="0" mapping="(00)/01=主/备"/>
+  <attribute length="1" description="MODE" value="0" mapping="(00)/01=2纤/4纤"/>
+  <attribute length="1" description="MODE" value="0" mapping="(00)/01=RING/LINER"/>
+  <attribute length="1" description="MODE" value="2" mapping="00/01/02=PROT1/PORT2/WORK"/>
+  <attribute length="1" description="BDINFFX" value="3" mapping="(03)=设备类型"/>
+  <attribute length="1" description="BDINFFX" value="80" mapping="(80)=基本类型3"/>
+  <attribute length="1" description="BDINFFX" value="2" mapping="(02H)=基本类型2"/>
+  <attribute length="1" description="BDINFFX" value="79" mapping="(79H)=基本类型1=单卡类型"/>
+  <attribute length="1" description="BDINFFX(备用1)" value="0" mapping="(00)"/>
+  <attribute length="1" description="BDINFFX(备用2)" value="0" mapping="(00)"/>
+  <attribute length="1" description="BDINFFX(备用3)" value="0" mapping="(00)"/>
+  <attribute length="1" description="BDINFFX(备用4)" value="0" mapping="(00)"/>
+  <attribute length="1" description="BDINFFX(备用5)" value="0" mapping="(00)"/>
+  <attribute length="1" description="BDINFFX(备用6)" value="0" mapping="(00)"/>
+  <attribute length="57" description="备用" value="0" mapping="(00)"/>
+  <attribute length="1" description="配置块扩展标志" value="190" mapping="(BECFFCEB)"/>
+  <attribute length="1" description="配置块扩展标志" value="207" mapping="(BECFFCEB)"/>
+  <attribute length="1" description="配置块扩展标志" value="252" mapping="(BECFFCEB)"/>  
+  <attribute length="1" description="配置块扩展标志" value="235" mapping="(BECFFCEB)"/>
+  <attribute length="1" description="配置块扩展类型" value="1" mapping="(01)=ASON扩展格式"/>
+  <attribute length="2" description="配置块条目表偏移" value="6" mapping="(06)"/>
+  <attribute length="1" description="单卡类型和地址" value="3" mapping="(03)=设备类型"/>
+  <attribute length="1" description="单卡类型和地址" value="80" mapping="(80)=基本类型3"/>
+  <attribute length="1" description="单卡类型和地址" value="2" mapping="(02H)=基本类型2"/>
+  <attribute length="1" description="单卡类型和地址" value="79" mapping="(79H)=基本类型1=单卡类型"/>
+  <attribute length="1" description="单卡类型和地址" value="0" mapping="(00)=单卡地址1"/>
+  <attribute length="1" description="单卡类型和地址" value="0" mapping="(00)=单卡地址2"/>
+</driveRoot>

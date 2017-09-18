@@ -1,0 +1,8 @@
+#ccc信息#######################################################
+#名称
+name=LBL_NAME
+#激活状态
+activeStatus=LBL_ACTIVITY_STATUS,Enum,EActiveStatus
+#ac名称
+acName4vpls=LBL_AC_NAME
+

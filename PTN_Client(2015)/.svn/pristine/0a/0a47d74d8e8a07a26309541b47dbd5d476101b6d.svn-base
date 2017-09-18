@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nms.db.dao.system.UnloadMapper" >
+  <resultMap id="BaseResultMap" type="UnLoading" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="unloadType" property="unloadType" jdbcType="INTEGER" />
+    <result column="cellType" property="cellType" jdbcType="INTEGER" />
+    <result column="unloadLimit" property="unloadLimit" jdbcType="INTEGER" />
+    <result column="spillEntry" property="spillEntry" jdbcType="INTEGER" />
+    <result column="holdEntry" property="holdEntry" jdbcType="INTEGER" />
+    <result column="unloadMod" property="unloadMod" jdbcType="INTEGER" />
+    <result column="fileWay" property="fileWay" jdbcType="VARCHAR" />
+    <result column="isAuto" property="isAuto" jdbcType="INTEGER" />
+    <result column="autoStartTime" property="autoStartTime" jdbcType="VARCHAR" />
+    <result column="timeInterval" property="timeInterval" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, unloadType, cellType, unloadLimit, spillEntry, holdEntry, unloadMod, fileWay, isAuto, autoStartTime, timeInterval
+  </sql>
+  <select id="selectAll" resultType="UnLoading" >
+    select 
+    <include refid="Base_Column_List" />
+    from unload_manager
+  </select>
+
+  <update id="update" parameterType="UnLoading" >
+    update unload_manager
+    <set >
+      <if test="cellType != null" >
+        cellType = #{cellType,jdbcType=INTEGER},
+      </if>
+      <if test="unloadLimit != null" >
+        unloadLimit = #{unloadLimit,jdbcType=INTEGER},
+      </if>
+      <if test="spillEntry != null" >
+        spillEntry = #{spillEntry,jdbcType=INTEGER},
+      </if>
+      <if test="holdEntry != null" >
+        holdEntry = #{holdEntry,jdbcType=INTEGER},
+      </if>   
+      <if test="unloadMod != null" >
+        unloadMod = #{unloadMod,jdbcType=INTEGER},
+      </if>         
+      <if test="fileWay != null" >
+        fileWay = #{fileWay,jdbcType=VARCHAR},
+      </if>
+      <if test="unloadType !=3 and unloadType !=4">
+          <if test="isAuto != null">
+            isAuto = #{isAuto,jdbcType=INTEGER},
+          </if>
+	      <if test="autoStartTime != null" >
+	        autoStartTime = #{autoStartTime,jdbcType=VARCHAR},
+	      </if> 
+	      <if test="timeInterval != null" >
+	        timeInterval = #{timeInterval,jdbcType=VARCHAR},
+	      </if> 
+	  </if>          
+    </set>
+    where unloadType = #{unloadType,jdbcType=INTEGER}
+  </update>
+ 
+</mapper>

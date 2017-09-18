@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<driveRoot  xmlns="http://drive.bean.com">
+	<attribute length="1" description="端口号" value="0" mapping="(0)/1=(不关联)/关联"/>
+	<attribute length="1" description="LINK" value="0" mapping="(0)/1=(不关联)/关联"/>
+	<attribute length="1" description="端口模式" value="0" mapping="(0)/1=(不关联)/关联"/>
+	<attribute length="4" description="收包数" value="0" mapping="(0)/1=(不关联)/关联"/>
+	<attribute length="4" description="发包数" value="0" mapping="(0)/1=(不关联)/关联"/>
+	<attribute length="1" description="环回状态" value="0" mapping="0/1/2=未环回/内环回/外环回"/>
+</driveRoot>

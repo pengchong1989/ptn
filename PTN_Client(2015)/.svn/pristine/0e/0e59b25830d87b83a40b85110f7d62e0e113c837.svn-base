@@ -1,0 +1,372 @@
+package com.nms.db.dao.alarm;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.nms.db.bean.alarm.WarningLevel;
+import com.nms.ui.manager.ExceptionManage;
+
+public class WarningLevelDao {
+
+	/**
+	 * 新增warningLevel(告警表)
+	 * 
+	 * @param warningLevel
+	 *            实体
+	 * @param connection
+	 *            数据库连接
+	 * @return 执行成功的记录数
+	 * @throws Exception
+	 */
+	public int insert(WarningLevel warningLevel, Connection connection)
+			throws Exception {
+
+		if (null == warningLevel) {
+			throw new Exception("warningLevel is null");
+		}
+
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		int result = 0;
+
+		try {
+			sql = "insert into warninglevel(warningname,warningnote,warninglevel,warningcode,warningobject,warningtype,warningdescribe,waringeffect,waringremark,manufacturer,warningLevel_temp,WarningEnNote) values(?,?,?,?,?,?,?,?,?,?,?,?)";
+			preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.setString(1, warningLevel.getWarningname());
+			preparedStatement.setString(2, warningLevel.getWarningnote());
+			preparedStatement.setInt(3, warningLevel.getWarninglevel());
+			preparedStatement.setInt(4, warningLevel.getWarningcode());
+			preparedStatement.setString(5, warningLevel.getWarningobject());
+			preparedStatement.setInt(6, warningLevel.getWarningtype());
+			preparedStatement.setString(7, warningLevel.getWarningdescribe());
+			preparedStatement.setString(8, warningLevel.getWaringeffect());
+			preparedStatement.setString(9, warningLevel.getWaringremark());
+			preparedStatement.setInt(10, warningLevel.getManufacturer());
+			preparedStatement.setInt(11, warningLevel.getWarninglevel_temp());
+			preparedStatement.setString(12, warningLevel.getWarningEnNote());
+			result = preparedStatement.executeUpdate();
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+
+			sql = null;
+		}
+
+		return result;
+	}
+
+	/**
+	 * 修改warningLevel(告警表)
+	 * 
+	 * @param warningLevel
+	 *            实体
+	 * @param connection
+	 *            数据库连接
+	 * @return 修改的记录数
+	 * @throws Exception
+	 */
+	public int update(WarningLevel warningLevel, Connection connection)
+			throws Exception {
+		if (null == warningLevel) {
+			throw new Exception("warningLevel is null");
+		}
+
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		int result = 0;
+
+		try {
+			sql = "update warninglevel set warningname=?,warningnote=?,warningLevel=?,warningcode=?,warningobject=?,warningtype=?,warningdescribe=?,waringeffect=?,waringremark=? ,manufacturer=? ,warningLevel_temp=?,WarningEnNote=? where id=?";
+			preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.setString(1, warningLevel.getWarningname());
+			preparedStatement.setString(2, warningLevel.getWarningnote());
+			preparedStatement.setInt(3, warningLevel.getWarninglevel());
+			preparedStatement.setInt(4, warningLevel.getWarningcode());
+			preparedStatement.setString(5, warningLevel.getWarningobject());
+			preparedStatement.setInt(6, warningLevel.getWarningtype());
+			preparedStatement.setString(7, warningLevel.getWarningdescribe());
+			preparedStatement.setString(8, warningLevel.getWaringeffect());
+			preparedStatement.setString(9, warningLevel.getWaringremark());
+			preparedStatement.setInt(10, warningLevel.getManufacturer());
+			preparedStatement.setInt(11, warningLevel.getWarninglevel_temp());
+			preparedStatement.setString(12, warningLevel.getWarningEnNote());
+			preparedStatement.setInt(13, warningLevel.getId());
+			
+			result = preparedStatement.executeUpdate();
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+
+		return result;
+	}
+
+	/**
+	 * 通过主键删除warningLevel
+	 * 
+	 * @param id
+	 *            主键
+	 * @param connection
+	 *            数据库连接
+	 * @return 删除的记录数
+	 * @throws Exception
+	 */
+	public int delete(int id, Connection connection) throws Exception {
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		int result = 0;
+
+		try {
+			sql = "delete from warninglevel where id=?";
+			preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.setInt(1, id);
+
+			result = preparedStatement.executeUpdate();
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+
+		return result;
+	}
+
+	/**
+	 * 通过条件查询
+	 * 
+	 * @param warningLevelCondition
+	 *            查询条件
+	 * @param connection
+	 *            数据库连接
+	 * @return List<WarningLevel> 集合
+	 * @throws Exception
+	 */
+	public List<WarningLevel> queryByCondition(WarningLevel warningLevelCondition, Connection connection)throws Exception {
+
+		if (null == warningLevelCondition) {
+			throw new Exception("warningLevelCondition is null");
+		}
+
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		List<WarningLevel> warninglevelList = null;
+		String sql = null;
+		ResultSet resultSet = null;
+		PreparedStatement preparedStatement = null;
+		WarningLevel warningLevel = null;
+
+		try {
+			warninglevelList = new ArrayList<WarningLevel>();
+			sql = "select id,warningname,warningnote,warninglevel,warningcode,warningobject,warningtype ,warningdescribe,waringeffect,waringremark,manufacturer,warningLevel_temp ,warningadvice,warningmayreason,WarningEnNote from warninglevel where 1=1";
+
+			if (warningLevelCondition.getId() > 0) {
+				sql += " and id=" + warningLevelCondition.getId();
+			}
+			if (warningLevelCondition.getWarningcode() != 0) {
+				sql += " and WarningCode="+ warningLevelCondition.getWarningcode();
+			}
+			if(warningLevelCondition.getWarninglevel() != 0){
+				sql += " and WarningLevel="+ warningLevelCondition.getWarninglevel();
+			}
+			if(warningLevelCondition.getWarninglevel_temp() != 0){
+				sql += " and WarningLevel_temp="+ warningLevelCondition.getWarninglevel_temp();
+			}
+			if(warningLevelCondition.getManufacturer() != 0) {
+				sql += " and manufacturer="+ warningLevelCondition.getManufacturer();
+			}
+			preparedStatement = connection.prepareStatement(sql);
+			resultSet = preparedStatement.executeQuery();
+
+			while (resultSet.next()) {
+				warningLevel = new WarningLevel();
+				warningLevel.setId(resultSet.getInt("id"));
+				warningLevel.setWarningname(resultSet.getString("warningname"));
+				warningLevel.setWarningnote(resultSet.getString("warningnote"));
+				warningLevel.setWarninglevel(resultSet.getInt("warningLevel"));
+				warningLevel.setWarningcode(resultSet.getInt("warningcode"));
+				warningLevel.setWarningobject(resultSet.getString("warningobject"));
+				warningLevel.setWarningtype(resultSet.getInt("warningtype"));
+				warningLevel.setManufacturer(resultSet.getInt("manufacturer"));
+				warningLevel.setWarningdescribe(resultSet.getString("warningdescribe"));
+				warningLevel.setWaringeffect(resultSet.getString("waringeffect"));
+				warningLevel.setWaringremark(resultSet.getString("waringremark"));
+				warningLevel.setWarninglevel_temp(resultSet.getInt("warningLevel_temp"));
+				warningLevel.setWarningadvice(resultSet.getString("warningadvice"));
+				warningLevel.setWarningmayreason(resultSet.getString("warningmayreason"));
+				warningLevel.setWarningEnNote(resultSet.getString("WarningEnNote"));
+				warninglevelList.add(warningLevel);
+			}
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (resultSet != null) {
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				resultSet = null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+			warningLevel = null;
+		}
+
+		return warninglevelList;
+
+	}
+	
+	/**
+	 * 通过条件查询
+	 * 
+	 * @param warningLevelCondition
+	 *            查询条件
+	 * @param connection
+	 *            数据库连接
+	 * @return List<WarningLevel> 集合
+	 * @throws Exception
+	 */
+//	public List<WarningLevel> selectByCondition(WarningLevel warningLevelCondition, Connection connection)
+//			throws Exception {
+//
+//		if (null == warningLevelCondition) {
+//			throw new Exception("warningLevelCondition is null");
+//		}
+//
+//		if (null == connection) {
+//			throw new Exception("connection is null");
+//		}
+//
+//		List<WarningLevel> warninglevelList = null;
+//		String sql = null;
+//		ResultSet resultSet = null;
+//		PreparedStatement preparedStatement = null;
+//		WarningLevel warningLevel = null;
+//
+//		try {
+//			warninglevelList = new ArrayList<WarningLevel>();
+//			sql = "select id,warningname,warningnote , warninglevel,warningcode,warningobject,warningtype ,warningdescribe,waringeffect,waringremark,manufacturer,warningLevel_temp  from warninglevel where 1=1";
+//
+//			if (warningLevelCondition.getId() > 0) {
+//				sql += " and id=" + warningLevelCondition.getId();
+//			}
+//			if (warningLevelCondition.getWarningcode() != 0
+//					) {
+//				sql += " and WarningCode="
+//						+ warningLevelCondition.getWarningcode();
+//				
+//			}
+//			if(warningLevelCondition.getWarninglevel() != 0){
+//				sql += " and WarningLevel="
+//					+ warningLevelCondition.getWarninglevel();
+//			}
+//			if(warningLevelCondition.getManufacturer() != 0) {
+//				sql += " and manufacturer="
+//					+ warningLevelCondition.getManufacturer();
+//			}
+//			preparedStatement = connection.prepareStatement(sql);
+//			resultSet = preparedStatement.executeQuery();
+//
+//			while (resultSet.next()) {
+//				warningLevel = new WarningLevel();
+//				warningLevel.setId(resultSet.getInt("id"));
+//				warningLevel.setWarningname(resultSet.getString("warningname"));
+//				warningLevel.setWarningnote(resultSet.getString("warningnote"));
+//				warningLevel.setWarninglevel(resultSet.getInt("warningLevel_temp"));
+//				warningLevel.setWarningcode(resultSet.getInt("warningcode"));
+//				warningLevel.setWarningobject(resultSet
+//						.getString("warningobject"));
+//				warningLevel.setWarningtype(resultSet.getInt("warningtype"));
+//				warningLevel.setManufacturer(resultSet.getInt("manufacturer"));
+//				warningLevel.setWarningdescribe(resultSet
+//						.getString("warningdescribe"));
+//				warningLevel.setWaringeffect(resultSet
+//						.getString("waringeffect"));
+//				warningLevel.setWaringremark(resultSet
+//						.getString("waringremark"));
+//				warninglevelList.add(warningLevel);
+//			}
+//
+//		} catch (Exception e) {
+//			throw e;
+//		} finally {
+//			if (resultSet != null) {
+//				try {
+//					resultSet.close();
+//				} catch (Exception e) {
+//					throw e;
+//				}
+//				resultSet = null;
+//			}
+//			if (preparedStatement != null) {
+//				try {
+//					preparedStatement.close();
+//				} catch (Exception e) {
+//					throw e;
+//				}
+//				preparedStatement = null;
+//			}
+//			sql = null;
+//			warningLevel = null;
+//		}
+//
+//		return warninglevelList;
+//
+//	}
+}

@@ -1,0 +1,18 @@
+package com.nms.db.dao.ptn;
+
+import com.nms.db.bean.ptn.MacManagementInfo;
+
+
+public interface BlackListMacMapper {
+    int deleteByPrimaryKey(Integer id);
+
+    int insert(MacManagementInfo record);
+
+    int insertSelective(MacManagementInfo record);
+
+    MacManagementInfo selectByPrimaryKey(Integer id);
+
+    int updateByPrimaryKeySelective(MacManagementInfo record);
+
+    int updateByPrimaryKey(MacManagementInfo record);
+}

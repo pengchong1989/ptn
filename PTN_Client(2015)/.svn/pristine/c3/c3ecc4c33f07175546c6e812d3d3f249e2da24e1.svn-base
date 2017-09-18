@@ -1,0 +1,248 @@
+package com.nms.db.dao.ptn.clock;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.nms.db.bean.ptn.clock.FrequencyInfo;
+import com.nms.ui.manager.ExceptionManage;
+
+public class ClockFrequDao {
+	/**
+	 * 修改 FrequencyInfo
+	 * 
+	 * @param info
+	 *            FrequencyInfo
+	 * @param conn
+	 *            数据库连接
+	 * @return 记录数
+	 * @throws Exception
+	 */
+	public int update(FrequencyInfo info, Connection connection) throws Exception {
+		if (null == info) {
+			throw new Exception("FrequencyInfo is null");
+		}
+
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		int result = 0;
+
+		try {
+			sql = "update `clock_freque` set workMode=?,qlEnable=?,clockPRI=?,outInselect=?,outOutselect1=?,outOutselect2=?," +
+					"outSelect=?,smOuter=?,smSystem=?,qlIn=?,qlOut=?," +
+					"inQlvalue=?,outQlvalue=?,InResumeTime=?,waitResumeTime=?where siteId=?";
+			preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.setInt(1, info.getClockWorkMode());
+			preparedStatement.setInt(2, info.getQlEnable());
+			preparedStatement.setString(3, info.getClockPRIList());
+			preparedStatement.setInt(4, info.getOuterClockInSelect());
+			preparedStatement.setInt(5, info.getOuterClockOutSelect1());
+			preparedStatement.setInt(6, info.getOuterClockOutSelect2());
+			preparedStatement.setString(7, info.getOutSelectList());
+			preparedStatement.setInt(8, info.getSmOuter());
+			preparedStatement.setInt(9, info.getSmSystem());
+			preparedStatement.setInt(10, info.getQlIn());
+			preparedStatement.setInt(11, info.getQlOut());
+			preparedStatement.setString(12, info.getClockInQLValueList());
+			preparedStatement.setString(13, info.getClockOutQLValueList());
+			preparedStatement.setInt(14, info.getClockInResumeTime());
+			preparedStatement.setString(15, info.getWaitResumeTime());
+			preparedStatement.setInt(16, info.getSiteId());
+			// preparedStatement.setInt(18, info.getId());
+			result = preparedStatement.executeUpdate();
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+
+		}
+		return result;
+	}
+
+	/**
+	 * 查询全部
+	 * 
+	 * @param condition
+	 *            查询条件
+	 * @param connection
+	 *            数据库连接
+	 * @return List<FrequencyInfo>
+	 * @throws Exception
+	 */
+	public List<FrequencyInfo> queryByCondition(int siteId, Connection connection) throws Exception {
+
+		if (connection == null) {
+			throw new Exception("Connection is null");
+		}
+		List<FrequencyInfo> frequencyInfoList = null;
+		String sql = null;
+		ResultSet resultSet = null;
+		PreparedStatement preparedStatement = null;
+		FrequencyInfo info = null;
+
+		try {
+			frequencyInfoList = new ArrayList<FrequencyInfo>();
+			sql = "select Id,siteId,workMode,qlEnable,clockPRI,outInselect,outOutselect1,outOutselect2," +
+					"outSelect,smOuter,smSystem,qlIn,qlOut,inQlvalue,outQlvalue," +
+					"InResumeTime,waitResumeTime from clock_freque where siteId=?";
+			preparedStatement =  connection.prepareStatement(sql);
+			preparedStatement.setInt(1, siteId);
+			resultSet = preparedStatement.executeQuery();
+			while (resultSet.next()) {
+				info = new FrequencyInfo();
+				info.setId(resultSet.getInt("Id"));
+				info.setSiteId(resultSet.getInt("siteId"));
+				info.setClockWorkMode(resultSet.getInt("workMode"));
+				info.setQlEnable(resultSet.getInt("qlEnable"));
+				info.setClockPRIList(resultSet.getString("clockPRI"));
+				info.setOuterClockInSelect(resultSet.getInt("outInselect"));
+				info.setOuterClockOutSelect1(resultSet.getInt("outOutselect1"));
+				info.setOuterClockOutSelect2(resultSet.getInt("outOutselect2"));
+				info.setOutSelectList(resultSet.getString("outSelect"));
+				info.setSmOuter(resultSet.getInt("smOuter"));
+				info.setSmSystem(resultSet.getInt("smSystem"));
+				info.setQlIn(resultSet.getInt("qlIn"));
+				info.setQlOut(resultSet.getInt("qlOut"));
+				info.setClockInQLValueList(resultSet.getString("inQlvalue"));
+				info.setClockOutQLValueList(resultSet.getString("outQlvalue"));
+				info.setClockInResumeTime(resultSet.getInt("InResumeTime"));
+				info.setWaitResumeTime(resultSet.getString("waitResumeTime"));
+				frequencyInfoList.add(info);
+			}
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (resultSet != null) {
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				resultSet = null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+			info = null;
+		}
+		return frequencyInfoList;
+	}
+
+	/**
+	 * 添加 FrequencyInfo
+	 * 
+	 * @param info
+	 * @param connection
+	 * @return
+	 * @throws Exception
+	 */
+	public int insert(FrequencyInfo info, Connection connection) throws Exception {
+
+		if (null == info) {
+			throw new Exception("FrequencyInfo is null");
+		}
+
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+		String sql = null;
+		int result = 0;
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+		try {
+			sql = "insert into clock_freque(siteId,workMode,qlEnable,clockPRI,outInselect,outOutselect1,outOutselect2," +
+					"outSelect,smOuter,smSystem,qlIn,qlOut,inQlvalue,outQlvalue,InResumeTime,waitResumeTime) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+			preparedStatement = connection.prepareStatement(sql,Statement.RETURN_GENERATED_KEYS);
+			preparedStatement.setInt(1, info.getSiteId());
+			preparedStatement.setInt(2, info.getClockWorkMode());
+			preparedStatement.setInt(3, info.getQlEnable());
+			preparedStatement.setString(4, info.getClockPRIList());
+			preparedStatement.setInt(5, info.getOuterClockInSelect());
+			preparedStatement.setInt(6, info.getOuterClockOutSelect1());
+			preparedStatement.setInt(7, info.getOuterClockOutSelect2());
+			preparedStatement.setString(8, info.getOutSelectList());
+			preparedStatement.setInt(9, info.getSmOuter());
+			preparedStatement.setInt(10, info.getSmSystem());
+			preparedStatement.setInt(11, info.getQlIn());
+			preparedStatement.setInt(12, info.getQlOut());
+			preparedStatement.setString(13, info.getClockInQLValueList());
+			preparedStatement.setString(14, info.getClockOutQLValueList());
+			preparedStatement.setInt(15, info.getClockInResumeTime());
+			preparedStatement.setString(16, info.getWaitResumeTime());
+			preparedStatement.executeUpdate();
+			resultSet = preparedStatement.getGeneratedKeys();
+			if (resultSet.next()) {
+				result = resultSet.getInt(1);
+			}
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (resultSet != null) {
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				resultSet = null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+		return result;
+	}
+
+	public void delete(int siteId, Connection connection) throws Exception {
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		PreparedStatement preparedStatement = null;
+		String sql = null;
+		try {
+			sql = "delete from clock_freque where siteId = ?";
+			preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.setInt(1, siteId);
+			preparedStatement.executeUpdate();
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+	}
+}

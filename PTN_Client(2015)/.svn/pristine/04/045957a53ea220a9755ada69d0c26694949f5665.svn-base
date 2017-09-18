@@ -1,0 +1,623 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nms.db.dao.equipment.port.PortAttrMapper" >
+  <resultMap id="BaseResultMap" type="PortAttr" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="siteId" property="siteid" jdbcType="INTEGER" />
+    <result column="portId" property="portid" jdbcType="INTEGER" />
+    <result column="portSpeed" property="portspeed" jdbcType="INTEGER" />
+    <result column="actualSpeed" property="actualspeed" jdbcType="VARCHAR" />
+    <result column="workModel" property="workmodel" jdbcType="INTEGER" />
+    <result column="maxFrameSize" property="maxframesize" jdbcType="VARCHAR" />
+    <result column="fluidControl" property="fluidcontrol" jdbcType="INTEGER" />
+    <result column="exitLimit" property="exitlimit" jdbcType="VARCHAR" />
+    <result column="entranceLimit" property="entrancelimit" jdbcType="VARCHAR" />
+    <result column="slowAgreement" property="slowagreement" jdbcType="INTEGER" />
+    <result column="tenWan" property="tenwan" jdbcType="INTEGER" />
+    <result column="messageLoopback" property="messageloopback" jdbcType="INTEGER" />
+    <result column="ethernetPackaging" property="ethernetpackaging" jdbcType="INTEGER" />
+    <result column="vlanTpId" property="vlantpid" jdbcType="INTEGER" />
+    <result column="outerVlanTpId" property="outervlantpid" jdbcType="INTEGER" />
+    <result column="vlanMode" property="vlanmode" jdbcType="INTEGER" />
+    <result column="isBroadcast" property="isbroadcast" jdbcType="INTEGER" />
+    <result column="broadcast" property="broadcast" jdbcType="VARCHAR" />
+    <result column="isUnicast" property="isunicast" jdbcType="INTEGER" />
+    <result column="unicast" property="unicast" jdbcType="VARCHAR" />
+    <result column="isMulticast" property="ismulticast" jdbcType="INTEGER" />
+    <result column="multicast" property="multicast" jdbcType="VARCHAR" />
+    <result column="vlanId" property="vlanid" jdbcType="VARCHAR" />
+    <result column="vlanPri" property="vlanpri" jdbcType="VARCHAR" />
+    <result column="vlanRelevance" property="vlanrelevance" jdbcType="INTEGER" />
+    <result column="eightIpRelevance" property="eightiprelevance" jdbcType="INTEGER" />
+    <result column="sourceMacRelevance" property="sourcemacrelevance" jdbcType="INTEGER" />
+    <result column="destinationMacRelevance" property="destinationmacrelevance" jdbcType="INTEGER" />
+    <result column="sourceIpRelevance" property="sourceiprelevance" jdbcType="INTEGER" />
+    <result column="destinationIpRelevance" property="destinationiprelevance" jdbcType="INTEGER" />
+    <result column="pwRelevance" property="pwrelevance" jdbcType="INTEGER" />
+    <result column="dscpRelevance" property="dscprelevance" jdbcType="INTEGER" />
+    <result column="staticMac" property="staticmac" jdbcType="VARCHAR" />
+    <result column="neighbourId" property="neighbourid" jdbcType="VARCHAR" />
+    <result column="operMac" property="opermac" jdbcType="VARCHAR" />
+    <result column="operId" property="operid" jdbcType="VARCHAR" />
+    <result column="neighbourFind" property="neighbourfind" jdbcType="INTEGER" />
+    <result column="ccnEnable" property="ccnenable" jdbcType="INTEGER" />
+    <result column="nniVlanid" property="nnivlanid" jdbcType="VARCHAR" />
+    <result column="nniVlanpri" property="nnivlanpri" jdbcType="VARCHAR" />
+    <result column="sfpExpectType" property="sfpexpecttype" jdbcType="INTEGER" />
+    <result column="sfpActual" property="sfpactual" jdbcType="VARCHAR" />
+    <result column="workWavelength" property="workwavelength" jdbcType="VARCHAR" />
+    <result column="sfpVender" property="sfpvender" jdbcType="VARCHAR" />
+    <result column="mappingEnable" property="mappingenable" jdbcType="INTEGER" />
+    <result column="stat" property="stat" jdbcType="INTEGER" />
+    <result column="sourceTcpPortRelevance" property="sourcetcpportrelevance" jdbcType="INTEGER" />
+    <result column="endTcpPortRelevance" property="endtcpportrelevance" jdbcType="INTEGER" />
+    <result column="toSRelevance" property="tosrelevance" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, siteId, portId, portSpeed, actualSpeed, workModel, maxFrameSize, fluidControl, 
+    exitLimit, entranceLimit, slowAgreement, tenWan, messageLoopback, ethernetPackaging, 
+    vlanTpId, outerVlanTpId, vlanMode, isBroadcast, broadcast, isUnicast, unicast, isMulticast, 
+    multicast, vlanId, vlanPri, vlanRelevance, eightIpRelevance, sourceMacRelevance, 
+    destinationMacRelevance, sourceIpRelevance, destinationIpRelevance, pwRelevance, 
+    dscpRelevance, staticMac, neighbourId, operMac, operId, neighbourFind, ccnEnable, 
+    nniVlanid, nniVlanpri, sfpExpectType, sfpActual, workWavelength, sfpVender, mappingEnable, 
+    stat, sourceTcpPortRelevance, endTcpPortRelevance, toSRelevance
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from portattr
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <select id="queryByCondition" resultType="PortAttr" parameterType="PortAttr">
+  	select * from portattr where 1=1
+  	<if test="id > 0">
+  	 and id = #{id}
+  	</if>
+  	<if test="portId > 0">
+  	 and portid = #{portId}
+  	</if>
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from portattr
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+                                        
+  <insert id="insertSelective" parameterType="PortAttr" >
+    insert into portattr
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="siteid != null" >
+        siteId,
+      </if>
+      <if test="portid != null" >
+        portId,
+      </if>
+      <if test="portspeed != null" >
+        portSpeed,
+      </if>
+      <if test="actualspeed != null" >
+        actualSpeed,
+      </if>
+      <if test="workmodel != null" >
+        workModel,
+      </if>
+      <if test="maxframesize != null" >
+        maxFrameSize,
+      </if>
+      <if test="fluidcontrol != null" >
+        fluidControl,
+      </if>
+      <if test="exitlimit != null" >
+        exitLimit,
+      </if>
+      <if test="entrancelimit != null" >
+        entranceLimit,
+      </if>
+      <if test="slowagreement != null" >
+        slowAgreement,
+      </if>
+      <if test="tenwan != null" >
+        tenWan,
+      </if>
+      <if test="messageloopback != null" >
+        messageLoopback,
+      </if>
+      <if test="ethernetpackaging != null" >
+        ethernetPackaging,
+      </if>
+      <if test="vlantpid != null" >
+        vlanTpId,
+      </if>
+      <if test="outervlantpid != null" >
+        outerVlanTpId,
+      </if>
+      <if test="vlanmode != null" >
+        vlanMode,
+      </if>
+      <if test="isbroadcast != null" >
+        isBroadcast,
+      </if>
+      <if test="broadcast != null" >
+        broadcast,
+      </if>
+      <if test="isunicast != null" >
+        isUnicast,
+      </if>
+      <if test="unicast != null" >
+        unicast,
+      </if>
+      <if test="ismulticast != null" >
+        isMulticast,
+      </if>
+      <if test="multicast != null" >
+        multicast,
+      </if>
+      <if test="vlanid != null" >
+        vlanId,
+      </if>
+      <if test="vlanpri != null" >
+        vlanPri,
+      </if>
+      <if test="vlanrelevance != null" >
+        vlanRelevance,
+      </if>
+      <if test="eightiprelevance != null" >
+        eightIpRelevance,
+      </if>
+      <if test="sourcemacrelevance != null" >
+        sourceMacRelevance,
+      </if>
+      <if test="destinationmacrelevance != null" >
+        destinationMacRelevance,
+      </if>
+      <if test="sourceiprelevance != null" >
+        sourceIpRelevance,
+      </if>
+      <if test="destinationiprelevance != null" >
+        destinationIpRelevance,
+      </if>
+      <if test="pwrelevance != null" >
+        pwRelevance,
+      </if>
+      <if test="dscprelevance != null" >
+        dscpRelevance,
+      </if>
+      <if test="staticmac != null" >
+        staticMac,
+      </if>
+      <if test="neighbourid != null" >
+        neighbourId,
+      </if>
+      <if test="opermac != null" >
+        operMac,
+      </if>
+      <if test="operid != null" >
+        operId,
+      </if>
+      <if test="neighbourfind != null" >
+        neighbourFind,
+      </if>
+      <if test="ccnenable != null" >
+        ccnEnable,
+      </if>
+      <if test="nnivlanid != null" >
+        nniVlanid,
+      </if>
+      <if test="nnivlanpri != null" >
+        nniVlanpri,
+      </if>
+      <if test="sfpexpecttype != null" >
+        sfpExpectType,
+      </if>
+      <if test="sfpactual != null" >
+        sfpActual,
+      </if>
+      <if test="workwavelength != null" >
+        workWavelength,
+      </if>
+      <if test="sfpvender != null" >
+        sfpVender,
+      </if>
+      <if test="mappingenable != null" >
+        mappingEnable,
+      </if>
+      <if test="stat != null" >
+        stat,
+      </if>
+      <if test="sourcetcpportrelevance != null" >
+        sourceTcpPortRelevance,
+      </if>
+      <if test="endtcpportrelevance != null" >
+        endTcpPortRelevance,
+      </if>
+      <if test="tosrelevance != null" >
+        toSRelevance,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="siteid != null" >
+        #{siteid,jdbcType=INTEGER},
+      </if>
+      <if test="portid != null" >
+        #{portid,jdbcType=INTEGER},
+      </if>
+      <if test="portspeed != null" >
+        #{portspeed,jdbcType=INTEGER},
+      </if>
+      <if test="actualspeed != null" >
+        #{actualspeed,jdbcType=VARCHAR},
+      </if>
+      <if test="workmodel != null" >
+        #{workmodel,jdbcType=INTEGER},
+      </if>
+      <if test="maxframesize != null" >
+        #{maxframesize,jdbcType=VARCHAR},
+      </if>
+      <if test="fluidcontrol != null" >
+        #{fluidcontrol,jdbcType=INTEGER},
+      </if>
+      <if test="exitlimit != null" >
+        #{exitlimit,jdbcType=VARCHAR},
+      </if>
+      <if test="entrancelimit != null" >
+        #{entrancelimit,jdbcType=VARCHAR},
+      </if>
+      <if test="slowagreement != null" >
+        #{slowagreement,jdbcType=INTEGER},
+      </if>
+      <if test="tenwan != null" >
+        #{tenwan,jdbcType=INTEGER},
+      </if>
+      <if test="messageloopback != null" >
+        #{messageloopback,jdbcType=INTEGER},
+      </if>
+      <if test="ethernetpackaging != null" >
+        #{ethernetpackaging,jdbcType=INTEGER},
+      </if>
+      <if test="vlantpid != null" >
+        #{vlantpid,jdbcType=INTEGER},
+      </if>
+      <if test="outervlantpid != null" >
+        #{outervlantpid,jdbcType=INTEGER},
+      </if>
+      <if test="vlanmode != null" >
+        #{vlanmode,jdbcType=INTEGER},
+      </if>
+      <if test="isbroadcast != null" >
+        #{isbroadcast,jdbcType=INTEGER},
+      </if>
+      <if test="broadcast != null" >
+        #{broadcast,jdbcType=VARCHAR},
+      </if>
+      <if test="isunicast != null" >
+        #{isunicast,jdbcType=INTEGER},
+      </if>
+      <if test="unicast != null" >
+        #{unicast,jdbcType=VARCHAR},
+      </if>
+      <if test="ismulticast != null" >
+        #{ismulticast,jdbcType=INTEGER},
+      </if>
+      <if test="multicast != null" >
+        #{multicast,jdbcType=VARCHAR},
+      </if>
+      <if test="vlanid != null" >
+        #{vlanid,jdbcType=VARCHAR},
+      </if>
+      <if test="vlanpri != null" >
+        #{vlanpri,jdbcType=VARCHAR},
+      </if>
+      <if test="vlanrelevance != null" >
+        #{vlanrelevance,jdbcType=INTEGER},
+      </if>
+      <if test="eightiprelevance != null" >
+        #{eightiprelevance,jdbcType=INTEGER},
+      </if>
+      <if test="sourcemacrelevance != null" >
+        #{sourcemacrelevance,jdbcType=INTEGER},
+      </if>
+      <if test="destinationmacrelevance != null" >
+        #{destinationmacrelevance,jdbcType=INTEGER},
+      </if>
+      <if test="sourceiprelevance != null" >
+        #{sourceiprelevance,jdbcType=INTEGER},
+      </if>
+      <if test="destinationiprelevance != null" >
+        #{destinationiprelevance,jdbcType=INTEGER},
+      </if>
+      <if test="pwrelevance != null" >
+        #{pwrelevance,jdbcType=INTEGER},
+      </if>
+      <if test="dscprelevance != null" >
+        #{dscprelevance,jdbcType=INTEGER},
+      </if>
+      <if test="staticmac != null" >
+        #{staticmac,jdbcType=VARCHAR},
+      </if>
+      <if test="neighbourid != null" >
+        #{neighbourid,jdbcType=VARCHAR},
+      </if>
+      <if test="opermac != null" >
+        #{opermac,jdbcType=VARCHAR},
+      </if>
+      <if test="operid != null" >
+        #{operid,jdbcType=VARCHAR},
+      </if>
+      <if test="neighbourfind != null" >
+        #{neighbourfind,jdbcType=INTEGER},
+      </if>
+      <if test="ccnenable != null" >
+        #{ccnenable,jdbcType=INTEGER},
+      </if>
+      <if test="nnivlanid != null" >
+        #{nnivlanid,jdbcType=VARCHAR},
+      </if>
+      <if test="nnivlanpri != null" >
+        #{nnivlanpri,jdbcType=VARCHAR},
+      </if>
+      <if test="sfpexpecttype != null" >
+        #{sfpexpecttype,jdbcType=INTEGER},
+      </if>
+      <if test="sfpactual != null" >
+        #{sfpactual,jdbcType=VARCHAR},
+      </if>
+      <if test="workwavelength != null" >
+        #{workwavelength,jdbcType=VARCHAR},
+      </if>
+      <if test="sfpvender != null" >
+        #{sfpvender,jdbcType=VARCHAR},
+      </if>
+      <if test="mappingenable != null" >
+        #{mappingenable,jdbcType=INTEGER},
+      </if>
+      <if test="stat != null" >
+        #{stat,jdbcType=INTEGER},
+      </if>
+      <if test="sourcetcpportrelevance != null" >
+        #{sourcetcpportrelevance,jdbcType=INTEGER},
+      </if>
+      <if test="endtcpportrelevance != null" >
+        #{endtcpportrelevance,jdbcType=INTEGER},
+      </if>
+      <if test="tosrelevance != null" >
+        #{tosrelevance,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="PortAttr" >
+    update portattr
+    <set >
+      <if test="siteid != null" >
+        siteId = #{siteid,jdbcType=INTEGER},
+      </if>
+      <if test="portid != null" >
+        portId = #{portid,jdbcType=INTEGER},
+      </if>
+      <if test="portspeed != null" >
+        portSpeed = #{portspeed,jdbcType=INTEGER},
+      </if>
+      <if test="actualspeed != null" >
+        actualSpeed = #{actualspeed,jdbcType=VARCHAR},
+      </if>
+      <if test="workmodel != null" >
+        workModel = #{workmodel,jdbcType=INTEGER},
+      </if>
+      <if test="maxframesize != null" >
+        maxFrameSize = #{maxframesize,jdbcType=VARCHAR},
+      </if>
+      <if test="fluidcontrol != null" >
+        fluidControl = #{fluidcontrol,jdbcType=INTEGER},
+      </if>
+      <if test="exitlimit != null" >
+        exitLimit = #{exitlimit,jdbcType=VARCHAR},
+      </if>
+      <if test="entrancelimit != null" >
+        entranceLimit = #{entrancelimit,jdbcType=VARCHAR},
+      </if>
+      <if test="slowagreement != null" >
+        slowAgreement = #{slowagreement,jdbcType=INTEGER},
+      </if>
+      <if test="tenwan != null" >
+        tenWan = #{tenwan,jdbcType=INTEGER},
+      </if>
+      <if test="messageloopback != null" >
+        messageLoopback = #{messageloopback,jdbcType=INTEGER},
+      </if>
+      <if test="ethernetpackaging != null" >
+        ethernetPackaging = #{ethernetpackaging,jdbcType=INTEGER},
+      </if>
+      <if test="vlantpid != null" >
+        vlanTpId = #{vlantpid,jdbcType=INTEGER},
+      </if>
+      <if test="outervlantpid != null" >
+        outerVlanTpId = #{outervlantpid,jdbcType=INTEGER},
+      </if>
+      <if test="vlanmode != null" >
+        vlanMode = #{vlanmode,jdbcType=INTEGER},
+      </if>
+      <if test="isbroadcast != null" >
+        isBroadcast = #{isbroadcast,jdbcType=INTEGER},
+      </if>
+      <if test="broadcast != null" >
+        broadcast = #{broadcast,jdbcType=VARCHAR},
+      </if>
+      <if test="isunicast != null" >
+        isUnicast = #{isunicast,jdbcType=INTEGER},
+      </if>
+      <if test="unicast != null" >
+        unicast = #{unicast,jdbcType=VARCHAR},
+      </if>
+      <if test="ismulticast != null" >
+        isMulticast = #{ismulticast,jdbcType=INTEGER},
+      </if>
+      <if test="multicast != null" >
+        multicast = #{multicast,jdbcType=VARCHAR},
+      </if>
+      <if test="vlanid != null" >
+        vlanId = #{vlanid,jdbcType=VARCHAR},
+      </if>
+      <if test="vlanpri != null" >
+        vlanPri = #{vlanpri,jdbcType=VARCHAR},
+      </if>
+      <if test="vlanrelevance != null" >
+        vlanRelevance = #{vlanrelevance,jdbcType=INTEGER},
+      </if>
+      <if test="eightiprelevance != null" >
+        eightIpRelevance = #{eightiprelevance,jdbcType=INTEGER},
+      </if>
+      <if test="sourcemacrelevance != null" >
+        sourceMacRelevance = #{sourcemacrelevance,jdbcType=INTEGER},
+      </if>
+      <if test="destinationmacrelevance != null" >
+        destinationMacRelevance = #{destinationmacrelevance,jdbcType=INTEGER},
+      </if>
+      <if test="sourceiprelevance != null" >
+        sourceIpRelevance = #{sourceiprelevance,jdbcType=INTEGER},
+      </if>
+      <if test="destinationiprelevance != null" >
+        destinationIpRelevance = #{destinationiprelevance,jdbcType=INTEGER},
+      </if>
+      <if test="pwrelevance != null" >
+        pwRelevance = #{pwrelevance,jdbcType=INTEGER},
+      </if>
+      <if test="dscprelevance != null" >
+        dscpRelevance = #{dscprelevance,jdbcType=INTEGER},
+      </if>
+      <if test="staticmac != null" >
+        staticMac = #{staticmac,jdbcType=VARCHAR},
+      </if>
+      <if test="neighbourid != null" >
+        neighbourId = #{neighbourid,jdbcType=VARCHAR},
+      </if>
+      <if test="opermac != null" >
+        operMac = #{opermac,jdbcType=VARCHAR},
+      </if>
+      <if test="operid != null" >
+        operId = #{operid,jdbcType=VARCHAR},
+      </if>
+      <if test="neighbourfind != null" >
+        neighbourFind = #{neighbourfind,jdbcType=INTEGER},
+      </if>
+      <if test="ccnenable != null" >
+        ccnEnable = #{ccnenable,jdbcType=INTEGER},
+      </if>
+      <if test="nnivlanid != null" >
+        nniVlanid = #{nnivlanid,jdbcType=VARCHAR},
+      </if>
+      <if test="nnivlanpri != null" >
+        nniVlanpri = #{nnivlanpri,jdbcType=VARCHAR},
+      </if>
+      <if test="sfpexpecttype != null" >
+        sfpExpectType = #{sfpexpecttype,jdbcType=INTEGER},
+      </if>
+      <if test="sfpactual != null" >
+        sfpActual = #{sfpactual,jdbcType=VARCHAR},
+      </if>
+      <if test="workwavelength != null" >
+        workWavelength = #{workwavelength,jdbcType=VARCHAR},
+      </if>
+      <if test="sfpvender != null" >
+        sfpVender = #{sfpvender,jdbcType=VARCHAR},
+      </if>
+      <if test="mappingenable != null" >
+        mappingEnable = #{mappingenable,jdbcType=INTEGER},
+      </if>
+      <if test="stat != null" >
+        stat = #{stat,jdbcType=INTEGER},
+      </if>
+      <if test="sourcetcpportrelevance != null" >
+        sourceTcpPortRelevance = #{sourcetcpportrelevance,jdbcType=INTEGER},
+      </if>
+      <if test="endtcpportrelevance != null" >
+        endTcpPortRelevance = #{endtcpportrelevance,jdbcType=INTEGER},
+      </if>
+      <if test="tosrelevance != null" >
+        toSRelevance = #{tosrelevance,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="update" parameterType="PortAttr" >
+    update portattr
+    set siteId = #{siteid,jdbcType=INTEGER},
+      portId = #{portid,jdbcType=INTEGER},
+      portSpeed = #{portspeed,jdbcType=INTEGER},
+      actualSpeed = #{actualspeed,jdbcType=VARCHAR},
+      workModel = #{workmodel,jdbcType=INTEGER},
+      maxFrameSize = #{maxframesize,jdbcType=VARCHAR},
+      fluidControl = #{fluidcontrol,jdbcType=INTEGER},
+      exitLimit = #{exitlimit,jdbcType=VARCHAR},
+      entranceLimit = #{entrancelimit,jdbcType=VARCHAR},
+      slowAgreement = #{slowagreement,jdbcType=INTEGER},
+      tenWan = #{tenwan,jdbcType=INTEGER},
+      messageLoopback = #{messageloopback,jdbcType=INTEGER},
+      ethernetPackaging = #{ethernetpackaging,jdbcType=INTEGER},
+      vlanTpId = #{vlantpid,jdbcType=INTEGER},
+      outerVlanTpId = #{outervlantpid,jdbcType=INTEGER},
+      vlanMode = #{vlanmode,jdbcType=INTEGER},
+      isBroadcast = #{isbroadcast,jdbcType=INTEGER},
+      broadcast = #{broadcast,jdbcType=VARCHAR},
+      isUnicast = #{isunicast,jdbcType=INTEGER},
+      unicast = #{unicast,jdbcType=VARCHAR},
+      isMulticast = #{ismulticast,jdbcType=INTEGER},
+      multicast = #{multicast,jdbcType=VARCHAR},
+      vlanId = #{vlanid,jdbcType=VARCHAR},
+      vlanPri = #{vlanpri,jdbcType=VARCHAR},
+      vlanRelevance = #{vlanrelevance,jdbcType=INTEGER},
+      eightIpRelevance = #{eightiprelevance,jdbcType=INTEGER},
+      sourceMacRelevance = #{sourcemacrelevance,jdbcType=INTEGER},
+      destinationMacRelevance = #{destinationmacrelevance,jdbcType=INTEGER},
+      sourceIpRelevance = #{sourceiprelevance,jdbcType=INTEGER},
+      destinationIpRelevance = #{destinationiprelevance,jdbcType=INTEGER},
+      pwRelevance = #{pwrelevance,jdbcType=INTEGER},
+      dscpRelevance = #{dscprelevance,jdbcType=INTEGER},
+      staticMac = #{staticmac,jdbcType=VARCHAR},
+      neighbourId = #{neighbourid,jdbcType=VARCHAR},
+      operMac = #{opermac,jdbcType=VARCHAR},
+      operId = #{operid,jdbcType=VARCHAR},
+      neighbourFind = #{neighbourfind,jdbcType=INTEGER},
+      ccnEnable = #{ccnenable,jdbcType=INTEGER},
+      nniVlanid = #{nnivlanid,jdbcType=VARCHAR},
+      nniVlanpri = #{nnivlanpri,jdbcType=VARCHAR},
+      sfpExpectType = #{sfpexpecttype,jdbcType=INTEGER},
+      sfpActual = #{sfpactual,jdbcType=VARCHAR},
+      workWavelength = #{workwavelength,jdbcType=VARCHAR},
+      sfpVender = #{sfpvender,jdbcType=VARCHAR},
+      mappingEnable = #{mappingenable,jdbcType=INTEGER},
+      stat = #{stat,jdbcType=INTEGER},
+      sourceTcpPortRelevance = #{sourcetcpportrelevance,jdbcType=INTEGER},
+      endTcpPortRelevance = #{endtcpportrelevance,jdbcType=INTEGER},
+      toSRelevance = #{tosrelevance,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+   <insert id="insert" parameterType="PortAttr"  useGeneratedKeys="true" keyProperty="portAttr.id">
+    insert into portattr 
+    (portId,portSpeed,actualSpeed,workModel,maxFrameSize,
+    fluidControl,exitLimit,entranceLimit,slowAgreement,
+    tenWan,messageLoopback,ethernetPackaging,vlanTpId,
+    outerVlanTpId,vlanMode,isBroadcast,broadcast,isUnicast,
+    unicast,isMulticast,multicast,vlanId,vlanPri,vlanRelevance,
+    eightIpRelevance,sourceMacRelevance,destinationMacRelevance,
+    sourceIpRelevance,destinationIpRelevance,pwRelevance,dscpRelevance,
+    staticMac,neighbourId,operMac,operId,neighbourFind,ccnEnable,nniVlanid,
+    nniVlanpri,sfpExpectType,sfpActual,workWavelength,sfpVender,siteId,
+    mappingEnable,stat,sourceTcpPortRelevance,endTcpPortRelevance,toSRelevance)    
+    value (#{portAttr.portId},#{portAttr.portSpeed},#{portAttr.actualSpeed},#{portAttr.workModel},#{portAttr.maxFrameSize},#{portAttr.fluidControl},
+    #{portAttr.exitLimit},#{portAttr.entranceLimit},#{portAttr.slowAgreement},#{portAttr.tenWan},#{portAttr.messageLoopback},
+    #{portAttr.portUniAttr.ethernetPackaging},#{portAttr.portUniAttr.vlanTpId},#{portAttr.portUniAttr.outerVlanTpId},#{portAttrportAttr.portUniAttr.vlanMode},#{portAttrportAttr.portUniAttr.isBroadcast},
+    #{portAttr.portUniAttr.broadcast},#{portAttr.portUniAttr.isUnicast},#{portAttr.portUniAttr.unicast},#{portAttr.portUniAttr.isMulticast},#{portAttr.portUniAttr.multicast},
+    #{portAttr.portUniAttr.vlanId},#{portAttr.portUniAttr.vlanPri},#{portAttr.portUniAttr.vlanRelevance},#{portAttr.portUniAttr.eightIpRelevance},#{portAttr.portUniAttr.sourceMacRelevance},
+    #{portAttr.portUniAttr.destinationMacRelevance},#{portAttr.portUniAttr.sourceIpRelevance},#{portAttr.portUniAttr.destinationIpRelevance},
+    #{portAttr.portUniAttr.pwRelevance},#{portAttr.portUniAttr.dscpRelevance},#{portAttr.portNniAttr.staticMac},#{portAttr.portNniAttr.neighbourId},
+    #{portAttr.portNniAttr.operMac},#{portAttr.portNniAttr.operId},#{portAttr.portNniAttr.neighbourFind},#{portAttr.portNniAttr.ccnEnable},#{portAttr.portNniAttr.nniVlanid},#{portAttr.portNniAttr.nniVlanpri},
+    #{portAttr.sfpExpectType},#{portAttr.sfpActual},#{portAttr.workWavelength},#{portAttr.sfpVender},
+    #{portAttr.siteId},#{portAttr.portUniAttr.mappingEnable},#{portAttr.portNniAttr.stat},
+    #{portAttr.portUniAttr.sourceTcpPortRelevance},#{portAttr.portUniAttr.endTcpPortRelevance},#{portAttr.portUniAttr.tosRelevance})
+  </insert>      
+</mapper>

@@ -1,0 +1,600 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nms.db.dao.equipment.port.PortInstMapper" >
+  <resultMap id="BaseResultMap" type="PortInst" >
+    <id column="portId" property="portId" jdbcType="INTEGER" />
+    <result column="cardId" property="cardId" jdbcType="INTEGER" />
+    <result column="equipId" property="equipId" jdbcType="INTEGER" />
+    <result column="siteId" property="siteId" jdbcType="INTEGER" />
+    <result column="portName" property="portName" jdbcType="VARCHAR" />
+    <result column="portType" property="portType" jdbcType="VARCHAR" />
+    <result column="portStatus" property="portStatus" jdbcType="VARCHAR" />
+    <result column="bandwidth" property="bandwidth" jdbcType="VARCHAR" />
+    <result column="manageStatus" property="manageStatus" jdbcType="INTEGER" />
+    <result column="jobStatus" property="jobStatus" jdbcType="VARCHAR" />
+    <result column="imagePath" property="imagePath" jdbcType="VARCHAR" />
+    <result column="portx" property="portx" jdbcType="INTEGER" />
+    <result column="porty" property="porty" jdbcType="INTEGER" />
+    <result column="isOccupy" property="isOccupy" jdbcType="INTEGER" />
+    <result column="number" property="number" jdbcType="INTEGER" />
+    <result column="slotnumber" property="slotNumber" jdbcType="VARCHAR" />
+    <result column="isEnabled_code" property="isEnabled_code" jdbcType="INTEGER" />
+    <result column="parentId" property="parentId" jdbcType="INTEGER" />
+    <result column="lagId" property="lagId" jdbcType="INTEGER" />
+    <result column="lagNumber" property="lagNumber" jdbcType="INTEGER" />
+    <result column="linecoding" property="linecoding" jdbcType="VARCHAR" />
+    <result column="impedance" property="impedance" jdbcType="INTEGER" />
+    <result column="macAddress" property="macaddress" jdbcType="VARCHAR" />
+    <result column="qinqEnabled" property="isEnabled_QinQ" jdbcType="INTEGER" />
+    <result column="expMappingLLspInput" property="expMappingLLspInput" jdbcType="INTEGER" />
+    <result column="expMappingLLspOutput" property="expMappingLLspOutput" jdbcType="INTEGER" />
+    <result column="expMappingELspInput" property="expMappingELspInput" jdbcType="INTEGER" />
+    <result column="expMappingELspOutput" property="expMappingELspOutput" jdbcType="INTEGER" />
+    <result column="mappingVlanpriToColor" property="mappingVlanpriToColor" jdbcType="INTEGER" />
+    <result column="mappingPriorityToVlanpri" property="mappingPriorityToVlanpri" jdbcType="INTEGER" />
+    <result column="laserEnabled" property="isEnabledLaser" jdbcType="INTEGER" />
+    <result column="moduleType" property="moduleType" jdbcType="VARCHAR" />
+    <result column="snmpName" property="snmpName" jdbcType="VARCHAR" />
+    <result column="alarmReversalEnabled" property="isEnabledAlarmReversal" jdbcType="INTEGER" />
+    <result column="servicePort" property="servicePort" jdbcType="INTEGER" />
+    <result column="priority" property="priority" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    portId, cardId, equipId, siteId, portName, portType, portStatus, bandwidth, manageStatus, 
+    jobStatus, imagePath, portx, porty, isOccupy, number, slotnumber, isEnabled_code, 
+    parentId, lagId, lagNumber, linecoding, impedance, macAddress, qinqEnabled, expMappingLLspInput, 
+    expMappingLLspOutput, expMappingELspInput, expMappingELspOutput, mappingVlanpriToColor, 
+    mappingPriorityToVlanpri, laserEnabled, moduleType, snmpName, alarmReversalEnabled, 
+    servicePort, priority
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from port_inst
+    where portId = #{portid,jdbcType=INTEGER}
+  </select>
+  <select id="queryByCondition" resultMap="BaseResultMap" resultType="PortInst">
+  	 select <include refid="Base_Column_List" /> from port_inst where parentId=0
+     <if test="portId > 0" >
+       and portId = #{portId}
+      </if>
+    	<if test="cardId > 0" >
+       and  cardId = #{cardId}
+      </if>
+      <if test="equipId > 0" >
+      and   equipId = #{equipId}
+      </if>
+      <if test="siteId > 0" >
+      and   siteId = #{siteId}
+      </if>
+      <if test="portType != null and portType != ''" >
+       and  portType = #{portType}
+      </if>
+      <if test="isOccupy > 0" >
+       and  isOccupy = #{isOccupy}
+      </if>
+      <if test="portName != null and portName != ''" >
+       and  portName = #{portName}
+      </if>
+      <if test="number > 0" >
+      and   number = #{number}
+      </if>
+       <if test="lagId > 0" >
+       and  lagId = #{lagId}
+      </if>
+      <if test="expMappingLLspInput > 0" >
+      and   expMappingLLspInput = #{expMappingLLspInput}
+      </if>
+      <if test="expMappingLLspOutput > 0" >
+       and  expMappingLLspOutput = #{expMappingLLspOutput}
+      </if>
+      <if test="expMappingELspInput > 0" >
+       and  expMappingELspInput = #{expMappingELspInput}
+      </if>
+      <if test="expMappingELspOutput > 0" >
+       and  expMappingELspOutput = #{expMappingELspOutput}
+      </if>
+      <if test="mappingVlanpriToColor > 0" >
+      and   mappingVlanpriToColor = #{mappingVlanpriToColor}
+      </if>
+      <if test="mappingPriorityToVlanpri > 0" >
+      and   mappingPriorityToVlanpri = #{mappingPriorityToVlanpri}
+      </if>
+      <if test="snmpName != null and snmpName != ''" >
+      and   snmpName = #{snmpName}
+      </if>
+      order by slotnumber asc
+  </select>
+  <select id="quertyChildPort" parameterType="int" resultType="PortInst">
+ 	 select *  from port_inst where parentId = #{portid}
+  </select> 
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from port_inst
+    where portId = #{portid,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="PortInst"  useGeneratedKeys="true" keyProperty="portInst.portId">
+   insert into port_inst
+   (cardId,equipId,siteId,portName,portType,portStatus,bandwidth,manageStatus,jobStatus ,imagePath ,portx, 
+   porty,isOccupy,number,slotnumber,isEnabled_code,parentId , lagId , lagNumber,linecoding,impedance,
+   macAddress,qinqEnabled,ExpMappingLLspInput,ExpMappingLLspOutput,ExpMappingELspInput,
+   ExpMappingELspOutput,mappingVlanpriToColor,mappingPriorityToVlanpri,laserEnabled,moduleType,snmpName,
+   alarmReversalEnabled,servicePort,priority)
+   values(#{portInst.cardId},#{portInst.equipId},#{portInst.siteId},#{portInst.portName},#{portInst.portType},
+   #{portInst.portStatus},#{portInst.bandwidth},#{portInst.manageStatus},#{portInst.jobStatus},#{portInst.imagePath},
+   #{portInst.portx},#{portInst.porty},#{portInst.isOccupy},#{portInst.number},#{portInst.slotNumber},
+   #{portInst.isEnabled_code},#{portInst.parentId},#{portInst.lagId},#{portInst.lagNumber},#{portInst.linecoding},
+   #{portInst.impedance},#{portInst.macAddress},#{portInst.isEnabled_QinQ},#{portInst.ExpMappingLLspInput},
+   #{portInst.ExpMappingLLspOutput},#{portInst.ExpMappingELspInput},#{portInst.ExpMappingELspOutput},#{portInst.mappingVlanpriToColor},
+   #{portInst.mappingPriorityToVlanpri},#{portInst.isEnabledLaser},#{portInst.moduleType},#{portInst.snmpName},
+   #{portInst.isEnabledAlarmReversal},#{portInst.servicePort},#{portInst.priority})
+  </insert>
+  <insert id="insertSelective" parameterType="PortInst" >
+    insert into port_inst
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="portid != null" >
+        portId,
+      </if>
+      <if test="cardid != null" >
+        cardId,
+      </if>
+      <if test="equipid != null" >
+        equipId,
+      </if>
+      <if test="siteid != null" >
+        siteId,
+      </if>
+      <if test="portname != null" >
+        portName,
+      </if>
+      <if test="porttype != null" >
+        portType,
+      </if>
+      <if test="portstatus != null" >
+        portStatus,
+      </if>
+      <if test="bandwidth != null" >
+        bandwidth,
+      </if>
+      <if test="managestatus != null" >
+        manageStatus,
+      </if>
+      <if test="jobstatus != null" >
+        jobStatus,
+      </if>
+      <if test="imagepath != null" >
+        imagePath,
+      </if>
+      <if test="portx != null" >
+        portx,
+      </if>
+      <if test="porty != null" >
+        porty,
+      </if>
+      <if test="isoccupy != null" >
+        isOccupy,
+      </if>
+      <if test="number != null" >
+        number,
+      </if>
+      <if test="slotnumber != null" >
+        slotnumber,
+      </if>
+      <if test="isenabledCode != null" >
+        isEnabled_code,
+      </if>
+      <if test="parentid != null" >
+        parentId,
+      </if>
+      <if test="lagid != null" >
+        lagId,
+      </if>
+      <if test="lagnumber != null" >
+        lagNumber,
+      </if>
+      <if test="linecoding != null" >
+        linecoding,
+      </if>
+      <if test="impedance != null" >
+        impedance,
+      </if>
+      <if test="macaddress != null" >
+        macAddress,
+      </if>
+      <if test="qinqenabled != null" >
+        qinqEnabled,
+      </if>
+      <if test="expmappingllspinput != null" >
+        expMappingLLspInput,
+      </if>
+      <if test="expmappingllspoutput != null" >
+        expMappingLLspOutput,
+      </if>
+      <if test="expmappingelspinput != null" >
+        expMappingELspInput,
+      </if>
+      <if test="expmappingelspoutput != null" >
+        expMappingELspOutput,
+      </if>
+      <if test="mappingvlanpritocolor != null" >
+        mappingVlanpriToColor,
+      </if>
+      <if test="mappingprioritytovlanpri != null" >
+        mappingPriorityToVlanpri,
+      </if>
+      <if test="laserenabled != null" >
+        laserEnabled,
+      </if>
+      <if test="moduletype != null" >
+        moduleType,
+      </if>
+      <if test="snmpname != null" >
+        snmpName,
+      </if>
+      <if test="alarmreversalenabled != null" >
+        alarmReversalEnabled,
+      </if>
+      <if test="serviceport != null" >
+        servicePort,
+      </if>
+      <if test="priority != null" >
+        priority,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="portid != null" >
+        #{portid,jdbcType=INTEGER},
+      </if>
+      <if test="cardid != null" >
+        #{cardid,jdbcType=INTEGER},
+      </if>
+      <if test="equipid != null" >
+        #{equipid,jdbcType=INTEGER},
+      </if>
+      <if test="siteid != null" >
+        #{siteid,jdbcType=INTEGER},
+      </if>
+      <if test="portname != null" >
+        #{portname,jdbcType=VARCHAR},
+      </if>
+      <if test="porttype != null" >
+        #{porttype,jdbcType=VARCHAR},
+      </if>
+      <if test="portstatus != null" >
+        #{portstatus,jdbcType=VARCHAR},
+      </if>
+      <if test="bandwidth != null" >
+        #{bandwidth,jdbcType=VARCHAR},
+      </if>
+      <if test="managestatus != null" >
+        #{managestatus,jdbcType=INTEGER},
+      </if>
+      <if test="jobstatus != null" >
+        #{jobstatus,jdbcType=VARCHAR},
+      </if>
+      <if test="imagepath != null" >
+        #{imagepath,jdbcType=VARCHAR},
+      </if>
+      <if test="portx != null" >
+        #{portx,jdbcType=INTEGER},
+      </if>
+      <if test="porty != null" >
+        #{porty,jdbcType=INTEGER},
+      </if>
+      <if test="isoccupy != null" >
+        #{isoccupy,jdbcType=INTEGER},
+      </if>
+      <if test="number != null" >
+        #{number,jdbcType=INTEGER},
+      </if>
+      <if test="slotnumber != null" >
+        #{slotnumber,jdbcType=VARCHAR},
+      </if>
+      <if test="isenabledCode != null" >
+        #{isenabledCode,jdbcType=INTEGER},
+      </if>
+      <if test="parentid != null" >
+        #{parentid,jdbcType=INTEGER},
+      </if>
+      <if test="lagid != null" >
+        #{lagid,jdbcType=INTEGER},
+      </if>
+      <if test="lagnumber != null" >
+        #{lagnumber,jdbcType=INTEGER},
+      </if>
+      <if test="linecoding != null" >
+        #{linecoding,jdbcType=VARCHAR},
+      </if>
+      <if test="impedance != null" >
+        #{impedance,jdbcType=INTEGER},
+      </if>
+      <if test="macaddress != null" >
+        #{macaddress,jdbcType=VARCHAR},
+      </if>
+      <if test="qinqenabled != null" >
+        #{qinqenabled,jdbcType=INTEGER},
+      </if>
+      <if test="expmappingllspinput != null" >
+        #{expmappingllspinput,jdbcType=INTEGER},
+      </if>
+      <if test="expmappingllspoutput != null" >
+        #{expmappingllspoutput,jdbcType=INTEGER},
+      </if>
+      <if test="expmappingelspinput != null" >
+        #{expmappingelspinput,jdbcType=INTEGER},
+      </if>
+      <if test="expmappingelspoutput != null" >
+        #{expmappingelspoutput,jdbcType=INTEGER},
+      </if>
+      <if test="mappingvlanpritocolor != null" >
+        #{mappingvlanpritocolor,jdbcType=INTEGER},
+      </if>
+      <if test="mappingprioritytovlanpri != null" >
+        #{mappingprioritytovlanpri,jdbcType=INTEGER},
+      </if>
+      <if test="laserenabled != null" >
+        #{laserenabled,jdbcType=INTEGER},
+      </if>
+      <if test="moduletype != null" >
+        #{moduletype,jdbcType=VARCHAR},
+      </if>
+      <if test="snmpname != null" >
+        #{snmpname,jdbcType=VARCHAR},
+      </if>
+      <if test="alarmreversalenabled != null" >
+        #{alarmreversalenabled,jdbcType=INTEGER},
+      </if>
+      <if test="serviceport != null" >
+        #{serviceport,jdbcType=INTEGER},
+      </if>
+      <if test="priority != null" >
+        #{priority,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="PortInst" >
+    update port_inst
+    <set >
+      <if test="cardid != null" >
+        cardId = #{cardid,jdbcType=INTEGER},
+      </if>
+      <if test="equipid != null" >
+        equipId = #{equipid,jdbcType=INTEGER},
+      </if>
+      <if test="siteid != null" >
+        siteId = #{siteid,jdbcType=INTEGER},
+      </if>
+      <if test="portname != null" >
+        portName = #{portname,jdbcType=VARCHAR},
+      </if>
+      <if test="porttype != null" >
+        portType = #{porttype,jdbcType=VARCHAR},
+      </if>
+      <if test="portstatus != null" >
+        portStatus = #{portstatus,jdbcType=VARCHAR},
+      </if>
+      <if test="bandwidth != null" >
+        bandwidth = #{bandwidth,jdbcType=VARCHAR},
+      </if>
+      <if test="managestatus != null" >
+        manageStatus = #{managestatus,jdbcType=INTEGER},
+      </if>
+      <if test="jobstatus != null" >
+        jobStatus = #{jobstatus,jdbcType=VARCHAR},
+      </if>
+      <if test="imagepath != null" >
+        imagePath = #{imagepath,jdbcType=VARCHAR},
+      </if>
+      <if test="portx != null" >
+        portx = #{portx,jdbcType=INTEGER},
+      </if>
+      <if test="porty != null" >
+        porty = #{porty,jdbcType=INTEGER},
+      </if>
+      <if test="isoccupy != null" >
+        isOccupy = #{isoccupy,jdbcType=INTEGER},
+      </if>
+      <if test="number != null" >
+        number = #{number,jdbcType=INTEGER},
+      </if>
+      <if test="slotnumber != null" >
+        slotnumber = #{slotnumber,jdbcType=VARCHAR},
+      </if>
+      <if test="isenabledCode != null" >
+        isEnabled_code = #{isenabledCode,jdbcType=INTEGER},
+      </if>
+      <if test="parentid != null" >
+        parentId = #{parentid,jdbcType=INTEGER},
+      </if>
+      <if test="lagid != null" >
+        lagId = #{lagid,jdbcType=INTEGER},
+      </if>
+      <if test="lagnumber != null" >
+        lagNumber = #{lagnumber,jdbcType=INTEGER},
+      </if>
+      <if test="linecoding != null" >
+        linecoding = #{linecoding,jdbcType=VARCHAR},
+      </if>
+      <if test="impedance != null" >
+        impedance = #{impedance,jdbcType=INTEGER},
+      </if>
+      <if test="macaddress != null" >
+        macAddress = #{macaddress,jdbcType=VARCHAR},
+      </if>
+      <if test="qinqenabled != null" >
+        qinqEnabled = #{qinqenabled,jdbcType=INTEGER},
+      </if>
+      <if test="expmappingllspinput != null" >
+        expMappingLLspInput = #{expmappingllspinput,jdbcType=INTEGER},
+      </if>
+      <if test="expmappingllspoutput != null" >
+        expMappingLLspOutput = #{expmappingllspoutput,jdbcType=INTEGER},
+      </if>
+      <if test="expmappingelspinput != null" >
+        expMappingELspInput = #{expmappingelspinput,jdbcType=INTEGER},
+      </if>
+      <if test="expmappingelspoutput != null" >
+        expMappingELspOutput = #{expmappingelspoutput,jdbcType=INTEGER},
+      </if>
+      <if test="mappingvlanpritocolor != null" >
+        mappingVlanpriToColor = #{mappingvlanpritocolor,jdbcType=INTEGER},
+      </if>
+      <if test="mappingprioritytovlanpri != null" >
+        mappingPriorityToVlanpri = #{mappingprioritytovlanpri,jdbcType=INTEGER},
+      </if>
+      <if test="laserenabled != null" >
+        laserEnabled = #{laserenabled,jdbcType=INTEGER},
+      </if>
+      <if test="moduletype != null" >
+        moduleType = #{moduletype,jdbcType=VARCHAR},
+      </if>
+      <if test="snmpname != null" >
+        snmpName = #{snmpname,jdbcType=VARCHAR},
+      </if>
+      <if test="alarmreversalenabled != null" >
+        alarmReversalEnabled = #{alarmreversalenabled,jdbcType=INTEGER},
+      </if>
+      <if test="serviceport != null" >
+        servicePort = #{serviceport,jdbcType=INTEGER},
+      </if>
+      <if test="priority != null" >
+        priority = #{priority,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where portId = #{portid,jdbcType=INTEGER}
+  </update>
+  <update id="update" parameterType="PortInst" >
+    update port_inst
+    set cardId = #{cardId,jdbcType=INTEGER},
+      equipId = #{equipId,jdbcType=INTEGER},
+      siteId = #{siteId,jdbcType=INTEGER},
+      portName = #{portName,jdbcType=VARCHAR},
+      portType = #{portType,jdbcType=VARCHAR},
+      portStatus = #{portStatus,jdbcType=VARCHAR},
+      bandwidth = #{bandwidth,jdbcType=VARCHAR},
+      manageStatus = #{manageStatus,jdbcType=INTEGER},
+      jobStatus = #{jobStatus,jdbcType=VARCHAR},
+      imagePath = #{imagePath,jdbcType=VARCHAR},
+      portx = #{portx,jdbcType=INTEGER},
+      porty = #{porty,jdbcType=INTEGER},
+      isOccupy = #{isOccupy,jdbcType=INTEGER},
+      number = #{number,jdbcType=INTEGER},
+      slotnumber = #{slotNumber,jdbcType=VARCHAR},
+      isEnabled_code = #{isEnabled_code,jdbcType=INTEGER},
+      parentId = #{parentId,jdbcType=INTEGER},
+      lagId = #{lagId,jdbcType=INTEGER},
+      lagNumber = #{lagNumber,jdbcType=INTEGER},
+      linecoding = #{linecoding,jdbcType=VARCHAR},
+      impedance = #{impedance,jdbcType=INTEGER},
+      macAddress = #{macAddress,jdbcType=VARCHAR},
+      qinqEnabled = #{isEnabled_QinQ,jdbcType=INTEGER},
+      expMappingLLspInput = #{ExpMappingLLspInput,jdbcType=INTEGER},
+      expMappingLLspOutput = #{ExpMappingLLspOutput,jdbcType=INTEGER},
+      expMappingELspInput = #{ExpMappingELspInput,jdbcType=INTEGER},
+      expMappingELspOutput = #{ExpMappingELspOutput,jdbcType=INTEGER},
+      mappingVlanpriToColor = #{mappingVlanpriToColor,jdbcType=INTEGER},
+      mappingPriorityToVlanpri = #{mappingPriorityToVlanpri,jdbcType=INTEGER},
+      laserEnabled = #{isEnabledLaser,jdbcType=INTEGER},
+      moduleType = #{moduleType,jdbcType=VARCHAR},
+      snmpName = #{snmpName,jdbcType=VARCHAR},
+      alarmReversalEnabled = #{isEnabledAlarmReversal,jdbcType=INTEGER},
+      servicePort = #{servicePort,jdbcType=INTEGER},
+      priority = #{priority,jdbcType=VARCHAR}
+    where portId = #{portId,jdbcType=INTEGER}
+  </update>
+  
+   <select id="selectPortybyid" resultType="PortInst" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from port_inst where parentId=0 and portId=#{portid}
+  </select>
+  
+     <select id="quertyAllPortByIdsAndSiteId" resultType="PortInst"  >
+    select 
+    <include refid="Base_Column_List" />
+   from port_inst where  portId in  
+   <foreach item="item" index="index" collection="ids" open="(" separator= ", " close=" )">
+     #{item}
+   </foreach>  
+    and siteId=#{siteId}
+  </select>
+  
+  <select id="quertyNNIPortbySiteId" resultType="PortInst" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from port_inst where siteId=#{siteId} and portType ='NNI'
+  </select>
+  
+  <select id="quertyUniOrE1PortbySiteId" resultType="PortInst" parameterType="map" >
+   select *  from port_inst where siteId=#{siteId}
+    <if test="type=='CES' ">
+     and portType ='e1'
+    </if>
+    <if test="type!='CES' ">
+     and portType ='UNI'
+    </if>
+  </select>
+  
+  <select id="quertyAllPortNameByNumber" resultType="java.lang.String" parameterType="map" >
+    select portName  from port_inst where  number in 
+    <foreach item="item" index="index" collection="ids" open="(" separator= ", " close=" )">
+        #{item}
+    </foreach>  
+    and siteId=#{siteId}
+  </select>
+ 
+   <select id="queryByIsOccupy" resultMap="BaseResultMap" parameterType="PortInst" >
+    select 
+    <include refid="Base_Column_List" />
+    port_inst where parentId=0
+    <if test="portType!=null and portType!='' "> and porttype!=#{portType}</if>
+    <if test="cardId>0 "> and cardId=#{cardId}</if>
+     order by portname
+  </select>
+  
+  <select id="quertyPortbySiteandName" resultType="PortInst" parameterType="map">
+  select *  from port_inst where siteId=#{0} and portName = #{1}
+  </select>
+
+ <update id="updateStatus" parameterType="map" >
+   update port_inst set isEnabled_code=#{status} where siteId =#{siteId} and portType=#{portType}
+  </update>
+  
+  <update id="update_synchro" parameterType="PortInst" >
+    update port_inst set portType=#{portType},jobStatus=#{jobStatus},isEnabled_code=#{isEnabled_code},macAddress=#{macAddress},
+	ExpMappingLLspInput=#{ExpMappingLLspInput},ExpMappingLLspOutput=#{ExpMappingLLspOutput},
+	ExpMappingELspInput=#{ExpMappingELspInput},ExpMappingELspOutput=#{ExpMappingELspOutput} ,
+	MappingVlanpriToColor=#{mappingVlanpriToColor} ,MappingPriorityToVlanpri =#{mappingPriorityToVlanpri},
+	qinqEnabled = #{isEnabled_QinQ},laserEnabled = #{isEnabledLaser},
+	servicePort =#{servicePort} ,priority=#{priority} where portid=#{portId}
+  </update>
+    
+   <select id="selectBySiteIdAndNumber" resultType="java.lang.Integer" parameterType="map">
+    select portId from port_inst where siteId =#{siteId} and number=#{number}
+  </select>
+  
+  <select id="selectBySiteIdAndPortId" resultType="java.lang.Integer" parameterType="map">
+    select number from port_inst where siteId =#{siteId} and portId=#{portId}
+  </select>
+
+
+  <update id="updatestatus">
+  	update port_inst set isEnabled_code = #{isEnabled_code},jobstatus=#{jobStatus} where portId=#{portId}
+  </update>
+  
+  <update id="updateOccupyByIdList">
+  	update port_inst set isOccupy=#{isused} where portId in
+  	 <foreach item="item" index="index" collection="pdhportList" open="(" separator= ", " close=" )">
+        #{item}
+    </foreach> 
+  </update>
+
+  <delete id="deleteBySiteId" parameterType="java.lang.Integer" >
+    delete from port_inst
+    where siteId = #{siteId,jdbcType=INTEGER}
+  </delete>
+  
+    <delete id="delete" parameterType="PortInst" >
+    delete from port_inst
+    where cardId = #{cardId,jdbcType=INTEGER}
+  </delete>
+</mapper>

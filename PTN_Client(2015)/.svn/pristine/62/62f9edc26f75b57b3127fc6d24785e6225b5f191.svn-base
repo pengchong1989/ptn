@@ -1,0 +1,300 @@
+package com.nms.db.dao.ptn.path.protect;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.nms.db.bean.ptn.path.protect.PwProtect;
+import com.nms.ui.manager.ExceptionManage;
+
+public class PwProtectDao {
+	
+	/**
+	 * 新增sql
+	 */
+	private final String INSRT_SQL = "insert into pwProtect (protectType,mainSlot,mainPort,mainTunnelId,mainPwId,standSlot,standPort,standTunnelId,standPwId,delayTime,backType,serviceId,siteId,businessId) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+	/**
+	 * 修改sql
+	 */
+	private final String UPDATE_SQL = "update pwProtect set protectType=?,mainSlot=?,mainPort=?,mainTunnelId=?,mainPwId=?,standSlot=?,standPort=?,standTunnelId=?,standPwId=?,delayTime=?,backType=?,serviceId=?,siteId=? ,businessId=? where id=?";
+
+	/**
+	 * 根据主键删除sql
+	 */
+	private String DELETE_SQL = "delete from pwProtect where 1=1 and id=?";
+
+	/**
+	 * 根据网元删除sql
+	 */
+	private final String DELETE_BY_SITE_SQL = "delete from pwProtect where siteId=?";
+
+	/**
+	 * 查询sql语句
+	 */
+	private final String SELECT_SQL = "select id,protectType,mainSlot,mainPort,mainTunnelId,mainPwId,standSlot,standPort,standTunnelId,standPwId,delayTime,backType,serviceId,siteId ,businessId from pwProtect where 1=1";
+
+	/**
+	 * 新增
+	 * @param connection
+	 * @param pwProtect
+	 * @return
+	 * @throws Exception
+	 */
+	public int insert(Connection connection,PwProtect pwProtect) throws Exception{
+		int result = 0;
+		if (null == pwProtect) {
+			throw new Exception("pwProtect is null");
+		}
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+		String sql = null;
+	
+		ResultSet resultSet = null;
+		PreparedStatement preparedStatement = null;
+		try {
+			sql = INSRT_SQL;
+			preparedStatement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+			preparedStatement.setInt(1, pwProtect.getProtectType());
+			preparedStatement.setInt(2, pwProtect.getMainSlot());
+			preparedStatement.setInt(3, pwProtect.getMainPort());
+			preparedStatement.setInt(4, pwProtect.getMainTunnelId());
+			preparedStatement.setInt(5, pwProtect.getMainPwId());
+			preparedStatement.setInt(6, pwProtect.getStandSlot());
+			preparedStatement.setInt(7, pwProtect.getStandPort());
+			preparedStatement.setInt(8, pwProtect.getStandTunnelId());
+			preparedStatement.setInt(9, pwProtect.getStandPwId());
+			preparedStatement.setInt(10, pwProtect.getDelayTime());
+			preparedStatement.setInt(11, pwProtect.getBackType());
+			preparedStatement.setInt(12, pwProtect.getServiceId());
+			preparedStatement.setInt(13, pwProtect.getSiteId());
+			preparedStatement.setInt(14, pwProtect.getBusinessId());
+			preparedStatement.executeUpdate();
+			resultSet = preparedStatement.getGeneratedKeys();
+			if (resultSet.next()) {
+				result = resultSet.getInt(1);
+			}
+		} catch (Exception e) {
+			ExceptionManage.dispose(e, this.getClass());
+		}finally{
+			if (resultSet != null) {
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				resultSet = null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+
+			sql = null;
+		
+		}
+		return result;
+	}
+	
+	/**
+	 * 更新
+	 * @param connection
+	 * @param pwProtect
+	 * @return
+	 * @throws Exception
+	 */
+	public int update(Connection connection,PwProtect pwProtect) throws Exception{
+		int result = 0;
+		if (null == pwProtect) {
+			throw new Exception("pwProtect is null");
+		}
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+		String sql = null;
+	
+		PreparedStatement preparedStatement = null;
+		try {
+			sql = UPDATE_SQL;
+			preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.setInt(1, pwProtect.getProtectType());
+			preparedStatement.setInt(2, pwProtect.getMainSlot());
+			preparedStatement.setInt(3, pwProtect.getMainPort());
+			preparedStatement.setInt(4, pwProtect.getMainTunnelId());
+			preparedStatement.setInt(5, pwProtect.getMainPwId());
+			preparedStatement.setInt(6, pwProtect.getStandSlot());
+			preparedStatement.setInt(7, pwProtect.getStandPort());
+			preparedStatement.setInt(8, pwProtect.getStandTunnelId());
+			preparedStatement.setInt(9, pwProtect.getStandPwId());
+			preparedStatement.setInt(10, pwProtect.getDelayTime());
+			preparedStatement.setInt(11, pwProtect.getBackType());
+			preparedStatement.setInt(12, pwProtect.getServiceId());
+			preparedStatement.setInt(13, pwProtect.getSiteId());
+			preparedStatement.setInt(14, pwProtect.getBusinessId());
+			preparedStatement.setInt(15, pwProtect.getId());
+			result = preparedStatement.executeUpdate();
+		} catch (Exception e) {
+			ExceptionManage.dispose(e, this.getClass());
+		}finally{
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+
+			sql = null;
+		}
+		return result;
+	}
+	
+	/**
+	 * 删除
+	 * @param connection
+	 * @param pwProtect
+	 * @return
+	 * @throws Exception
+	 */
+	public int delete(Connection connection,PwProtect pwProtect) throws Exception{
+		if(connection == null){
+			throw new Exception("connection is null");
+		}
+		String sql = DELETE_SQL;
+		PreparedStatement preparedStatement = null;
+		int result = 0;
+		try {
+			preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.setInt(1, pwProtect.getId());
+			result = preparedStatement.executeUpdate();
+		} catch (Exception e) {
+			ExceptionManage.dispose(e, this.getClass());
+		}finally{
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+		return result;
+	}
+	
+	/**
+	 * 按条件查询
+	 * @param connection
+	 * @param pwProtect
+	 * @return
+	 * @throws SQLException 
+	 */
+	public List<PwProtect> queryByCondition(Connection connection,PwProtect pwProtect) throws SQLException{
+		List<PwProtect> pwProtectList = new ArrayList<PwProtect>();
+
+		String sql = SELECT_SQL;
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+		try {
+			if(pwProtect.getServiceId()>0){
+				sql += " and serviceId="+pwProtect.getServiceId();
+			}
+			if(pwProtect.getId()>0){
+				sql += " and id="+pwProtect.getId();
+			}
+			if(pwProtect.getSiteId()>0){
+				sql += " and siteId="+pwProtect.getSiteId();
+			}
+			if(pwProtect.getMainTunnelId() >0)
+			{
+				sql += " and mainTunnelId="+pwProtect.getMainTunnelId();
+			}
+			if(pwProtect.getMainPwId() >0)
+			{
+				sql += " and mainPwId="+pwProtect.getMainPwId();
+			}
+			if(pwProtect.getStandTunnelId()>0)
+			{
+				sql += " and standTunnelId="+pwProtect.getStandTunnelId();
+			}
+			if(pwProtect.getStandPwId() >0)
+			{
+				sql += " and standPwId="+pwProtect.getStandPwId();
+			}
+			if(pwProtect.getBusinessId() >0)
+			{
+				sql += " and businessId="+pwProtect.getBusinessId();
+			}
+			
+			preparedStatement = connection.prepareStatement(sql);
+			resultSet = preparedStatement.executeQuery();
+			pwProtectList = getPwProtectList(pwProtectList, resultSet);
+
+		} catch (Exception e) {
+			ExceptionManage.dispose(e, this.getClass());
+		} finally {
+			if (resultSet != null) {
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e, getClass());
+				}
+				resultSet = null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e, getClass());
+				}
+				preparedStatement = null;
+			}
+		}
+	
+		return pwProtectList;
+	}
+	
+	/**
+	 * 封装pw保护
+	 * @param pwProtectList
+	 * @param resultSet
+	 * @return
+	 */
+	private List<PwProtect> getPwProtectList(List<PwProtect> pwProtectList,ResultSet resultSet){
+		PwProtect pwProtect = null;
+		try {
+			while(resultSet.next()){
+				pwProtect = new PwProtect();
+				pwProtect.setId(resultSet.getInt("id"));
+				pwProtect.setProtectType(resultSet.getInt("protectType"));
+				pwProtect.setMainPort(resultSet.getInt("mainPort"));
+				pwProtect.setMainPwId(resultSet.getInt("mainPwId"));
+				pwProtect.setMainSlot(resultSet.getInt("mainSlot"));
+				pwProtect.setMainTunnelId(resultSet.getInt("mainTunnelId"));
+				pwProtect.setServiceId(resultSet.getInt("serviceId"));
+				pwProtect.setSiteId(resultSet.getInt("siteId"));
+				pwProtect.setStandPort(resultSet.getInt("standPort"));
+				pwProtect.setStandPwId(resultSet.getInt("standPwId"));
+				pwProtect.setStandSlot(resultSet.getInt("standSlot"));
+				pwProtect.setStandTunnelId(resultSet.getInt("standTunnelId"));
+				pwProtect.setDelayTime(resultSet.getInt("delayTime"));
+				pwProtect.setBusinessId(resultSet.getInt("businessId"));
+				pwProtect.setBackType(resultSet.getInt("backType"));
+				pwProtectList.add(pwProtect);
+			}
+		} catch (Exception e) {
+			ExceptionManage.dispose(e, this.getClass());
+		}
+		return pwProtectList;
+	}
+}

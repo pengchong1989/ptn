@@ -1,0 +1,331 @@
+package com.nms.model.ptn.port;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.ibatis.session.SqlSession;
+
+import com.nms.db.bean.ptn.Businessid;
+import com.nms.db.bean.ptn.oam.OamInfo;
+import com.nms.db.bean.ptn.port.AcPortInfo;
+import com.nms.db.bean.ptn.port.Acbuffer;
+import com.nms.db.bean.ptn.port.PortLagInfo;
+import com.nms.db.bean.ptn.qos.QosInfo;
+import com.nms.db.bean.ptn.qos.QosRelevance;
+import com.nms.db.dao.ptn.BusinessidMapper;
+import com.nms.db.dao.ptn.port.AcPortInfoMapper;
+import com.nms.db.enums.EActionType;
+import com.nms.db.enums.EManufacturer;
+import com.nms.db.enums.EServiceType;
+import com.nms.db.enums.OamTypeEnum;
+import com.nms.model.equipment.shlef.SiteService_MB;
+import com.nms.model.ptn.oam.OamInfoService_MB;
+import com.nms.model.ptn.qos.QosInfoService_MB;
+import com.nms.model.ptn.qos.QosRelevanceService_MB;
+import com.nms.model.util.ObjectService_Mybatis;
+import com.nms.model.util.Services;
+import com.nms.ui.manager.BusinessIdException;
+import com.nms.ui.manager.ConstantUtil;
+import com.nms.ui.manager.ExceptionManage;
+
+public class AcPortInfoService_MB extends ObjectService_Mybatis{
+	private final static int ISUSEDSTATUS = 1;
+	
+	public void setPtnuser(String ptnuser) {
+		super.ptnuser = ptnuser;
+	}
+
+	public void setSqlSession(SqlSession sqlSession) {
+		super.sqlSession = sqlSession;
+	}
+	
+	private AcPortInfoMapper mapper;
+
+	public AcPortInfoMapper getAcPortInfoMapper() {
+		return mapper;
+	}
+
+	public void setAcPortInfoMapper(AcPortInfoMapper acPortInfoMapper) {
+		this.mapper = acPortInfoMapper;
+	}
+
+	public List<AcPortInfo> queryByAcPortInfo(AcPortInfo acInfo) {
+		List<AcPortInfo> acPortInfoList = null;
+		try {
+			acPortInfoList = new ArrayList<AcPortInfo>();
+			acPortInfoList = this.mapper.queryByCondition(acInfo);
+			AcBufferService_MB bufservice = (AcBufferService_MB) ConstantUtil.serviceFactory.newService_MB(Services.UniBuffer, this.sqlSession);
+			for (AcPortInfo acPortInfo : acPortInfoList) {
+				List<Acbuffer> acbufferList = bufservice.select(acPortInfo.getId());
+				acPortInfo.setBufferList(acbufferList);
+			}
+			this.getAcQos(acPortInfoList);
+		} catch (Exception e) {
+			ExceptionManage.dispose(e, this.getClass());
+		}
+		return acPortInfoList;
+	}
+
+	private void getAcQos(List<AcPortInfo> acPortInfoList) {
+		List<QosInfo> qosInfoList = null;
+		try {
+			QosInfoService_MB qosInfoService = (QosInfoService_MB) ConstantUtil.serviceFactory.newService_MB(Services.QosInfo, this.sqlSession);
+			for (AcPortInfo acPortInfo : acPortInfoList) {
+				qosInfoList = qosInfoService.getQosByObj(EServiceType.ACPORT.toString(), acPortInfo.getId());
+				if (null != qosInfoList && qosInfoList.size() == 1) {
+					acPortInfo.setSimpleQos(qosInfoList.get(0));
+				}
+			}
+		} catch (Exception e) {
+			ExceptionManage.dispose(e, this.getClass());
+		}
+	}
+
+	public int saveOrUpdate(List<Acbuffer> bufferInfos, AcPortInfo acPortInfo) throws Exception {
+		if (acPortInfo == null) {
+			throw new Exception("acPortInfos is null");
+		}
+		int result = 0;
+		int acId = 0;
+		try {
+			AcBufferService_MB bufservice = (AcBufferService_MB) ConstantUtil.serviceFactory.newService_MB(Services.UniBuffer, this.sqlSession);
+			OamInfoService_MB oamInfoService = (OamInfoService_MB) ConstantUtil.serviceFactory.newService_MB(Services.OamInfo, this.sqlSession);
+			SiteService_MB siteService = (SiteService_MB) ConstantUtil.serviceFactory.newService_MB(Services.SITE, this.sqlSession);
+			// 下发Ac
+			if (acPortInfo.getId() > 0) {
+				this.mapper.update(acPortInfo);
+				// 设置ac与流的关联关系，下发流
+				for (Acbuffer buffer : bufferInfos) {
+					buffer.setAcId(acPortInfo.getId());
+					buffer.setPortId(acPortInfo.getPortId());
+				}
+				result = acPortInfo.getId();
+				acPortInfo.getSimpleQos().setQosname(null);
+				// 离线网元数据下载
+				if (!acPortInfo.isDataDownLoad()) {
+					super.dateDownLoad(acPortInfo.getSiteId(), result, EServiceType.ACPORT.getValue(), EActionType.UPDATE.getValue());
+				}
+			} else {
+				if (siteService.getManufacturer(acPortInfo.getSiteId()) != EManufacturer.WUHAN.getValue()) {
+					BusinessidMapper busiIdMapper = this.sqlSession.getMapper(BusinessidMapper.class);
+					Businessid acSerBusinessId = null;
+					if (acPortInfo.getAcBusinessId() == 0) {
+						acSerBusinessId = busiIdMapper.queryList(acPortInfo.getSiteId(), "ac").get(0);
+					} else {
+						acSerBusinessId = busiIdMapper.queryByIdValue_SiteId_type(acPortInfo.getAcBusinessId(), acPortInfo.getSiteId(), "ac");
+					}
+					if (acSerBusinessId == null) {
+						throw new BusinessIdException("acSerBusinessId is null");
+					}
+					acPortInfo.setAcBusinessId(acSerBusinessId.getIdValue());
+					acId = this.mapper.insert(acPortInfo);
+					Businessid bIdCondition = new Businessid();
+					bIdCondition.setId(acSerBusinessId.getId());
+					bIdCondition.setIdStatus(ISUSEDSTATUS);
+					busiIdMapper.update(bIdCondition);
+					// 离线网元数据下载
+					super.dateDownLoad(acPortInfo.getSiteId(), acId, EServiceType.ACPORT.getValue(), EActionType.INSERT.getValue());
+				} else {
+					acId = this.mapper.insert(acPortInfo);
+				}
+				// 设置ac与流的关联关系，下发流
+				for (Acbuffer buffer : bufferInfos) {
+					if (buffer.getAcId() == 0) {
+						buffer.setAcId(acId);
+						buffer.setPortId(acPortInfo.getPortId());
+					}
+				}
+				acPortInfo.setId(acId);
+				result = acId;
+				acPortInfo.setId(acId);
+			}
+			if(bufferInfos.size()>0){
+				acPortInfo.getSimpleQos().setBufferList(bufferInfos);
+			}
+			QosRelevanceService_MB qosRelevanceService = (QosRelevanceService_MB) ConstantUtil.serviceFactory.newService_MB(Services.QOSRELEVANCE, this.sqlSession);
+			List<QosRelevance> qosRelevanceList = qosRelevanceService.getList(acPortInfo);
+				qosRelevanceService.save(qosRelevanceList);
+				if (siteService.getManufacturer(acPortInfo.getSiteId()) != EManufacturer.CHENXIAO.getValue()) {
+					// 保存或者更新细分流
+					if (!bufferInfos.isEmpty()) {
+						bufservice.saveOrUpdate(bufferInfos);
+					}
+				}else{
+					acPortInfo.setSimpleQos(qosRelevanceList.get(0).getQosInfoList().get(0));
+				}
+			// lag与ac的关联
+			if (acPortInfo.getLagId() > 0) {// 如果ac为lag，把相应的lag变为被使用
+				PortLagService_MB portLagService = (PortLagService_MB) ConstantUtil.serviceFactory.newService_MB(Services.PORTLAG, this.sqlSession);
+				PortLagInfo portLagInfo = new PortLagInfo();
+				portLagInfo.setId(acPortInfo.getLagId());
+				portLagInfo.setType(1);
+				portLagInfo = portLagService.selectLAGByCondition(portLagInfo).get(0);
+				portLagInfo.setIsUsed(1);
+				portLagService.updateStatus(portLagInfo);
+			}
+			if (acPortInfo.getOamList() != null && acPortInfo.getOamList().size() > 0) {
+				List<OamInfo> oamList = acPortInfo.getOamList();
+				for (OamInfo oamInfo : oamList) {
+					if (oamInfo.getOamType() == OamTypeEnum.AMEP || oamInfo.getOamType() == OamTypeEnum.ZMEP) {
+						oamInfo.getOamMep().setServiceId(acId);
+						oamInfo.getOamMep().setObjId(acPortInfo.getAcBusinessId());
+					} else if (oamInfo.getOamType() == OamTypeEnum.MEP) {
+
+					} else if (oamInfo.getOamType() == OamTypeEnum.MIP) {
+
+					}
+					oamInfoService.saveOrUpdate(oamInfo);
+				}
+			}
+			this.sqlSession.commit();
+		} catch (Exception e) {
+			ExceptionManage.dispose(e, this.getClass());
+		}
+		return result;
+	}
+	
+	/**
+	 * 根据主键查询AC对象
+	 * 
+	 * @param id
+	 *            主键
+	 * @return
+	 * @throws Exception
+	 */
+	public AcPortInfo selectById(int id) throws Exception {
+		AcPortInfo acPortInfo = null;
+		List<AcPortInfo> acPortInfoList = null;
+		try {
+			acPortInfo = new AcPortInfo();
+			acPortInfo.setId(id);
+			acPortInfoList = this.selectByCondition(acPortInfo);
+			this.getAcQos(acPortInfoList);
+			this.getAcBuffer(acPortInfoList);
+			if (null != acPortInfoList && acPortInfoList.size() == 1) {
+				acPortInfo = acPortInfoList.get(0);
+			}
+		} catch (Exception e) {
+			throw e;
+		}
+		return acPortInfo;
+	}
+	
+	/**
+	 * 查询ac
+	 * 
+	 * @param siteId
+	 *            网元id
+	 * @param xcid
+	 *            设备名称
+	 * @return
+	 * @throws Exception
+	 */
+	public List<AcPortInfo> selectByCondition(AcPortInfo acPortInfo) throws Exception {
+
+		List<AcPortInfo> acPortInfoList = null;
+		try {
+			acPortInfoList = mapper.queryByCondition(acPortInfo);
+			this.getAcQos(acPortInfoList);
+		} catch (Exception e) {
+			throw e;
+		}
+		return acPortInfoList;
+	}
+	
+	/**
+	 * 把数据库里对应的流信息添加到ac中
+	 * 
+	 * @param acPortInfoList
+	 * @throws Exception
+	 */
+	private void getAcBuffer(List<AcPortInfo> acPortInfoList) throws Exception {
+		List<Acbuffer> acBufferList = null;
+		AcBufferService_MB bufservice = null;
+		try {
+			bufservice = (AcBufferService_MB) ConstantUtil.serviceFactory.newService_MB(Services.UniBuffer, this.sqlSession);
+
+			for (AcPortInfo acPortInfo : acPortInfoList) {
+
+				acBufferList = bufservice.select(acPortInfo.getId());
+				if (null != acBufferList && acBufferList.size() > 0) {
+					acPortInfo.setBufferList(acBufferList);
+				}
+			}
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+//			UiUtil.closeService(bufservice);
+		}
+
+	}
+
+	public List<Integer> acByPort(int portId) {
+		List<Integer> idList = new ArrayList<Integer>();
+		try {
+			idList = this.mapper.selectByPortId(portId);
+		} catch (Exception e) {
+			ExceptionManage.dispose(e, getClass());
+		}
+		return idList;
+	}
+
+	public List<AcPortInfo> select(List<Integer> acIdList) throws Exception {
+		List<AcPortInfo> acPortInfoList = null;
+		List<Acbuffer> acbufferList = null;
+		AcBufferService_MB bufservice = null;
+		try {
+			acPortInfoList = this.mapper.queryByAcIdCondition(acIdList);
+			bufservice = (AcBufferService_MB) ConstantUtil.serviceFactory.newService_MB(Services.UniBuffer, this.sqlSession);
+			for (AcPortInfo acPortInfo : acPortInfoList) {
+				acbufferList = bufservice.select(acPortInfo.getId());
+				acPortInfo.setBufferList(acbufferList);
+			}
+			this.getAcQos(acPortInfoList);
+		} catch (Exception e) {
+			throw e;
+		}
+		return acPortInfoList;
+	}
+
+	public List<AcPortInfo> selectBySiteId(int siteId) throws Exception {
+		List<AcPortInfo> acPortInfoList = null;
+		AcPortInfo acInfo = new AcPortInfo();
+		acInfo.setSiteId(siteId);
+		try {
+			acPortInfoList = this.mapper.queryByCondition(acInfo);
+			this.getAcQos(acPortInfoList);
+			this.getAcBuffer(acPortInfoList);
+		} catch (Exception e) {
+			throw e;
+		}
+		return acPortInfoList;
+	}
+	
+	/**
+	 * 验证名字是否重复
+	 * 
+	 * @author kk
+	 * 
+	 * @param afterName
+	 *            修改之后的名字
+	 * @param beforeName
+	 *            修改之前的名字
+	 * 
+	 * @return
+	 * @throws Exception
+	 * 
+	 * @Exception 异常对象
+	 */
+	public boolean nameRepetitionBySingle(String afterName, String beforeName, int siteId) throws Exception {
+		int result = this.mapper.query_nameBySingle(afterName, beforeName, siteId);
+		if (0 == result) {
+			return false;
+		} else {
+			return true;
+		}
+
+	}
+	
+	
+}

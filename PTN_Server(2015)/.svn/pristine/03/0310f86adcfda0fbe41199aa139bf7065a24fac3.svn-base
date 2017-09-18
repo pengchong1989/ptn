@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<driveRoot  xmlns="http://drive.bean.com">
+	<attribute length="1" description="时钟源数目" value="0" mapping="(0)/1=(不关联)/关联">
+	<listRoot file="com/nms/drive/analysis/xmltool/file/时钟状态变长信息(0x15)_SUB.xml">	
+		</listRoot>
+	</attribute>
+	<attribute length="11" description="备用" value="0" mapping="(0)/1=(不关联)/关联"/>
+</driveRoot>

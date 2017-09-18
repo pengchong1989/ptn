@@ -1,0 +1,18 @@
+package com.nms.db.dao.ptn.ecn;
+
+import com.nms.db.bean.ptn.ecn.OSPFInfo;
+
+
+public interface OSPFInfoMapper {
+    int deleteByPrimaryKey(Integer id);
+
+    int insert(OSPFInfo record);
+
+    int insertSelective(OSPFInfo record);
+
+    OSPFInfo selectByPrimaryKey(Integer id);
+
+    int updateByPrimaryKeySelective(OSPFInfo record);
+
+    int updateByPrimaryKey(OSPFInfo record);
+}

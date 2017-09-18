@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nms.db.dao.ptn.path.pw.MsPwInfoMapper" >
+  <resultMap id="BaseResultMap" type="MsPwInfo" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="siteId" property="siteid" jdbcType="INTEGER" />
+    <result column="pwId" property="pwid" jdbcType="INTEGER" />
+    <result column="frontTunnelId" property="fronttunnelid" jdbcType="INTEGER" />
+    <result column="backTunnelId" property="backtunnelid" jdbcType="INTEGER" />
+    <result column="frontInlabel" property="frontinlabel" jdbcType="INTEGER" />
+    <result column="frontOutlabel" property="frontoutlabel" jdbcType="INTEGER" />
+    <result column="backInlabel" property="backinlabel" jdbcType="INTEGER" />
+    <result column="backOutlabel" property="backoutlabel" jdbcType="INTEGER" />
+    <result column="mipId" property="mipid" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, siteId, pwId, frontTunnelId, backTunnelId, frontInlabel, frontOutlabel, backInlabel, 
+    backOutlabel, mipId
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from mspwinfo
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from mspwinfo
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="MsPwInfo" >
+    insert into mspwinfo (id, siteId, pwId, 
+      frontTunnelId, backTunnelId, frontInlabel, 
+      frontOutlabel, backInlabel, backOutlabel, 
+      mipId)
+    values (#{id,jdbcType=INTEGER}, #{siteId,jdbcType=INTEGER}, #{pwId,jdbcType=INTEGER}, 
+      #{frontTunnelId,jdbcType=INTEGER}, #{backTunnelId,jdbcType=INTEGER}, #{frontInlabel,jdbcType=INTEGER}, 
+      #{frontOutlabel,jdbcType=INTEGER}, #{backInlabel,jdbcType=INTEGER}, #{backOutlabel,jdbcType=INTEGER}, 
+      #{mipId,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="MsPwInfo" >
+    insert into mspwinfo
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="siteid != null" >
+        siteId,
+      </if>
+      <if test="pwid != null" >
+        pwId,
+      </if>
+      <if test="fronttunnelid != null" >
+        frontTunnelId,
+      </if>
+      <if test="backtunnelid != null" >
+        backTunnelId,
+      </if>
+      <if test="frontinlabel != null" >
+        frontInlabel,
+      </if>
+      <if test="frontoutlabel != null" >
+        frontOutlabel,
+      </if>
+      <if test="backinlabel != null" >
+        backInlabel,
+      </if>
+      <if test="backoutlabel != null" >
+        backOutlabel,
+      </if>
+      <if test="mipid != null" >
+        mipId,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="siteid != null" >
+        #{siteid,jdbcType=INTEGER},
+      </if>
+      <if test="pwid != null" >
+        #{pwid,jdbcType=INTEGER},
+      </if>
+      <if test="fronttunnelid != null" >
+        #{fronttunnelid,jdbcType=INTEGER},
+      </if>
+      <if test="backtunnelid != null" >
+        #{backtunnelid,jdbcType=INTEGER},
+      </if>
+      <if test="frontinlabel != null" >
+        #{frontinlabel,jdbcType=INTEGER},
+      </if>
+      <if test="frontoutlabel != null" >
+        #{frontoutlabel,jdbcType=INTEGER},
+      </if>
+      <if test="backinlabel != null" >
+        #{backinlabel,jdbcType=INTEGER},
+      </if>
+      <if test="backoutlabel != null" >
+        #{backoutlabel,jdbcType=INTEGER},
+      </if>
+      <if test="mipid != null" >
+        #{mipid,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  
+  <update id="updateByPrimaryKeySelective" parameterType="MsPwInfo" >
+    update mspwinfo
+    <set >
+      <if test="siteid != null" >
+        siteId = #{siteid,jdbcType=INTEGER},
+      </if>
+      <if test="pwid != null" >
+        pwId = #{pwid,jdbcType=INTEGER},
+      </if>
+      <if test="fronttunnelid != null" >
+        frontTunnelId = #{fronttunnelid,jdbcType=INTEGER},
+      </if>
+      <if test="backtunnelid != null" >
+        backTunnelId = #{backtunnelid,jdbcType=INTEGER},
+      </if>
+      <if test="frontinlabel != null" >
+        frontInlabel = #{frontinlabel,jdbcType=INTEGER},
+      </if>
+      <if test="frontoutlabel != null" >
+        frontOutlabel = #{frontoutlabel,jdbcType=INTEGER},
+      </if>
+      <if test="backinlabel != null" >
+        backInlabel = #{backinlabel,jdbcType=INTEGER},
+      </if>
+      <if test="backoutlabel != null" >
+        backOutlabel = #{backoutlabel,jdbcType=INTEGER},
+      </if>
+      <if test="mipid != null" >
+        mipId = #{mipid,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  
+  <update id="update" parameterType="MsPwInfo" >
+    update mspwinfo
+    set siteId = #{siteId,jdbcType=INTEGER},
+      pwId = #{pwId,jdbcType=INTEGER},
+      frontTunnelId = #{frontTunnelId,jdbcType=INTEGER},
+      backTunnelId = #{backTunnelId,jdbcType=INTEGER},
+      frontInlabel = #{frontInlabel,jdbcType=INTEGER},
+      frontOutlabel = #{frontOutlabel,jdbcType=INTEGER},
+      backInlabel = #{backInlabel,jdbcType=INTEGER},
+      backOutlabel = #{backOutlabel,jdbcType=INTEGER},
+      mipId = #{mipId,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  
+  <update id="updateFrontTunnelId" >
+  	update mspwinfo set frontTunnelId=#{0} where frontTunnelId in #{1}
+  </update>
+  
+  <update id="updateBackTunnelId" >
+  	update mspwinfo set backTunnelId=#{0} where backTunnelId in #{1}
+  </update>
+  
+  <select id="queryByCondition" resultType="MsPwInfo" parameterType="MsPwInfo">
+  select*from mspwInfo where 1=1
+  <if test="pwId>0">
+  and pwId=#{pwId}
+  </if>
+  <if test="siteId>0">
+  and siteId=#{siteId}
+  </if>
+  <if test="frontTunnelId>0">
+  and frontTunnelId=#{frontTunnelId}
+  </if>
+  <if test="backTunnelId>0">
+  and backTunnelId=#{backTunnelId}
+  </if>
+  <if test="frontInlabel>0">
+  and frontInlabel=#{frontInlabel}
+  </if>
+  <if test="frontOutlabel>0">
+  and frontOutlabel=#{frontOutlabel}
+  </if>
+  <if test="backInlabel>0">
+  and backInlabel=#{backInlabel}
+  </if>
+  <if test="backOutlabel>0">
+  and backOutlabel=#{backOutlabel}
+  </if>
+  order by id
+  </select>
+
+  <select id="queryByTunnelIds" resultType="MsPwInfo">
+    select*from mspwInfo where frontTunnelId in 
+    <foreach item="item" index="index" collection="tunnelIds" open="(" separator="," close=")">  
+ 		#{item}  
+ 	</foreach>	
+ 	or backTunnelId in 
+ 	<foreach item="item" index="index" collection="tunnelIds" open="(" separator="," close=")">  
+ 		#{item}  
+ 	</foreach>	
+  </select>
+
+  <delete id="delete" parameterType="java.lang.Integer">
+  delete from mspwInfo where id=#{0}
+  </delete>
+</mapper>

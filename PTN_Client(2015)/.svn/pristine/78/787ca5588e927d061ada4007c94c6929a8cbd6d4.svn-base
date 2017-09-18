@@ -1,0 +1,439 @@
+package com.nms.model.ptn.path.qinq;
+
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+
+import com.nms.db.bean.ptn.Businessid;
+import com.nms.db.bean.ptn.path.qinq.QinqChildInst;
+import com.nms.db.bean.ptn.path.qinq.QinqInst;
+import com.nms.db.dao.ptn.BusinessidDao;
+import com.nms.db.dao.ptn.path.qinq.QinQChildDao;
+import com.nms.db.dao.ptn.path.qinq.QinqDao;
+import com.nms.db.enums.EActiveStatus;
+import com.nms.model.equipment.shlef.SiteService;
+import com.nms.model.ptn.BusinessidService;
+import com.nms.model.util.ObjectService;
+import com.nms.model.util.Services;
+import com.nms.ui.manager.BusinessIdException;
+import com.nms.ui.manager.ConstantUtil;
+import com.nms.ui.manager.ExceptionManage;
+import com.nms.ui.manager.ResourceUtil;
+import com.nms.ui.manager.keys.StringKeysTip;
+
+public class QinQInstService extends ObjectService {
+
+	public void setConnection(Connection connection) {
+		super.connection = connection;
+	}
+
+	public void setPtnuser(String ptnuser) {
+		super.ptnuser = ptnuser;
+	}
+
+	private QinqDao qinqDao = new QinqDao();
+
+	public void update(QinqInst qinqInst) {
+		QinQChildDao childDao = null;
+		List<QinqChildInst> childlist = null;
+		
+		try {
+			qinqDao.update(qinqInst, connection);
+			//更新qinqChild
+			childDao = new QinQChildDao();
+			childlist = qinqInst.getQinqChildInst();
+			for (int j = 0; j < childlist.size(); j++) {
+				childDao.update(childlist.get(j), connection);
+			}
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		} finally {
+			childDao = null;
+			childlist = null;
+		}
+	}
+
+	public void save(QinqInst qinqInst) throws Exception {
+		if (qinqInst == null) {
+			throw new Exception("qinqInst is null");
+		}
+		List<QinqChildInst> childList = new ArrayList<QinqChildInst>();
+		QinqChildInst childInst = null;
+		Map<Integer, Integer> siteServicemap = null;
+		BusinessidService businessidService = null;
+		Businessid businessid_qinq = null;
+		QinQChildDao childDao = null;
+		int qinqId = 0;
+		try {
+			businessidService = (BusinessidService) ConstantUtil.serviceFactory.newService(Services.BUSINESSID, this.connection);
+			siteServicemap = new HashMap<Integer, Integer>();// 用于保存网元，以及对应的ServiceId
+			connection.setAutoCommit(false);
+			qinqId = qinqDao.insert(qinqInst, connection);
+			childList = qinqInst.getQinqChildInst();
+			childDao = new QinQChildDao();
+			for (int j = 0; j < childList.size(); j++) {
+				childInst = childList.get(j);
+				childInst.setQinqId(qinqId);
+				/* 如果j>0说明有多条leg，就有xc存在 xc的上条数据的z设备id应该等于的二条数据的a设备id */
+				if (j > 0) {
+					childInst.setaServiceId(businessid_qinq.getIdValue());
+				} else {
+					// 数据中存在a网元时，配置a端的设备id
+					if (childInst.getaPortId() > 0) {
+						/** 获取A端的tunnel业务id */
+						businessid_qinq = this.setbusinessId(childInst, siteServicemap, businessidService, "a");
+					}
+				}
+				// 数据中存在Z网元时，配置Z端的设备id
+				if (childInst.getzPortId() > 0) {
+					/** 获取Z端的tunnel业务id */
+					businessid_qinq = this.setbusinessId(childInst, siteServicemap, businessidService, "z");
+				}
+				
+				childDao.insert(childInst,connection);
+			}
+			if(!connection.getAutoCommit()){
+				connection.commit();
+			}
+		} catch (BusinessIdException e) {
+			connection.rollback();
+			throw e;
+		}catch (Exception e) {
+			connection.rollback();
+			ExceptionManage.dispose(e,this.getClass());
+		} finally {
+			connection.setAutoCommit(true);
+		}
+	}
+	
+	/**
+	 * 获取businessid 并修改businessid状态
+	 * 
+	 * @param
+	 * 
+	 * @return
+	 * 
+	 * @Exception 异常对象
+	 */
+	private Businessid setbusinessId(QinqChildInst childInst, Map<Integer, Integer> siteServicemap, BusinessidService businessidService, String type) throws Exception {
+
+		int businessId = 0;
+		int siteId = 0;
+		Businessid businessid_qinq = null;
+		SiteService siteService = null;
+		try {
+			siteService=(SiteService) ConstantUtil.serviceFactory.newService(Services.SITE, this.connection);
+			if ("a".equals(type)) {
+				businessId = childInst.getaServiceId();
+				siteId = childInst.getaSiteId();
+			} else {
+				businessId = childInst.getzServiceId();
+				siteId = childInst.getzSiteId();
+			}
+
+			/** 获取A端的tunnel业务id */
+			if (businessId == 0) {
+				businessid_qinq = businessidService.select(siteId, "qinq");
+			} else {
+				businessid_qinq = businessidService.select(businessId, siteId, "tunnel");
+			}
+			if (businessid_qinq == null) {
+				throw new BusinessIdException(siteService.getSiteName(siteId)+ResourceUtil.srcStr(StringKeysTip.TIP_QINQID));
+			}
+			if ("a".equals(type)) {
+				childInst.setaServiceId(businessid_qinq.getIdValue());
+			} else {
+				childInst.setzServiceId(businessid_qinq.getIdValue());
+			}
+			siteServicemap.put(siteId, businessid_qinq.getIdValue());
+			businessidService.update(businessid_qinq.getId(), 1);
+		} catch (Exception e) {
+			throw e;
+		} finally {
+//			UiUtil.closeService(siteService);
+		}
+		return businessid_qinq;
+	}
+
+	public List<QinqInst> selectQinQBySiteId(int siteId) {
+		List<QinqInst> qinqList = null;
+		QinQChildDao childDao = null;
+		List<QinqChildInst> childList = null;
+		try {
+			childDao = new QinQChildDao();
+			qinqList = this.qinqDao.quertyWHNodeBySite(siteId, connection);
+			for (QinqInst qinq : qinqList) {
+				childList = childDao.queryBySiteId(siteId, qinq.getQinqId(), connection);
+				qinq.setQinqChildInst(childList);
+			}
+
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		} finally {
+			childList = null;
+			childDao = null;
+		}
+		return qinqList;
+	}
+
+	/**
+	 * 查询全部
+	 * @return
+	 */
+	public List<QinqInst> select() {
+		QinqInst qinq = null;
+		List<QinqInst> qinqList = null;
+		QinqChildInst childInst = null;
+		QinQChildDao childDao = null;
+		List<QinqChildInst> childList = null;
+		try {
+			qinq = new QinqInst();
+			qinqList = qinqDao.queryByCondition(qinq, connection);
+			if (null != qinqList && qinqList.size() != 0) {
+				for (int i = 0; i < qinqList.size(); i++) {
+					childInst = new QinqChildInst();
+					childDao = new QinQChildDao();
+					childInst.setQinqId(qinqList.get(i).getQinqId());
+					childList = childDao.queryByCondition(childInst, connection);
+					qinqList.get(i).setQinqChildInst(childList);
+				}
+			}
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		} finally {
+			qinq = null;
+			childInst = null;
+			childDao = null;
+			childList = null;
+		}
+		return qinqList;
+	}
+
+	public void delete(List<QinqInst> qinqList) throws SQLException {
+		QinQChildDao childDao = null;
+		List<QinqChildInst> childList = null;
+		BusinessidDao businessidDao = null;
+		Businessid businessId = null;
+		try {
+			connection.setAutoCommit(false);
+
+			businessidDao = new BusinessidDao();
+			childDao = new QinQChildDao();
+			
+			for (QinqInst qinq : qinqList) {
+				childList = childDao.queryByQinqId(qinq.getQinqId(), connection);
+				for (QinqChildInst obj : childList) {
+					businessId = new Businessid();
+					businessId.setIdStatus(0);
+					businessId.setIdValue(obj.getaServiceId());
+					businessId.setType("qinq");
+					businessId.setSiteId(obj.getaSiteId());
+					businessidDao.updateBusinessid(businessId, connection);
+					businessId.setIdValue(obj.getzServiceId());
+					businessId.setSiteId(obj.getzSiteId());
+					businessidDao.updateBusinessid(businessId, connection);
+				}
+				childDao.deleteByQinqId(qinq.getQinqId(), connection);
+				qinqDao.delete(qinq.getQinqId(), connection);
+			}
+			if(!connection.getAutoCommit()){
+				connection.commit();
+			}
+		} catch (Exception e) {
+			connection.rollback();
+			ExceptionManage.dispose(e,this.getClass());
+		} finally {
+			connection.setAutoCommit(true);
+			businessidDao = null;
+			businessId = null;
+			childDao = null;
+			childList = null;
+		}
+		
+	}
+
+	public void updateStatusActivate(List<Integer> qinqIds) {
+		try {
+			qinqDao.updateStatus(qinqIds, EActiveStatus.UNACTIVITY.getValue(), EActiveStatus.ACTIVITY.getValue(), connection);
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		}
+		
+	}
+
+	public void updateStatusDelete(List<Integer> qinqIds) {
+		try {
+			qinqDao.updateStatus(qinqIds, EActiveStatus.ACTIVITY.getValue(), EActiveStatus.UNACTIVITY.getValue(), connection);
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		}
+	}
+
+	/**
+	 * 通过portId和siteId查询
+	 * @param siteId
+	 * @param portId
+	 * @return
+	 */
+	public List<QinqInst> selectByPortIdAndSiteId(int siteId, int portId) {
+		QinQChildDao qinqChildDao = null;
+		QinqChildInst child = null;
+		List<QinqInst> qinqList = null;
+		try {
+			qinqList = this.qinqDao.queryByPortIdAndSiteId(siteId, portId, connection);
+			for (QinqInst qinq : qinqList) {
+				qinqChildDao = new QinQChildDao();
+				child = new QinqChildInst();
+				child.setQinqId(qinq.getQinqId());
+				qinq.setQinqChildInst(qinqChildDao.queryByCondition(child, connection));
+			}
+
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		} finally {
+			qinqChildDao = null;
+			child = null;
+		}
+		return qinqList;
+	}
+
+	public List<QinqInst> selectByPortIdAndSiteIdAndUni(int siteId, int portId) {
+		List<QinqInst> qinqList = null;
+		try {
+			qinqList = this.qinqDao.selectByPortIdAndSiteIdAndUni(siteId, portId, connection);
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		}
+		return qinqList;
+	}
+
+	public List<QinqInst> select_nojoin(QinqInst beforeQinq) {
+		List<QinqInst> infos = null;
+		QinqChildInst child = null;
+		QinQChildDao childDao = null;
+		List<QinqChildInst> childList = null;
+		try {
+			infos = this.qinqDao.queryByCondition_nojoin(beforeQinq, connection);
+			if (null != infos && infos.size() != 0) {
+				childDao = new QinQChildDao();
+				for (int i = 0; i < infos.size(); i++) {
+					child = new QinqChildInst();
+					child.setQinqId(infos.get(i).getQinqId());
+					childList = childDao.queryByCondition(child, connection);
+					infos.get(i).setQinqChildInst(childList);
+				}
+			}
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		}
+
+		return infos;
+	}
+
+	/**
+	 * 判断名字是否重复
+	 * 重复 返回true
+	 * 不重复 返回false
+	 * @throws Exception 
+	 */
+	public boolean nameRepetition(String afterName, String beforeName) throws Exception {
+		int result = this.qinqDao.query_name(afterName, beforeName, connection);
+		if (0 == result) {
+			return false;
+		} else {
+			return true;
+		}
+	}
+
+	public List<QinqInst> selectBySiteId(int siteId) {
+		List<QinqInst> qinqList = null;
+		QinqChildInst child = null;
+		QinQChildDao childDao = null;
+		List<QinqChildInst> childList = null;
+		try {
+			qinqList = this.qinqDao.selectBySiteId(siteId, connection);
+			if (null != qinqList && qinqList.size() != 0) {
+				childDao = new QinQChildDao();
+				for (int i = 0; i < qinqList.size(); i++) {
+					child = new QinqChildInst();
+					child.setQinqId(qinqList.get(i).getQinqId());
+					childList = childDao.queryByCondition(child, connection);
+					qinqList.get(i).setQinqChildInst(childList);
+				}
+			}
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		}
+
+		return qinqList;
+	}
+
+	public QinqInst selectQchBySiteId(int siteId,QinqInst qinq) {
+		QinqChildInst child = null;
+		QinQChildDao childDao = null;
+		List<QinqChildInst> childList = null;
+		QinqInst qinqInst = new QinqInst();
+		try {
+			
+			child = new QinqChildInst();
+			child.setQinqId(qinq.getQinqId());
+			int aSiteId = qinq.getaSiteId();
+			int zSiteId = qinq.getzSiteId();
+			
+			if(siteId ==  aSiteId){
+			   child.setaSiteId(siteId);
+			   childDao = new QinQChildDao();
+			   childList = childDao.queryByConditions(child, connection);
+			   qinqInst.setQinqChildInst(childList);
+			}
+			if(siteId == zSiteId){
+				child.setzSiteId(siteId);
+				childDao = new QinQChildDao();
+				childList = childDao.queryByConditions(child, connection);
+				 qinqInst.setQinqChildInst(childList);
+			}
+			if(siteId != aSiteId && siteId != zSiteId){
+			   childDao = new QinQChildDao();
+			   child.setzSiteId(siteId);
+			   child.setaSiteId(siteId);
+			   childList = childDao.queryByConditions(child, connection);
+			   qinqInst.setQinqChildInst(childList);
+			}
+			
+		
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		}
+		return qinqInst;
+	}
+
+	public List<QinqInst> selectChildBySiteId(int siteId) {
+		List<QinqInst> qinqList = new ArrayList<QinqInst>();
+		List<Integer> qinqIds= null;
+		QinqInst qinqInst = null;
+		QinQChildDao childDao = null;
+		try {
+			childDao = new QinQChildDao();
+			qinqIds = childDao.selectBySiteId(siteId, connection);
+			HashSet<Integer> hashSet= new HashSet<Integer>(qinqIds);
+			qinqIds.clear();
+			qinqIds.addAll(hashSet);		
+			if (null != qinqIds && qinqIds.size() != 0) {
+				for (int i = 0; i < qinqIds.size(); i++) {
+					qinqInst = new QinqInst();
+					qinqInst = this.qinqDao.queryByQinqId(qinqIds.get(i), connection);
+					qinqList.add(qinqInst);
+				}
+			}
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		}
+
+		return qinqList;
+	}
+	
+}

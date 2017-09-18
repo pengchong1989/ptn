@@ -1,0 +1,242 @@
+﻿package com.nms.model.ptn;
+
+import java.sql.Connection;
+import java.util.List;
+
+import com.nms.db.bean.ptn.EthServiceInfo;
+import com.nms.db.dao.ptn.EthServiceDao;
+import com.nms.model.util.ObjectService;
+import com.nms.ui.manager.ExceptionManage;
+
+
+public class EthService extends ObjectService{
+	
+	public void setConnection(Connection connection) {
+		super.connection = connection;
+	}
+
+	public void setPtnuser(String ptnuser) {
+		super.ptnuser = ptnuser;
+	}
+	
+	private EthServiceDao ethServiceDao = new EthServiceDao();
+	
+	/**
+	 * 新增
+	 * @param ethServiceInfo
+	 * @throws Exception
+	 */
+	public int save(List<EthServiceInfo> ethServiceInfos) throws Exception{
+		
+		if(ethServiceInfos == null){
+			throw new Exception("ethServiceInfos is null");
+		}
+		int result = 0;
+		try {
+			result = ethServiceDao.insert(ethServiceInfos, connection);
+		} catch (Exception e) {
+			connection.rollback();
+			ExceptionManage.dispose(e,this.getClass());
+		}
+		return result;
+	}
+	/**
+	 * 查询该网元下所有信息
+	 * @param siteId
+	 * @return
+	 * @throws Exception
+	 */
+	public List<EthServiceInfo> select(int siteId) throws Exception{
+		List<EthServiceInfo> ethServiceInfoList = null;
+		if(siteId == 0){
+			throw new Exception("siteId is null");
+		}   
+		try {
+			connection.setAutoCommit(false);
+			ethServiceInfoList = ethServiceDao.queryByCondition(siteId, connection);
+			if(!connection.getAutoCommit()){
+				connection.commit();
+			}
+		} catch (Exception e) {
+			connection.rollback();
+			ExceptionManage.dispose(e,this.getClass());
+		}finally{
+			connection.setAutoCommit(true);
+		}
+		return ethServiceInfoList;
+	}
+	
+	
+	/**
+	 * 通过条件查询
+	 * @param siteId
+	 * @return
+	 * @throws Exception
+	 */
+	public boolean  select(List<Integer> valans,int siteId) throws Exception{
+		if(siteId == 0){
+			throw new Exception("siteId is null");
+		}   
+		try {
+			return  ethServiceDao.queryByCondition(valans,siteId, connection);
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		}
+		return false;
+	}
+	
+	public int allCount(int siteId) throws Exception
+	{
+		if(siteId == 0){
+			throw new Exception("siteId is null");
+		}   
+		try {
+			return  ethServiceDao.findAllCount(siteId, connection);
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		}
+		return 0;
+	}
+	
+	
+	/**
+	 * 更新
+	 * @param ethServiceInfo
+	 * @throws Exception
+	 */
+	public void update(EthServiceInfo ethServiceInfo) throws Exception{
+		if(ethServiceInfo == null){
+			throw new Exception("ethServiceInfo is null");
+		}
+		try {
+			connection.setAutoCommit(false);
+			ethServiceDao.update(ethServiceInfo, connection);
+			if(!connection.getAutoCommit()){
+				connection.commit();
+			}
+		} catch (Exception e) {
+			connection.rollback();
+			ExceptionManage.dispose(e,this.getClass());
+		}finally{
+			connection.setAutoCommit(true);
+		}
+	}
+	
+	/**
+	 *删除
+	 * @param ethServiceInfo
+	 * @throws Exception
+	 */
+	public void delete(EthServiceInfo ethServiceInfo) throws Exception{
+		if(ethServiceInfo == null){
+			throw new Exception("ethServiceInfo is null");
+		}
+		try {
+			connection.setAutoCommit(false);
+			ethServiceDao.delete(ethServiceInfo, connection);
+			if(!connection.getAutoCommit()){
+				connection.commit();
+			}
+		} catch (Exception e) {
+			connection.rollback();
+			ExceptionManage.dispose(e,this.getClass());
+		}finally{
+			connection.setAutoCommit(true);
+		}
+	}
+	
+	/**
+	 *批量删除
+	 * @param ethServiceInfo
+	 * @throws Exception
+	 */
+	public void delete(List<EthServiceInfo> ethServiceInfos) throws Exception{
+		if(ethServiceInfos == null){
+			throw new Exception("ethServiceInfo is null");
+		}
+		try {
+			connection.setAutoCommit(false);
+			for(EthServiceInfo ethInfo : ethServiceInfos)
+			{
+				ethServiceDao.delete(ethInfo, connection);
+			}
+			if(!connection.getAutoCommit()){
+				connection.commit();
+			}
+		} catch (Exception e) {
+			connection.rollback();
+			ExceptionManage.dispose(e,this.getClass());
+		}finally{
+			connection.setAutoCommit(true);
+		}
+	}
+	/**
+	 * 查询
+	 * 
+	 * @param ethServiceInfo
+	 * @return
+	 * @throws Exception
+	 */
+	public List<EthServiceInfo> queryByNeID(EthServiceInfo ethServiceInfo) throws Exception {
+		if (ethServiceInfo == null) {
+			throw new Exception("ethServiceInfo is null");
+		}
+		List<EthServiceInfo> ethServiceInfoList = null;
+		try {
+			ethServiceInfoList = ethServiceDao.queryOamLinkInfoByCondition(ethServiceInfo, connection);
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		}
+		return ethServiceInfoList;
+	}
+	
+	/**
+	 * 根据网元删除所属网元的数据
+	 * @param ethServiceInfo
+	 * @throws Exception
+	 */
+	public void deleteBySite(EthServiceInfo ethServiceInfo)throws Exception {
+		if (ethServiceInfo == null) {
+			throw new Exception("ethServiceInfo is null");
+		}
+		try {
+			ethServiceDao.deleteAllBySite(ethServiceInfo, connection);
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		}
+	}
+	/**
+	 * 根据端口号，查询该端口的二层vlan值
+	 * @param siteId
+	 * @param portLine
+	 * @return
+	 */
+	public List<Integer> queryBySiteIdAndPortLine(int siteId,String portLine,int num){
+		List<Integer> vlanIDs = null;
+		try {
+			vlanIDs = ethServiceDao.queryBySiteIdAndPortLine(siteId,portLine,num, connection);
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		}
+		return vlanIDs;
+	}
+
+	
+	/**
+	 * 根据网元删除所属网元的数据
+	 * @param ethServiceInfo
+	 * @throws Exception
+	 */
+	public void deleteBySiteId(int siteId)throws Exception {
+		if (siteId == 0) {
+			throw new Exception("ethServiceInfo is null");
+		}
+		try {
+			ethServiceDao.deleteAllBySiteId(siteId, connection);
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		}
+	}
+}
+
+

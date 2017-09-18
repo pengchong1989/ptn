@@ -1,0 +1,340 @@
+package com.nms.db.dao.ptn;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.nms.db.bean.ptn.BlackAndwhiteMacInfo;
+import com.nms.db.bean.ptn.MacManagementInfo;
+import com.nms.ui.manager.ExceptionManage;
+
+/**
+ * function:黑白mac名单的数据库操作
+ * @author zhangkun
+ *
+ */
+public class BlackAndWhiteMacDao {
+
+	/**
+	 * function:将黑白名单MAC插入数据库
+	 * @param mac 黑白名单mac 对象
+	 * @param connection 
+	 * @throws Exception
+	 */
+	public int insert(BlackAndwhiteMacInfo mac, Connection connection) throws Exception {
+		if (null == mac) {
+			throw new Exception("macInfo is null");
+		}
+
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+        ResultSet resultSet = null;
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		int result = 0;
+		try {
+			sql = "insert into blackwhitemacnamelist(siteId,vplsServiceName,nameList,mac,elanBussinessId) " +
+			                "values(?,?,?,?,?)";
+			preparedStatement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+			preparedStatement.setInt(1, mac.getSiteId());
+			preparedStatement.setString(2, mac.getVplsServiceName());
+			preparedStatement.setInt(3, mac.getNameList());
+			preparedStatement.setString(4, mac.getMac());
+			preparedStatement.setInt(5, mac.getElanBussinessId());
+			preparedStatement.executeUpdate();
+			resultSet = preparedStatement.getGeneratedKeys();
+			while (resultSet.next()) {
+				result = resultSet.getInt(1);
+			}
+			
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if(null != resultSet){
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				resultSet = null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+		return  result;
+	}
+
+	/**
+	 * function:将修改将黑白名单MAC插入数据库
+	 * @param mac 黑白名单mac 对象
+	 * @param connection 
+	 * @throws Exception
+	 */
+	public void update(BlackAndwhiteMacInfo mac, Connection connection) throws Exception {
+		if (null == mac) {
+			throw new Exception("macInfo is null");
+		}
+
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+
+		try {
+			sql = "update blackwhitemacnamelist set vplsServiceName=?,nameList=?,mac=?,elanBussinessId=?" +
+					" where id=?";
+
+			preparedStatement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+			preparedStatement.setString(1, mac.getVplsServiceName());
+			preparedStatement.setInt(2, mac.getNameList());
+			preparedStatement.setString(3, mac.getMac());
+			preparedStatement.setInt(4, mac.getElanBussinessId());
+			preparedStatement.setInt(5, mac.getId());
+			preparedStatement.executeUpdate();
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+	}
+
+	/**
+	 * function:删除黑白名单MAC的数据从数据库中
+	 * @param BlackAndwhiteMacInfo blackAndwhiteMacInfo 
+	 * @param connection 
+	 * @throws Exception
+	 */
+	public void delete(BlackAndwhiteMacInfo blackAndwhiteMacInfo, Connection connection) throws Exception {
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+
+		try {
+			sql = "delete from blackwhitemacnamelist where id=?";
+			preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.setInt(1, blackAndwhiteMacInfo.getId());
+			preparedStatement.executeUpdate();
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+	}
+
+	/**
+	 * function:删除黑白名单MAC的数据从数据库中
+	 * @param id 数据库主键ID
+	 * @param connection 
+	 * @throws Exception
+	 */
+	public List<BlackAndwhiteMacInfo> selectByBlackAndwhiteMacInfo(BlackAndwhiteMacInfo blackAndwhiteMacInfo, Connection connection) throws Exception {
+		if (blackAndwhiteMacInfo == null) {
+			throw new Exception("blackAndwhiteMacInfo is 0");
+		}
+		if (connection == null) {
+			throw new Exception("connection is null");
+		}
+
+		List<BlackAndwhiteMacInfo> macList = null;
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		try {
+			macList = new ArrayList<BlackAndwhiteMacInfo>();
+			sql="select * from blackwhitemacnamelist where 1=1";
+			if(blackAndwhiteMacInfo.getId()>0){
+				sql+=" and id ="+blackAndwhiteMacInfo.getId();
+			}if(blackAndwhiteMacInfo.getSiteId()>0){
+				sql+=" and siteId ="+blackAndwhiteMacInfo.getSiteId();
+			}
+			preparedStatement = connection.prepareStatement(sql);
+			macList = this.excuteQuery(preparedStatement);
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+		return macList;
+	}
+	
+	private List<BlackAndwhiteMacInfo> excuteQuery(PreparedStatement preparedStatement) throws Exception {
+		List<BlackAndwhiteMacInfo> macList = null;
+		ResultSet resultSet = null;
+		BlackAndwhiteMacInfo mac = null;
+		try {
+			macList = new ArrayList<BlackAndwhiteMacInfo>();
+			resultSet = preparedStatement.executeQuery();
+
+			while (resultSet.next()) {
+				mac = new BlackAndwhiteMacInfo();
+				mac.setId(resultSet.getInt("id"));
+				mac.setSiteId(resultSet.getInt("siteId"));
+				mac.setVplsServiceName(resultSet.getString("vplsServiceName"));
+				mac.setNameList(resultSet.getInt("nameList"));
+				mac.setMac(resultSet.getString("mac"));
+				mac.setElanBussinessId(resultSet.getInt("elanBussinessId"));
+				macList.add(mac);
+			}
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (resultSet != null) {
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				resultSet = null;
+			}
+			mac = null;
+		}
+		return macList;
+	}
+	
+	/**
+	 * function:删除所有的数据
+	 * @param blackAndwhiteMacInfo
+	 * @param connection
+	 * @throws Exception
+	 */
+	public void delete(Connection connection) throws Exception {
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+
+		try {
+			sql = "delete from blackwhitemacnamelist";
+			preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.executeUpdate();
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+	}
+	
+	/**
+	 * function:删除所有的数据 根据网元id
+	 * @param blackAndwhiteMacInfo
+	 * @param connection
+	 * @throws Exception
+	 */
+	public void deleteBySiteId(int siteId,Connection connection) throws Exception {
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+
+		try {
+			sql = "delete from blackwhitemacnamelist where siteId =?";
+			preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.setInt(1, siteId);
+			preparedStatement.executeUpdate();
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+	}
+	
+	
+	
+	/**
+	 * function:根据VSID和siteId查询业务名称
+	 * @param blackAndwhiteMacInfo
+	 * @param connection
+	 * @throws Exception
+	 */
+	public String selectByVsAndSiteId(int vsId,int siteId,Connection connection) throws Exception {
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		String sql = null;
+		String name = null;
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+		try {
+			sql = "select name from  serviceinfo where ( asiteId ="+siteId+" or zsiteId ="+siteId+" )and (aXcId ="+vsId+" or zXcId ="+vsId+") and serviceType=2 group by name";
+			preparedStatement = connection.prepareStatement(sql);
+			resultSet = preparedStatement.executeQuery();
+			while (resultSet.next()) {
+				name=resultSet.getString("name");
+			}
+		} catch (Exception e) {
+			throw e;
+		} finally {
+
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+		return name;
+	}
+}

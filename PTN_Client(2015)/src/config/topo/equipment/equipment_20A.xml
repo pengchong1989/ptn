@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 700E设备槽位对应的图片途径 -->
+<xml-body>
+
+<equipment imagePath="/com/nms/ui/images/topo/tza/rack.png" x="50" y="50">
+	<slot imagePath="/com/nms/ui/images/topo/tza/slot.png" x="72" y="56" type="20A"  bestCardName="20A" number="1"></slot>
+</equipment>
+
+</xml-body>

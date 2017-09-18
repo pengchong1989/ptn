@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nms.db.dao.system.UdaAttrMapper" >
+  <resultMap id="BaseResultMap" type="UdaAttr" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="groupId" property="groupId" jdbcType="INTEGER" />
+    <result column="attrName" property="attrName" jdbcType="VARCHAR" />   
+    <result column="attrType" property="attrType" jdbcType="VARCHAR" />
+    <result column="isNeedText" property="isNeedText" jdbcType="VARCHAR" />
+    <result column="codeGroupId" property="codeGroupId" jdbcType="VARCHAR" />
+    <result column="defaultValue" property="defaultValue" jdbcType="VARCHAR" />
+    <result column="width" property="width" jdbcType="INTEGER" />
+    <result column="height" property="height" jdbcType="INTEGER" />
+    <result column="distanceLeft" property="distanceLeft" jdbcType="INTEGER" />
+    <result column="distanceTop" property="distanceTop" jdbcType="INTEGER" />
+    <result column="isTableShow" property="isTableShow" jdbcType="VARCHAR" />
+    <result column="isMustFill" property="isMustFill" jdbcType="VARCHAR" />
+
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, groupId, attrName, attrENName, attrType, isNeedText, codeGroupId, defaultValue, 
+    width, height, distanceLeft, distanceTop, isTableShow, isMustFill
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from udaattr
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from udaattr
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="UdaAttr" >
+    insert into udaattr (id, groupId, attrName, 
+      attrENName, attrType, isNeedText, 
+      codeGroupId, defaultValue, width, 
+      height, distanceLeft, distanceTop, 
+      isTableShow, isMustFill)
+    values (#{id,jdbcType=INTEGER}, #{groupid,jdbcType=INTEGER}, #{attrname,jdbcType=VARCHAR}, 
+      #{attrenname,jdbcType=VARCHAR}, #{attrtype,jdbcType=VARCHAR}, #{isneedtext,jdbcType=VARCHAR}, 
+      #{codegroupid,jdbcType=VARCHAR}, #{defaultvalue,jdbcType=VARCHAR}, #{width,jdbcType=INTEGER}, 
+      #{height,jdbcType=INTEGER}, #{distanceleft,jdbcType=INTEGER}, #{distancetop,jdbcType=INTEGER}, 
+      #{istableshow,jdbcType=VARCHAR}, #{ismustfill,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="UdaAttr" >
+    insert into udaattr
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="groupid != null" >
+        groupId,
+      </if>
+      <if test="attrname != null" >
+        attrName,
+      </if>
+      <if test="attrenname != null" >
+        attrENName,
+      </if>
+      <if test="attrtype != null" >
+        attrType,
+      </if>
+      <if test="isneedtext != null" >
+        isNeedText,
+      </if>
+      <if test="codegroupid != null" >
+        codeGroupId,
+      </if>
+      <if test="defaultvalue != null" >
+        defaultValue,
+      </if>
+      <if test="width != null" >
+        width,
+      </if>
+      <if test="height != null" >
+        height,
+      </if>
+      <if test="distanceleft != null" >
+        distanceLeft,
+      </if>
+      <if test="distancetop != null" >
+        distanceTop,
+      </if>
+      <if test="istableshow != null" >
+        isTableShow,
+      </if>
+      <if test="ismustfill != null" >
+        isMustFill,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="groupid != null" >
+        #{groupid,jdbcType=INTEGER},
+      </if>
+      <if test="attrname != null" >
+        #{attrname,jdbcType=VARCHAR},
+      </if>
+      <if test="attrenname != null" >
+        #{attrenname,jdbcType=VARCHAR},
+      </if>
+      <if test="attrtype != null" >
+        #{attrtype,jdbcType=VARCHAR},
+      </if>
+      <if test="isneedtext != null" >
+        #{isneedtext,jdbcType=VARCHAR},
+      </if>
+      <if test="codegroupid != null" >
+        #{codegroupid,jdbcType=VARCHAR},
+      </if>
+      <if test="defaultvalue != null" >
+        #{defaultvalue,jdbcType=VARCHAR},
+      </if>
+      <if test="width != null" >
+        #{width,jdbcType=INTEGER},
+      </if>
+      <if test="height != null" >
+        #{height,jdbcType=INTEGER},
+      </if>
+      <if test="distanceleft != null" >
+        #{distanceleft,jdbcType=INTEGER},
+      </if>
+      <if test="distancetop != null" >
+        #{distancetop,jdbcType=INTEGER},
+      </if>
+      <if test="istableshow != null" >
+        #{istableshow,jdbcType=VARCHAR},
+      </if>
+      <if test="ismustfill != null" >
+        #{ismustfill,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="UdaAttr" >
+    update udaattr
+    <set >
+      <if test="groupid != null" >
+        groupId = #{groupid,jdbcType=INTEGER},
+      </if>
+      <if test="attrname != null" >
+        attrName = #{attrname,jdbcType=VARCHAR},
+      </if>
+      <if test="attrenname != null" >
+        attrENName = #{attrenname,jdbcType=VARCHAR},
+      </if>
+      <if test="attrtype != null" >
+        attrType = #{attrtype,jdbcType=VARCHAR},
+      </if>
+      <if test="isneedtext != null" >
+        isNeedText = #{isneedtext,jdbcType=VARCHAR},
+      </if>
+      <if test="codegroupid != null" >
+        codeGroupId = #{codegroupid,jdbcType=VARCHAR},
+      </if>
+      <if test="defaultvalue != null" >
+        defaultValue = #{defaultvalue,jdbcType=VARCHAR},
+      </if>
+      <if test="width != null" >
+        width = #{width,jdbcType=INTEGER},
+      </if>
+      <if test="height != null" >
+        height = #{height,jdbcType=INTEGER},
+      </if>
+      <if test="distanceleft != null" >
+        distanceLeft = #{distanceleft,jdbcType=INTEGER},
+      </if>
+      <if test="distancetop != null" >
+        distanceTop = #{distancetop,jdbcType=INTEGER},
+      </if>
+      <if test="istableshow != null" >
+        isTableShow = #{istableshow,jdbcType=VARCHAR},
+      </if>
+      <if test="ismustfill != null" >
+        isMustFill = #{ismustfill,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="UdaAttr" >
+    update udaattr
+    set groupId = #{groupid,jdbcType=INTEGER},
+      attrName = #{attrname,jdbcType=VARCHAR},
+      attrENName = #{attrenname,jdbcType=VARCHAR},
+      attrType = #{attrtype,jdbcType=VARCHAR},
+      isNeedText = #{isneedtext,jdbcType=VARCHAR},
+      codeGroupId = #{codegroupid,jdbcType=VARCHAR},
+      defaultValue = #{defaultvalue,jdbcType=VARCHAR},
+      width = #{width,jdbcType=INTEGER},
+      height = #{height,jdbcType=INTEGER},
+      distanceLeft = #{distanceleft,jdbcType=INTEGER},
+      distanceTop = #{distancetop,jdbcType=INTEGER},
+      isTableShow = #{istableshow,jdbcType=VARCHAR},
+      isMustFill = #{ismustfill,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

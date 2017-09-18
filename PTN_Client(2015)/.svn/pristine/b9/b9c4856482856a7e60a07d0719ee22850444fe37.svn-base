@@ -1,0 +1,18 @@
+package com.nms.db.dao.perform;
+
+import com.nms.db.bean.perform.PerformanceTaskInfo;
+
+
+public interface PerformanceTaskInfoMapper {
+    int deleteByPrimaryKey(Integer id);
+
+    int insert(PerformanceTaskInfo record);
+
+    int insertSelective(PerformanceTaskInfo record);
+
+    PerformanceTaskInfo selectByPrimaryKey(Integer id);
+
+    int updateByPrimaryKeySelective(PerformanceTaskInfo record);
+
+    int updateByPrimaryKey(PerformanceTaskInfo record);
+}

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nms.db.dao.system.loginlog.LoginLogMapper" >
+   <sql id="Base_Column_List" >
+    id, user_id, loginTime, outTime, IP, state, loginState, logoutState
+  </sql>
+  
+   <insert id="insertLoginLog" parameterType="LoginLog" useGeneratedKeys="true" keyProperty="id">
+    insert into login_log (user_id, loginTime,outTime, IP, state,loginState, logoutState)
+    values (#{user_id,jdbcType=INTEGER}, #{loginTime,jdbcType=VARCHAR}, #{outTime,jdbcType=VARCHAR}, #{IP,jdbcType=VARCHAR}, 
+    #{state,jdbcType=INTEGER}, #{loginState,jdbcType=INTEGER}, #{logoutState,jdbcType=INTEGER})
+  </insert>
+ 
+ <update id="updateExitLoginLog" parameterType="LoginLog" >
+    update login_log
+    <set >    
+        outTime = #{outTime,jdbcType=VARCHAR},
+        logoutState = #{logoutState,jdbcType=INTEGER}
+    </set>
+    <where>
+      <if test="id >0">id = #{id}</if>
+      <if test="user_id >0">and user_id = #{user_id}</if>
+      <if test="loginTime !=null and loginTime !='' ">and loginTime = #{loginTime}</if>
+    </where>
+ 
+  </update>
+  
+   <select id="findState" resultType="LoginLog" parameterType="map" >
+    select id,user_id,loginTime,outTime,state,loginState,logoutState from login_log  where 1=1
+     <if test="loginLog.user_id>0" >
+       <choose>
+        <when test="maxId==4">
+           and user_id= 1 order by loginTime DESC LIMIT 0,#{maxId}
+        </when>
+        <when test="maxId==1">
+           and user_id= 1 order by loginTime DESC LIMIT 0,#{maxId}
+        </when>
+          <when test="maxId !=1 and maxId!=4">
+           and user_id= 1
+        </when>
+      </choose>   
+     </if>
+  </select>
+  
+ 
+ 
+</mapper>

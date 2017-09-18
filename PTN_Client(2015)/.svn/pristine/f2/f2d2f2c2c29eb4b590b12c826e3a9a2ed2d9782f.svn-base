@@ -1,0 +1,19 @@
+package com.nms.db.dao.system;
+
+import com.nms.db.bean.system.UdaGroup;
+
+
+
+public interface UdaGroupMapper {
+    int deleteByPrimaryKey(Integer id);
+
+    int insert(UdaGroup record);
+
+    int insertSelective(UdaGroup record);
+
+    UdaGroup selectByPrimaryKey(Integer id);
+
+    int updateByPrimaryKeySelective(UdaGroup record);
+
+    int updateByPrimaryKey(UdaGroup record);
+}

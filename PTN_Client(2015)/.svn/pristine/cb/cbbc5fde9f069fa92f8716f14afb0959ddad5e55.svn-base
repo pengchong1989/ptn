@@ -1,0 +1,18 @@
+package com.nms.db.dao.ptn.clock;
+
+import com.nms.db.bean.ptn.clock.TimeManageInfo;
+
+
+public interface TimeManageInfoMapper {
+    int deleteByPrimaryKey(Integer id);
+
+    int insert(TimeManageInfo record);
+
+    int insertSelective(TimeManageInfo record);
+
+    TimeManageInfo selectByPrimaryKey(Integer id);
+
+    int updateByPrimaryKeySelective(TimeManageInfo record);
+
+    int updateByPrimaryKey(TimeManageInfo record);
+}

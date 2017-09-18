@@ -1,0 +1,753 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nms.db.dao.ptn.path.tunnel.TunnelMapper" >
+  <resultMap id="BaseResultMap" type="com.nms.db.bean.ptn.path.tunnel.Tunnel" >
+    <id column="tunnelId" property="tunnelId" jdbcType="INTEGER" />
+    <result column="tunnelName" property="tunnelName" jdbcType="VARCHAR" />
+    <result column="tunnelType" property="tunnelType" jdbcType="VARCHAR" />
+    <result column="tunnelStatus" property="tunnelStatus" jdbcType="INTEGER" />
+    <result column="bandwidth" property="bandwidth" jdbcType="INTEGER" />
+    <result column="aSiteId" property="aSiteId" jdbcType="INTEGER" />
+    <result column="zSiteId" property="zSiteId" jdbcType="INTEGER" />
+    <result column="aPortId" property="aPortId" jdbcType="INTEGER" />
+    <result column="zPortId" property="zPortId" jdbcType="INTEGER" />
+    <result column="direction" property="direction" jdbcType="VARCHAR" />
+    <result column="createTime" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="createUser" property="createUser" jdbcType="VARCHAR" />
+    <result column="isReverse" property="isReverse" jdbcType="INTEGER" />
+    <result column="protectTunnelId" property="protectTunnelId" jdbcType="INTEGER" />
+    <result column="protectType" property="protectType" jdbcType="INTEGER" />
+    <result column="protectTunnelName" property="protectTunnelName" jdbcType="VARCHAR" />
+    <result column="isSingle" property="isSingle" jdbcType="INTEGER" />
+    <result column="jobStatus" property="jobStatus" jdbcType="VARCHAR" />
+    <result column="waittime" property="waittime" jdbcType="INTEGER" />
+    <result column="delaytime" property="delaytime" jdbcType="INTEGER" />
+    <result column="apsenable" property="apsenable" jdbcType="INTEGER" />
+    <result column="position" property="position" jdbcType="INTEGER" />
+    <result column="protectBack" property="protectBack" jdbcType="INTEGER" />
+    <result column="aprotectId" property="aprotectId" jdbcType="INTEGER" />
+    <result column="zprotectId" property="zprotectId" jdbcType="INTEGER" />
+    <result column="sncpIds" property="sncpIds" jdbcType="VARCHAR" />
+    <result column="inBandwidthControl" property="inBandwidthControl" jdbcType="INTEGER" />
+    <result column="outBandwidthControl" property="outBandwidthControl" jdbcType="INTEGER" />
+    <result column="aVlanEnable" property="aVlanEnable" jdbcType="INTEGER" />
+    <result column="aOutVlanValue" property="aOutVlanValue" jdbcType="INTEGER" />
+    <result column="aTp_id" property="aTp_id" jdbcType="INTEGER" />
+    <result column="zVlanEnable" property="zVlanEnable" jdbcType="INTEGER" />
+    <result column="zOutVlanValue" property="zOutVlanValue" jdbcType="INTEGER" />
+    <result column="zTp_id" property="zTp_id" jdbcType="INTEGER" />
+    <result column="sourceMac" property="sourceMac" jdbcType="VARCHAR" />
+    <result column="endMac" property="endMac" jdbcType="VARCHAR" />
+    <result column="snmpTunnelName" property="snmpTunnelName" jdbcType="VARCHAR" />
+    <result column="aSiteName" property="showSiteAname" jdbcType="VARCHAR" />
+    <result column="zSiteName" property="showSiteZname" jdbcType="VARCHAR" />
+    <result column="aPortName" property="showPortAname" jdbcType="VARCHAR" />
+    <result column="zPortName" property="showPortZname" jdbcType="VARCHAR" />
+	<result column="atunnelbusinessid" property="aprotectId" jdbcType="INTEGER" />
+    <result column="ztunnelbusinessid" property="zprotectId" jdbcType="INTEGER" />  
+  </resultMap>
+  <sql id="Base_Column_List" >
+    tunnelId, tunnelName, tunnelType, tunnelStatus, bandwidth, aSiteId, zSiteId, aPortId, 
+    zPortId, direction, createTime, createUser, isReverse, protectTunnelId, protectType, 
+    protectTunnelName, isSingle, jobStatus, waittime, delaytime, apsenable, position, 
+    protectBack, aprotectId, zprotectId, sncpIds, inBandwidthControl, outBandwidthControl, 
+    aVlanEnable, aOutVlanValue, aTp_id, zVlanEnable, zOutVlanValue, zTp_id, sourceMac, 
+    endMac, snmpTunnelName
+  </sql>
+  <select id="selectByPrimaryKey" resultType="com.nms.db.bean.ptn.path.tunnel.Tunnel" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from tunnel
+    where tunnelId = #{tunnelId,jdbcType=INTEGER}
+  </select>
+  <select id="queryBySiteIdAndPortId" resultType="Tunnel" parameterType="Tunnel">
+   select * from tunnel t where t.tunnelId  in ( select lag.tunnelId from lspinfo lag where (lag.asiteid=#{aSiteId} and lag.aPortId =#{aPortId}) 
+   OR (lag.zsiteid=#{aSiteId} and lag.zPortId =#{aPortId}))
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from tunnel
+    where tunnelId = #{tunnelid,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.nms.db.bean.ptn.path.tunnel.Tunnel" >
+    insert into tunnel (tunnelId, tunnelName, tunnelType, 
+      tunnelStatus, bandwidth, aSiteId, 
+      zSiteId, aPortId, zPortId, 
+      direction, createTime, createUser, 
+      isReverse, protectTunnelId, protectType, 
+      protectTunnelName, isSingle, jobStatus, 
+      waittime, delaytime, apsenable, 
+      position, protectBack, aprotectId, 
+      zprotectId, sncpIds, inBandwidthControl, 
+      outBandwidthControl, aVlanEnable, aOutVlanValue, 
+      aTp_id, zVlanEnable, zOutVlanValue, 
+      zTp_id, sourceMac, endMac, 
+      snmpTunnelName)
+    values (#{tunnelid,jdbcType=INTEGER}, #{tunnelname,jdbcType=VARCHAR}, #{tunneltype,jdbcType=VARCHAR}, 
+      #{tunnelstatus,jdbcType=INTEGER}, #{bandwidth,jdbcType=INTEGER}, #{asiteid,jdbcType=INTEGER}, 
+      #{zsiteid,jdbcType=INTEGER}, #{aportid,jdbcType=INTEGER}, #{zportid,jdbcType=INTEGER}, 
+      #{direction,jdbcType=VARCHAR}, #{createtime,jdbcType=TIMESTAMP}, #{createuser,jdbcType=VARCHAR}, 
+      #{isreverse,jdbcType=INTEGER}, #{protecttunnelid,jdbcType=INTEGER}, #{protecttype,jdbcType=INTEGER}, 
+      #{protecttunnelname,jdbcType=VARCHAR}, #{issingle,jdbcType=INTEGER}, #{jobstatus,jdbcType=VARCHAR}, 
+      #{waittime,jdbcType=INTEGER}, #{delaytime,jdbcType=INTEGER}, #{apsenable,jdbcType=INTEGER}, 
+      #{position,jdbcType=INTEGER}, #{protectback,jdbcType=INTEGER}, #{aprotectid,jdbcType=INTEGER}, 
+      #{zprotectid,jdbcType=INTEGER}, #{sncpids,jdbcType=VARCHAR}, #{inbandwidthcontrol,jdbcType=INTEGER}, 
+      #{outbandwidthcontrol,jdbcType=INTEGER}, #{avlanenable,jdbcType=INTEGER}, #{aoutvlanvalue,jdbcType=INTEGER}, 
+      #{atpId,jdbcType=INTEGER}, #{zvlanenable,jdbcType=INTEGER}, #{zoutvlanvalue,jdbcType=INTEGER}, 
+      #{ztpId,jdbcType=INTEGER}, #{sourcemac,jdbcType=VARCHAR}, #{endmac,jdbcType=VARCHAR}, 
+      #{snmptunnelname,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.nms.db.bean.ptn.path.tunnel.Tunnel" >
+    insert into tunnel
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="tunnelid != null" >
+        tunnelId,
+      </if>
+      <if test="tunnelname != null" >
+        tunnelName,
+      </if>
+      <if test="tunneltype != null" >
+        tunnelType,
+      </if>
+      <if test="tunnelstatus != null" >
+        tunnelStatus,
+      </if>
+      <if test="bandwidth != null" >
+        bandwidth,
+      </if>
+      <if test="asiteid != null" >
+        aSiteId,
+      </if>
+      <if test="zsiteid != null" >
+        zSiteId,
+      </if>
+      <if test="aportid != null" >
+        aPortId,
+      </if>
+      <if test="zportid != null" >
+        zPortId,
+      </if>
+      <if test="direction != null" >
+        direction,
+      </if>
+      <if test="createtime != null" >
+        createTime,
+      </if>
+      <if test="createuser != null" >
+        createUser,
+      </if>
+      <if test="isreverse != null" >
+        isReverse,
+      </if>
+      <if test="protecttunnelid != null" >
+        protectTunnelId,
+      </if>
+      <if test="protecttype != null" >
+        protectType,
+      </if>
+      <if test="protecttunnelname != null" >
+        protectTunnelName,
+      </if>
+      <if test="issingle != null" >
+        isSingle,
+      </if>
+      <if test="jobstatus != null" >
+        jobStatus,
+      </if>
+      <if test="waittime != null" >
+        waittime,
+      </if>
+      <if test="delaytime != null" >
+        delaytime,
+      </if>
+      <if test="apsenable != null" >
+        apsenable,
+      </if>
+      <if test="position != null" >
+        position,
+      </if>
+      <if test="protectback != null" >
+        protectBack,
+      </if>
+      <if test="aprotectid != null" >
+        aprotectId,
+      </if>
+      <if test="zprotectid != null" >
+        zprotectId,
+      </if>
+      <if test="sncpids != null" >
+        sncpIds,
+      </if>
+      <if test="inbandwidthcontrol != null" >
+        inBandwidthControl,
+      </if>
+      <if test="outbandwidthcontrol != null" >
+        outBandwidthControl,
+      </if>
+      <if test="avlanenable != null" >
+        aVlanEnable,
+      </if>
+      <if test="aoutvlanvalue != null" >
+        aOutVlanValue,
+      </if>
+      <if test="atpId != null" >
+        aTp_id,
+      </if>
+      <if test="zvlanenable != null" >
+        zVlanEnable,
+      </if>
+      <if test="zoutvlanvalue != null" >
+        zOutVlanValue,
+      </if>
+      <if test="ztpId != null" >
+        zTp_id,
+      </if>
+      <if test="sourcemac != null" >
+        sourceMac,
+      </if>
+      <if test="endmac != null" >
+        endMac,
+      </if>
+      <if test="snmptunnelname != null" >
+        snmpTunnelName,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="tunnelid != null" >
+        #{tunnelid,jdbcType=INTEGER},
+      </if>
+      <if test="tunnelname != null" >
+        #{tunnelname,jdbcType=VARCHAR},
+      </if>
+      <if test="tunneltype != null" >
+        #{tunneltype,jdbcType=VARCHAR},
+      </if>
+      <if test="tunnelstatus != null" >
+        #{tunnelstatus,jdbcType=INTEGER},
+      </if>
+      <if test="bandwidth != null" >
+        #{bandwidth,jdbcType=INTEGER},
+      </if>
+      <if test="asiteid != null" >
+        #{asiteid,jdbcType=INTEGER},
+      </if>
+      <if test="zsiteid != null" >
+        #{zsiteid,jdbcType=INTEGER},
+      </if>
+      <if test="aportid != null" >
+        #{aportid,jdbcType=INTEGER},
+      </if>
+      <if test="zportid != null" >
+        #{zportid,jdbcType=INTEGER},
+      </if>
+      <if test="direction != null" >
+        #{direction,jdbcType=VARCHAR},
+      </if>
+      <if test="createtime != null" >
+        #{createtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createuser != null" >
+        #{createuser,jdbcType=VARCHAR},
+      </if>
+      <if test="isreverse != null" >
+        #{isreverse,jdbcType=INTEGER},
+      </if>
+      <if test="protecttunnelid != null" >
+        #{protecttunnelid,jdbcType=INTEGER},
+      </if>
+      <if test="protecttype != null" >
+        #{protecttype,jdbcType=INTEGER},
+      </if>
+      <if test="protecttunnelname != null" >
+        #{protecttunnelname,jdbcType=VARCHAR},
+      </if>
+      <if test="issingle != null" >
+        #{issingle,jdbcType=INTEGER},
+      </if>
+      <if test="jobstatus != null" >
+        #{jobstatus,jdbcType=VARCHAR},
+      </if>
+      <if test="waittime != null" >
+        #{waittime,jdbcType=INTEGER},
+      </if>
+      <if test="delaytime != null" >
+        #{delaytime,jdbcType=INTEGER},
+      </if>
+      <if test="apsenable != null" >
+        #{apsenable,jdbcType=INTEGER},
+      </if>
+      <if test="position != null" >
+        #{position,jdbcType=INTEGER},
+      </if>
+      <if test="protectback != null" >
+        #{protectback,jdbcType=INTEGER},
+      </if>
+      <if test="aprotectid != null" >
+        #{aprotectid,jdbcType=INTEGER},
+      </if>
+      <if test="zprotectid != null" >
+        #{zprotectid,jdbcType=INTEGER},
+      </if>
+      <if test="sncpids != null" >
+        #{sncpids,jdbcType=VARCHAR},
+      </if>
+      <if test="inbandwidthcontrol != null" >
+        #{inbandwidthcontrol,jdbcType=INTEGER},
+      </if>
+      <if test="outbandwidthcontrol != null" >
+        #{outbandwidthcontrol,jdbcType=INTEGER},
+      </if>
+      <if test="avlanenable != null" >
+        #{avlanenable,jdbcType=INTEGER},
+      </if>
+      <if test="aoutvlanvalue != null" >
+        #{aoutvlanvalue,jdbcType=INTEGER},
+      </if>
+      <if test="atpId != null" >
+        #{atpId,jdbcType=INTEGER},
+      </if>
+      <if test="zvlanenable != null" >
+        #{zvlanenable,jdbcType=INTEGER},
+      </if>
+      <if test="zoutvlanvalue != null" >
+        #{zoutvlanvalue,jdbcType=INTEGER},
+      </if>
+      <if test="ztpId != null" >
+        #{ztpId,jdbcType=INTEGER},
+      </if>
+      <if test="sourcemac != null" >
+        #{sourcemac,jdbcType=VARCHAR},
+      </if>
+      <if test="endmac != null" >
+        #{endmac,jdbcType=VARCHAR},
+      </if>
+      <if test="snmptunnelname != null" >
+        #{snmptunnelname,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.nms.db.bean.ptn.path.tunnel.Tunnel" >
+    update tunnel
+    <set >
+      <if test="tunnelName != null" >
+        tunnelName = #{tunnelName,jdbcType=VARCHAR},
+      </if>
+      <if test="tunnelType != null" >
+        tunnelType = #{tunnelType,jdbcType=VARCHAR},
+      </if>
+      <if test="tunnelStatus != null" >
+        tunnelStatus = #{tunnelStatus,jdbcType=INTEGER},
+      </if>
+      <if test="bandwidth != null" >
+        bandwidth = #{bandwidth,jdbcType=INTEGER},
+      </if>
+      <if test="aSiteId != null" >
+        aSiteId = #{aSiteId,jdbcType=INTEGER},
+      </if>
+      <if test="zSiteId != null" >
+        zSiteId = #{zSiteId,jdbcType=INTEGER},
+      </if>
+      <if test="aPortId != null" >
+        aPortId = #{aPortId,jdbcType=INTEGER},
+      </if>
+      <if test="zPortId != null" >
+        zPortId = #{zPortId,jdbcType=INTEGER},
+      </if>
+      <if test="direction != null" >
+        direction = #{direction,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        createTime = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createUser != null" >
+        createUser = #{createUser,jdbcType=VARCHAR},
+      </if>
+      <if test="isReverse != null" >
+        isReverse = #{isReverse,jdbcType=INTEGER},
+      </if>
+      <if test="protectTunnelId != null" >
+        protectTunnelId = #{protectTunnelId,jdbcType=INTEGER},
+      </if>
+      <if test="protectType != null" >
+        protectType = #{protectType,jdbcType=INTEGER},
+      </if>
+      <if test="protectTunnelName != null" >
+        protectTunnelName = #{protectTunnelName,jdbcType=VARCHAR},
+      </if>
+      <if test="isSingle != null" >
+        isSingle = #{isSingle,jdbcType=INTEGER},
+      </if>
+      <if test="jobStatus != null" >
+        jobStatus = #{jobStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="waittime != null" >
+        waittime = #{waittime,jdbcType=INTEGER},
+      </if>
+      <if test="delaytime != null" >
+        delaytime = #{delaytime,jdbcType=INTEGER},
+      </if>
+      <if test="apsenable != null" >
+        apsenable = #{apsenable,jdbcType=INTEGER},
+      </if>
+      <if test="position != null" >
+        position = #{position,jdbcType=INTEGER},
+      </if>
+      <if test="protectBack != null" >
+        protectBack = #{protectBack,jdbcType=INTEGER},
+      </if>
+      <if test="aprotectId != null" >
+        aprotectId = #{aprotectId,jdbcType=INTEGER},
+      </if>
+      <if test="zprotectId != null" >
+        zprotectId = #{zprotectId,jdbcType=INTEGER},
+      </if>
+      <if test="sncpIds != null" >
+        sncpIds = #{sncpIds,jdbcType=VARCHAR},
+      </if>
+      <if test="inBandwidthControl != null" >
+        inBandwidthControl = #{inBandwidthControl,jdbcType=INTEGER},
+      </if>
+      <if test="outBandwidthControl != null" >
+        outBandwidthControl = #{outBandwidthControl,jdbcType=INTEGER},
+      </if>
+      <if test="aVlanEnable != null" >
+        aVlanEnable = #{aVlanEnable,jdbcType=INTEGER},
+      </if>
+      <if test="aOutVlanValue != null" >
+        aOutVlanValue = #{aOutVlanValue,jdbcType=INTEGER},
+      </if>
+      <if test="aTp_id != null" >
+        aTp_id = #{aTp_id,jdbcType=INTEGER},
+      </if>
+      <if test="zVlanEnable != null" >
+        zVlanEnable = #{zVlanEnable,jdbcType=INTEGER},
+      </if>
+      <if test="zOutVlanValue != null" >
+        zOutVlanValue = #{zOutVlanValue,jdbcType=INTEGER},
+      </if>
+      <if test="zTp_id != null" >
+        zTp_id = #{zTp_id,jdbcType=INTEGER},
+      </if>
+      <if test="sourceMac != null" >
+        sourceMac = #{sourceMac,jdbcType=VARCHAR},
+      </if>
+      <if test="endMac != null" >
+        endMac = #{endMac,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where tunnelId = #{tunnelId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.nms.db.bean.ptn.path.tunnel.Tunnel" >
+    update tunnel
+    set tunnelName = #{tunnelName,jdbcType=VARCHAR},
+      tunnelType = #{tunnelType,jdbcType=VARCHAR},
+      tunnelStatus = #{tunnelStatus,jdbcType=INTEGER},
+      bandwidth = #{bandwidth,jdbcType=INTEGER},
+      aSiteId = #{aSiteId,jdbcType=INTEGER},
+      zSiteId = #{zSiteId,jdbcType=INTEGER},
+      aPortId = #{aPortId,jdbcType=INTEGER},
+      zPortId = #{zPortId,jdbcType=INTEGER},
+      direction = #{direction,jdbcType=VARCHAR},
+      createTime = #{createTime,jdbcType=TIMESTAMP},
+      createUser = #{createUser,jdbcType=VARCHAR},
+      isReverse = #{isReverse,jdbcType=INTEGER},
+      protectTunnelId = #{protectTunnelId,jdbcType=INTEGER},
+      protectType = #{protectType,jdbcType=INTEGER},
+      protectTunnelName = #{protectTunnelName,jdbcType=VARCHAR},
+      isSingle = #{isSingle,jdbcType=INTEGER},
+      jobStatus = #{jobStatus,jdbcType=VARCHAR},
+      waittime = #{waittime,jdbcType=INTEGER},
+      delaytime = #{delaytime,jdbcType=INTEGER},
+      apsenable = #{apsenable,jdbcType=INTEGER},
+      position = #{position,jdbcType=INTEGER},
+      protectBack = #{protectBack,jdbcType=INTEGER},
+      aprotectId = #{aprotectId,jdbcType=INTEGER},
+      zprotectId = #{zprotectId,jdbcType=INTEGER},
+      sncpIds = #{sncpIds,jdbcType=VARCHAR},
+      inBandwidthControl = #{inBandwidthControl,jdbcType=INTEGER},
+      outBandwidthControl = #{outBandwidthControl,jdbcType=INTEGER},
+      aVlanEnable = #{aVlanEnable,jdbcType=INTEGER},
+      aOutVlanValue = #{aOutVlanValue,jdbcType=INTEGER},
+      aTp_id = #{aTp_id,jdbcType=INTEGER},
+      zVlanEnable = #{zVlanEnable,jdbcType=INTEGER},
+      zOutVlanValue = #{zOutVlanValue,jdbcType=INTEGER},
+      zTp_id = #{zTp_id,jdbcType=INTEGER},
+      sourceMac = #{sourceMac,jdbcType=VARCHAR},
+      endMac = #{endMac,jdbcType=VARCHAR}
+    where tunnelId = #{tunnelId,jdbcType=INTEGER}
+  </update>
+  <select id="selectAll" resultType="com.nms.db.bean.ptn.path.tunnel.Tunnel"  >
+    select 
+    <include refid="Base_Column_List" />
+    from tunnel
+  </select>
+  
+   <select id="quertyWHNodeBySite" resultType="Tunnel" parameterType="java.lang.Integer">
+  SELECT 
+  <include refid="Base_Column_List" />
+   FROM tunnel t WHERE 
+  ( tunnelId IN ( SELECT lsp.tunnelId FROM lspinfo lsp WHERE ( lsp.asiteid =#{siteId} AND lsp.aPortId != 0 ) OR ( lsp.zsiteid =#{siteId} AND lsp.zportid != 0 )) ) OR ( tunnelId IN ( SELECT lsp.tunnelId FROM lspinfo lsp WHERE ( lsp.asiteid =#{siteId} AND lsp.aPortId != 0 AND lsp.aSiteId != t.aSiteId )
+   OR ( lsp.zsiteid =#{siteId} AND lsp.zportid != 0 AND lsp.zSiteId != t.zSiteId )))
+  </select>
+  
+  <select id="queryPort" resultType="Tunnel" parameterType="map">
+  select 
+  <include refid="Base_Column_List" />
+   from tunnel where tunnelId IN 
+  (select tunnelId from lspinfo where aPortId=#{portId1} OR aPortId=#{portId2}  OR zPortId=#{portId1} or zPortId=#{portId2})
+  </select>
+  
+  <select id="queryByCondition" resultMap="BaseResultMap" parameterType="Tunnel">
+  	select t.zVlanEnable,t.zOutVlanValue,t.zTp_id,t.aVlanEnable,t.aOutVlanValue,t.aTp_id,t.sourceMac,t.endMac,t.inBandwidthControl,t.outBandwidthControl,t.waittime,t.delaytime,t.apsenable, t.isSingle,t.jobStatus, t.tunnelId, t.tunnelName, t.tunnelType, t.tunnelStatus, t.bandwidth, t.aSiteId, t.zSiteId, t.aPortId, t.zPortId, t.direction, t.isReverse, t.createTime, t.createUser, sa.CellId AS aSiteName, sz.CellId AS zSiteName, pa.portName AS aPortName, pz.portName AS zPortName ,t.protectTunnelId,t.protectTunnelName ,t.protectType ,t.position 
+	 ,t.protectBack,t.sncpIds FROM site_inst sa, site_inst sz, port_inst pa, port_inst pz, tunnel t WHERE t.aSiteId = sa.site_inst_id and t.zSiteId = sz.site_inst_id and t.aPortId = pa.portId and t.zPortId = pz.portId and t.tunnelId = t.tunnelId and tunneltype!=0 and t.isSingle=0
+  	<if test="tunnelId>0" >
+        and t.tunnelId = #{tunnelId} 
+    </if>
+    <if test="tunnelType != null and tunnelType != '' " >
+        and t.tunnelType = #{tunnelType} 
+    </if>
+    <if test="tunnelName != null and tunnelName != '' " >
+        and t.tunnelName like #{tunnelName} 
+    </if>
+    <if test="aSiteId>0" >
+        and t.aSiteId = #{aSiteId} 
+    </if>
+    <if test="zSiteId>0" >
+        and t.zSiteId = #{zSiteId} 
+    </if>
+    <if test="aPortId>0" >
+        and t.aPortId = #{aPortId} 
+    </if>
+    <if test="zPortId>0" >
+        and t.zPortId = #{zPortId} 
+    </if>
+    <if test="protectTunnelId>0" >
+        and t.protectTunnelId = #{protectTunnelId} 
+    </if>
+    <if test="createUser != null and createUser != '' " >
+        and t.createUser = #{createUser} 
+    </if>
+    <if test="tunnelStatus>0" >
+        and t.tunnelStatus = #{tunnelStatus} 
+    </if>
+    
+    <if test="createTime != null and createTime != ''" >
+        and t.createTime = #{createTime} 
+    </if>
+   
+  </select>
+   
+   
+  <select id="queryByCondition_nojoin" resultType="Tunnel" parameterType="Tunnel">
+ 	 select 
+  		<include refid="Base_Column_List" />
+  	 from tunnel where 1=1 
+  	<if test="tunnelId>0" >
+        and tunnelId = #{tunnelId} 
+    </if>
+    <if test="tunnelName != null and tunnelName != '' " >
+        and tunnelName like #{tunnelName} 
+    </if>
+    <if test="aSiteId>0" >
+        and aSiteId = #{aSiteId} 
+    </if>
+    <if test="zSiteId>0" >
+        and zSiteId = #{zSiteId} 
+    </if>
+    <if test="aPortId>0" >
+        and aPortId = #{aPortId} 
+    </if>
+    <if test="zPortId>0" >
+        and zPortId = #{zPortId} 
+    </if>
+    <if test="protectTunnelId>0" >
+        and protectTunnelId = #{protectTunnelId} 
+    </if>
+    <if test="aprotectId>0 " >
+        and aprotectId = #{aprotectId} 
+    </if>
+    <if test="zprotectId>0 " >
+        and zprotectId = #{zprotectId} 
+    </if>
+    <if test="tunnelStatus>0" >
+        and tunnelStatus = #{tunnelStatus} 
+    </if>
+    
+  </select>
+  
+  <update id="updateStatus" parameterType="Tunnel" >
+    update tunnel set tunnelStatus = #{tunnelstatus,jdbcType=INTEGER},jobStatus = #{jobstatus,jdbcType=VARCHAR},
+    sourceMac = #{sourcemac,jdbcType=VARCHAR},endMac = #{endmac,jdbcType=VARCHAR} 
+    where tunnelId = #{tunnelid,jdbcType=INTEGER}
+  </update>
+  
+  <select id="nameRepetition" resultType="java.lang.Integer" parameterType="map">
+ 	select count(*) as selectcount from tunnel where tunnelName = #{afterName} 
+  	<if test="siteId>0" >
+        and (asiteId = #{siteId} or zsiteId= #{siteId})
+    </if>
+    <if test="beforeName != null and beforeName != '' " >
+        and tunnelName != #{beforeName};
+    </if>
+  </select>
+  
+  <select id="queryByPortIdAndServiceId" resultType="Tunnel"  parameterType="Tunnel">
+	 select * from tunnel t where t.tunnelId  in (( select lag.tunnelId from lspinfo lag where (lag.asiteid=#{0} and lag.atunnelbusinessid =#{1}) OR (lag.zsiteid=#{0} and lag.ztunnelbusinessid =#{1}))) 
+  </select>
+  
+  <select id="queryExistTunnel" resultType="Tunnel" parameterType="Tunnel">
+	 select * from tunnel t where t.tunnelType=#{tunnelType} and t.tunnelStatus=#{tunnelStatus} and t.isSingle=#{isSingle} AND t.waittime=#{waittime} and t.delaytime=#{delaytime} and t.apsenable=#{apsenable} AND ((aSiteId=#{aSiteId} AND aPortId=#{aPortId} AND zSiteId=#{zSiteId} and zPortId=#{zPortId}) OR (aSiteId=#{aSiteId} AND aPortId=#{aPortId} AND zSiteId=#{zSiteId} and zPortId=#{zPortId}))
+  </select>
+  
+  <select id="queryBySiteIdAndProtectId" resultType="Tunnel" >
+	 select * from tunnel  where (asiteid=#{0} and aprotectId =#{1}) OR (zsiteid=#{0} and zprotectId =#{1})
+  </select>
+  
+  <select id="querySNCPbySiteId" resultType="Tunnel" >
+	 select * from tunnel  where isSingle= 0 and (asiteid !=#{0} and zsiteid !=#{0}) and (asiteid !=#{1} and zsiteid !=#{1}) and tunnelType= #{3}
+  </select>
+  
+  <select id="selectBySiteId" resultType="Tunnel" parameterType="java.lang.Integer" >
+	 select * from tunnel t where t.tunnelStatus=1 and t.isSingle=0 and t.aSiteId=#{siteId} or t.zSiteId=#{siteId}
+  </select>
+  
+  <select id="checkPortUsable" resultType="java.lang.Integer" parameterType="java.lang.Integer" >
+	 select tunnelId from tunnel where aportid=#{portId} or zportid=#{portId}
+  </select>
+  
+  <select id="selectByASiteIdAndZSiteId" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+	   SELECT t.zVlanEnable,t.zOutVlanValue,t.zTp_id,t.aVlanEnable,t.aOutVlanValue,t.aTp_id,t.sourceMac,t.endMac,t.inBandwidthControl,
+	   t.outBandwidthControl,t.waittime,t.delaytime,t.apsenable, t.isSingle,t.jobStatus, t.tunnelId, t.tunnelName, t.tunnelType, t.tunnelStatus, 
+	   t.bandwidth, t.aSiteId, t.zSiteId, t.aPortId, t.zPortId, t.direction, t.isReverse, t.createTime, t.createUser, sa.CellId AS aSiteName, 
+	   sz.CellId AS zSiteName, pa.portName AS aPortName, pz.portName AS zPortName ,t.protectTunnelId,t.protectTunnelName ,t.protectType ,t.position ,
+	   t.protectBack,t.sncpIds FROM site_inst sa, site_inst sz, port_inst pa, port_inst pz, tunnel t WHERE t.aSiteId = sa.site_inst_id AND 
+	   t.zSiteId = sz.site_inst_id AND t.aPortId = pa.portId AND t.zPortId = pz.portId AND t.tunnelId = t.tunnelId and tunneltype!='0' 
+	   and t.isSingle='0' and ((t.aSiteId = #{0} and t.zSiteId = #{1}) or (t.aSiteId = #{1} and t.zSiteId = #{0} )) 
+  </select>
+  
+  <select id="queryTunnelBySiteId" resultType="Tunnel" parameterType="java.lang.Integer" >
+	 select * from tunnel t where t.aSiteId=#{siteId} or t.zSiteId=#{siteId}
+  </select>
+  
+  <select id="filterSelectNE" resultType="Tunnel" >
+	SELECT * FROM tunnel t  WHERE ((tunnelId IN (SELECT lsp.tunnelId FROM lspinfo lsp WHERE ( lsp.asiteid = #{siteId} AND lsp.aPortId != 0) OR (lsp.zsiteid = #{siteId} AND lsp.zportid != 0)) AND t.tunneltype != '0') 
+	OR (tunnelId IN (SELECT lsp.tunnelId FROM lspinfo lsp WHERE (lsp.asiteid = #{siteId} AND lsp.aPortId != 0 AND lsp.aSiteId != t.aSiteId)OR (lsp.zsiteid = #{siteId} AND lsp.zportid != 0 AND lsp.zSiteId != t.zSiteId)))) 
+	<if test="tunnel.tunnelName !=null and tunnel.tunnelName !='' " >
+        and  t.tunnelName like  #{tunnel.tunnelName}
+    </if>
+    <if test="tunnel.tunnelType !=null and tunnel.tunnelType !='' " >
+        and  t.tunnelType  = #{tunnel.tunnelType}
+    </if>
+    <if test="tunnel.tunnelStatus>0 " >
+        and  t.tunnelStatus  = #{tunnel.tunnelStatus}
+    </if>
+    <if test="tunnel.cardId>0 and tunnel.aPortId=0" >
+        and (t.tunnelId IN (SELECT lsp.tunnelId FROM lspinfo lsp WHERE lsp.aPortId IN (SELECT p.portid from port_inst p WHERE p.cardid=#{tunnel.cardId} AND p.porttype='NNI')
+             or lsp.zportid IN (SELECT p.portid from port_inst p WHERE p.cardid=#{tunnel.cardId} AND p.porttype='NNI')))
+    </if>
+    <if test="tunnel.aPortId > 0 " >
+        and t.tunnelId IN (SELECT lspinfo.tunnelId FROM lspinfo WHERE lspinfo.aPortId=#{1}.aPortId OR lspinfo.zPortId=#{tunnel.aPortId})
+    </if>
+    <if test="tunnel.role == 'ingress' " >
+        and t.asiteid= #{siteId}
+    </if>
+    <if test="tunnel.role == 'egress' " >
+        and t.zsiteid= #{siteId}
+    </if>
+    <if test="tunnel.role == 'xc' " >
+        and t.zsiteid!=#{siteId} and t.asiteId!=#{siteId}
+    </if>    
+  </select>
+  
+  <select id="filterSelect" resultMap="BaseResultMap" parameterType="Tunnel" >
+	 SELECT t.zVlanEnable,t.zOutVlanValue,t.zTp_id,t.aVlanEnable,t.aOutVlanValue,t.aTp_id,t.sourceMac,t.endMac,t.inBandwidthControl,
+	 t.outBandwidthControl,t.waittime,t.delaytime,t.apsenable, t.isSingle,t.jobStatus, t.tunnelId, t.tunnelName, t.tunnelType, 
+	 t.tunnelStatus, t.bandwidth, t.aSiteId, t.zSiteId, t.aPortId, t.zPortId, t.direction,t.isReverse, t.createTime, t.createUser, 
+	 sa.CellId AS aSiteName, sz.CellId AS zSiteName, pa.portName AS aPortName, pz.portName AS zPortName ,t.protectTunnelId,t.protectTunnelName ,
+	 t.protectType ,t.position ,t.protectBack,t.sncpIds FROM site_inst sa, site_inst sz, port_inst pa, port_inst pz, tunnel t  
+	 WHERE t.aSiteId = sa.site_inst_id AND t.zSiteId = sz.site_inst_id AND t.aPortId = pa.portId AND t.zPortId = pz.portId AND t.tunnelId = t.tunnelId and tunneltype!='0' 
+	 and t.isSingle=#{isSingle} 
+	 <if test="tunnelName !=null and tunnelName !='' " >
+        and  t.tunnelName like  #{tunnelName}
+     </if>
+     <if test="aSiteId>0 and aPortId=0 " >
+        and t.tunnelId IN (SELECT tunnelId FROM lspinfo WHERE lspinfo.aSiteId=#{aSiteId} OR lspinfo.zSiteId=#{aSiteId})
+     </if>
+     <if test="aPortId > 0 " >
+        and t.tunnelId IN (SELECT tunnelId FROM lspinfo WHERE lspinfo.aPortId=#{aPortId} OR lspinfo.zPortId=#{aPortId})
+     </if>
+  </select>
+  
+  <select id="searchWh" resultType="Tunnel" parameterType="java.lang.Integer" >
+	 SELECT * FROM tunnel t WHERE t.isSingle = '1' AND ( tunnelId IN ( SELECT lsp.tunnelId FROM lspinfo lsp WHERE ( lsp.asiteid = #{siteID} AND lsp.aPortId != 0 ) 
+	 OR ( lsp.zsiteid = #{siteID} AND lsp.zportid != 0 )) OR ( tunnelId IN ( SELECT lsp.tunnelId FROM lspinfo lsp WHERE ( lsp.asiteid = #{siteID} AND 
+	 lsp.aPortId != 0 AND lsp.aSiteId != t.aSiteId ) OR ( lsp.zsiteid = #{siteID} AND lsp.zportid != 0 AND lsp.zSiteId != t.zSiteId ))))
+  </select>
+  
+  <insert id="insert_searchWH"  parameterType="java.lang.Integer" >
+	 insert into tunnel (tunnelName,tunnelType,tunnelStatus,bandwidth,aSiteId,zSiteId,aPortId,zPortId,direction,createTime,createUser,isReverse,protectTunnelId,
+	 protectType,protectTunnelName,isSingle,jobStatus,waittime,delaytime,apsenable,position,protectBack,aprotectId,zprotectId,sncpIds,inBandwidthControl,
+	 outBandwidthControl,aVlanEnable,aOutVlanValue,aTp_id,zVlanEnable,zOutVlanValue,zTp_id,sourceMac,endMac,snmpTunnelName) select #{2} tunnelName,
+	 t1.tunnelType,t1.tunnelStatus,t1.bandwidth, t1.aSiteId,t2.zSiteId,t1.aPortId,t2.zPortId,t1.direction,now() createTime,t1.createUser,t1.isReverse ,
+	 t1.protectTunnelId,t1.protectType,t1.protectTunnelName,0 isSingle,t1.jobStatus,t1.waittime,t1.delaytime,t1.apsenable,t1.position,t1.protectBack,t1.aprotectId,
+	 t2.zprotectId,t1.sncpIds,t1.inBandwidthControl,t1.outBandwidthControl,t1.aVlanEnable,t1.aOutVlanValue,t1.aTp_id,t2.aVlanEnable,t2.aOutVlanValue,t2.aTp_id,
+	 t1.sourceMac,t1.endMac,t1.snmpTunnelName from tunnel t1,tunnel t2 where t1.tunnelId in( #{0},#{1} ) and 
+	 t2.tunnelId in( #{0},#{1}) and t1.zSiteId=0 and t2.aSiteId=0 ;
+  </insert>
+  
+  <update id="updateProtectTunnelID" >
+  	update tunnel set protectTunnelId=#{0} where protectTunnelId in #{1}
+  </update>
+  
+  <delete id="deleteByTunnelIds" >
+  	delete form tunnel where tunnelId in #{1}
+  </delete>
+  
+  <select id="queryByportId" resultType="Tunnel" parameterType="java.lang.Integer" >
+ 	 select * from tunnel t where t.aPortId=#{0} or zPortId=#{0}
+  </select>
+  
+  <select id="selectTunnelIdByTunnelName"   >
+ 	 select tunnelId from tunnel t where t.tunnelName like #{tunnelName}
+  </select>
+  
+  <select id="selectTunnelNameBySiteId" resultMap="BaseResultMap" parameterType="java.lang.Integer"  >
+ 	 select t.tunnelname,l.atunnelbusinessid as atunnelbusinessid,l.ztunnelbusinessid as ztunnelbusinessid,
+ 	 l.asiteId as asiteId,l.zsiteId as zsiteId from tunnel t,lspinfo l  where t.tunnelId = l.tunnelId and (l.asiteid = #{0} or l.zsiteid= #{0} )
+  </select>
+  
+  <select id="quertyNodeBySite" resultType="Tunnel" parameterType="java.lang.Integer"  >
+ 	 SELECT * FROM tunnel t WHERE (( tunnelId IN ( SELECT lsp.tunnelId FROM lspinfo lsp WHERE ( lsp.asiteid = #{siteId} AND lsp.aPortId != 0 ) OR 
+ 	 ( lsp.zsiteid = #{siteId} AND lsp.zportid != 0 )) AND t.tunneltype != '0' ) OR ( tunnelId IN ( SELECT lsp.tunnelId FROM lspinfo lsp WHERE 
+ 	 ( lsp.asiteid = #{siteId} AND lsp.aPortId != 0 AND lsp.aSiteId != t.aSiteId ) OR ( lsp.zsiteid = #{siteId} AND lsp.zportid != 0 AND lsp.zSiteId != t.zSiteId ))))
+  </select>
+  
+  <select id="queryBySiteIdAndTunnelId" resultType="Tunnel"  >
+ 	 select * from tunnel t where t.tunnelId  in (select l.tunnelId from lspinfo l where l.tunnelId in ( select lag.tunnelId from lspinfo lag where 
+ 	 (lag.asiteid=#{siteId} and lag.tunnelId =#{tunnelId}) OR (lag.zsiteid=#{siteId} and lag.tunnelId =#{tunnelId})))
+  </select>
+  
+  <select id="quertyNodeByTunnel" resultType="Tunnel"  >
+ 	 SELECT * FROM tunnel t WHERE (( tunnelId IN ( SELECT lsp.tunnelId FROM lspinfo lsp WHERE " + "( lsp.asiteid = ? AND lsp.aPortId != 0 ) OR ( lsp.zsiteid = ? AND lsp.zportid != 0 )) AND t.tunneltype != '0' ) OR " + "( tunnelId IN ( SELECT lsp.tunnelId FROM lspinfo lsp WHERE ( lsp.asiteid = ? AND lsp.aPortId != 0 AND lsp.aSiteId != t.aSiteId ) OR " + "( lsp.zsiteid = ? AND lsp.zportid != 0 AND lsp.zSiteId != t.zSiteId ))))
+  </select>
+  
+  <select id="queryProtectTunnel" resultType="Tunnel" parameterType="Tunnel">
+ 	 select 
+  		<include refid="Base_Column_List" />
+  	 from tunnel where 1=1 
+  	 <if test="tunnelId>0" >
+        and tunnelId = #{tunnelId} 
+    </if>
+  	  <if test="tunnelType !=null and tunnelType=='0'" >
+        and tunnelType = #{tunnelType} 
+    </if>
+    
+     <if test="isSingle==0" >
+        and isSingle = #{isSingle} 
+    </if>
+   </select>
+   
+  <select id="queryBySiteIdAndServiceId" resultType="Tunnel" parameterType="map"  >
+ 	 select * from tunnel t where t.tunnelId  in (( select lag.tunnelId from lspinfo lag where (lag.asiteid=#{siteId} and lag.atunnelbusinessid =#{serviceId}) OR (lag.zsiteid=#{siteId} and lag.ztunnelbusinessid =#{serviceId})))
+  </select>
+   
+</mapper>

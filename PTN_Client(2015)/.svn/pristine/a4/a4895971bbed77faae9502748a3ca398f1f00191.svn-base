@@ -1,0 +1,178 @@
+package com.nms.model.ptn.ecn;
+
+import java.sql.Connection;
+import java.util.List;
+
+import com.nms.db.bean.ptn.ecn.OspfRedistribute;
+import com.nms.db.dao.ptn.ecn.OspfRedistributeDao;
+import com.nms.model.util.ObjectService;
+import com.nms.ui.manager.ExceptionManage;
+
+public class RedistributeService extends ObjectService {
+	public void setConnection(Connection connection) {
+		super.connection = connection;
+	}
+
+	public void setPtnuser(String ptnuser) {
+		super.ptnuser = ptnuser;
+	}
+
+	private OspfRedistributeDao ospfRedistributeDao = new OspfRedistributeDao();
+
+	/**
+	 *创建
+	 * 
+	 * @param OSPFAREAInfo
+	 * @return
+	 * @throws Exception
+	 */
+	public int insert(OspfRedistribute ospfRedistribute) throws Exception {
+		if (ospfRedistribute == null) {
+			throw new Exception("OSPFRedistribute is null");
+		}
+		int ospfId = 1;
+		try {
+			connection.setAutoCommit(false);
+			ospfId = this.ospfRedistributeDao.insert(ospfRedistribute, connection);
+			if(!connection.getAutoCommit()){
+				connection.commit();
+			}
+		} catch (Exception e) {
+			connection.rollback();
+			ExceptionManage.dispose(e,this.getClass());
+		} finally {
+			connection.setAutoCommit(true);
+		}
+		return ospfId;
+	}
+
+	/**
+	 *修改
+	 * 
+	 * @param OSPFAREAInfo
+	 * @return
+	 * @throws Exception
+	 */
+	public int update(OspfRedistribute ospfRedistribute) throws Exception {
+		if (ospfRedistribute == null) {
+			throw new Exception("ospfRedistribute is null");
+		}
+		int ospfId = 0;
+		try {
+			connection.setAutoCommit(false);
+			ospfId = this.ospfRedistributeDao.update(ospfRedistribute, connection);
+			if(!connection.getAutoCommit()){
+				connection.commit();
+			}
+		} catch (Exception e) {
+			connection.rollback();
+			ExceptionManage.dispose(e,this.getClass());
+		} finally {
+			connection.setAutoCommit(true);
+		}
+		return ospfId;
+	}
+
+	/**
+	 *删除
+	 * 
+	 * @param id
+	 * @return
+	 * @throws Exception
+	 */
+	public int delete(OspfRedistribute ospfRedistribute) throws Exception {
+		if (ospfRedistribute == null) {
+			throw new Exception("id is null");
+		}
+		int ospfId = 1;
+		try {
+			connection.setAutoCommit(false);
+			ospfId = this.ospfRedistributeDao.deleteByNeIdAndType(ospfRedistribute, connection);
+			if(!connection.getAutoCommit()){
+				connection.commit();
+			}
+		} catch (Exception e) {
+			connection.rollback();
+			ExceptionManage.dispose(e,this.getClass());
+		} finally {
+			connection.setAutoCommit(true);
+		}
+		return ospfId;
+	}
+
+	/**
+	 * 查询
+	 * 
+	 * @param neId
+	 * @return
+	 * @throws Exception
+	 */
+	public List<OspfRedistribute> queryByNeID(String NeID) throws Exception {
+		if (NeID == null) {
+			throw new Exception("NeID is null");
+		}
+		List<OspfRedistribute> ospfRedistributeList = null;
+		try {
+			ospfRedistributeList = this.ospfRedistributeDao.queryByNeID(NeID, connection);
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		}
+		return ospfRedistributeList;
+	}
+
+	public int queryName(OspfRedistribute ospfRedistribute) throws Exception {
+		if (ospfRedistribute == null) {
+			throw new Exception("ospfRedistribute is null");
+		}
+		int count = 0;
+		try {
+			count = this.ospfRedistributeDao.queryName(ospfRedistribute, connection);
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		}
+		return count;
+	}
+	
+	public List<OspfRedistribute> queryByNeIdAndNameRedistributeType(String neID, String redistributeType) throws Exception {
+		
+		if (neID == null) {
+			throw new Exception("neID is null");
+		}
+		if (redistributeType == null) {
+			throw new Exception("redistributeType is null");
+		}
+		List<OspfRedistribute> ospfRedistributeList = null;
+		try {
+			ospfRedistributeList = this.ospfRedistributeDao.queryByNeIdAndNameRedistributeType(neID, redistributeType, connection);
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		}
+		return ospfRedistributeList;
+	}
+	/**
+	 *修改 激活状态
+	 * 
+	 * @param OSPFAREAInfo
+	 * @return
+	 * @throws Exception
+	 */
+	public int updateStatus(OspfRedistribute ospfRedistribute) throws Exception {
+		if (ospfRedistribute == null) {
+			throw new Exception("ospfRedistribute is null");
+		}
+		int ospfId = 0;
+		try {
+			connection.setAutoCommit(false);
+			ospfId = this.ospfRedistributeDao.updateStatus(ospfRedistribute, connection);
+			if(!connection.getAutoCommit()){
+				connection.commit();
+			}
+		} catch (Exception e) {
+			connection.rollback();
+			ExceptionManage.dispose(e,this.getClass());
+		} finally {
+			connection.setAutoCommit(true);
+		}
+		return ospfId;
+	}
+}

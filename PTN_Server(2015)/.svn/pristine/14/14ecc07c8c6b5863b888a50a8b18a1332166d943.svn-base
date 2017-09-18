@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<driveRoot  xmlns="http://drive.bean.com">
+			<attribute length="1" description="SU ID" value="1" mapping="(1)"/>
+			<attribute length="2" description="VPLS-VS 选择" value="0" mapping="(0)/1/2/3/4/5/6/7/8/9/0AH/0B/0C/0D/0E/0F/10/11/12/13/14/15/16/17/18/19/1A/1B/1C/1D/1E/1F/20/21/22/23/24/25/26/27/28/29/2A/2B/2C/2D/2E/2F/30/31/32/33/34/35/36/37/38/39/3A/3B/3C/3D/3E/3F/40=(无)/VS1/VS2/VS3/VS4/VS5/VS6/VS7/VS8/VS9/VS10/VS11/VS12/VS13/VS14/VS15/VS16/VS17/VS18/VS19/VS20/VS21/VS22/VS23/VS24/VS25/VS26/VS27/VS28/VS29/VS30/VS31/VS32/VS33/VS34/VS35/VS36/VS37/VS38/VS39/VS40/VS41/VS42/VS43/VS44/VS45/VS46/VS47/VS48/VS49/VS50/VS51/VS52/VS53/VS54/VS55/VS56/VS57/VS58/VS59/VS60/VS61/VS62/VS63/VS64"/>
+			<attribute length="1" description="端口选择" value="1" mapping="(1)/2/3/4/5/6/7/8/9/0A/0B/0C/0D/0E/0F/10/11/12/13/14/15/16/17/18/19/1A/1B/1C/1D/1E/1F/20/21/22/23/24/25/26/27/28/29/2A/2B/2C/2D/2E/2F/30/31/32/33/34/35/36/37/38/39/3A/3B/3C/3D/3E/3F/40/41/42/43/44/45/46/47/48/49/4A/4B/4CH=(LAN-ID1)/LAN-ID2/LAN-ID3/LAN-ID4/LAN-ID5/LAN-ID6/LAN-ID7/LAN-ID8/LAN-ID9/LAN-ID10/eLAN1/eLAN2/eLAN3/eLAN4/eLAN5/eLAN6/eLAN7/eLAN8/eLAN9/eLAN10/eLAN11/eLAN12/eLAN13/eLAN14/eLAN15/eLAN16/eLAN17/eLAN18/eLAN19/eLAN20/eLAN21/eLAN22/eLAN23/eLAN24/eLAN25/eLAN26/eLAN27/eLAN28/eLAN29/eLAN30/eLAN31/eLAN32/eLAN33/eLAN34/eLAN35/eLAN36/eLAN37/eLAN38/eLAN39/eLAN40/eLAN41/eLAN42/eLAN43/eLAN44/eLAN45/eLAN46/eLAN47/eLAN48/eLAN49/eLAN50/eLAN51/eLAN52/eLAN53/eLAN54/eLAN55/eLAN56/eLAN57/eLAN58/eLAN59/eLAN60/eLAN61/eLAN62/eLAN63/eLAN64"/>
+			<attribute length="1" description="MAC地址1" value="0" mapping="(00)"/>
+			<attribute length="1" description="MAC地址2" value="0" mapping="(00)"/>
+			<attribute length="1" description="MAC地址3" value="0" mapping="(00)"/>
+			<attribute length="1" description="MAC地址4" value="0" mapping="(00)"/>
+			<attribute length="1" description="MAC地址5" value="0" mapping="(00)"/>
+			<attribute length="1" description="MAC地址6" value="1" mapping="(01)"/>
+			<attribute length="2" description="备用" value="0" mapping="(00)"/>
+</driveRoot>

@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nms.db.dao.perform.PmValueLimiteInfoMapper" >
+  <resultMap id="BaseResultMap" type="PmValueLimiteInfo" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="HighTemp" property="hightemp" jdbcType="INTEGER" />
+    <result column="CRCError" property="crcError" jdbcType="INTEGER" />
+    <result column="packetLose" property="lossNum" jdbcType="INTEGER" />
+    <result column="tmsWorsen" property="tmsWorsen" jdbcType="INTEGER" />
+    <result column="tmsLose" property="tmsLose" jdbcType="INTEGER" />
+    <result column="receiveBadWrap" property="receiveBadWrap" jdbcType="INTEGER" />
+    <result column="align" property="align" jdbcType="INTEGER" />
+    <result column="lowTemp" property="lowTemp" jdbcType="INTEGER" />    
+    <result column="tmpWorsen" property="tmpWorsen" jdbcType="INTEGER" />
+    <result column="tmpLose" property="tmpLose" jdbcType="INTEGER" />
+    <result column="tmcWorsen" property="tmcWorsen" jdbcType="INTEGER" />
+    <result column="tmcLose" property="tmcLose" jdbcType="INTEGER" />
+    <result column="siteId" property="siteId" jdbcType="INTEGER" />
+    <result column="es" property="es" jdbcType="INTEGER" />
+    <result column="SES" property="SES" jdbcType="INTEGER" />
+    <result column="BBE" property="BBE" jdbcType="INTEGER" />
+    <result column="CSES" property="CSES" jdbcType="INTEGER" />   
+    <result column="SFPLaserBias" property="SFPLaserBias" jdbcType="INTEGER" />
+    <result column="SFPTxPOW" property="SFPTxPOW" jdbcType="INTEGER" />
+    <result column="SFPRxPOW" property="SFPRxPOW" jdbcType="INTEGER" />
+    <result column="SFPTemp" property="SFPTemp" jdbcType="INTEGER" />
+    <result column="SFPAlarmTemp" property="SFPAlarmTemp" jdbcType="INTEGER" />
+    <result column="FEES" property="FEES" jdbcType="INTEGER" />
+    <result column="FESES" property="FESES" jdbcType="INTEGER" />
+    <result column="FEUAS" property="FEUAS" jdbcType="INTEGER" />
+    <result column="FECSES" property="FECSES" jdbcType="INTEGER" />
+    <result column="cipReBandwidth" property="cipReBandwidth" jdbcType="INTEGER" />
+    <result column="cipSeBandwidth" property="cipSeBandwidth" jdbcType="INTEGER" />    
+    <result column="EthPackLosNear" property="EthPackLosNear" jdbcType="INTEGER" />
+    <result column="EthPackLosFar" property="EthPackLosFar" jdbcType="INTEGER" />
+    <result column="EthPackDelayMs" property="EthPackDelayMs" jdbcType="INTEGER" />
+    <result column="TmsRxCv" property="TmsRxCv" jdbcType="INTEGER" />
+    <result column="TmsTxCv" property="TmsTxCv" jdbcType="INTEGER" />    
+    <result column="FeJOT2BadDatagram" property="FeJOT2BadDatagram" jdbcType="INTEGER" />
+    <result column="FeReBadPaPerecent" property="FeReBadPaPerecent" jdbcType="INTEGER" />
+    <result column="FeSeBadPaPerecent" property="FeSeBadPaPerecent" jdbcType="INTEGER" />
+    <result column="SendLong" property="SendLong" jdbcType="INTEGER" />
+    <result column="FeRxRatio" property="FeRxRatio" jdbcType="INTEGER" />
+    <result column="RxAlErr" property="RxAlErr" jdbcType="INTEGER" />
+    <result column="RxErr" property="RxErr" jdbcType="INTEGER" />
+    <result column="TxErr" property="TxErr" jdbcType="INTEGER" />
+    <result column="RxLost" property="RxLost" jdbcType="INTEGER" />
+    <result column="RxErrAir" property="RxErrAir" jdbcType="INTEGER" />
+    <result column="RxErrKb" property="RxErrKb" jdbcType="INTEGER" />
+    <result column="TxErrKb" property="TxErrKb" jdbcType="INTEGER" />
+    <result column="RxJabber" property="RxJabber" jdbcType="INTEGER" />
+    <result column="TxJabber" property="TxJabber" jdbcType="INTEGER" />
+    <result column="GeJOT2BadDatagram" property="GeJOT2BadDatagram" jdbcType="INTEGER" />
+    <result column="GeReBadPaPerecent" property="GeReBadPaPerecent" jdbcType="INTEGER" />
+    <result column="GeSeBadPaPerecent" property="GeSeBadPaPerecent" jdbcType="INTEGER" />
+    <result column="GeSendLong" property="GeSendLong" jdbcType="INTEGER" />
+    <result column="GeRxRatio" property="GeRxRatio" jdbcType="INTEGER" />
+    <result column="GeRxAlErr" property="GeRxAlErr" jdbcType="INTEGER" />
+    <result column="GeRxErr" property="GeRxErr" jdbcType="INTEGER" />
+    <result column="GeTxErr" property="GeTxErr" jdbcType="INTEGER" />
+    <result column="GeRxLost" property="GeRxLost" jdbcType="INTEGER" />
+    <result column="GeRxErrAir" property="GeRxErrAir" jdbcType="INTEGER" />
+    <result column="GeRxErrKb" property="GeRxErrKb" jdbcType="INTEGER" />
+    <result column="GeTxErrKb" property="GeTxErrKb" jdbcType="INTEGER" />
+    <result column="GeRxJabber" property="GeRxJabber" jdbcType="INTEGER" />
+    <result column="GeTxJabber" property="GeTxJabber" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, HighTemp, CRCError, packetLose, tmsWorsen, tmsLose, receiveBadWrap, align, lowTemp, 
+    tmpWorsen, tmpLose, tmcWorsen, tmcLose, siteId, es, SES, BBE, CSES, SFPLaserBias, 
+    SFPTxPOW, SFPRxPOW, SFPTemp, SFPAlarmTemp, FEES, FESES, FEUAS, FECSES, cipReBandwidth, 
+    cipSeBandwidth, EthPackLosNear, EthPackLosFar, EthPackDelayMs, TmsRxCv, TmsTxCv, 
+    FeJOT2BadDatagram, FeReBadPaPerecent, FeSeBadPaPerecent, SendLong, FeRxRatio, RxAlErr, 
+    RxErr, TxErr, RxLost, RxErrAir, RxErrKb, TxErrKb, RxJabber, TxJabber, GeJOT2BadDatagram, 
+    GeReBadPaPerecent, GeSeBadPaPerecent, GeSendLong, GeRxRatio, GeRxAlErr, GeRxErr, 
+    GeTxErr, GeRxLost, GeRxErrAir, GeRxErrKb, GeTxErrKb, GeRxJabber, GeTxJabber
+  </sql>
+   
+   <select id="queryByCondition" resultMap="BaseResultMap" parameterType="PmValueLimiteInfo" >
+    select 
+    <include refid="Base_Column_List" />
+     from PMLimit where 1=1
+     <if test="id>0"> and id =#{id} </if>
+     <if test="siteId>0"> and siteID =#{siteId}</if>			
+  </select>
+</mapper>

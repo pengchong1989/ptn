@@ -1,0 +1,19 @@
+package com.nms.db.dao.system;
+
+import com.nms.db.bean.system.OffLinesiteBusi;
+
+
+
+public interface OfflinesItebusiMapper {
+    int deleteByPrimaryKey(Integer id);
+
+    int insert(OffLinesiteBusi record);
+
+    int insertSelective(OffLinesiteBusi record);
+
+    OffLinesiteBusi selectByPrimaryKey(Integer id);
+
+    int updateByPrimaryKeySelective(OffLinesiteBusi record);
+
+    int updateByPrimaryKey(OffLinesiteBusi record);
+}

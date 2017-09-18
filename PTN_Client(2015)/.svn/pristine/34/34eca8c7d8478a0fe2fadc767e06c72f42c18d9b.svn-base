@@ -1,0 +1,266 @@
+package com.nms.db.dao.path;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.nms.db.bean.path.SetNameRule;
+import com.nms.ui.manager.ExceptionManage;
+
+public class SetNameRuleDao {
+
+	public List<SetNameRule> queryByidCondition(SetNameRule nameRule, Connection connection) throws Exception {
+
+		List<SetNameRule> nameRuleList = null;
+		ResultSet resultSet = null;
+		PreparedStatement preparedStatement = null;
+		SetNameRule namerule = null;
+		String sql = null;
+		try {
+			nameRuleList = new ArrayList<SetNameRule>();
+			sql = "select*from setnamerule where 1=1 ";
+			if(nameRule.getSourcename() != null && !nameRule.getSourcename().equals("")){
+				sql += "and sourcename= '"+nameRule.getSourcename()+"'";
+			}
+			if(nameRule.getIsUsed()>0){
+				sql += "and isUsed = "+nameRule.getIsUsed();
+			}
+			preparedStatement = connection.prepareStatement(sql);
+			resultSet = preparedStatement.executeQuery();
+			while (resultSet.next()) {
+				namerule = new SetNameRule();
+
+				namerule.setId(resultSet.getInt("id"));
+				namerule.setSourcename(resultSet.getString("sourcename"));
+				namerule.setName(resultSet.getString("name"));
+				namerule.setNamerule(resultSet.getString("namerule"));
+				namerule.setNameexample(resultSet.getString("nameexample"));
+				namerule.setRowcount(resultSet.getInt("rowcount"));
+				namerule.setIsUsed(resultSet.getInt("isUsed"));
+				nameRuleList.add(namerule);
+
+			}
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (resultSet != null) {
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e, getClass());
+				}
+				resultSet = null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e, getClass());
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+
+		return nameRuleList;
+
+	}
+
+	public int query_name(String afterName, String beforeName,int parentId, Connection connection) throws Exception {
+		if (null == afterName) {
+			throw new Exception("afterName is null");
+		}
+
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		String sql = null;
+		List<Object> paramList = new ArrayList<Object>();
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+		int result = 0;
+		try {
+			sql = " select count(*) as selectcount from setnamerule where name=? ";
+			paramList.add(afterName);
+			if (null != beforeName) {
+				sql += " and name!=?";
+				paramList.add(beforeName);
+			}
+			preparedStatement = connection.prepareStatement(sql);
+			for (int i = 0; i < paramList.size(); i++) {
+				preparedStatement.setObject(i + 1, paramList.get(i));
+			}
+			resultSet = preparedStatement.executeQuery();
+			if (resultSet.next()) {
+				result = resultSet.getInt("selectcount");
+			}
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (resultSet != null) {
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				resultSet = null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+			paramList = null;
+			sql = null;
+		}
+
+		return result;
+	}
+	
+	public int delete(int id, Connection connection) throws Exception {
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		int result = 0;
+
+		try {
+			sql = "delete from setnamerule where id=?";
+			preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.setInt(1, id);
+
+			result = preparedStatement.executeUpdate();
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e, this.getClass());
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+
+		return result;
+
+	}
+
+	public int insert(SetNameRule nameRule, Connection connection) throws Exception {
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+		if (null == nameRule) {
+			throw new Exception("nameRule is null");
+		}
+
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+		int result = 0;
+		String sql = "insert into setnamerule (name,namerule,nameexample,sourcename,rowcount,isUsed) values (?,?,?,?,?,?)";
+
+		try {
+			preparedStatement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+			preparedStatement.setString(1, nameRule.getName());
+			preparedStatement.setString(2, nameRule.getNamerule());
+			preparedStatement.setString(3, nameRule.getNameexample());
+			preparedStatement.setString(4, nameRule.getSourcename());
+			preparedStatement.setInt(5, nameRule.getRowcount());
+			preparedStatement.setInt(6, nameRule.getIsUsed());
+			preparedStatement.executeUpdate();
+			resultSet = preparedStatement.getGeneratedKeys();
+			if (resultSet.next()) {
+				result = resultSet.getInt(1);
+			}
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (resultSet != null) {
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e, this.getClass());
+				}
+				resultSet = null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e, this.getClass());
+				}
+				preparedStatement = null;
+			}
+		}
+		return result;
+	}
+
+	public int update(SetNameRule nameRule, Connection connection) throws Exception {
+
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+		if (null == nameRule) {
+			throw new Exception("nameRule is null");
+		}
+
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+		int result = 0;
+		String sql = "update setnamerule set name=?,namerule=?,nameexample=?,sourcename=?,rowcount=? ,isUsed=? where id=?";
+
+		try {
+			preparedStatement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+			preparedStatement.setString(1, nameRule.getName());
+			preparedStatement.setString(2, nameRule.getNamerule());
+			preparedStatement.setString(3, nameRule.getNameexample());
+			preparedStatement.setString(4, nameRule.getSourcename());
+			preparedStatement.setInt(5, nameRule.getRowcount());
+			preparedStatement.setInt(6, nameRule.getIsUsed());
+			preparedStatement.setInt(7, nameRule.getId());
+			preparedStatement.executeUpdate();
+			resultSet = preparedStatement.getGeneratedKeys();
+			if (resultSet.next()) {
+				result = resultSet.getInt(1);
+			}
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (resultSet != null) {
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e, this.getClass());
+				}
+				resultSet = null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e, this.getClass());
+				}
+				preparedStatement = null;
+			}
+		}
+		return result;
+	}
+
+}

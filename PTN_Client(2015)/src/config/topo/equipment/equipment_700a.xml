@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 700B设备槽位对应的图片途径 -->
+<xml-body>
+<equipment imagePath="/com/nms/ui/images/topo/szza/rack.png" x="50" y="50">
+	<slot imagePath="/com/nms/ui/images/topo/szza/slot_d.png" x="77" y="58" type="700a_d" bestCardName="FAN" number="17"></slot>
+	<slot imagePath="/com/nms/ui/images/topo/szza/slot_f.png" x="137" y="58" type="700a_f" bestCardName="FAN" number="18"></slot>
+	<slot imagePath="/com/nms/ui/images/topo/szza/slot_d.png" x="766" y="58" type="700a_d" bestCardName="FAN" number="19"></slot>
+	
+	<slot imagePath="/com/nms/ui/images/topo/szza/slot.png" x="76" y="179" type="700a_ip32" bestCardName="IP32" number="1"></slot>
+	<slot imagePath="/com/nms/ui/images/topo/szza/slot.png" x="122" y="179" type="700a_eth" bestCardName="SS8P32" number="2"></slot>
+	<slot imagePath="/com/nms/ui/images/topo/szza/slot.png" x="169" y="179" type="700a_eth" bestCardName="SS8P32" number="3"></slot>
+	<slot imagePath="/com/nms/ui/images/topo/szza/slot.png" x="215" y="179" type="700a_eth" bestCardName="SS8P32" number="4"></slot>
+	<slot imagePath="/com/nms/ui/images/topo/szza/slot.png" x="262" y="179" type="700a_eth" bestCardName="SS8P32" number="5"></slot>
+	<slot imagePath="/com/nms/ui/images/topo/szza/slot.png" x="309" y="179" type="700a_eth" bestCardName="SS8P32" number="6"></slot>
+	<slot imagePath="/com/nms/ui/images/topo/szza/slot.png" x="355" y="179" type="700a_eth" bestCardName="SS8P32" number="7"></slot>
+	<slot imagePath="/com/nms/ui/images/topo/szza/slot.png" x="402" y="179" type="700a_xct" bestCardName="XCT" number="8"></slot>
+	<slot imagePath="/com/nms/ui/images/topo/szza/slot.png" x="448" y="179" type="700a_xct" bestCardName="XCT" number="9"></slot>
+	<slot imagePath="/com/nms/ui/images/topo/szza/slot.png" x="495" y="179" type="700a_eth" bestCardName="SS8P32" number="10"></slot>
+	<slot imagePath="/com/nms/ui/images/topo/szza/slot.png" x="542" y="179" type="700a_eth" bestCardName="SS8P32" number="11"></slot>
+	<slot imagePath="/com/nms/ui/images/topo/szza/slot.png" x="589" y="179" type="700a_eth" bestCardName="SS8P32" number="12"></slot>
+	<slot imagePath="/com/nms/ui/images/topo/szza/slot.png" x="635" y="179" type="" bestCardName="" number="13"></slot>
+	<slot imagePath="/com/nms/ui/images/topo/szza/slot.png" x="681" y="179" type="700a_eth" bestCardName="SS8P32" number="14"></slot>
+	<slot imagePath="/com/nms/ui/images/topo/szza/slot.png" x="729" y="179" type="700a_eth" bestCardName="SS8P32" number="15"></slot>
+	<slot imagePath="/com/nms/ui/images/topo/szza/slot.png" x="775" y="179" type="700a_ip32" bestCardName="IP32" number="16"></slot>
+
+</equipment>
+</xml-body>

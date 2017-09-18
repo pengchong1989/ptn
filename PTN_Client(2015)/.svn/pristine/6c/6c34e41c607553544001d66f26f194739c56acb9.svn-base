@@ -1,0 +1,68 @@
+package com.nms.model.system;
+
+import java.sql.Connection;
+
+import com.nms.db.dao.system.PerformaceRamDao;
+import com.nms.model.util.ObjectService;
+import com.nms.ui.manager.ExceptionManage;
+import com.nms.ui.ptn.performance.model.PerformanceRAMInfo;
+
+public class PerformanceRamService extends ObjectService{
+	
+	public void setConnection(Connection connection) {
+		super.connection = connection;
+	}
+
+	public void setPtnuser(String ptnuser) {
+		super.ptnuser = ptnuser;
+	}
+	
+	private PerformaceRamDao performaceRamDao = new PerformaceRamDao();
+	
+	/**
+	 * 批量插入
+	 * @param performanceRAMInfo
+	 * @throws Exception 
+	 */
+	public void save(PerformanceRAMInfo performanceRAMInfo) throws Exception{
+		try {
+			if(performanceRAMInfo.getId()>0){
+				update(performanceRAMInfo);
+			}else{
+				performaceRamDao.insert(performanceRAMInfo, connection);
+			}
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		}finally{
+		}
+	}
+	/**
+	 * 修改
+	 * @param performanceRAMInfo
+	 * @throws Exception 
+	 */
+	public void update(PerformanceRAMInfo performanceRAMInfo) throws Exception{
+		try {
+			performaceRamDao.update(performanceRAMInfo, connection);
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		}finally{
+		}
+	}
+	/**
+	 * 查詢
+	 * @param performanceRAMInfo
+	 * @throws Exception 
+	 */
+	public PerformanceRAMInfo  select(String userName) throws Exception{
+		PerformanceRAMInfo performanceRAMInfo = null;
+		try {
+			performanceRAMInfo = new PerformanceRAMInfo();
+			performanceRAMInfo = performaceRamDao.queryByCondition(userName,connection);
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		}finally{
+		}
+		return performanceRAMInfo;
+	}
+}

@@ -1,0 +1,362 @@
+package com.nms.db.dao.ptn.qos;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.nms.db.bean.ptn.qos.QosMappingMode;
+import com.nms.ui.manager.ExceptionManage;
+
+
+public class QosMappingModeDao {
+	
+	/**
+	 * 新增qosMappingMode
+	 * 
+	 * @param qosMappingMode
+	 *            插入实体对象
+	 * @param connection
+	 *            数据库链接
+	 * @return 插入记录数
+	 * @throws Exception
+	 */
+	public int insert(QosMappingMode qosMappingMode, Connection conn) throws Exception {
+		if (qosMappingMode == null) {
+			throw new Exception("code is null");
+		}
+		if (conn == null) {
+			throw new Exception("connection is null");
+		}
+
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		int result = 0;
+		ResultSet resultSet = null;
+		try {
+			sql = "insert into qosmodel(name,type,siteId,typeName,businessid) " + "values(?,?,?,?,?)";
+			preparedStatement = conn.prepareStatement(sql.toString(),java.sql.Statement.RETURN_GENERATED_KEYS);
+			preparedStatement.setString(1, qosMappingMode.getName());
+			preparedStatement.setInt(2, qosMappingMode.getType());
+			preparedStatement.setInt(3, qosMappingMode.getSiteId());
+			preparedStatement.setString(4, qosMappingMode.getTypeName());
+			preparedStatement.setInt(5, qosMappingMode.getBusinessId());
+			preparedStatement.executeUpdate();
+			resultSet = preparedStatement.getGeneratedKeys();
+			if(resultSet.next()){
+				result = resultSet.getInt(1);
+            }
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if(null!=resultSet){
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				resultSet = null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+
+		return result;
+	}
+
+	/**
+	 * 删除qosMappingMode
+	 * 
+	 * @param connection
+	 *            数据库链接
+	 * @return 删除记录数
+	 * @throws Exception
+	 * @throws Exception
+	 */
+	public int delete(int id, Connection conn) throws Exception {
+
+		if (null == conn) {
+			throw new Exception("connection is null");
+		}
+
+		StringBuffer sql = new StringBuffer();
+		PreparedStatement preparedStatement = null;
+		int result = 0;
+		
+		try {
+			sql.append(" delete from qosmodel where id = ?");
+			
+			preparedStatement = conn.prepareStatement(sql.toString());
+			preparedStatement.setInt(1, id);
+			result = preparedStatement.executeUpdate();
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+
+		return result;
+	}
+
+	/**
+	 * 修改qosMappingMode
+	 * 
+	 * @param qosMappingMode
+	 * 
+	 * @param connection
+	 *            连接数据库
+	 * @return 修改的条数
+	 * @throws Exception
+	 * @throws Exception
+	 */
+	public int update(QosMappingMode qosMappingMode, Connection conn) throws Exception {
+		if (null == conn) {
+			throw new Exception("connection is null");
+		}
+
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		int result = 0;
+
+		try {
+			sql = " update qosmodel set ";
+			if(null!=qosMappingMode.getName() && !"".equals(qosMappingMode.getName())){
+				sql += "name = '"+qosMappingMode.getName();
+			}
+			if(0<qosMappingMode.getType()){
+				sql += "',type = "+qosMappingMode.getType();
+			}
+			if(0<qosMappingMode.getSiteId()){
+				sql += ",siteId = "+qosMappingMode.getSiteId();
+			}
+			if(null!=qosMappingMode.getTypeName() && !"".equals(qosMappingMode.getTypeName())){
+				sql += ",typeName = '"+qosMappingMode.getTypeName();
+			}
+			if(0<qosMappingMode.getId()){
+				sql += "' where id = "+qosMappingMode.getId();
+			}
+			
+			preparedStatement = conn.prepareStatement(sql);
+			result = preparedStatement.executeUpdate();
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+		return result;
+	}
+
+	/**
+	 * 通过条件查询
+	 * 
+	 * @param qosMappingMode
+	 *            查询条件
+	 * @param connection
+	 *            数据库连接
+	 * @return List<ElineInfo>集合
+	 * @throws Exception
+	 */
+	public List<QosMappingMode> queryByCondition(QosMappingMode qosMappingMode, Connection connection) throws Exception {
+		
+		List<QosMappingMode> mappingModes = null;
+		if (null == qosMappingMode) {
+			throw new Exception("qosMappingMode is null");
+		}
+
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		String sql = null;
+		try {
+
+			sql = "select*from qosmodel where 1=1 ";
+			if (qosMappingMode.getId() > 0) {
+				sql += " and Id=" + qosMappingMode.getId();
+			}
+			if (qosMappingMode.getSiteId() > 0) {
+				sql += " and siteId=" + qosMappingMode.getSiteId();
+			}
+			if (null!=qosMappingMode.getTypeName()){
+				sql += " and typeName="+"'"+qosMappingMode.getTypeName()+"'";
+			}
+			
+			if (null!=qosMappingMode.getName()){
+				sql += " and name="+"'"+qosMappingMode.getName()+"'";
+			}
+			if (qosMappingMode.getType()>0){
+				sql += " and type="+"'"+qosMappingMode.getType()+"'";
+			}
+
+			mappingModes = this.excuteQuery(connection, sql);
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			sql = null;
+		}
+		return mappingModes;
+	}
+	/**
+	 * 执行查询语句
+	 * 
+	 * @param connection
+	 *            数据库连接
+	 * @param sql
+	 *            sql语句
+	 * @return 查询集合
+	 * @throws Exception
+	 */
+	private List<QosMappingMode> excuteQuery(Connection connection, String sql) throws Exception {
+		List<QosMappingMode>  qosMappingModes= null;
+		ResultSet resultSet = null;
+		PreparedStatement preparedStatement = null;
+		QosMappingMode qosMappingMode = null;
+		try {
+			qosMappingModes = new ArrayList<QosMappingMode>();
+			preparedStatement = connection.prepareStatement(sql);
+			resultSet = preparedStatement.executeQuery();
+
+			while (resultSet.next()) {
+				qosMappingMode = new QosMappingMode();
+				qosMappingMode.setSiteId(resultSet.getInt("SiteId"));
+				qosMappingMode.setId(resultSet.getInt("id"));
+				qosMappingMode.setName(resultSet.getString("name"));
+				qosMappingMode.setType(resultSet.getInt("type"));
+				qosMappingMode.setTypeName(resultSet.getString("typeName"));
+				qosMappingMode.setBusinessId(resultSet.getInt("BusinessId"));
+				qosMappingModes.add(qosMappingMode);
+			}
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (resultSet != null) {
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				resultSet = null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+			qosMappingMode = null;
+		}
+
+		return qosMappingModes;
+	}
+	
+	/**
+	 * 删除qosMappingMode
+	 * 
+	 * @param connection
+	 *            数据库链接
+	 * @return 删除记录数
+	 * @throws Exception
+	 * @throws Exception
+	 */
+	public int deleteBySiteId(int siteId, Connection conn) throws Exception {
+
+		if (null == conn) {
+			throw new Exception("connection is null");
+		}
+
+		StringBuffer sql = new StringBuffer();
+		PreparedStatement preparedStatement = null;
+		int result = 0;
+		
+		try {
+			sql.append(" delete from qosmodel where siteId = ?");
+			
+			preparedStatement = conn.prepareStatement(sql.toString());
+			preparedStatement.setInt(1, siteId);
+			result = preparedStatement.executeUpdate();
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+
+		return result;
+	}
+	
+	/**
+	 * 根据网元删除qosMappingMode
+	 * 
+	 * @param connection
+	 *            数据库链接
+	 * @return 删除记录数
+	 * @throws Exception
+	 * @throws Exception
+	 */
+	public int deleteForSiteId(int siteId, Connection conn) throws Exception {
+
+		if (null == conn) {
+			throw new Exception("connection is null");
+		}
+
+		StringBuffer sql = new StringBuffer();
+		PreparedStatement preparedStatement = null;
+		int result = 0;
+		
+		try {
+			sql.append(" delete from qosmodel where siteid = ?");
+			
+			preparedStatement = conn.prepareStatement(sql.toString());
+			preparedStatement.setInt(1, siteId);
+			result = preparedStatement.executeUpdate();
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+
+		return result;
+	}
+}

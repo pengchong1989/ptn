@@ -1,0 +1,257 @@
+package com.nms.model.ptn.path.protect;
+
+import java.sql.Connection;
+import java.util.List;
+
+import com.nms.db.bean.ptn.Businessid;
+import com.nms.db.bean.ptn.SiteRoate;
+import com.nms.db.bean.ptn.path.protect.MspProtect;
+import com.nms.db.dao.ptn.BusinessidDao;
+import com.nms.db.dao.ptn.SiteRoateDao;
+import com.nms.db.dao.ptn.path.protect.MspProtectDao;
+import com.nms.db.enums.EActionType;
+import com.nms.db.enums.ERotateType;
+import com.nms.db.enums.EServiceType;
+import com.nms.model.util.ObjectService;
+import com.nms.ui.manager.BusinessIdException;
+import com.nms.ui.manager.ExceptionManage;
+
+/**
+ * msp保护的业务层
+ * 
+ * @author kk
+ * 
+ */
+public class MspProtectService extends ObjectService {
+
+	public void setConnection(Connection connection) {
+		super.connection = connection;
+	}
+
+	public void setPtnuser(String ptnuser) {
+		super.ptnuser = ptnuser;
+	}
+
+	/**
+	 * msp保护的数据库处理层
+	 */
+	private MspProtectDao mspProtectDao = new MspProtectDao();
+
+	/**
+	 * 保存或更新
+	 * 
+	 * @param mspProtect
+	 * @throws Exception
+	 */
+	public int saveOrUpdate(MspProtect mspProtect) throws BusinessIdException, Exception {
+		int result = 0;
+		SiteRoate siteRoate=null;
+		SiteRoateDao siteRoateDao=null;
+		Businessid businessid = null;
+		BusinessidDao businessidDao=null;
+		try{
+			siteRoate=new SiteRoate();
+			siteRoate.setType("msp");
+			siteRoate.setSiteId(mspProtect.getSiteId());
+			siteRoateDao=new SiteRoateDao();
+			// 如果主键为0 说明应做插入操作
+			if(0!=mspProtect.getRotateOrder()){
+				if(mspProtect.getRotateOrder()!=ERotateType.CLEAR.getValue() && mspProtect.getRotateOrder()!=ERotateType.LOCK.getValue()){
+					if(mspProtect.getRotateOrder()==ERotateType.FORCESWORK.getValue()||mspProtect.getRotateOrder()==ERotateType.MANUALWORK.getValue()
+							||mspProtect.getRotateOrder()==ERotateType.PRACTICEJOB.getValue()){
+						mspProtect.setNowWorkPortId(mspProtect.getWorkPortId());
+					}else{
+						mspProtect.setNowWorkPortId(mspProtect.getProtectPortId());
+					}
+				}
+			}
+			if (mspProtect.getId() == 0) {
+				
+				 businessidDao = new BusinessidDao();
+				// 如果没有businessId 说明是界面插入，需要从businessid管理表中取businessid
+				if (mspProtect.getBusinessId() == 0) {
+					businessid = businessidDao.query(mspProtect.getSiteId(), "msp", connection);
+				} else {
+					businessid = businessidDao.query(mspProtect.getBusinessId(), mspProtect.getSiteId(), "msp", connection);
+				}
+
+				// 如果没有查询到。 抛给页面一个异常
+				if (businessid == null) {
+					throw new BusinessIdException("acSerBusinessId is null");
+				}
+				mspProtect.setBusinessId(businessid.getIdValue());
+
+				// 修改此id为已用状态
+				businessidDao.update(businessid.getId(), 1, super.connection);
+
+				// 新增msp
+				result = this.mspProtectDao.insert(mspProtect, super.connection);
+				
+				/*
+				 * 新增msp 成功时，新增 msp的倒换信息
+				 */
+				if(result>0){
+					siteRoate.setTypeId(result);
+					siteRoate.setRoate(mspProtect.getRotateOrder());
+					siteRoateDao.insert(siteRoate, connection);
+				}
+
+				//离线网元数据下载
+				super.dateDownLoad(mspProtect.getSiteId(),result, EServiceType.MSPPROTECT.getValue(), EActionType.INSERT.getValue(), mspProtect.getBusinessId()+"",null,0,0,null);
+				
+				
+			} else {
+				result = this.mspProtectDao.update(mspProtect, super.connection);
+				if(result>0){
+					siteRoate.setRoate(mspProtect.getRotateOrder());
+					siteRoateDao.update(siteRoate, connection);
+				}
+				//离线网元数据下载
+				super.dateDownLoad(mspProtect.getSiteId(),mspProtect.getId(), EServiceType.MSPPROTECT.getValue(), EActionType.UPDATE.getValue(),mspProtect.getBusinessId()+"",null,0,0,null);
+			}
+		}catch(Exception e){
+			ExceptionManage.dispose(e,this.getClass());
+		}finally{
+			// 释放对象
+			businessid = null;
+			businessidDao = null;
+		}		
+		return result;
+
+	}
+
+	/**
+	 * 根据条件删除
+	 * 
+	 * @param id
+	 * @throws Exception
+	 */
+	public void delete(MspProtect mspProtect) throws Exception {
+		
+		SiteRoateDao siteRoateDao=null;
+		SiteRoate siteRoate=null;
+		int result=0;
+		try{
+			// 修改此Businessid为未用状态
+			BusinessidDao businessidDao = new BusinessidDao();
+			Businessid businessid = businessidDao.query(mspProtect.getBusinessId(), mspProtect.getSiteId(), "msp", connection);
+			businessidDao.update(businessid.getId(), 0, super.connection);
+			//删除MSP数据
+			result=this.mspProtectDao.delete(mspProtect, super.connection);
+			
+			/**
+			 * 根据网元删除msp 成功时
+			 *   删除 有关此网元msp 的倒换信息
+			 */
+			siteRoate=new SiteRoate();
+			siteRoate.setType("msp");
+			siteRoateDao=new SiteRoateDao();
+			if(result>0){				
+				//根据主键删除
+				siteRoate.setSiteId(mspProtect.getSiteId());
+				siteRoate.setTypeId(mspProtect.getId());									
+				siteRoateDao.delete(siteRoate, connection);			
+			}
+			//离线网元数据下载
+			super.dateDownLoad(mspProtect.getSiteId(),mspProtect.getId(), EServiceType.MSPPROTECT.getValue(), EActionType.DELETE.getValue(), mspProtect.getBusinessId()+"",mspProtect.getNowWorkPortId()+"",0,0,null);
+		}catch(Exception e){
+			ExceptionManage.dispose(e,this.getClass());
+		}finally{
+			siteRoate=null;
+			siteRoateDao=null;
+		}
+	}
+
+	/**
+	 * 根据网元删除
+	 * 
+	 * @param siteId
+	 *            网元id
+	 * @throws Exception
+	 */
+	public void deleteBySiteId(int siteId) throws Exception {
+		SiteRoateDao siteRoateDao=null;
+		SiteRoate siteRoate=null;
+		int result=0;
+		try{
+			result=this.mspProtectDao.deleteBySite(siteId, super.connection);
+			/**
+			 * 根据网元删除msp 成功时
+			 *   删除 有关此网元msp 的倒换信息
+			 */
+			if(result>0){
+				siteRoate=new SiteRoate();
+				siteRoate.setSiteId(siteId);
+				siteRoate.setType("msp");
+				siteRoateDao=new SiteRoateDao();
+				siteRoateDao.delete(siteRoate, connection);
+			}
+		}catch(Exception e){
+			ExceptionManage.dispose(e,this.getClass());
+		}finally{
+			siteRoate=null;
+			siteRoateDao=null;
+		}
+		
+	}
+
+	/**
+	 * 根据网元查询
+	 * 
+	 * @param siteId
+	 * @return
+	 * @throws Exception
+	 */
+	public List<MspProtect> selectBySite(int siteId) throws Exception {
+		// 设置查询条件
+		MspProtect mspProtect = null;
+		mspProtect = new MspProtect();
+		mspProtect.setSiteId(siteId);
+
+		return this.mspProtectDao.query(mspProtect, super.connection);
+	}
+
+	/**
+	 * 根据主键查询
+	 * 
+	 * @param id
+	 *            主键
+	 * @return
+	 * @throws Exception
+	 */
+	public MspProtect selectById(int id) throws Exception {
+		// 设置查询条件
+		MspProtect mspProtect = null;
+		mspProtect = new MspProtect();
+		mspProtect.setId(id);
+
+		List<MspProtect> mspProtectList = this.mspProtectDao.query(mspProtect, super.connection);
+
+		if (null != mspProtectList && mspProtectList.size() == 1) {
+			return mspProtectList.get(0);
+		} else {
+			return null;
+		}
+	}
+	/**
+	 * 通过条件查询
+	 * @param mspProtect 条件对象
+	 * @return
+	 * @throws Exception
+	 */
+	public List<MspProtect> select(MspProtect mspProtect) throws Exception {
+		return  this.mspProtectDao.query(mspProtect, super.connection);
+	}
+	/**
+	 * 修改设备是否存在的状态
+	 * @param siteId 网元ID
+	 * @param status	状态值
+	 */
+	public void updateActiveStatus(int siteId, int status) {
+		try {
+			this.mspProtectDao.updateActiveStatus(siteId,status, super.connection);
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		}
+	}
+}

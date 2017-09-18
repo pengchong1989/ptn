@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<driveRoot  xmlns="http://drive.bean.com">
+	<attribute length="1" description="PW保护ID" value="1" mapping=""/>
+	<attribute length="1" description="源MAC地址1" value="0" mapping=""/>
+	<attribute length="1" description="源MAC地址2" value="0" mapping=""/>
+	<attribute length="1" description="源MAC地址3" value="0" mapping=""/>
+	<attribute length="1" description="源MAC地址4" value="0" mapping=""/>
+	<attribute length="1" description="源MAC地址5" value="0" mapping=""/>
+	<attribute length="1" description="源MAC地址6" value="0" mapping=""/>
+	<attribute length="1" description="是否有VLAN" value="0" mapping="0/1=无/有"/>
+	<attribute length="2" description="VLAN值" value="" mapping="2-4095"/>	
+	<attribute length="1" description="VLAN PRI" value="0" mapping="0-7"/>
+	<attribute length="1" description="源IP地址1" value="" mapping=""/>
+	<attribute length="1" description="源IP地址2" value="" mapping=""/>
+	<attribute length="1" description="源IP地址3" value="" mapping=""/>
+	<attribute length="1" description="源IP地址4" value="" mapping=""/>
+	<attribute length="1" description="目的IP地址1" value="" mapping=""/>
+	<attribute length="1" description="目的IP地址2" value="" mapping=""/>
+	<attribute length="1" description="目的IP地址3" value="" mapping=""/>
+	<attribute length="1" description="目的IP地址4" value="" mapping=""/>
+	<attribute length="1" description="ARP报文是否使能" value="" mapping="0/1=不使能/使能"/>
+	<attribute length="2" description="ARPID" value="" mapping="1-512"/>
+	<attribute length="9" description="备用" value="" mapping=""/>
+</driveRoot>

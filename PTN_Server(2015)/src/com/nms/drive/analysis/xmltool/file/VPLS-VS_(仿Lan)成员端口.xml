@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<driveRoot  xmlns="http://drive.bean.com">
+		<attribute length="1" description="仿真LAN-ID" value="0" mapping="(0)"/>
+		<attribute length="1" description="备用" value="0" mapping="(0)"/>
+		<attribute length="2" description="PW ID" value="1" mapping="(1)"/>
+		<attribute length="8" description="备用" value="0" mapping="(00)"/>
+		<attribute length="1" description="(仿真LAN口组)下话TAG识别" value="0" mapping="(0)/1=(不识别)/识别"/>
+		<attribute length="1" description="(仿真LAN口组)上话TAG行为" value="0" mapping="(0)/1/2=(NOP)/增加/删除"/>
+		<attribute length="2" description="(仿真LAN口组)上话增加VLAN ID" value="2" mapping="(2)"/>
+		<attribute length="1" description="(仿真LAN口组)上话增加VLAN PRI" value="0" mapping="(0)"/>
+		<attribute length="1" description="(仿真LAN口组)MAC地址学习" value="1" mapping="0/(1)=禁止/(使能)"/>
+		<attribute length="1" description="控制字使能" value="1" mapping="0/(1)=禁止/(使能)"/>
+		<attribute length="21" description="备用" value="0" mapping="(00)"/>
+		<attribute length="1" description="(仿真LAN口组)水平分割" value="0" mapping="(0)/1=(关)/开"/>
+		<attribute length="49" description="备用" value="0" mapping="(00)"/>
+</driveRoot>

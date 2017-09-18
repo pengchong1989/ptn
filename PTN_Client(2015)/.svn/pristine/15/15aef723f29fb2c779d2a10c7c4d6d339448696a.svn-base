@@ -1,0 +1,135 @@
+package com.nms.model.client;
+
+import java.sql.Connection;
+import java.util.List;
+
+import com.nms.db.bean.client.Client;
+import com.nms.db.dao.client.ClientDao;
+import com.nms.model.util.ObjectService;
+import com.nms.ui.manager.ExceptionManage;
+/**
+ * 客户信息业务关联Service
+ * @author dzy
+ *
+ */
+public class ClientService extends ObjectService {
+	
+	ClientDao clientDao = new ClientDao();
+	public void setConnection(Connection connection) {
+		super.connection = connection;
+	}
+
+	public void setPtnuser(String ptnuser) {
+		super.ptnuser = ptnuser;
+	}
+	
+	/**
+	 *  新增或修改
+	 * @param client  新增或修改的对象
+	 * @param connection
+	 * @return
+	 */
+	public int saveOrUpdate(Client client){
+		int result = 0;
+		try {
+			if(0==client.getId()){
+				result = clientDao.insert(client,connection);
+			
+			}else{
+				result = clientDao.update(client,connection);
+			}
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		}
+		return result;
+	}
+	/**
+	 * 查询
+	 * @param client 条件查询
+	 * @param connection
+	 * @return
+	 */
+	public List<Client> select(int clientID){
+		List<Client> result = null;
+		Client client=null;
+		try {
+			client=new Client();
+			client.setId(clientID);
+			result = this.query(client);
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		}
+		return result;
+	}
+	/**
+	 * 删除
+	 * @param client 删除条件
+	 * @param connection
+	 * @return
+	 */
+	public boolean delete(Client client){
+		int result = 0;
+		try {
+			result = clientDao.delete(client,connection);
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		}
+		if(0== result){
+			return false;
+		}else{
+			return true;
+		}
+	}
+
+	/**
+	 * 刷新
+	 * @return
+	 */
+	public List<Client> refresh() {
+		List<Client> result = null;
+		try {
+			result = clientDao.select(connection);
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		}
+		return result;
+	}
+
+	/**
+	 * 名字是否重复
+	 * @param afterName
+	 * @param beforeName
+	 * @return
+	 */
+	public boolean nameRepetition(String afterName, String beforeName) {
+		int result = 0;
+		try {
+			result = this.clientDao.query_name(afterName, beforeName, connection);
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		}
+		if(0== result){
+			return false;
+		}else{
+			return true;
+		}
+	}
+	/**
+	 * 根据条件查询
+	 * @param client 客户对象
+	 * @param connection
+	 * @return
+	 */
+	public List<Client> query(Client client){
+		List<Client> result = null;
+		try {
+			if(client==null)
+				client=new Client();
+			result = clientDao.select(client,connection);
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		}
+		return result;
+	}
+	
+}

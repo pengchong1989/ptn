@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nms.db.dao.ptn.clock.FrequencyInfoNeClockMapper" >
+  <resultMap id="BaseResultMap" type="FrequencyInfoNeClock" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="siteId" property="siteId" jdbcType="INTEGER" />
+    <result column="startTreaty" property="startTreaty" jdbcType="INTEGER" />
+    <result column="oscillationLevel" property="oscillationLevel" jdbcType="INTEGER" />
+    <result column="systemRecoverTime" property="systemRecoverTime" jdbcType="INTEGER" />
+    <result column="qualityLevel" property="qualityLevel" jdbcType="INTEGER" />
+    <result column="exportRecoverTime" property="exportRecoverTime" jdbcType="INTEGER" />
+    <result column="exportClockModel" property="exportClockModel" jdbcType="INTEGER" />
+    <result column="handleModel" property="handleModel" jdbcType="INTEGER" />
+    <result column="clockSuppress" property="clockSuppress" jdbcType="INTEGER" />
+    <result column="systemJobStatus" property="systemJobStatus" jdbcType="VARCHAR" />
+    <result column="systemSourcce" property="systemSourcce" jdbcType="VARCHAR" />
+    <result column="exportJobStatus" property="exportJobStatus" jdbcType="VARCHAR" />
+    <result column="exportSourcce" property="exportSourcce" jdbcType="VARCHAR" />
+  </resultMap>
+
+  <sql id="Base_Column_List" >
+    id, siteId, startTreaty, oscillationLevel, systemRecoverTime, qualityLevel, exportRecoverTime, 
+    exportClockModel, handleModel, clockSuppress, systemJobStatus, systemSourcce, exportJobStatus, 
+    exportSourcce
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from frequencymanage_ne
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from frequencymanage_ne
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="FrequencyInfoNeClock"  useGeneratedKeys="true" keyProperty="id">
+   insert into frequencymanage_ne(siteId,startTreaty,oscillationLevel,systemRecoverTime,qualityLevel,exportRecoverTime,
+   exportClockModel,handleModel,clockSuppress,systemJobStatus,systemSourcce,exportJobStatus,exportSourcce) 
+   value(#{siteId},#{startTreaty},#{oscillationLevel},#{systemRecoverTime},#{qualityLevel},
+   #{exportRecoverTime},#{exportClockModel},#{handleModel},#{clockSuppress},#{systemJobStatus},#{systemSourcce},
+   #{exportJobStatus},#{exportSourcce})
+  </insert>
+
+  <insert id="insertSelective" parameterType="FrequencyInfoNeClock" >
+    insert into frequencymanage_ne
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="siteid != null" >
+        siteId,
+      </if>
+      <if test="starttreaty != null" >
+        startTreaty,
+      </if>
+      <if test="oscillationlevel != null" >
+        oscillationLevel,
+      </if>
+      <if test="systemrecovertime != null" >
+        systemRecoverTime,
+      </if>
+      <if test="qualitylevel != null" >
+        qualityLevel,
+      </if>
+      <if test="exportrecovertime != null" >
+        exportRecoverTime,
+      </if>
+      <if test="exportclockmodel != null" >
+        exportClockModel,
+      </if>
+      <if test="handlemodel != null" >
+        handleModel,
+      </if>
+      <if test="clocksuppress != null" >
+        clockSuppress,
+      </if>
+      <if test="systemjobstatus != null" >
+        systemJobStatus,
+      </if>
+      <if test="systemsourcce != null" >
+        systemSourcce,
+      </if>
+      <if test="exportjobstatus != null" >
+        exportJobStatus,
+      </if>
+      <if test="exportsourcce != null" >
+        exportSourcce,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="siteid != null" >
+        #{siteid,jdbcType=INTEGER},
+      </if>
+      <if test="starttreaty != null" >
+        #{starttreaty,jdbcType=INTEGER},
+      </if>
+      <if test="oscillationlevel != null" >
+        #{oscillationlevel,jdbcType=INTEGER},
+      </if>
+      <if test="systemrecovertime != null" >
+        #{systemrecovertime,jdbcType=INTEGER},
+      </if>
+      <if test="qualitylevel != null" >
+        #{qualitylevel,jdbcType=INTEGER},
+      </if>
+      <if test="exportrecovertime != null" >
+        #{exportrecovertime,jdbcType=INTEGER},
+      </if>
+      <if test="exportclockmodel != null" >
+        #{exportclockmodel,jdbcType=INTEGER},
+      </if>
+      <if test="handlemodel != null" >
+        #{handlemodel,jdbcType=INTEGER},
+      </if>
+      <if test="clocksuppress != null" >
+        #{clocksuppress,jdbcType=INTEGER},
+      </if>
+      <if test="systemjobstatus != null" >
+        #{systemjobstatus,jdbcType=VARCHAR},
+      </if>
+      <if test="systemsourcce != null" >
+        #{systemsourcce,jdbcType=VARCHAR},
+      </if>
+      <if test="exportjobstatus != null" >
+        #{exportjobstatus,jdbcType=VARCHAR},
+      </if>
+      <if test="exportsourcce != null" >
+        #{exportsourcce,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="FrequencyInfoNeClock" >
+    update frequencymanage_ne
+    <set >
+      <if test="siteid != null" >
+        siteId = #{siteid,jdbcType=INTEGER},
+      </if>
+      <if test="starttreaty != null" >
+        startTreaty = #{starttreaty,jdbcType=INTEGER},
+      </if>
+      <if test="oscillationlevel != null" >
+        oscillationLevel = #{oscillationlevel,jdbcType=INTEGER},
+      </if>
+      <if test="systemrecovertime != null" >
+        systemRecoverTime = #{systemrecovertime,jdbcType=INTEGER},
+      </if>
+      <if test="qualitylevel != null" >
+        qualityLevel = #{qualitylevel,jdbcType=INTEGER},
+      </if>
+      <if test="exportrecovertime != null" >
+        exportRecoverTime = #{exportrecovertime,jdbcType=INTEGER},
+      </if>
+      <if test="exportclockmodel != null" >
+        exportClockModel = #{exportclockmodel,jdbcType=INTEGER},
+      </if>
+      <if test="handlemodel != null" >
+        handleModel = #{handlemodel,jdbcType=INTEGER},
+      </if>
+      <if test="clocksuppress != null" >
+        clockSuppress = #{clocksuppress,jdbcType=INTEGER},
+      </if>
+      <if test="systemjobstatus != null" >
+        systemJobStatus = #{systemjobstatus,jdbcType=VARCHAR},
+      </if>
+      <if test="systemsourcce != null" >
+        systemSourcce = #{systemsourcce,jdbcType=VARCHAR},
+      </if>
+      <if test="exportjobstatus != null" >
+        exportJobStatus = #{exportjobstatus,jdbcType=VARCHAR},
+      </if>
+      <if test="exportsourcce != null" >
+        exportSourcce = #{exportsourcce,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="FrequencyInfoNeClock" >
+    update frequencymanage_ne
+    set siteId = #{siteid,jdbcType=INTEGER},
+      startTreaty = #{starttreaty,jdbcType=INTEGER},
+      oscillationLevel = #{oscillationlevel,jdbcType=INTEGER},
+      systemRecoverTime = #{systemrecovertime,jdbcType=INTEGER},
+      qualityLevel = #{qualitylevel,jdbcType=INTEGER},
+      exportRecoverTime = #{exportrecovertime,jdbcType=INTEGER},
+      exportClockModel = #{exportclockmodel,jdbcType=INTEGER},
+      handleModel = #{handlemodel,jdbcType=INTEGER},
+      clockSuppress = #{clocksuppress,jdbcType=INTEGER},
+      systemJobStatus = #{systemjobstatus,jdbcType=VARCHAR},
+      systemSourcce = #{systemsourcce,jdbcType=VARCHAR},
+      exportJobStatus = #{exportjobstatus,jdbcType=VARCHAR},
+      exportSourcce = #{exportsourcce,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  
+  <select id="select" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from frequencymanage_ne
+    where siteId = #{siteId,jdbcType=INTEGER}
+  </select>
+  
+  <update id="update" parameterType="FrequencyInfoNeClock" >
+   update frequencymanage_ne set startTreaty=#{startTreaty},oscillationLevel=#{oscillationLevel},systemRecoverTime=#{systemRecoverTime},
+   qualityLevel=#{qualityLevel},exportRecoverTime=#{exportRecoverTime},exportClockModel=#{exportClockModel},handleModel=#{handleModel},
+   clockSuppress=#{clockSuppress},systemJobStatus=#{systemJobStatus},systemSourcce=#{systemSourcce},
+   exportJobStatus=#{exportJobStatus},exportSourcce=#{exportSourcce} where siteId=#{siteId}
+  </update>
+
+</mapper>

@@ -1,0 +1,604 @@
+﻿package com.nms.db.dao.perform;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.nms.db.bean.equipment.shelf.SiteInst;
+import com.nms.db.bean.perform.PerformanceTaskInfo;
+import com.nms.db.enums.EMonitorCycle;
+import com.nms.db.enums.EObjectType;
+import com.nms.db.enums.ERunStates;
+import com.nms.ui.manager.ExceptionManage;
+import com.nms.ui.ptn.performance.model.PerformanceTaskFilter;
+
+public class PerformanceTaskDao {
+
+	/**
+	 * 新增长期性能任务
+	 * 
+	 * @param taskInfo
+	 *            任务实体
+	 * @param connection
+	 *            数据库连接
+	 * @return 插入的记录数
+	 * @throws Exception
+	 */
+	public int insert(PerformanceTaskInfo taskInfo, Connection connection) throws Exception {
+		if (null == taskInfo) {
+			throw new Exception("taskInfo is null");
+		}
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+		int result = 0;
+		try {
+			sql = "insert into performance_task(siteId,objectid,objecttype," +
+					"threadname,taskname,perfortype,monitorcycle,createtime," +
+					"endtime,runstates,creater,taskDescribe,slotCard,performanceCount,performanceBeginCount,performanceType)"
+					+ " values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+			preparedStatement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+			preparedStatement.setInt(1, taskInfo.getSiteInst().getSite_Inst_Id());
+			preparedStatement.setInt(2, taskInfo.getObjectId());
+			preparedStatement.setInt(3, taskInfo.getObjectType().getValue());
+			preparedStatement.setString(4, taskInfo.getThreadName());
+			preparedStatement.setString(5, taskInfo.getTaskName());
+			preparedStatement.setString(6, taskInfo.getPerforType());
+			preparedStatement.setInt(7, taskInfo.getMonitorCycle().getValue());
+			preparedStatement.setString(8, taskInfo.getCreateTime());
+			preparedStatement.setString(9, taskInfo.getEndTime());
+			preparedStatement.setInt(10, taskInfo.getRunstates().getValue());
+			preparedStatement.setString(11, taskInfo.getCreater());
+			preparedStatement.setString(12, taskInfo.getDescribe());
+			preparedStatement.setString(13, taskInfo.getSlotCard());
+			preparedStatement.setInt(14, taskInfo.getPerformanceCount());
+			preparedStatement.setInt(15, taskInfo.getPerformanceBeginCount());
+			preparedStatement.setInt(16, taskInfo.getPerformanceType());
+			result = preparedStatement.executeUpdate();
+			resultSet = preparedStatement.getGeneratedKeys();
+			if (resultSet.next()) {
+				result = resultSet.getInt(1);
+			}
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (resultSet != null) {
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				resultSet = null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+		return result;
+	}
+
+	/**
+	 * 修改长期性能任务
+	 * 
+	 * @param taskInfo
+	 *            任务实体
+	 * @param connection
+	 *            数据库连接
+	 * @return 插入的记录数
+	 * @throws Exception
+	 */
+	public int update(PerformanceTaskInfo taskInfo, Connection connection) throws Exception {
+		if (null == taskInfo) {
+			throw new Exception("taskInfo is null");
+		}
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		int result = 0;
+		try {
+			
+			sql = "update  performance_task p set p.taskname=?,p.monitorcycle=?,p.createtime=?,p.endtime=?,p.runstates=?,p.creater=?,taskDescribe=?"
+					+ ",p.perfortype=?,p.slotCard=?,p.performanceCount=?,p.performanceBeginCount=?,p.performanceType=?,p.threadname=? where p.id=? ";
+			preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.setString(1, taskInfo.getTaskName());
+			preparedStatement.setInt(2, taskInfo.getMonitorCycle().getValue());
+			preparedStatement.setString(3, taskInfo.getCreateTime());
+			preparedStatement.setString(4, taskInfo.getEndTime());
+			preparedStatement.setInt(5, taskInfo.getRunstates().getValue());
+			preparedStatement.setString(6, taskInfo.getCreater());
+			preparedStatement.setString(7, taskInfo.getDescribe());
+			preparedStatement.setString(8, taskInfo.getPerforType());
+			preparedStatement.setString(9, taskInfo.getSlotCard());
+			preparedStatement.setInt(10, taskInfo.getPerformanceCount());
+			preparedStatement.setInt(11, taskInfo.getPerformanceBeginCount());
+			preparedStatement.setInt(12, taskInfo.getPerformanceType());
+			preparedStatement.setString(13, taskInfo.getThreadName());
+			preparedStatement.setInt(14, taskInfo.getId());
+			result = preparedStatement.executeUpdate();
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+		return result;
+	}
+
+	/**
+	 * 删除长期性能任务
+	 * 
+	 * @param taskId
+	 *            任务主键id
+	 * @param connection
+	 *            数据库连接
+	 * @return 插入的记录数
+	 * @throws Exception
+	 */
+	public int delete(int taskId, Connection connection) throws Exception {
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		int result = 0;
+		try {
+			sql = "delete frow performance_task where id=?";
+			preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.setInt(1, taskId);
+			result = preparedStatement.executeUpdate();
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+		return result;
+	}
+
+	/**
+	 * 根据主键集合，批量删除长期性能任务
+	 * 
+	 * @param idList
+	 * @param connection
+	 * @return
+	 * @throws Exception
+	 */
+	public int delete(List<Integer> idList, Connection connection) throws Exception {
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		int result = 0;
+		String ids = null;
+		try {
+			ids = idList.toString().substring(1, idList.toString().length() - 1);
+			sql = "delete from performance_task where id in (" + ids + " )";
+			preparedStatement = connection.prepareStatement(sql);
+			result = preparedStatement.executeUpdate();
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+			ids = null;
+		}
+
+		return result;
+	}
+
+	/**
+	 * 条件查询长期性能任务
+	 * 
+	 * @param taskInfo
+	 *            查询条件
+	 * @param connection
+	 * @return
+	 * @throws Exception
+	 */
+	public List<PerformanceTaskInfo> queryByCondition(PerformanceTaskInfo taskInfo, Connection connection) throws Exception {
+		if (null == taskInfo) {
+			throw new Exception("taskInfo is null");
+		}
+
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+		String sql = null;
+		List<PerformanceTaskInfo> list = null;
+		try {
+			
+			sql = "SELECT * from performance_task where 1=1 ";
+			if (taskInfo.getId() > 0) {
+				sql += " and id=" + taskInfo.getId();
+			}
+			if (taskInfo.getTaskName() != null) {
+				sql += " and taskname='" + taskInfo.getTaskName() + "'";
+			}
+			if (taskInfo.getMonitorCycle() != null) {
+				sql += " and monitorcycle=" + taskInfo.getMonitorCycle().getValue();
+			}
+			if (taskInfo.getCreateTime() != null) {
+				sql += " and createtime='" + taskInfo.getCreateTime() + "'";
+			}
+			if (taskInfo.getEndTime() != null) {
+				sql += " and endtime='" + taskInfo.getEndTime() + "'";
+			}
+			if (taskInfo.getRunstates() != null) {
+				sql += " and runstates=" + taskInfo.getRunstates().getValue();
+			}
+			if (taskInfo.getObjectId()>0) {
+				sql += " and objectid=" + taskInfo.getObjectId();
+			}
+			
+			if (taskInfo.getSiteInst() != null && taskInfo.getSiteInst().getSite_Inst_Id() > 0) {
+				if (taskInfo.getSiteInst() != null) {
+					sql += " and siteId=" + taskInfo.getSiteInst().getSite_Inst_Id();
+					
+				}
+			}
+			
+			if (taskInfo.getCreater() != null) {
+				sql += " and creater='" + taskInfo.getCreater() + "'";
+			}
+			if (taskInfo.getThreadName() != null) {
+				sql += " and threadname='" + taskInfo.getThreadName() + "'";
+			}
+			if (taskInfo.getPerforType() != null) {
+				sql += " and perfortype in (" + taskInfo.getPerforType() + ")";
+			}
+			if (taskInfo.getObjectType()!= null) {
+				sql += " and objecttype='" + taskInfo.getObjectType().getValue() + "'";
+			}
+//			sql += " and performanceCount='" + taskInfo.getPerformanceCount() + "'";
+//			sql += " and performanceBeginCount='" + taskInfo.getPerformanceBeginCount()+ "'";
+//			sql += " and performanceType='" + taskInfo.getPerformanceType() + "'";
+			list = this.excuteQuery(connection, sql);
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			sql = null;
+		}
+		return list;
+	}
+
+	/**
+	 * 根据主键id列表，批量查询
+	 * 
+	 * @param idList
+	 * @param connection
+	 * @return
+	 * @throws Exception
+	 */
+	public List<PerformanceTaskInfo> queryByIdList(List<Integer> idList, Connection connection) throws Exception {
+		if (null == idList) {
+			throw new Exception("idList is null");
+		}
+
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		List<PerformanceTaskInfo> taskInfoList = null;
+		ResultSet resultSet = null;
+		PreparedStatement preparedStatement = null;
+		PerformanceTaskInfo taskInfo;
+		String sql = null;
+		String ids = null;
+		try {
+			ids = idList.toString().substring(1, idList.toString().length() - 1);
+			taskInfoList = new ArrayList<PerformanceTaskInfo>();
+			sql = "SELECT * from performance_task  WHERE id in " + "(" + ids + ")";
+			preparedStatement = connection.prepareStatement(sql);
+			resultSet = preparedStatement.executeQuery();
+			while (resultSet.next()) {
+				taskInfo = new PerformanceTaskInfo();
+				taskInfo.setId(resultSet.getInt("id"));
+				taskInfo.setTaskName(resultSet.getString("taskname"));
+				taskInfo.setPerforType(resultSet.getString("perfortype"));
+				taskInfo.setMonitorCycle(EMonitorCycle.forms(resultSet.getInt("monitorcycle")));
+				taskInfo.setCreateTime(resultSet.getString("createtime"));
+				taskInfo.setEndTime(resultSet.getString("endtime"));
+				taskInfo.setRunstates(ERunStates.forms(resultSet.getInt("runstates")));
+				taskInfo.setCreater(resultSet.getString("creater"));
+				taskInfo.setDescribe(resultSet.getString("taskDescribe"));
+				taskInfo.setThreadName(resultSet.getString("threadname"));
+				taskInfo.setObjectType(EObjectType.forms(resultSet.getInt("objecttype")));
+				SiteInst siteInst = new SiteInst();
+				siteInst.setSite_Inst_Id(resultSet.getInt("siteId"));
+				taskInfo.setSiteInst(siteInst);
+				taskInfo.setObjectId(resultSet.getInt("objectid"));
+				taskInfo.setPerformanceCount(resultSet.getInt("performanceCount"));
+				taskInfo.setPerformanceBeginCount(resultSet.getInt("performanceBeginCount"));
+				taskInfo.setPerformanceType(resultSet.getInt("performanceType"));
+				
+				taskInfoList.add(taskInfo);
+			}
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (resultSet != null) {
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				resultSet = null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+			taskInfo = null;
+			ids = null;
+		}
+		return taskInfoList;
+	}
+
+	/**
+	 * 执行查询语句
+	 * 
+	 * @param connection
+	 *            数据库连接
+	 * @param sql
+	 *            sql语句
+	 * @return 查询集合
+	 * @throws Exception
+	 */
+	private List<PerformanceTaskInfo> excuteQuery(Connection connection, String sql) throws Exception {
+		List<PerformanceTaskInfo> taskInfoList = null;
+		ResultSet resultSet = null;
+		PreparedStatement preparedStatement = null;
+		PerformanceTaskInfo taskInfo;
+		try {
+			taskInfoList = new ArrayList<PerformanceTaskInfo>();
+			preparedStatement = connection.prepareStatement(sql);
+			resultSet = preparedStatement.executeQuery();
+			while (resultSet.next()) {
+				taskInfo = new PerformanceTaskInfo();
+				taskInfo.setId(resultSet.getInt("id"));
+				taskInfo.setTaskName(resultSet.getString("taskname"));
+				taskInfo.setPerforType(resultSet.getString("perfortype"));
+				taskInfo.setMonitorCycle(EMonitorCycle.forms(resultSet.getInt("monitorcycle")));
+				taskInfo.setCreateTime(resultSet.getString("createtime"));
+				taskInfo.setEndTime(resultSet.getString("endtime"));
+				taskInfo.setRunstates(ERunStates.forms(resultSet.getInt("runstates")));
+				taskInfo.setCreater(resultSet.getString("creater"));
+				taskInfo.setDescribe(resultSet.getString("taskDescribe"));
+				taskInfo.setThreadName(resultSet.getString("threadname"));
+				taskInfo.setObjectType(EObjectType.forms(resultSet.getInt("objecttype")));
+				taskInfo.setSlotCard(resultSet.getString("slotCard"));
+				SiteInst siteInst = new SiteInst();
+				siteInst.setSite_Inst_Id(resultSet.getInt("siteId"));
+				taskInfo.setSiteInst(siteInst);
+				taskInfo.setObjectId(resultSet.getInt("objectid"));
+				taskInfo.setPerformanceCount(resultSet.getInt("performanceCount"));
+				taskInfo.setPerformanceBeginCount(resultSet.getInt("performanceBeginCount"));
+				taskInfo.setPerformanceType(resultSet.getInt("performanceType"));
+				
+				taskInfoList.add(taskInfo);
+			}
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (resultSet != null) {
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				resultSet = null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+			taskInfo = null;
+		}
+
+		return taskInfoList;
+	}
+
+	/**
+	 * 根据过滤条件查询
+	 * 
+	 * @param connection
+	 * @param filter
+	 *            过滤条件
+	 * @return
+	 * @throws Exception
+	 */
+	public List<PerformanceTaskInfo> queryByFilter(Connection connection, PerformanceTaskFilter filter) throws Exception {
+		if (null == filter) {
+			throw new Exception("filter is null");
+		}
+
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+		StringBuffer sql = null;
+		String slotIds = null;
+		String siteIds = null;
+		List<PerformanceTaskInfo> list = null;
+		try {
+			sql = new StringBuffer("SELECT * from performance_task  where 1=1 ");
+			if (filter.getObjectType() != null && filter.getObjectType() == EObjectType.SITEINST) {
+				sql.append(" and objecttype = '").append(filter.getObjectType().getValue()).append("' ");
+				if (filter.getSiteInsts() != null && filter.getSiteInsts().size() > 0) {
+					siteIds = filter.getSiteInsts().toString().substring(1, filter.getSiteInsts().toString().length() - 1);
+					sql.append(" and objectid in (").append(siteIds).append(") ");
+				}
+			} else if (filter.getObjectType() != null && filter.getObjectType() == EObjectType.SLOTINST) {
+				sql.append(" and objecttype = '").append(filter.getObjectType().getValue()).append("'");
+				if (filter.getSlotInsts() != null && filter.getSlotInsts().size() > 0) {
+					slotIds = filter.getSlotInsts().toString().substring(1, filter.getSlotInsts().toString().length() - 1);
+					sql.append(" and objectid in (").append(slotIds).append(") ");
+				}
+			}
+			if (filter.getMonitorCycle() != null) {
+				sql.append(" and monitorcycle = ").append(filter.getMonitorCycle().getValue());
+			}
+			list = this.excuteQuery(connection, sql.toString());
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			sql = null;
+			slotIds = null;
+			siteIds = null;
+		}
+		return list;
+	}
+	/**
+	 * 通过  网元  主键id 删除 长期性能任务 表中  数据
+	 * @param siteId
+	 * @param connection
+	 * @return
+	 * @throws Exception
+	 */
+	public int deleteBySiteId(int siteId, Connection connection) throws Exception {
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		int result = 0;
+
+		try {
+			sql = "delete from performance_task where siteId=?";
+			preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.setInt(1, siteId);
+
+			result = preparedStatement.executeUpdate();
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+
+		return result;
+	}
+	/**
+	 * 查询名称是否重复
+	 * 
+	 * @author kk
+	 * 
+	 * @param
+	 * 
+	 * @return
+	 * @throws Exception
+	 * 
+	 * @Exception 异常对象
+	 */
+	public int query_name(String afterName, String beforeName, Connection connection) throws Exception {
+		if (null == afterName) {
+			throw new Exception("afterName is null");
+		}
+
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		String sql = null;
+		List<Object> paramList = new ArrayList<Object>();
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+		int result = 0;
+		try {
+			sql = "select count(*) as selectcount from performance_task where taskname=?";
+			paramList.add(afterName);
+			if (null != beforeName) {
+				sql += " and taskname!=?";
+				paramList.add(beforeName);
+			}
+			preparedStatement = connection.prepareStatement(sql);
+			for (int i = 0; i < paramList.size(); i++) {
+				preparedStatement.setObject(i + 1, paramList.get(i));
+			}
+			resultSet = preparedStatement.executeQuery();
+			if (resultSet.next()) {
+				result = resultSet.getInt("selectcount");
+			}
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (resultSet != null) {
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				resultSet = null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+			paramList = null;
+			sql = null;
+		}
+
+		return result;
+	}
+}

@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 设备名称对应的xml路径 -->
+<xml-body>
+	<equipment typeName="610A" manufacturer="WUHAN" xmlPath="config/topo/equipment/equipment_610A.xml" imagePath="/com/nms/ui/images/topo/sztc/" ></equipment>
+</xml-body>

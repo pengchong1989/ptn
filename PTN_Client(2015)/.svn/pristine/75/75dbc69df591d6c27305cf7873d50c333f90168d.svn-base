@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+	<!-- 每个槽位可安装的板卡 -->
+<xml-body>
+	<!-- name对应 -->
+	<!-- 703C 主控卡 -->
+	<slotType name="610A">
+		<card name="610A_CARD" xmlPath="config/topo/card/sztc/card_fiberhome.xml"></card>
+	</slotType>
+</xml-body>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- IP32板卡下所有端口配置 (70B的IP32卡) -->
+<xml-boby>
+
+<card cardName="IP32" cardType="" imagePath="/com/nms/ui/images/topo/IP32Card.png" x="152" y="360" >
+	<port portName="e1"  seq="1" portType="e1" bandWidth="" imagePath="/com/nms/ui/images/topo/port_b_top.png" x="49" y="14" number="1" module="(o)"></port>
+	<port portName="e1"  seq="3" portType="e1" bandWidth="" imagePath="/com/nms/ui/images/topo/port_b_top.png" x="79" y="14" number="2" module="(o)"></port>
+	<port portName="e1"  seq="5" portType="e1" bandWidth="" imagePath="/com/nms/ui/images/topo/port_b_top.png" x="109" y="14" number="3" module="(o)"></port>
+	<port portName="e1"  seq="7" portType="e1" bandWidth="" imagePath="/com/nms/ui/images/topo/port_b_top.png" x="139" y="14" number="4" module="(o)"></port>
+	<port portName="e1"  seq="9" portType="e1" bandWidth="" imagePath="/com/nms/ui/images/topo/port_b_top.png" x="177" y="14" number="5" module="(o)"></port>
+    <port portName="e1"  seq="11" portType="e1" bandWidth="" imagePath="/com/nms/ui/images/topo/port_b_top.png" x="207" y="14" number="6" module="(o)"></port>
+	<port portName="e1"  seq="13" portType="e1" bandWidth="" imagePath="/com/nms/ui/images/topo/port_b_top.png" x="237" y="14" number="7" module="(o)"></port>
+    <port portName="e1"  seq="15" portType="e1" bandWidth="" imagePath="/com/nms/ui/images/topo/port_b_top.png" x="267" y="14" number="8" module="(o)"></port>
+	<port portName="e1"  seq="17" portType="e1" bandWidth="" imagePath="/com/nms/ui/images/topo/port_b_top.png" x="307" y="14" number="9" module="(o)"></port>
+	<port portName="e1"  seq="19" portType="e1" bandWidth="" imagePath="/com/nms/ui/images/topo/port_b_top.png" x="337" y="14" number="10" module="(o)"></port>
+	<port portName="e1"  seq="21" portType="e1" bandWidth="" imagePath="/com/nms/ui/images/topo/port_b_top.png" x="367" y="14" number="11" module="(o)"></port>
+	<port portName="e1"  seq="23" portType="e1" bandWidth="" imagePath="/com/nms/ui/images/topo/port_b_top.png" x="397" y="14" number="12" module="(o)"></port>
+	<port portName="e1"  seq="25" portType="e1" bandWidth="" imagePath="/com/nms/ui/images/topo/port_b_top.png" x="437" y="14" number="13" module="(o)"></port>
+	<port portName="e1"  seq="27" portType="e1" bandWidth="" imagePath="/com/nms/ui/images/topo/port_b_top.png" x="467" y="14" number="14" module="(o)"></port>
+	<port portName="e1"  seq="29" portType="e1" bandWidth="" imagePath="/com/nms/ui/images/topo/port_b_top.png" x="496" y="14" number="15" module="(o)"></port>
+	<port portName="e1"  seq="31" portType="e1" bandWidth="" imagePath="/com/nms/ui/images/topo/port_b_top.png" x="525" y="14" number="16" module="(o)"></port>
+</card>
+
+</xml-boby>

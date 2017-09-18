@@ -1,0 +1,1561 @@
+﻿package com.nms.db.dao.ptn.path.eth;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import com.nms.db.bean.ptn.path.eth.EtreeInfo;
+import com.nms.service.impl.util.TypeAndActionUtil;
+import com.nms.ui.manager.DateUtil;
+import com.nms.ui.manager.ExceptionManage;
+
+public class EtreeDao {
+
+	/**
+	 * 插入Sql
+	 */
+	private final String INSERTSQL = "insert into serviceinfo(serviceId,pwId,serviceType," + "name,aXcId,zXcId,activeStatus,rootSite,branchSite ,aAcId , zAcId , createUser , createTime,issingle,jobstatus,clientId,asiteid,zsiteid,amostAcIds,zmostAcIds) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+
+	/**
+	 * 更新Sql
+	 */
+	private final String UPDATESQL = "update serviceinfo set serviceId=?," + "pwId=?,name=?,aXcId=?,zXcId=?,activeStatus=?,rootSite=?,branchSite=?" + ",createUser=? ,createTime=? , jobstatus=? ,isSingle=?,clientId=?,aAcId=?,zAcId=?,amostAcIds=?,zmostAcIds=? where id=? and serviceType=3";
+	/**
+	 * 删除Sql
+	 */
+	private final String DELETESQL = "delete from serviceInfo where serviceId=? and serviceType = ?";
+
+	/**
+	 * 根据名称查询
+	 */
+	private final String SELECT_BY_NAME = "select count(*) as selectcount from serviceinfo where serviceType=3 and (rootSite = ? or branchSite = ?) and name=?";
+
+	/**
+	 * 查询单网元所有根
+	 */
+	private final String SELECT_ROOT = "select * from serviceinfo where servicetype=3 and rootSite=? and issingle=1";
+
+	/**
+	 * 删除Sql
+	 */
+	private final String DELETESQLBYID = "delete from serviceInfo where id=? and serviceType = ?";
+
+	ResultSet resultSet = null;
+	PreparedStatement preparedStatement = null;
+
+	/**
+	 * 新增etreeinfo
+	 * 
+	 * @param etreeinfo
+	 *            实体
+	 * @param connection
+	 *            数据库连接
+	 * @return 插入的记录数
+	 * @throws Exception
+	 */
+	public int insert(EtreeInfo etreeinfo, Connection connection) throws Exception {
+		if (null == etreeinfo) {
+			throw new Exception("etreeinfo is null");
+		}
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+		String sql = null;
+		int result = 0;
+		try {
+			etreeinfo.setCreateTime(DateUtil.getDate(DateUtil.FULLTIME));
+			sql = INSERTSQL;
+			preparedStatement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+			preparedStatement.setInt(1, etreeinfo.getServiceId());
+			preparedStatement.setInt(2, etreeinfo.getPwId());
+			preparedStatement.setInt(3, etreeinfo.getServiceType());
+			preparedStatement.setString(4, etreeinfo.getName());
+			preparedStatement.setInt(5, etreeinfo.getaXcId());
+			preparedStatement.setInt(6, etreeinfo.getzXcId());
+			preparedStatement.setInt(7, etreeinfo.getActiveStatus());
+			preparedStatement.setInt(8, etreeinfo.getRootSite());
+			preparedStatement.setInt(9, etreeinfo.getBranchSite());
+			preparedStatement.setInt(10, etreeinfo.getaAcId());
+			preparedStatement.setInt(11, etreeinfo.getzAcId());
+			preparedStatement.setString(12, etreeinfo.getCreateUser());
+			preparedStatement.setString(13, etreeinfo.getCreateTime());
+			preparedStatement.setInt(14, etreeinfo.getIsSingle());
+			preparedStatement.setString(15, etreeinfo.getJobStatus());
+			preparedStatement.setInt(16, etreeinfo.getClientId());
+			preparedStatement.setInt(17, etreeinfo.getaSiteId());
+			preparedStatement.setInt(18, etreeinfo.getzSiteId());
+			preparedStatement.setString(19, etreeinfo.getAmostAcId());
+			preparedStatement.setString(20, etreeinfo.getZmostAcId());
+			preparedStatement.executeUpdate();
+			resultSet = preparedStatement.getGeneratedKeys();
+			if (resultSet.next()) {
+				result = resultSet.getInt(1);
+			}
+		} catch (Exception e) {
+			throw e;
+		} finally {
+
+			if (resultSet != null) {
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				resultSet = null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+
+			sql = null;
+		}
+
+		return result;
+	}
+
+	/**
+	 * 修改etreeinfo
+	 * 
+	 * @param etreeinfo
+	 *            实体
+	 * @param connection
+	 *            数据库连接
+	 * @return 修改的记录数
+	 * @throws Exception
+	 */
+	public int update(EtreeInfo etreeinfo, Connection connection) throws Exception {
+		if (null == etreeinfo) {
+			throw new Exception("etreeinfo is null");
+		}
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+		String sql = null;
+		int result = 0;
+		try {
+			sql = UPDATESQL;
+			preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.setInt(1, etreeinfo.getServiceId());
+			preparedStatement.setInt(2, etreeinfo.getPwId());
+			preparedStatement.setString(3, etreeinfo.getName());
+			preparedStatement.setInt(4, etreeinfo.getaXcId());
+			preparedStatement.setInt(5, etreeinfo.getzXcId());
+			preparedStatement.setInt(6, etreeinfo.getActiveStatus());
+			preparedStatement.setInt(7, etreeinfo.getRootSite());
+			preparedStatement.setInt(8, etreeinfo.getBranchSite());
+			preparedStatement.setString(9, etreeinfo.getCreateUser());
+			preparedStatement.setString(10, etreeinfo.getCreateTime());
+			preparedStatement.setString(11, etreeinfo.getJobStatus());
+			preparedStatement.setInt(12, etreeinfo.getIsSingle());
+			preparedStatement.setInt(13, etreeinfo.getClientId());
+			preparedStatement.setInt(14, etreeinfo.getaAcId());
+			preparedStatement.setInt(15, etreeinfo.getzAcId());
+			preparedStatement.setString(16, etreeinfo.getAmostAcId());
+			preparedStatement.setString(17, etreeinfo.getZmostAcId());
+			preparedStatement.setInt(18, etreeinfo.getId());
+			result = preparedStatement.executeUpdate();
+		} catch (Exception e) {
+			throw e;
+		} finally {
+
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+
+		return result;
+	}
+
+	/**
+	 * 通过主键删除etreeinfo
+	 * 
+	 * @param id
+	 *            主键
+	 * @param connection
+	 *            数据库连接
+	 * @return 删除的记录数
+	 * @throws Exception
+	 */
+	public int delete(int serviceId, Connection connection) throws Exception {
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+		String sql = null;
+		int result = 0;
+		try {
+			sql = DELETESQL;
+			int serviceType = 3;
+			preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.setInt(1, serviceId);
+			preparedStatement.setInt(2, serviceType);
+			result = preparedStatement.executeUpdate();
+		} catch (Exception e) {
+			throw e;
+		} finally {
+
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+		return result;
+	}
+
+	/**
+	 * 通过主键id删除
+	 * @param id
+	 * @param connection
+	 * @return
+	 * @throws Exception
+	 */
+	public int deleteByID(int id, Connection connection) throws Exception {
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+		String sql = null;
+		int result = 0;
+		try {
+			sql = "delete from serviceInfo where id=? and serviceType = ?";
+			int serviceType = 3;
+			preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.setInt(1, id);
+			preparedStatement.setInt(2, serviceType);
+			result = preparedStatement.executeUpdate();
+		} catch (Exception e) {
+			throw e;
+		} finally {
+
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+		return result;
+	}
+	/**
+	 * 通过条件查询
+	 * 
+	 * @param etreeinfocondition
+	 *            查询条件
+	 * @param connection
+	 *            数据库连接
+	 * @return List<Etreeinfo>集合
+	 * @throws Exception
+	 */
+	public List<EtreeInfo> queryByCondition(EtreeInfo etreeinfocondition, Connection connection) throws Exception {
+		if (null == etreeinfocondition) {
+			throw new Exception("etreeinfocondition is null");
+		}
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+		String sql = null;
+		List<EtreeInfo> list = null;
+		try {
+			sql = "SELECT * FROM serviceInfo, pwInfo WHERE serviceInfo.pwId = pwInfo.pwId and" + " serviceType= 3" + " and serviceId = " + etreeinfocondition.getServiceId();
+			list = this.excuteQuery(connection, sql);
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			sql = null;
+		}
+		return list;
+	}
+
+	/**
+	 * 通过siteid 和 xcid 查询
+	 * 
+	 * @author kk
+	 * 
+	 * @param siteID
+	 *            和 xcID 数据库elan对象
+	 * @param connection
+	 *            数据库连接
+	 * @return
+	 * @throws Exception
+	 * 
+	 * @Exception 异常对象
+	 */
+	public List<EtreeInfo> query_etreeInfo(int siteID, int xcID, Connection connection) throws Exception {
+
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		String sql = null;
+		List<EtreeInfo> etreeInfoList = null;
+		try {
+
+			sql = "select * from serviceinfo where serviceType=3 and ((asiteid=" + siteID + " and axcid=" + xcID + ") or (zsiteid=" + siteID + " and zxcid=" + xcID + "))";
+			etreeInfoList = this.excuteQuery(connection, sql);
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			sql = null;
+		}
+
+		return etreeInfoList;
+	}
+
+	/**
+	 * 通过pwId查询
+	 */
+	public List<EtreeInfo> queryByPwIdCondition(List<Integer> idList, Connection connection) throws Exception {
+		if (null == idList) {
+			throw new Exception("PWCondition is null");
+		}
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+		List<EtreeInfo> etreeinfoList = null;
+		String sql = null;
+		String pwId = null;
+		String ids = null;
+		try {
+			pwId = idList.toString();
+			ids = pwId.substring(1, pwId.length() - 1);
+			etreeinfoList = new ArrayList<EtreeInfo>();
+			sql = "SELECT * FROM serviceinfo WHERE pwId in " + "(" + ids + ") and serviceType=3";
+			preparedStatement = connection.prepareStatement(sql);
+			resultSet = preparedStatement.executeQuery();
+			etreeinfoList = getEtreeInfoList(etreeinfoList, resultSet);
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (resultSet != null) {
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				resultSet = null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+			pwId = null;
+			ids = null;
+		}
+		return etreeinfoList;
+	}
+
+	/**
+	 * 查询一个最大的serviceid
+	 * 
+	 * @return
+	 * @throws Exception
+	 */
+	public int selectMaxServiceId(Connection connection) throws Exception {
+
+		String sql = null;
+		int serviceid = 0;
+		try {
+			sql = "select max(serviceid) as serviceid from serviceinfo where serviceType=3";
+
+			preparedStatement = connection.prepareStatement(sql);
+			resultSet = preparedStatement.executeQuery();
+			if (resultSet.next()) {
+				serviceid = resultSet.getInt("serviceid");
+			}
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (resultSet != null) {
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				resultSet = null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+		return serviceid;
+
+	}
+
+	/**
+	 * 执行查询语句
+	 * 
+	 * @param connection
+	 *            数据库连接
+	 * @param sql
+	 *            sql语句
+	 * @return 查询集合
+	 * @throws Exception
+	 */
+	private List<EtreeInfo> excuteQuery(Connection connection, String sql) throws Exception {
+		List<EtreeInfo> etreeinfoList = null;
+		try {
+			etreeinfoList = new ArrayList<EtreeInfo>();
+			preparedStatement = connection.prepareStatement(sql);
+			resultSet = preparedStatement.executeQuery();
+			etreeinfoList = getEtreeInfoList(etreeinfoList, resultSet);
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (resultSet != null) {
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				resultSet = null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+		}
+
+		return etreeinfoList;
+	}
+
+	public List<EtreeInfo> queryAll(Connection connection) throws SQLException {
+
+		List<EtreeInfo> etreeinfoList = new ArrayList<EtreeInfo>();
+		String sql = "select * from serviceInfo where serviceType = 3 and issingle=0";
+		try {
+			preparedStatement = connection.prepareStatement(sql);
+			resultSet = preparedStatement.executeQuery();
+			etreeinfoList = getEtreeInfoList(etreeinfoList, resultSet);
+
+		} catch (SQLException e) {
+			throw e;
+		} finally {
+			if (resultSet != null) {
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e, getClass());
+				}
+				resultSet = null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e, getClass());
+				}
+				preparedStatement = null;
+			}
+		}
+		return etreeinfoList;
+	}
+
+	/**
+	 * 查询某网元下所有etree信息
+	 * 
+	 * @param connection
+	 * @return
+	 * @throws SQLException
+	 */
+	public List<EtreeInfo> queryAllBySite(int siteid, Connection connection) throws SQLException {
+
+		List<EtreeInfo> etreeinfoList = new ArrayList<EtreeInfo>();
+		String sql = "select * from serviceInfo where serviceType = 3 and (rootSite = ? or branchSite=?)";
+		try {
+			preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.setInt(1, siteid);
+			preparedStatement.setInt(2, siteid);
+			resultSet = preparedStatement.executeQuery();
+			etreeinfoList = getEtreeInfoList(etreeinfoList, resultSet);
+
+		} catch (SQLException e) {
+			throw e;
+		} finally {
+			if (resultSet != null) {
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e, getClass());
+				}
+				resultSet = null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e, getClass());
+				}
+				preparedStatement = null;
+			}
+		}
+		return etreeinfoList;
+	}
+
+	private List<EtreeInfo> getEtreeInfoList(List<EtreeInfo> etreeinfoList, ResultSet resultSet) {
+		EtreeInfo etreeinfo;
+		try {
+			while (resultSet.next()) {
+				etreeinfo = new EtreeInfo();
+				etreeinfo.setId(resultSet.getInt("id"));
+				etreeinfo.setServiceId(resultSet.getInt("serviceId"));
+				etreeinfo.setPwId(resultSet.getInt("pwId"));
+				etreeinfo.setServiceType(resultSet.getInt("serviceType"));
+				etreeinfo.setName(resultSet.getString("name"));
+				etreeinfo.setaXcId(resultSet.getInt("aXcId"));
+				etreeinfo.setzXcId(resultSet.getInt("zXcId"));
+				etreeinfo.setActiveStatus(resultSet.getInt("activeStatus"));
+				etreeinfo.setRootSite(resultSet.getInt("rootSite"));
+				etreeinfo.setBranchSite(resultSet.getInt("branchSite"));
+				etreeinfo.setaAcId(resultSet.getInt("aAcId"));
+				etreeinfo.setzAcId(resultSet.getInt("zAcId"));
+				etreeinfo.setCreateUser(resultSet.getString("createUser"));
+				etreeinfo.setCreateTime(DateUtil.strDate(resultSet.getString("createTime"), DateUtil.FULLTIME));
+				etreeinfo.setIsSingle(resultSet.getInt("issingle"));
+				etreeinfo.setJobStatus(resultSet.getString("jobStatus"));
+				etreeinfo.setClientId(resultSet.getInt("clientId"));
+				etreeinfo.setaSiteId(resultSet.getInt("aSiteId"));
+				etreeinfo.setzSiteId(resultSet.getInt("zSiteId"));
+				etreeinfo.setAmostAcId(resultSet.getString("amostAcIds"));
+				etreeinfo.setZmostAcId(resultSet.getString("zmostAcIds"));	
+				etreeinfo.setBranchMainSite(resultSet.getInt("branchMainSite"));
+				etreeinfo.setBranchProtectSite(resultSet.getInt("branchProtectSite"));
+				etreeinfoList.add(etreeinfo);
+			}
+		} catch (Exception e) {
+			ExceptionManage.dispose(e, this.getClass());
+		}
+		return etreeinfoList;
+	}
+
+	public void updateStatus(List<Integer> ServiceIds, int status, Connection connection) throws Exception {
+
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		String sql = null;
+		String ids = null;
+		PreparedStatement preparedStatement = null;
+		try {
+
+			if (null == ServiceIds) {
+				sql = "update serviceinfo set activeStatus=? where serviceType=3";
+			} else {
+				ids = ServiceIds.toString();
+				sql = "update serviceinfo set activeStatus=? where serviceId in (" + ids.subSequence(1, ids.length() - 1) + ")  and serviceType=3";
+			}
+
+			preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.setInt(1, status);
+
+			preparedStatement.executeUpdate();
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+			ids = null;
+		}
+	}
+
+	public void updateStatus(int siteId, int status, Connection connection) throws Exception {
+
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		try {
+
+			sql = "update serviceinfo set activeStatus=? where serviceType=3 and (rootSite = ? or branchSite = ?)";
+
+			preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.setInt(1, status);
+			preparedStatement.setInt(2, siteId);
+			preparedStatement.setInt(3, siteId);
+
+			preparedStatement.executeUpdate();
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+	}
+
+	/**
+	 * 同步etree时 查询
+	 * 
+	 * query_synchro(这里用一句话描述这个方法的作用)
+	 * 
+	 * @author kk
+	 * 
+	 * @param
+	 * 
+	 * @return
+	 * @throws Exception
+	 * 
+	 * @Exception 异常对象
+	 */
+	public List<EtreeInfo> query_synchro(EtreeInfo etreeInfo, String role, Connection connection) throws Exception {
+
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+		if (null == role || "".equals(role)) {
+			throw new Exception("role is null");
+		}
+		if (null == etreeInfo) {
+			throw new Exception("etreeInfo is null");
+		}
+
+		String sql = "select * from serviceInfo where serviceType = 3 ";
+		List<Object> paramList = new ArrayList<Object>();
+		List<EtreeInfo> etreeinfoList = new ArrayList<EtreeInfo>();
+		try {
+
+			if (TypeAndActionUtil.ACTION_ROOT.equals(role)) {
+				sql += " and rootsite=? and axcid=? ";
+				paramList.add(etreeInfo.getRootSite());
+				paramList.add(etreeInfo.getaXcId());
+			} else {
+				sql += " and branchSite=? and zxcid=? ";
+				paramList.add(etreeInfo.getBranchSite());
+				paramList.add(etreeInfo.getzXcId());
+			}
+			preparedStatement = connection.prepareStatement(sql);
+			for (int i = 0; i < paramList.size(); i++) {
+				preparedStatement.setObject(i + 1, paramList.get(i));
+			}
+			resultSet = preparedStatement.executeQuery();
+			etreeinfoList = getEtreeInfoList(etreeinfoList, resultSet);
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (resultSet != null) {
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e, getClass());
+				}
+				resultSet = null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e, getClass());
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+			paramList = null;
+		}
+
+		return etreeinfoList;
+	}
+
+	/**
+	 * 查询名称是否重复
+	 * 
+	 * @author kk
+	 * 
+	 * @param
+	 * 
+	 * @return
+	 * @throws Exception
+	 * 
+	 * @Exception 异常对象
+	 */
+	public int query_name(String afterName, String beforeName, Connection connection) throws Exception {
+		if (null == afterName) {
+			throw new Exception("afterName is null");
+		}
+
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		String sql = null;
+		List<Object> paramList = new ArrayList<Object>();
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+		int result = 0;
+		try {
+			sql = "select count(*) as selectcount from serviceinfo where serviceType=3 and name=?";
+			paramList.add(afterName);
+			if (null != beforeName) {
+				sql += " and name!=?";
+				paramList.add(beforeName);
+			}
+			preparedStatement = connection.prepareStatement(sql);
+			for (int i = 0; i < paramList.size(); i++) {
+				preparedStatement.setObject(i + 1, paramList.get(i));
+			}
+			resultSet = preparedStatement.executeQuery();
+			if (resultSet.next()) {
+				result = resultSet.getInt("selectcount");
+			}
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (resultSet != null) {
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				resultSet = null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+			paramList = null;
+			sql = null;
+		}
+
+		return result;
+	}
+
+	/**
+	 * 单网元名称验证
+	 * 
+	 * @param afterName
+	 * @param beforeName
+	 * @param connection
+	 * @param siteId
+	 * @return
+	 * @throws Exception
+	 */
+	public int query_nameBySingle(String afterName, String beforeName, Connection connection, int siteId) throws Exception {
+		if (null == afterName) {
+			throw new Exception("afterName is null");
+		}
+
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		String sql = null;
+		List<Object> paramList = new ArrayList<Object>();
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+		int result = 0;
+		try {
+			sql = this.SELECT_BY_NAME;
+			paramList.add(siteId);
+			paramList.add(siteId);
+			paramList.add(afterName);
+			if (null != beforeName) {
+				sql += " and name!=?";
+				paramList.add(beforeName);
+			}
+			preparedStatement = connection.prepareStatement(sql);
+			for (int i = 0; i < paramList.size(); i++) {
+				preparedStatement.setObject(i + 1, paramList.get(i));
+			}
+			resultSet = preparedStatement.executeQuery();
+			if (resultSet.next()) {
+				result = resultSet.getInt("selectcount");
+			}
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (resultSet != null) {
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				resultSet = null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+			paramList = null;
+			sql = null;
+		}
+
+		return result;
+	}
+
+	/**
+	 * 通过acId,siteId查询
+	 * 
+	 * @param acId
+	 * @param connection
+	 * @return
+	 */
+	public List<EtreeInfo> queryByAcIdAndSiteIdCondition(int acId, int siteId, Connection connection) {
+		List<EtreeInfo> etreeinfoList = new ArrayList<EtreeInfo>();
+		String sql = "select*from serviceinfo where serviceType=3 and ((rootSite = ? )or (branchSite=?))";
+		PreparedStatement preparedStatement = null;
+		try {
+			preparedStatement = connection.prepareStatement(sql);
+//			preparedStatement.setInt(1, acId);
+			preparedStatement.setInt(1, siteId);
+//			preparedStatement.setInt(3, acId);
+			preparedStatement.setInt(2, siteId);
+			resultSet = preparedStatement.executeQuery();
+			etreeinfoList = getEtreeInfoList(etreeinfoList, resultSet);
+		} catch (Exception e) {
+			ExceptionManage.dispose(e, this.getClass());
+		} finally {
+			if (resultSet != null) {
+				try {
+					resultSet.close();
+				} catch (SQLException e) {
+					ExceptionManage.dispose(e, this.getClass());
+				}
+				resultSet = null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (SQLException e) {
+					ExceptionManage.dispose(e, this.getClass());
+				}
+				preparedStatement = null;
+			}
+		}
+		return etreeinfoList;
+	}
+
+	/**
+	 * 通过serviceId查询一组etree业务
+	 * 
+	 * @param serviceId
+	 * @param connection
+	 * @return
+	 */
+	public List<EtreeInfo> queryByServiceId(int serviceId, Connection connection) {
+
+		List<EtreeInfo> etreeinfoList = new ArrayList<EtreeInfo>();
+		String sql = "select * from serviceinfo where serviceType=3 and serviceId=?";
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+		try {
+			preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.setInt(1, serviceId);
+			resultSet = preparedStatement.executeQuery();
+			etreeinfoList = getEtreeInfoList(etreeinfoList, resultSet);
+		} catch (Exception e) {
+			ExceptionManage.dispose(e, this.getClass());
+		} finally {
+			if (resultSet != null) {
+				try {
+					resultSet.close();
+				} catch (SQLException e) {
+					ExceptionManage.dispose(e, this.getClass());
+				}
+				resultSet = null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (SQLException e) {
+					ExceptionManage.dispose(e, this.getClass());
+				}
+				preparedStatement = null;
+			}
+		}
+		return etreeinfoList;
+
+	}
+
+	/**
+	 * 根据根网元查询 搜索时用
+	 * 
+	 * @param siteId
+	 *            网元id
+	 * @return
+	 * @throws Exception
+	 */
+	public Map<Integer, List<EtreeInfo>> queryByRoot(int siteId, Connection connection) throws Exception {
+
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+		List<EtreeInfo> etreeinfoList = null;
+		Map<Integer, List<EtreeInfo>> map = null;
+		try {
+			etreeinfoList = new ArrayList<EtreeInfo>();
+
+			preparedStatement = connection.prepareStatement(this.SELECT_ROOT);
+			preparedStatement.setInt(1, siteId);
+
+			resultSet = preparedStatement.executeQuery();
+			etreeinfoList = this.getEtreeInfoList(etreeinfoList, resultSet);
+
+			map = this.convertMap(etreeinfoList);
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (resultSet != null) {
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e, getClass());
+				}
+				resultSet = null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e, getClass());
+				}
+				preparedStatement = null;
+			}
+			etreeinfoList = null;
+		}
+		return map;
+	}
+
+	/**
+	 * 把list转换成map serivceId为key
+	 * 
+	 * @param etreeList
+	 *            要转换的集合
+	 * @return
+	 * @throws Exception
+	 */
+	public Map<Integer, List<EtreeInfo>> convertMap(List<EtreeInfo> etreeList) throws Exception {
+		Map<Integer, List<EtreeInfo>> map = null;
+		List<EtreeInfo> etreeInfoList = null;
+		try {
+			map = new HashMap<Integer, List<EtreeInfo>>();
+
+			for (EtreeInfo etreeInfo : etreeList) {
+				if (null == map.get(etreeInfo.getServiceId())) {
+					etreeInfoList = new ArrayList<EtreeInfo>();
+					etreeInfoList.add(etreeInfo);
+
+					map.put(etreeInfo.getServiceId(), etreeInfoList);
+				} else {
+					map.get(etreeInfo.getServiceId()).add(etreeInfo);
+				}
+			}
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			etreeInfoList = null;
+		}
+		return map;
+	}
+
+	public List<Integer> selectpwIds(int siteId, int serviceId, Connection connection) throws Exception {
+		if (0 == siteId) {
+			throw new Exception("siteId is null");
+		}
+
+		if (0 == serviceId) {
+			throw new Exception("serviceId is null");
+		}
+
+		String sql = null;
+		List<Object> paramList = new ArrayList<Object>();
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+		List<Integer> resultList = new ArrayList<Integer>();
+		try {
+			sql = "select * from serviceinfo where servicetype=3 and serviceId = ? and asiteid = ? or zsiteid = ?";
+			paramList.add(serviceId);
+			paramList.add(siteId);
+			paramList.add(siteId);
+			preparedStatement = connection.prepareStatement(sql);
+			for (int i = 0; i < paramList.size(); i++) {
+				preparedStatement.setObject(i + 1, paramList.get(i));
+			}
+			resultSet = preparedStatement.executeQuery();
+			if (resultSet.next()) {
+				resultList.add(resultSet.getInt("pwid"));
+			}
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (resultSet != null) {
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e, this.getClass());
+				}
+				resultSet = null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e, this.getClass());
+				}
+				preparedStatement = null;
+			}
+			paramList = null;
+			sql = null;
+		}
+
+		return resultList;
+	}
+
+	/**
+	 * 根据主键删除etree数据
+	 * 
+	 * @param id
+	 *            主键
+	 * @param connection
+	 *            数据库连接
+	 * @throws Exception
+	 */
+	public void deleteById(int id, Connection connection) throws Exception {
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+		String sql = null;
+		try {
+			sql = DELETESQLBYID;
+			int serviceType = 3;
+			preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.setInt(1, id);
+			preparedStatement.setInt(2, serviceType);
+			preparedStatement.executeUpdate();
+		} catch (Exception e) {
+			throw e;
+		} finally {
+
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+
+	}
+
+	public List<EtreeInfo> select(EtreeInfo etreeInfo, Connection connection) throws Exception {
+		if (null == etreeInfo) {
+			throw new Exception("PWCondition is null");
+		}
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+		List<EtreeInfo> etreeinfoList = null;
+		String sql = null;
+		try {
+			etreeinfoList = new ArrayList<EtreeInfo>();
+			sql = "SELECT * FROM serviceinfo WHERE  serviceType=3 and  issingle=0";
+			if (etreeInfo.getId() > 0) {
+				sql += " and id= " + etreeInfo.getId();
+			}
+			preparedStatement = connection.prepareStatement(sql);
+			resultSet = preparedStatement.executeQuery();
+			etreeinfoList = getEtreeInfoList(etreeinfoList, resultSet);
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (resultSet != null) {
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				resultSet = null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+		return etreeinfoList;
+	}
+
+	public List<EtreeInfo> selectServiceInfoById(int id, Connection connection) throws Exception {
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+		try {
+			String sql = "select * from serviceinfo where id=" + id;
+			return this.excuteQuery(connection, sql);
+
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+
+	/**
+	 * 根据网元ID和是否为单网元查询
+	 * 
+	 * @param siteId
+	 *            网元主键
+	 * @param isSingle
+	 *            是否为单网元 1=单网元 0=网络
+	 * @param connection
+	 * @return
+	 * @throws Exception
+	 */
+	public List<EtreeInfo> selectBySiteAndisSingle(int siteId, int isSingle, Connection connection) throws Exception {
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		List<EtreeInfo> etreeinfoList = new ArrayList<EtreeInfo>();
+		ResultSet resultSet = null;
+		try {
+			sql = "select * from serviceinfo where serviceType = 3 and isSingle=? and (aSiteId = ? or zSiteId = ?)";
+
+			preparedStatement = connection.prepareStatement(sql.toString());
+			preparedStatement.setInt(1, isSingle);
+			preparedStatement.setInt(2, siteId);
+			preparedStatement.setInt(3, siteId);
+
+			resultSet = preparedStatement.executeQuery();
+			getEtreeInfoList(etreeinfoList, resultSet);
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (resultSet != null) {
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+				}
+				resultSet = null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+				}
+				preparedStatement = null;
+			}
+		}
+		return etreeinfoList;
+	}
+
+	/**
+	 * 根据主键查询此组etree业务
+	 * 
+	 * @param id
+	 *            主键
+	 * @param connection
+	 *            数据库连接
+	 * @return
+	 * @throws Exception
+	 */
+	public List<EtreeInfo> queryById(int id, Connection connection) throws Exception {
+
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+		List<EtreeInfo> etreeInfoList = new ArrayList<EtreeInfo>();
+		try {
+			sql = "select * FROM serviceinfo s1 WHERE s1.serviceId = (SELECT s2.serviceId FROM serviceinfo s2 WHERE s2.id=?) AND s1.serviceType=3";
+
+			preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.setInt(1, id);
+			resultSet = preparedStatement.executeQuery();
+			this.getEtreeInfoList(etreeInfoList, resultSet);
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (resultSet != null) {
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+				}
+				resultSet = null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+				}
+				preparedStatement = null;
+			}
+		}
+		return etreeInfoList;
+	}
+
+	/**
+	 * 列表过滤查询
+	 * 
+	 * @param etreeInfo
+	 *            查询条件
+	 * @param connection
+	 *            数据库连接
+	 * @return
+	 * @throws Exception
+	 */
+	public List<EtreeInfo> filterSelect(EtreeInfo etreeInfo, Connection connection) throws Exception {
+
+		if (null == etreeInfo) {
+			throw new Exception("etreeInfo is null");
+		}
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		List<EtreeInfo> etreeInfoList = new ArrayList<EtreeInfo>();
+		StringBuffer sql = new StringBuffer();
+		List<Object> parameterList = new ArrayList<Object>();
+		try {
+			sql.append("SELECT * FROM serviceinfo s WHERE  serviceType=3 ");
+
+			if (null != etreeInfo.getName() && !"".equals(etreeInfo.getName())) {
+				sql.append(" AND `name` LIKE ?");
+				parameterList.add("%"+etreeInfo.getName()+"%");
+			}
+
+			if (etreeInfo.getPwId() > 0) {
+				sql.append(" AND pwId=?");
+				parameterList.add(etreeInfo.getPwId());
+			}
+
+			if (etreeInfo.getActiveStatus() > 0) {
+				sql.append(" AND activeStatus=?");
+				parameterList.add(etreeInfo.getActiveStatus());
+			}
+
+			if (etreeInfo.getaSiteId() > 0) {
+				sql.append(" AND (rootSite=? OR branchSite=?)");
+				parameterList.add(etreeInfo.getaSiteId());
+				parameterList.add(etreeInfo.getaSiteId());
+			}
+			
+//			if(etreeInfo.getAportId()>0)
+//			{
+//				sql.append(" and (s.amostAcIds in (SELECT id FROM acinfo WHERE portId=?) or s.zmostAcIds in (SELECT id FROM acinfo WHERE portId=?))");
+//				parameterList.add(etreeInfo.getAportId());
+//				parameterList.add(etreeInfo.getAportId());
+//			}
+
+			preparedStatement = connection.prepareStatement(sql.toString());
+			if (parameterList.size() > 0) {
+				for (int i = 0; i < parameterList.size(); i++) {
+					preparedStatement.setObject(i + 1, parameterList.get(i));
+				}
+			}
+			resultSet = preparedStatement.executeQuery();
+			getEtreeInfoList(etreeInfoList, resultSet);
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (resultSet != null) {
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e, getClass());
+				}
+				resultSet = null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e, getClass());
+				}
+				preparedStatement = null;
+			}
+			parameterList = null;
+			sql = null;
+		}
+		return etreeInfoList;
+	}
+	
+	
+	/**
+	 * 
+	 * 判断PWid是否别其他的所使用
+	 * @param pwId
+	 * @param connection
+	 * @return
+	 * @throws Exception
+	 */
+	
+	public boolean isRelatedPW(int pwId, Connection connection) throws Exception {
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+		boolean falg = false;
+		try {
+			sql = "select * from serviceinfo where (serviceType = 2 or serviceType =1 or serviceType =40 ) and pwId = ?";
+
+			preparedStatement = connection.prepareStatement(sql.toString());
+			preparedStatement.setInt(1, pwId);
+			resultSet = preparedStatement.executeQuery();
+			if(resultSet.next()){
+				return true;
+			}
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (resultSet != null) {
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+				}
+				resultSet = null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+				}
+				preparedStatement = null;
+			}
+		}
+		return falg;
+	}
+	/**
+	 * 
+	 * 判断ac是否别其他的所使用
+	 * @param pwId
+	 * @param connection
+	 * @return
+	 * @throws Exception
+	 */
+	
+	public List<String> isRelatedAc(Connection connection) throws Exception {
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+		List<String> azAcList = new ArrayList<String>();
+		try {
+			sql = "select * from serviceinfo where (serviceType = 2)";
+			preparedStatement = connection.prepareStatement(sql.toString());
+			resultSet = preparedStatement.executeQuery();
+			
+			while (resultSet.next()) {
+				if(null != resultSet.getString("amostAcIds") && !resultSet.getString("amostAcIds").equals(""))
+				{
+					azAcList.add(resultSet.getString("amostAcIds"));	
+				}
+				if(null != resultSet.getString("zmostAcIds") && !resultSet.getString("zmostAcIds").equals(""))
+				{
+					azAcList.add(resultSet.getString("zmostAcIds"));
+				}
+			}
+		} finally {
+			if (resultSet != null) {
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+				}
+				resultSet = null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+				}
+				preparedStatement = null;
+			}
+		}
+		return azAcList;
+	}
+	
+	/**
+	 * 
+	 * 判断ac是否别其他的所使用
+	 * @param pwId
+	 * @param connection
+	 * @return
+	 * @throws Exception
+	 */
+	public boolean isRelatedAcByEline(int acId, Connection connection) throws Exception {
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+		try {
+			sql = "select * from serviceinfo where (serviceType = 1 or serviceType = 40 ) and (aAcId = ? or zAcId = ?)";
+			preparedStatement = connection.prepareStatement(sql.toString());
+			preparedStatement.setInt(1, acId);
+			preparedStatement.setInt(2, acId);
+			resultSet = preparedStatement.executeQuery();
+			if(resultSet.next()){
+				return true;
+			}
+		} finally {
+			if (resultSet != null) {
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+				}
+				resultSet = null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+				}
+				preparedStatement = null;
+			}
+		}
+		return false;
+	}
+	
+	
+	
+	public List<EtreeInfo> queryAllEtree(int serviceType,String name,Connection connection) throws SQLException {
+
+		List<EtreeInfo> etreeinfoList = new ArrayList<EtreeInfo>();
+		String sql = "select * from serviceInfo where serviceType = ? and name=?";
+		try {
+			preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.setInt(1, serviceType);
+			preparedStatement.setString(2, name);
+			resultSet = preparedStatement.executeQuery();
+			etreeinfoList = getEtreeInfoList(etreeinfoList, resultSet);
+
+		} catch (SQLException e) {
+			throw e;
+		} finally {
+			if (resultSet != null) {
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e, getClass());
+				}
+				resultSet = null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e, getClass());
+				}
+				preparedStatement = null;
+			}
+		}
+		return etreeinfoList;
+	}
+	
+	public List<EtreeInfo> queryAllEtrees(int serviceType,String name,int branchsite,Connection connection) throws SQLException {
+		List<EtreeInfo> etreeinfoList = new ArrayList<EtreeInfo>();		
+		String sql ="";		
+		try {
+			if(serviceType==3){
+				sql = "select * from serviceInfo where serviceType = ? and name=? and branchSite=?";
+				preparedStatement = connection.prepareStatement(sql);
+				preparedStatement.setInt(1, serviceType);
+				preparedStatement.setString(2, name);
+				preparedStatement.setInt(3, branchsite);
+			}else if(serviceType==40){
+				sql = "select * from serviceInfo where serviceType = ? and name=? and (branchMainSite=? or branchProtectSite=? )";
+				preparedStatement = connection.prepareStatement(sql);
+				preparedStatement.setInt(1, serviceType);
+				preparedStatement.setString(2, name);
+				preparedStatement.setInt(3, branchsite);
+				preparedStatement.setInt(4, branchsite);
+			}else if(serviceType==2){
+				sql = "select * from serviceInfo where serviceType = ? and name=? and (aSiteId=? or zSIteId=? )";
+				preparedStatement = connection.prepareStatement(sql);
+				preparedStatement.setInt(1, serviceType);
+				preparedStatement.setString(2, name);
+				preparedStatement.setInt(3, branchsite);
+				preparedStatement.setInt(4, branchsite);
+			}
+			resultSet = preparedStatement.executeQuery();
+			etreeinfoList = getEtreeInfoList(etreeinfoList, resultSet);
+		} catch (SQLException e) {
+			throw e;
+		} finally {
+			if (resultSet != null) {
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e, getClass());
+				}
+				resultSet = null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e, getClass());
+				}
+				preparedStatement = null;
+			}
+		}
+		return etreeinfoList;
+	}
+	
+}

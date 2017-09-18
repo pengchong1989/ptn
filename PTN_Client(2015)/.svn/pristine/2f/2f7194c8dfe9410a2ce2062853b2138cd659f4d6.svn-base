@@ -1,0 +1,32 @@
+package com.nms.db.dao.ptn.path.eth;
+
+import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
+
+import com.nms.db.bean.ptn.path.eth.ElineInfo;
+
+public interface ElineInfoMapper {
+    int deleteByPrimaryKey(Integer id);
+
+    int insert(ElineInfo record);
+
+    int insertSelective(ElineInfo record);
+
+    ElineInfo selectByPrimaryKey(Integer id);
+
+    int updateByPrimaryKeySelective(ElineInfo record);
+
+    int updateByPrimaryKey(ElineInfo record);
+
+	public List<ElineInfo> queryByCondition(ElineInfo eline);
+
+	public List<ElineInfo> selectBySiteId(int siteId);
+
+	List<ElineInfo> querySingleByCondition(ElineInfo elineInfo);
+
+	List<ElineInfo> selectBySiteAndisSingle(int siteId, int i);
+	
+	public List<ElineInfo> queryNodeBySiteAndServiceId(@Param("siteId")int siteId,@Param("serviceId")int serviceId);
+
+}

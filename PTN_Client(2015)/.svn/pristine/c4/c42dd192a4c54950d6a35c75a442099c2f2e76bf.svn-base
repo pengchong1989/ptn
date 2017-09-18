@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nms.db.dao.ptn.SmartFanMapper" > 
+  <insert id="save" parameterType="SmartFan" useGeneratedKeys="true" keyProperty="fan.id">
+    insert into smartfan (siteId, workType, 
+      gearLevel)
+    values (#{fan.siteId,jdbcType=INTEGER}, #{fan.workType,jdbcType=INTEGER}, 
+      #{fan.gearLevel,jdbcType=INTEGER})
+  </insert>
+  
+   <update id="update" parameterType="SmartFan" >
+    update smartfan set workType=#{fan.workType}, gearLevel=#{fan.gearLevel} where id=#{fan.id}
+  </update>
+  
+    <select id="selectAll" resultType="SmartFan" parameterType="java.lang.Integer" >
+    select 
+    id,siteId,workType,gearLevel 
+    from smartfan m where m.siteId =#{siteId} order by m.id desc
+  </select>
+  
+</mapper>

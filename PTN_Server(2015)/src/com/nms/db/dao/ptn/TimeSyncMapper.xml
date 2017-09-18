@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nms.db.dao.ptn.TimeSyncMapper" >
+  <resultMap id="BaseResultMap" type="TimeSyncInfo" >
+    <id column="timeId" property="id" jdbcType="INTEGER" />
+    <result column="ptpModel" property="ptpModel" jdbcType="INTEGER" />
+    <result column="clockModel" property="clockModel" jdbcType="INTEGER" />
+    <result column="srcclockModel" property="srcclockModel" jdbcType="INTEGER" />
+    <result column="srcclockId" property="srcclockId" jdbcType="VARCHAR" />
+    <result column="srcclocktype" property="srcclocktype" jdbcType="INTEGER" />
+    <result column="srcclockpri1" property="srcclockpri1" jdbcType="INTEGER" />
+    <result column="srcclockpri2" property="srcclockpri2" jdbcType="INTEGER" />
+    <result column="srcclockLevel" property="srcclockLevel" jdbcType="INTEGER" />
+    <result column="srcclockaccuray" property="srcclockaccuray" jdbcType="INTEGER" />
+    <result column="SlaveOnlyModel" property="SlaveOnlyModel" jdbcType="INTEGER" />
+    <result column="inCompensation" property="inCompensation" jdbcType="INTEGER" />
+    <result column="inDelay" property="inDelay" jdbcType="INTEGER" />
+    <result column="outCompensation" property="outCompensation" jdbcType="INTEGER" />
+    <result column="outDelay" property="outDelay" jdbcType="INTEGER" />
+    <result column="SynCicle" property="SynCicle" jdbcType="INTEGER" />
+    <result column="NoteCicle" property="NoteCicle" jdbcType="INTEGER" />
+    <result column="TimeInfoIt" property="TimeInfoIt" jdbcType="INTEGER" />
+    <result column="syncFreq" property="syncFreq" jdbcType="INTEGER" />
+    <result column="delayFreq" property="delayFreq" jdbcType="INTEGER" />
+    <result column="announceFreq" property="announceFreq" jdbcType="INTEGER" />
+    <result column="delayOver" property="delayOver" jdbcType="INTEGER" />
+    <result column="announceOver" property="announceOver" jdbcType="INTEGER" />
+    <result column="domainNumbe" property="domainNumbe" jdbcType="INTEGER" />
+    <result column="siteId" property="siteId" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    timeId, ptpModel, clockModel, srcclockModel, srcclockId, srcclocktype, srcclockpri1, 
+    srcclockpri2, srcclockLevel, srcclockaccuray, SlaveOnlyModel, inCompensation, inDelay, 
+    outCompensation, outDelay, SynCicle, NoteCicle, TimeInfoIt, syncFreq, delayFreq, 
+    announceFreq, delayOver, announceOver, domainNumbe, siteId
+  </sql>
+  
+  <delete id="deleteBySiteId" parameterType="java.lang.Integer" >
+    delete from timesync where siteId=#{siteId}
+  </delete>
+   
+  <insert id="insert" parameterType="TimeSyncInfo"  useGeneratedKeys="true" keyProperty="timeId">
+    insert into timesync (ptpModel, clockModel, 
+      srcclockModel, srcclockId, srcclocktype, 
+      srcclockpri1, srcclockpri2, srcclockLevel, 
+      srcclockaccuray, SlaveOnlyModel, inCompensation, 
+      inDelay, outCompensation, outDelay, 
+      SynCicle, NoteCicle, TimeInfoIt, 
+      syncFreq, delayFreq, announceFreq, 
+      delayOver, announceOver, domainNumbe, 
+      siteId)
+    values ( #{ptpModel,jdbcType=INTEGER}, #{clockModel,jdbcType=INTEGER}, 
+      #{srcclockModel,jdbcType=INTEGER}, #{srcclockId,jdbcType=VARCHAR}, #{srcclocktype,jdbcType=INTEGER}, 
+      #{srcclockpri1,jdbcType=INTEGER}, #{srcclockpri2,jdbcType=INTEGER}, #{srcclockLevel,jdbcType=INTEGER}, 
+      #{srcclockaccuray,jdbcType=INTEGER}, #{SlaveOnlyModel,jdbcType=INTEGER}, #{inCompensation,jdbcType=INTEGER}, 
+      #{inDelay,jdbcType=INTEGER}, #{outCompensation,jdbcType=INTEGER}, #{outDelay,jdbcType=INTEGER}, 
+      #{SynCicle,jdbcType=INTEGER}, #{NoteCicle,jdbcType=INTEGER}, #{TimeInfoIt,jdbcType=INTEGER}, 
+      #{syncFreq,jdbcType=INTEGER}, #{delayFreq,jdbcType=INTEGER}, #{announceFreq,jdbcType=INTEGER}, 
+      #{delayOver,jdbcType=INTEGER}, #{announceOver,jdbcType=INTEGER}, #{domainNumbe,jdbcType=INTEGER}, 
+      #{siteId,jdbcType=INTEGER})
+  </insert>
+
+
+
+  <update id="update" parameterType="TimeSyncInfo" >
+    update timesync set ptpModel=#{ptpModel},clockModel=#{clockModel},srcclockModel=#{srcclockModel},srcclockId=#{srcclockId},
+    srcclocktype=#{srcclocktype},srcclockpri1=#{srcclockpri1},srcclockpri2=#{srcclockpri2},srcclockLevel=#{srcclockLevel},
+    srcclockaccuray=#{srcclockaccuray},SlaveOnlyModel=#{SlaveOnlyModel},inCompensation=#{inCompensation},inDelay=#{inDelay},
+	outCompensation=#{outCompensation},outDelay=#{outDelay},SynCicle=#{SynCicle},NoteCicle=#{NoteCicle},
+	TimeInfoIt=#{TimeInfoIt},syncFreq=#{syncFreq},delayFreq=#{delayFreq} ,
+	announceFreq=#{announceFreq} ,delayOver=#{delayOver},announceOver=#{announceOver},domainNumbe=#{domainNumbe} where siteId=#{siteId}
+  </update>
+  
+   <select id="queryBySiteId" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from timesync
+    where siteId = #{siteId,jdbcType=INTEGER}
+  </select>
+  
+</mapper>

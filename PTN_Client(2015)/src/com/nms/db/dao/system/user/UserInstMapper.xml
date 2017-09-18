@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nms.db.dao.system.user.UserInstMapper" >
+<resultMap id="BaseResultMap" type="UserInst" >
+    <id column="User_Id" property="User_Id" jdbcType="INTEGER" />
+    <result column="User_Name" property="User_Name" jdbcType="VARCHAR" />
+    <result column="User_Pass" property="User_Pass" jdbcType="VARCHAR" />
+    <result column="User_Inface" property="User_Inface" jdbcType="VARCHAR" />
+    <result column="pswExpires" property="pswExpires" jdbcType="VARCHAR" />
+    <result column="beforeRemind" property="beforeRemind" jdbcType="INTEGER" />
+    <result column="deadTime" property="deadTime" jdbcType="VARCHAR" />
+    <result column="startIp" property="startIp" jdbcType="VARCHAR" />
+    <result column="endIp" property="endIp" jdbcType="VARCHAR" />
+    <result column="roleName" property="User_Group" jdbcType="VARCHAR" />
+    <result column="roleEnName" property="user_GroupEn" jdbcType="VARCHAR" />
+    <result column="roleInfo_id" property="roleInfo_id" jdbcType="INTEGER" />
+    <result column="isAll" property="isAll" jdbcType="INTEGER" />
+  </resultMap>
+
+ <sql id="Base_Column_List" >
+    User_Id , User_Name, User_Pass, roleInfo_id, isAll, user_inface, pswExpires ,beforeRemind,deadTime, startip, endip
+  </sql>      
+   <select id="selectUserList" parameterType="UserInst" resultType="UserInst">
+       select 
+       <include refid="Base_Column_List" />
+       from user_inst        
+       <where>   
+         1=1         
+            <choose>
+               <when test="User_Id>0">
+                 and User_Id=#{User_Id}
+               </when>
+	           <when test="User_Name!=null and User_Name!='' ">
+	             and User_Name=#{User_Name}
+	           </when>
+	           <when test="User_Pass !=null and User_Pass !='' ">
+	             and and User_Pass=#{User_Pass}
+	           </when>
+	        </choose>    			
+	    </where>
+    </select>
+    
+   <select id="querByroleId" parameterType="UserInst" resultMap="BaseResultMap">
+   		select u.user_id , u.user_name, u.user_pass,u.isAll,u.user_inface, u.roleInfo_id ,u.pswExpires,u.beforeRemind,u.startip,u.endip,i.roleName,
+   		i.roleEnName  from user_inst u ,roleinfo i where 1=1 and i.id=u.roleInfo_id
+   		<if test="User_Id >0">
+   			and u.user_id= #{User_Id}
+   		</if>
+   		<if test="User_Group != null and User_Group != '' ">
+   			and i.roleName = #{User_Group} and i.roleEnName = #{User_Group}
+   		</if>
+   </select>
+   
+   <delete id="deleteByUserId" parameterType="java.lang.Integer" >
+    delete from user_inst
+    where user_id = #{userId,jdbcType=INTEGER}
+  </delete>
+  
+   <select id="queryByuserid" parameterType="UserInst" resultType="UserInst">
+   		select User_Id , User_Name, User_Pass, roleInfo_id ,pswExpires, beforeRemind,startip,endip from user_inst where 1=1
+   		<if test="User_Id >0">
+   			and User_Id != #{User_Id}
+   		</if>
+   		<if test="User_Name != null and User_Name != '' ">
+   			 and User_Name=#{User_Name}
+   		</if>
+   		
+   		<if test="roleInfo_id>0 ">
+   			 and roleInfo_id =#{roleInfo_id}
+   		</if>
+   </select>
+   
+   <insert id="insert" parameterType="UserInst" useGeneratedKeys="true" keyProperty="User_id">
+   insert into user_inst
+   (User_Name,User_Pass,roleInfo_id , isAll,user_inface, pswExpires,
+   deadTime, beforeRemind,startip,endip) 
+   values(#{User_Name},#{User_Pass},#{roleInfo_id},#{isAll},#{User_Inface},#{pswExpires},
+   #{deadTime},#{beforeRemind},#{startIp},#{endIp})
+  </insert>
+  
+   <update id="update" parameterType="UserInst" >
+   update user_inst 
+   set 
+   User_Name=#{User_Name},User_Pass=#{User_Pass},roleInfo_id=#{roleInfo_id},isAll= #{isAll},
+   user_inface=#{User_Inface} ,pswExpires=#{pswExpires} ,deadTime=#{deadTime} ,
+   beforeRemind=#{beforeRemind} ,startip=#{startIp}, endip=#{endIp} where User_Id=#{User_Id}
+  </update>
+</mapper>

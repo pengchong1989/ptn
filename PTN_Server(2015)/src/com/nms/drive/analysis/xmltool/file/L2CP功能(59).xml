@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<driveRoot  xmlns="http://drive.bean.com">
+    <attribute length="1" description="L2CP使能" value="0" mapping="0/1 = 不使能/使能"/>
+	<attribute length="1" description="BPDU协议" value="0" mapping="0/1/2=透传/CPU处理/丢弃"/>
+	<attribute length="1" description="LLDP协议" value="0" mapping="0/1/2=透传/ CPU处理/丢弃"/>
+	<attribute length="1" description="LACP协议" value="0" mapping="0/1/2=透传/ CPU处理/丢弃"/>
+	<attribute length="1" description="IEEE802.1x协议" value="0" mapping="0/1/2=透传/ CPU处理/丢弃"/>
+	<attribute length="1" description="MAC地址1" value="0" mapping="(00)"/>
+	<attribute length="1" description="MAC地址2" value="0" mapping="(00)"/>
+	<attribute length="1" description="MAC地址3" value="0" mapping="(00)"/>
+	<attribute length="1" description="MAC地址4" value="0" mapping="(00)"/>
+	<attribute length="1" description="MAC地址5" value="0" mapping="(00)"/>
+	<attribute length="1" description="MAC地址6" value="0" mapping="(00)"/>
+	<attribute length="1" description="指配协议号1" value="0" mapping="(0)/1=(独立)/共享"/>
+	<attribute length="1" description="指配协议号2" value="0" mapping="(0)/1=(独立)/共享"/>
+	<attribute length="2" description="备用" value="0" mapping="(00)"/>
+	<attribute length="11" description="校验码" value="0" mapping="(00)"/>
+</driveRoot>

@@ -1,0 +1,146 @@
+package com.nms.model.ptn.clock;
+
+import java.sql.Connection;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.nms.db.bean.ptn.clock.PortConfigInfo;
+import com.nms.db.dao.ptn.clock.PortDispositionInfoDao;
+import com.nms.db.enums.EActionType;
+import com.nms.db.enums.EServiceType;
+import com.nms.model.util.ObjectService;
+import com.nms.ui.manager.ExceptionManage;
+
+public class PortDispositionInfoService extends ObjectService {
+	public void setConnection(Connection connection) {
+		super.connection = connection;
+	}
+
+	public void setPtnuser(String prnuser) {
+		super.ptnuser = prnuser;
+	}
+
+	private PortDispositionInfoDao portDispositionInfoDao = new PortDispositionInfoDao();
+
+	/**
+	 *添加数据
+	 *
+	 * @param frequencyInfo_neClock 实体
+	 * @return 只要不是0就是插入成功
+	 * @throws Exception
+	 */
+	public int insertPortDispositionInfo(PortConfigInfo portConfigInfo) throws Exception {
+		if (null == portConfigInfo) {
+			throw new Exception("portConfigInfo is null");
+		}
+		int information = 0;
+		try {
+			connection.setAutoCommit(false);
+			information = portDispositionInfoDao.insert(portConfigInfo, connection);
+			//离线网元数据下载
+			super.dateDownLoad(portConfigInfo.getSiteId(),information, EServiceType.CLOCKPORTCONFIG.getValue(), EActionType.INSERT.getValue());
+			if(!connection.getAutoCommit()){
+				connection.commit();
+			}
+		} catch (Exception e) {
+			connection.rollback();
+			ExceptionManage.dispose(e,this.getClass());
+		} finally {
+			connection.setAutoCommit(true);
+		}
+		return information;
+	}
+
+	/**
+	 * function:删除相关联数据
+	 * 
+	 * @param portConfigInfo
+	 *            实体
+	 * @return
+	 * @throws Exception
+	 */
+	public int delete(List<PortConfigInfo> PortConfigInfoList)throws Exception {
+//		if (null == portDispositionInfo) {
+//			throw new Exception("portDispositionInfo is null");
+//		}
+		int information = 0;
+		try {
+			connection.setAutoCommit(false);
+			for(PortConfigInfo PortConfigInfo:PortConfigInfoList){
+				information = portDispositionInfoDao.delete(PortConfigInfo, connection);
+				//离线网元数据下载
+				super.dateDownLoad(PortConfigInfo.getSiteId(),PortConfigInfo.getId(), EServiceType.CLOCKPORTCONFIG.getValue(), EActionType.UPDATE.getValue(),"","",PortConfigInfo.getPort(),0,"");
+			}
+			if(!connection.getAutoCommit()){
+				connection.commit();
+			}
+		} catch (Exception e) {
+			connection.rollback();
+			ExceptionManage.dispose(e,this.getClass());
+		} finally {
+			connection.setAutoCommit(true);
+		}
+		return information;
+	}
+
+	/**
+	 * 查询相关信息
+	 * 
+	 * @return List<PortConfigInfo>
+	 * @throws Exception
+	 */
+
+	public List<PortConfigInfo> select(int id) throws Exception {
+		List<PortConfigInfo> listPortDispositionInfo=null;
+		try {
+			listPortDispositionInfo=new ArrayList<PortConfigInfo>();
+			listPortDispositionInfo = portDispositionInfoDao.select(connection,id);
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		}
+		return listPortDispositionInfo;
+	}
+
+	/**
+	 * 删除相关的数据
+	 * 
+	 * @param portDispositionInfo
+	 *            实体
+	 * @return int 1:成功，0不成功
+	 * @throws Exception
+	 */
+	public int update(PortConfigInfo portConfigInfo)throws Exception {
+		if (null == portConfigInfo) {
+			throw new Exception("portConfigInfo is null");
+		}
+		int isOK = 0;
+		try {
+			connection.setAutoCommit(false);
+			isOK = portDispositionInfoDao.update(portConfigInfo,connection);
+			//离线网元数据下载
+			super.dateDownLoad(portConfigInfo.getSiteId(),portConfigInfo.getId(), EServiceType.CLOCKPORTCONFIG.getValue(), EActionType.UPDATE.getValue());
+			if(!connection.getAutoCommit()){
+				connection.commit();
+			}
+		} catch (Exception e) {
+			connection.rollback();
+			ExceptionManage.dispose(e,this.getClass());
+		} finally {
+			connection.setAutoCommit(true);
+		}
+		return isOK;
+	}
+
+	public List<PortConfigInfo> select(PortConfigInfo portConfigInfo) {
+		List<PortConfigInfo> listPortDispositionInfo=null;
+		try {
+			listPortDispositionInfo=new ArrayList<PortConfigInfo>();
+			listPortDispositionInfo = portDispositionInfoDao.select(connection,portConfigInfo);
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		}
+		return listPortDispositionInfo;
+		
+	}
+
+}

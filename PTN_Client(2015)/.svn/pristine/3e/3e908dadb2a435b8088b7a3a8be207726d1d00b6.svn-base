@@ -1,0 +1,1435 @@
+﻿package com.nms.db.dao.ptn.path.eth;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.nms.db.bean.ptn.path.eth.ElineInfo;
+import com.nms.db.enums.EServiceType;
+import com.nms.ui.manager.DateUtil;
+import com.nms.ui.manager.ExceptionManage;
+
+public class ElineDao {
+
+	/**
+	 * 根据名称查询
+	 */
+	private final String SELECT_BY_NAME = "select count(*) as selectcount from serviceinfo where serviceType=1 and (aSiteId = ? or zSiteId = ?) and name=?";
+
+	/**
+	 * 新增elineinfo
+	 * 
+	 * @param elineinfo
+	 *            实体
+	 * @param connection
+	 *            数据库连接
+	 * @return 插入的记录数
+	 * @throws Exception
+	 */
+	public int insert(ElineInfo elineinfo, Connection connection) throws Exception {
+
+		if (null == elineinfo) {
+			throw new Exception("elineinfo is null");
+		}
+
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+		int result = 0;
+
+		try {
+			elineinfo.setCreateTime(DateUtil.getDate(DateUtil.FULLTIME));
+
+			sql = "insert into serviceinfo(serviceId,pwId,serviceType,name,aXcId,zXcId,activeStatus,aAcId,zAcId,createUser,createTime,aSiteId,zSiteId,issingle,jobstatus,clientId) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+			preparedStatement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+			preparedStatement.setInt(1, elineinfo.getServiceId());
+			preparedStatement.setInt(2, elineinfo.getPwId());
+			preparedStatement.setInt(3, elineinfo.getServiceType());
+			preparedStatement.setString(4, elineinfo.getName());
+			preparedStatement.setInt(5, elineinfo.getaXcId());
+			preparedStatement.setInt(6, elineinfo.getzXcId());
+			preparedStatement.setInt(7, elineinfo.getActiveStatus());
+			preparedStatement.setInt(8, elineinfo.getaAcId());
+			preparedStatement.setInt(9, elineinfo.getzAcId());
+			preparedStatement.setString(10, elineinfo.getCreateUser());
+			preparedStatement.setString(11, elineinfo.getCreateTime());
+			preparedStatement.setInt(12, elineinfo.getaSiteId());
+			preparedStatement.setInt(13, elineinfo.getzSiteId());
+			preparedStatement.setInt(14, elineinfo.getIsSingle());
+			preparedStatement.setString(15, elineinfo.getJobStatus());
+			preparedStatement.setInt(16, elineinfo.getClientId());
+
+			preparedStatement.executeUpdate();
+			resultSet = preparedStatement.getGeneratedKeys();
+			if (resultSet.next()) {
+				result = resultSet.getInt(1);
+			}
+		} catch (Exception e) {
+			ExceptionManage.dispose(e, this.getClass());
+		} finally {
+			if (resultSet != null) {
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e, this.getClass());
+				}
+				resultSet = null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e, this.getClass());
+				}
+				preparedStatement = null;
+			}
+
+			sql = null;
+		}
+		return result;
+	}
+
+	/**
+	 * 修改elineinfo
+	 * 
+	 * @param elineinfo
+	 *            实体
+	 * @param connection
+	 *            数据库连接
+	 * @return 修改的记录数
+	 * @throws Exception
+	 */
+	public int update(ElineInfo elineinfo, Connection connection) throws Exception {
+		if (null == elineinfo) {
+			throw new Exception("elineinfo is null");
+		}
+
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		int result = 0;
+		try {
+			sql = "update serviceinfo set serviceId=?,pwId=?,name=?,aXcId=?,zXcId=?,activeStatus=?, createUser=?, aAcId=?, zAcId=?, aSiteId=?, zSiteId=? , jobStatus=? ,isSingle=? ,clientId = ? where id=? and serviceType=1";
+
+			preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.setInt(1, elineinfo.getServiceId());
+			preparedStatement.setInt(2, elineinfo.getPwId());
+			preparedStatement.setString(3, elineinfo.getName());
+			preparedStatement.setInt(4, elineinfo.getaXcId());
+			preparedStatement.setInt(5, elineinfo.getzXcId());
+			preparedStatement.setInt(6, elineinfo.getActiveStatus());
+			preparedStatement.setString(7, elineinfo.getCreateUser());
+			preparedStatement.setInt(8, elineinfo.getaAcId());
+			preparedStatement.setInt(9, elineinfo.getzAcId());
+			preparedStatement.setInt(10, elineinfo.getaSiteId());
+			preparedStatement.setInt(11, elineinfo.getzSiteId());
+			preparedStatement.setString(12, elineinfo.getJobStatus());
+			preparedStatement.setInt(13, elineinfo.getIsSingle());
+			preparedStatement.setInt(14, elineinfo.getClientId());
+			preparedStatement.setInt(15, elineinfo.getId());
+			result = preparedStatement.executeUpdate();
+		} catch (Exception e) {
+			ExceptionManage.dispose(e, this.getClass());
+		} finally {
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e, this.getClass());
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+		return result;
+	}
+
+	/**
+	 * 通过主键删除elineinfo
+	 * 
+	 * @param id
+	 *            主键
+	 * @param connection
+	 *            数据库连接
+	 * @return 删除的记录数
+	 * @throws Exception
+	 */
+	public int delete(int id, Connection connection) throws Exception {
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		int result = 0;
+
+		try {
+			sql = "delete from serviceinfo where id=?";
+			preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.setInt(1, id);
+
+			result = preparedStatement.executeUpdate();
+		} catch (Exception e) {
+			ExceptionManage.dispose(e, this.getClass());
+		} finally {
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e, this.getClass());
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+		return result;
+	}
+
+	/**
+	 * 通过条件查询
+	 * 
+	 * @param elineinfocondition
+	 *            查询条件
+	 * @param connection
+	 *            数据库连接
+	 * @return List<ElineInfo>集合
+	 * @throws Exception
+	 */
+	public List<ElineInfo> queryByCondition(ElineInfo elineinfocondition, Connection connection) throws Exception {
+
+		if (null == elineinfocondition) {
+			throw new Exception("elineinfocondition is null");
+		}
+
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		StringBuffer sql = new StringBuffer();
+		List<ElineInfo> list = null;
+		List<Object> parameterList = new ArrayList<Object>();
+		try {
+			sql.append("SELECT ");
+			sql.append(" s.jobstatus,s.issingle , s.id, s.serviceId, s.pwId, s.serviceType, s.name, s.aXcId, s.zXcId, s.aAcId, s.zAcId, s.activeStatus,s.aSiteId,s.zSiteId,s.createTime,s.createUser,sa.CellId AS showaSiteName,sz.CellId AS showzSiteName ,s.clientId as clientId ");
+			sql.append(" FROM ");
+			sql.append(" serviceinfo s, pwinfo p,site_inst sa,site_inst sz ");
+			sql.append(" WHERE ");
+			sql.append(" s.pwId = p.pwId and p.aSiteId = sa.site_inst_id and p.zSiteId = sz.site_inst_id and serviceType=1 and s.issingle=0");
+
+			if (elineinfocondition.getId() > 0) {
+				sql.append(" and s.id=?");
+				parameterList.add(elineinfocondition.getId());
+			}
+			if (elineinfocondition.getPwId() > 0) {
+				sql.append(" and s.pwId=?");
+				parameterList.add(elineinfocondition.getPwId());
+			}
+			
+			if(elineinfocondition.getAportId()>0)
+			{
+				sql.append(" and (s.aAcId in (SELECT id FROM acinfo WHERE portId=?) or s.zAcId in (SELECT id FROM acinfo WHERE portId=?))");
+				parameterList.add(elineinfocondition.getAportId());
+				parameterList.add(elineinfocondition.getAportId());
+			}
+			
+			if (elineinfocondition.getActiveStatus() > 0) {
+				sql.append(" and  s.activeStatus=?");
+				parameterList.add(elineinfocondition.getActiveStatus());
+			}
+			// 添加名称条件
+			if(null!=elineinfocondition.getName() && !"".equals(elineinfocondition.getName())){
+				sql.append(" and s.name like ?");
+				parameterList.add("%"+elineinfocondition.getName()+"%");
+			}
+			if (elineinfocondition.getaSiteId() > 0) {
+				sql.append(" and (s.asiteId=? or s.zsiteId=?)");
+				parameterList.add(elineinfocondition.getaSiteId());
+				parameterList.add(elineinfocondition.getaSiteId());
+			}
+			
+			list = this.excuteQuery_join(connection, sql.toString(), parameterList);
+		} catch (Exception e) {
+			ExceptionManage.dispose(e, this.getClass());
+		} finally {
+			sql = null;
+		}
+		return list;
+	}
+	
+	public List<ElineInfo> querySingleByCondition(ElineInfo elineinfocondition, Connection connection) throws Exception {
+
+		if (null == elineinfocondition) {
+			throw new Exception("elineinfocondition is null");
+		}
+
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		StringBuffer sql = new StringBuffer();
+		List<ElineInfo> list = null;
+		List<Object> parameterList = new ArrayList<Object>();
+		PreparedStatement preparedStatement = null;
+		try {
+			//sql.append("SELECT  s.jobstatus,s.issingle , s.id, s.serviceId, s.pwId, s.serviceType, s.name, s.aXcId, s.zXcId, s.aAcId, s.zAcId, s.activeStatus,s.aSiteId,s.zSiteId,s.createTime,s.createUser,sa.CellId AS showaSiteName,s.clientId as clientId FROM  serviceinfo s, pwinfo p,site_inst sa WHERE  s.pwId = p.pwId and (p.aSiteId = sa.site_inst_id or p.zSiteId = sa.site_inst_id) and serviceType=1");
+			sql.append("SELECT * FROM serviceinfo s WHERE serviceType=1 ");
+			if (elineinfocondition.getId() > 0) {
+				sql.append(" and s.id=?");
+				parameterList.add(elineinfocondition.getId());
+			}
+			if (elineinfocondition.getPwId() > 0) {
+				sql.append(" and s.pwId=?");
+				parameterList.add(elineinfocondition.getPwId());
+			}
+			
+			if(elineinfocondition.getAportId()>0)
+			{
+				sql.append(" and (s.aAcId in (SELECT id FROM acinfo WHERE portId=?) or s.zAcId in (SELECT id FROM acinfo WHERE portId=?))");
+				parameterList.add(elineinfocondition.getAportId());
+				parameterList.add(elineinfocondition.getAportId());
+			}
+			
+			if (elineinfocondition.getActiveStatus() > 0) {
+				sql.append(" and  s.activeStatus=?");
+				parameterList.add(elineinfocondition.getActiveStatus());
+			}
+			// 添加名称条件
+			if(null!=elineinfocondition.getName() && !"".equals(elineinfocondition.getName())){
+				sql.append(" and s.name like ?");
+				parameterList.add("%"+elineinfocondition.getName()+"%");
+			}
+			if (elineinfocondition.getaSiteId() > 0) {
+				sql.append(" and (s.asiteId=? or s.zsiteId=?)");
+				parameterList.add(elineinfocondition.getaSiteId());
+				parameterList.add(elineinfocondition.getaSiteId());
+			}
+			
+			preparedStatement = connection.prepareStatement(sql.toString());
+
+			// 设置参数
+			if (null != parameterList && parameterList.size() > 0) {
+				for (int i = 0; i < parameterList.size(); i++) {
+					preparedStatement.setObject(i + 1, parameterList.get(i));
+				}
+			}
+			
+			list = this.excuteQuery(preparedStatement);
+		} catch (Exception e) {
+			ExceptionManage.dispose(e, this.getClass());
+		} finally {
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e, this.getClass());
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+		return list;
+	}
+
+	/**
+	 * 通过条件查询
+	 * 
+	 * @param elineinfocondition
+	 *            查询条件
+	 * @param connection
+	 *            数据库连接
+	 * @return List<ElineInfo>集合
+	 * @throws Exception
+	 */
+	public List<ElineInfo> queryByCondition_notjoin(ElineInfo elineinfocondition, Connection connection) throws Exception {
+
+		if (null == elineinfocondition) {
+			throw new Exception("elineinfocondition is null");
+		}
+
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		String sql = null;
+		List<ElineInfo> list = null;
+		PreparedStatement preparedStatement = null;
+		try {
+			sql = "SELECT * from serviceinfo where serviceType=1 ";
+
+			if (elineinfocondition.getId() > 0) {
+				sql += " and id=" + elineinfocondition.getId();
+			}
+			if (elineinfocondition.getPwId() > 0) {
+				sql += " and  pwId=" + elineinfocondition.getPwId();
+			}
+			if (elineinfocondition.getActiveStatus() > 0) {
+				sql += " and  activeStatus=" + elineinfocondition.getActiveStatus();
+			}
+			preparedStatement = connection.prepareStatement(sql);
+			list = this.excuteQuery(preparedStatement);
+		} catch (Exception e) {
+			ExceptionManage.dispose(e, this.getClass());
+		} finally {
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+		return list;
+	}
+
+	/**
+	 * 通过pwId查询
+	 */
+	public List<ElineInfo> queryByPwIdCondition(List<Integer> idList, Connection connection) throws Exception {
+
+		if (null == idList) {
+			throw new Exception("PWCondition is null");
+		}
+
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		List<ElineInfo> elineinfoList = null;
+		String sql = null;
+		String pwId = null;
+		String ids = null;
+		try {
+			pwId = idList.toString();
+			ids = pwId.substring(1, pwId.length() - 1);
+			elineinfoList = new ArrayList<ElineInfo>();
+			sql = "SELECT s.jobstatus,s.issingle, s.id, s.serviceId, s.pwId, s.serviceType, s.name, s.aXcId, s.zXcId, s.aAcId, s.zAcId, s.activeStatus, s.aSiteId,s.zSiteId,s.createTime,s.createUser,sa.CellId AS showaSiteName,sz.CellId AS showzSiteName" + "FROM serviceinfo s, pwinfo p,site_inst sa,site_inst sz  WHERE pwId in " + "(" + ids + ") and s.pwId = p.pwId and p.aSiteId = sa.site_inst_id and p.zSiteId = sz.site_inst_id and serviceType=1 and s.issingle=0";
+
+			elineinfoList = this.excuteQuery_join(connection, sql, null);
+
+		} catch (Exception e) {
+			ExceptionManage.dispose(e, this.getClass());
+		} finally {
+			sql = null;
+			pwId = null;
+			ids = null;
+		}
+		return elineinfoList;
+	}
+
+	public List<ElineInfo> queryAllElineByPwId(List<Integer> idList, Connection connection) throws Exception {
+
+		if (null == idList) {
+			throw new Exception("PWCondition is null");
+		}
+
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		List<ElineInfo> elineinfoList = null;
+		String sql = null;
+		String pwId = null;
+		String ids = null;
+		PreparedStatement preparedStatement = null;
+		try {
+			pwId = idList.toString();
+			ids = pwId.substring(1, pwId.length() - 1);
+			elineinfoList = new ArrayList<ElineInfo>();
+			// sql = "SELECT s.jobstatus,s.issingle, s.id, s.serviceId, s.pwId, s.serviceType, s.name, s.aXcId, s.zXcId, s.aAcId, s.zAcId, s.activeStatus, s.aSiteId,s.zSiteId,s.createTime,s.createUser,sa.CellId AS showaSiteName,sz.CellId AS showzSiteName" + "FROM serviceinfo s, pwinfo p,site_inst sa,site_inst sz  WHERE pwId in " + "(" + ids + ") and s.pwId = p.pwId and p.aSiteId = sa.site_inst_id and p.zSiteId = sz.site_inst_id and serviceType=1 and s.issingle=0";
+			sql = "SELECT * from serviceinfo where serviceType=1 and pwId in " + "(" + ids + ")";
+			preparedStatement = connection.prepareStatement(sql);
+
+			elineinfoList = this.excuteQuery(preparedStatement);
+
+		} catch (Exception e) {
+			ExceptionManage.dispose(e, this.getClass());
+		} finally {
+			sql = null;
+			pwId = null;
+			ids = null;
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e, this.getClass());
+				}
+				preparedStatement = null;
+			}
+		}
+		return elineinfoList;
+	}
+
+	/**
+	 * 查询单网元下的所有enline
+	 * 
+	 * @param siteId
+	 * @param connection
+	 * @return
+	 * @throws Exception
+	 */
+	public List<ElineInfo> queryNodeBySite(int siteId, Connection connection) throws Exception {
+
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		List<ElineInfo> list = null;
+		try {
+			sql = "select * from serviceinfo where serviceType=1 and ((asiteid=? and aXcId != 0)or (zsiteid=? and zXcId != 0))";
+			preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.setInt(1, siteId);
+			preparedStatement.setInt(2, siteId);
+
+			list = this.excuteQuery(preparedStatement);
+		} catch (Exception e) {
+			ExceptionManage.dispose(e, this.getClass());
+		} finally {
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e, this.getClass());
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+		return list;
+	}
+
+	/**
+	 * 执行查询语句
+	 * 
+	 * @param connection
+	 *            数据库连接
+	 * @param sql
+	 *            sql语句
+	 * @return 查询集合
+	 * @throws Exception
+	 */
+	private List<ElineInfo> excuteQuery(PreparedStatement preparedStatement) throws Exception {
+		List<ElineInfo> elineinfoList = null;
+		ResultSet resultSet = null;
+		ElineInfo elineinfo = null;
+		try {
+			elineinfoList = new ArrayList<ElineInfo>();
+			resultSet = preparedStatement.executeQuery();
+
+			while (resultSet.next()) {
+				elineinfo = new ElineInfo();
+				elineinfo.setId(resultSet.getInt("id"));
+				elineinfo.setServiceId(resultSet.getInt("serviceId"));
+				elineinfo.setPwId(resultSet.getInt("pwId"));
+				elineinfo.setServiceType(resultSet.getInt("serviceType"));
+				elineinfo.setName(resultSet.getString("name"));
+				elineinfo.setaXcId(resultSet.getInt("aXcId"));
+				elineinfo.setzXcId(resultSet.getInt("zXcId"));
+				elineinfo.setaAcId(resultSet.getInt("aAcId"));
+				elineinfo.setzAcId(resultSet.getInt("zAcId"));
+				elineinfo.setaSiteId(resultSet.getInt("aSiteId"));
+				elineinfo.setzSiteId(resultSet.getInt("zSiteId"));
+				elineinfo.setActiveStatus(resultSet.getInt("activeStatus"));
+				elineinfo.setCreateTime(resultSet.getString("createTime"));
+				elineinfo.setCreateUser(resultSet.getString("createUser"));
+				elineinfo.setIsSingle(resultSet.getInt("issingle"));
+				elineinfo.setJobStatus(resultSet.getString("jobstatus"));
+				elineinfoList.add(elineinfo);
+			}
+		} catch (Exception e) {
+			ExceptionManage.dispose(e, this.getClass());
+		} finally {
+			if (resultSet != null) {
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e, this.getClass());
+				}
+				resultSet = null;
+			}
+			elineinfo = null;
+		}
+		return elineinfoList;
+	}
+
+	/**
+	 * 执行查询语句 关联pw表 site表
+	 * 
+	 * @param connection
+	 *            数据库连接
+	 * @param sql
+	 *            sql语句
+	 * @return 查询集合
+	 * @throws Exception
+	 */
+	private List<ElineInfo> excuteQuery_join(Connection connection, String sql, List<Object> parameterList) throws Exception {
+		List<ElineInfo> elineinfoList = null;
+		ResultSet resultSet = null;
+		PreparedStatement preparedStatement = null;
+		ElineInfo elineinfo = null;
+		try {
+			elineinfoList = new ArrayList<ElineInfo>();
+			preparedStatement = connection.prepareStatement(sql);
+
+			// 设置参数
+			if (null != parameterList && parameterList.size() > 0) {
+				for (int i = 0; i < parameterList.size(); i++) {
+					preparedStatement.setObject(i + 1, parameterList.get(i));
+				}
+			}
+
+			resultSet = preparedStatement.executeQuery();
+
+			while (resultSet.next()) {
+				elineinfo = new ElineInfo();
+				elineinfo.setId(resultSet.getInt("id"));
+				elineinfo.setServiceId(resultSet.getInt("serviceId"));
+				elineinfo.setPwId(resultSet.getInt("pwId"));
+				elineinfo.setServiceType(resultSet.getInt("serviceType"));
+				elineinfo.setName(resultSet.getString("name"));
+				elineinfo.setaXcId(resultSet.getInt("aXcId"));
+				elineinfo.setzXcId(resultSet.getInt("zXcId"));
+				elineinfo.setaAcId(resultSet.getInt("aAcId"));
+				elineinfo.setzAcId(resultSet.getInt("zAcId"));
+				elineinfo.setaSiteId(resultSet.getInt("aSiteId"));
+				elineinfo.setzSiteId(resultSet.getInt("zSiteId"));
+				elineinfo.setASiteName(resultSet.getString("showaSiteName"));
+				elineinfo.setZSiteName(resultSet.getString("showzSiteName"));
+				elineinfo.setActiveStatus(resultSet.getInt("activeStatus"));
+				elineinfo.setCreateTime(DateUtil.strDate(resultSet.getString("createTime"), DateUtil.FULLTIME));
+				elineinfo.setCreateUser(resultSet.getString("createUser"));
+				elineinfo.setIsSingle(resultSet.getInt("issingle"));
+				elineinfo.setJobStatus(resultSet.getString("jobstatus"));
+				elineinfo.setClientId(resultSet.getInt("clientId"));
+				elineinfoList.add(elineinfo);
+			}
+		} catch (Exception e) {
+			ExceptionManage.dispose(e, this.getClass());
+		} finally {
+			if (resultSet != null) {
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e, this.getClass());
+				}
+				resultSet = null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e, this.getClass());
+				}
+				preparedStatement = null;
+			}
+			elineinfo = null;
+		}
+		return elineinfoList;
+	}
+
+	/**
+	 * 批量修改状态
+	 * 
+	 * @param idList
+	 *            id集合
+	 * @param status
+	 *            修改激活状态
+	 * @param connection
+	 *            数据库连接
+	 * @throws Exception
+	 */
+	public void updateStatus(List<Integer> idList, int status, Connection connection) throws Exception {
+
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		String sql = null;
+		String ids = null;
+		PreparedStatement preparedStatement = null;
+		try {
+
+			if (null == idList) {
+				sql = "update serviceinfo set activeStatus=? where serviceType=1";
+			} else {
+				ids = idList.toString();
+				sql = "update serviceinfo set activeStatus=? where id in (" + ids.subSequence(1, ids.length() - 1) + ")  and serviceType=1";
+			}
+
+			preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.setInt(1, status);
+
+			preparedStatement.executeUpdate();
+		} catch (Exception e) {
+			ExceptionManage.dispose(e, this.getClass());
+		} finally {
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e, this.getClass());
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+			ids = null;
+		}
+	}
+
+	/**
+	 * 修改状态
+	 * 
+	 * @param siteId
+	 *            网元id
+	 * @param status
+	 *            修改激活状态
+	 * @param connection
+	 *            数据库连接
+	 * @throws Exception
+	 */
+	public void updateStatus(int siteId, int status, Connection connection) throws Exception {
+
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		try {
+
+			sql = "update serviceinfo set activeStatus=? where serviceType=1 and (aSiteId = ? or zSiteId = ?)";
+
+			preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.setInt(1, status);
+			preparedStatement.setInt(2, siteId);
+			preparedStatement.setInt(3, siteId);
+
+			preparedStatement.executeUpdate();
+		} catch (Exception e) {
+			ExceptionManage.dispose(e, this.getClass());
+		} finally {
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e, this.getClass());
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+	}
+
+	public List<ElineInfo> queryNodeBySiteAndServiceId(int siteId, int serviceId, Connection connection) throws Exception {
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		try {
+			sql = "select * from serviceinfo where serviceType=1 and ((asiteid=? and axcid=?) or (zsiteid=? and zxcid=?))";
+			preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.setInt(1, siteId);
+			preparedStatement.setInt(2, serviceId);
+			preparedStatement.setInt(3, siteId);
+			preparedStatement.setInt(4, serviceId);
+			return this.excuteQuery(preparedStatement);
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+	}
+
+	/**
+	 * 通过条件删除elineInfo
+	 * 
+	 * @param elineInfo
+	 * @throws Exception
+	 */
+	public void deleteBycodition(int pwId, int siteId, int cestype, Connection connection) throws Exception {
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+
+		try {
+			sql = "delete from serviceinfo where pwId=? and asiteId= ? and cestype =?";
+			preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.setInt(1, pwId);
+			preparedStatement.setInt(2, siteId);
+			preparedStatement.setInt(3, cestype);
+
+			preparedStatement.executeUpdate();
+		} catch (Exception e) {
+			ExceptionManage.dispose(e, this.getClass());
+		} finally {
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e, this.getClass());
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+	}
+
+	/**
+	 * 
+	 * @author kk
+	 * 
+	 * @param
+	 * 
+	 * @return
+	 * 
+	 * @Exception 异常对象
+	 */
+	public List<ElineInfo> querySynchro(int siteId, int xcid, Connection connection) throws Exception {
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		try {
+			sql = "select * from serviceinfo where serviceType=1 and ((asiteid=? and axcid=?) or (zsiteid=? and zxcid=?))";
+			preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.setInt(1, siteId);
+			preparedStatement.setInt(2, xcid);
+			preparedStatement.setInt(3, siteId);
+			preparedStatement.setInt(4, xcid);
+			return this.excuteQuery(preparedStatement);
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+	}
+
+	/**
+	 * 查询名称是否重复
+	 * 
+	 * @author kk
+	 * 
+	 * @param
+	 * 
+	 * @return
+	 * @throws Exception
+	 * 
+	 * @Exception 异常对象
+	 */
+	public int query_name(String afterName, String beforeName, Connection connection) throws Exception {
+		if (null == afterName) {
+			throw new Exception("afterName is null");
+		}
+
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		String sql = null;
+		List<Object> paramList = new ArrayList<Object>();
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+		int result = 0;
+		try {
+			sql = "select count(*) as selectcount from serviceinfo where serviceType=1 and name=?";
+			paramList.add(afterName);
+			if (null != beforeName) {
+				sql += " and name!=?";
+				paramList.add(beforeName);
+			}
+			preparedStatement = connection.prepareStatement(sql);
+			for (int i = 0; i < paramList.size(); i++) {
+				preparedStatement.setObject(i + 1, paramList.get(i));
+			}
+			resultSet = preparedStatement.executeQuery();
+			if (resultSet.next()) {
+				result = resultSet.getInt("selectcount");
+			}
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (resultSet != null) {
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e, this.getClass());
+				}
+				resultSet = null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e, this.getClass());
+				}
+				preparedStatement = null;
+			}
+			paramList = null;
+			sql = null;
+		}
+
+		return result;
+	}
+
+	/**
+	 * 单网元名称验证
+	 * 
+	 * @param afterName
+	 * @param beforeName
+	 * @param connection
+	 * @param siteId
+	 * @return
+	 * @throws Exception
+	 */
+	public int query_nameBySingle(String afterName, String beforeName, Connection connection, int siteId) throws Exception {
+		if (null == afterName) {
+			throw new Exception("afterName is null");
+		}
+
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		String sql = null;
+		List<Object> paramList = new ArrayList<Object>();
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+		int result = 0;
+		try {
+			sql = this.SELECT_BY_NAME;
+			paramList.add(siteId);
+			paramList.add(siteId);
+			paramList.add(afterName);
+			if (null != beforeName) {
+				sql += " and name!=?";
+				paramList.add(beforeName);
+			}
+			preparedStatement = connection.prepareStatement(sql);
+			for (int i = 0; i < paramList.size(); i++) {
+				preparedStatement.setObject(i + 1, paramList.get(i));
+			}
+			resultSet = preparedStatement.executeQuery();
+			if (resultSet.next()) {
+				result = resultSet.getInt("selectcount");
+			}
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (resultSet != null) {
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e, this.getClass());
+				}
+				resultSet = null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e, this.getClass());
+				}
+				preparedStatement = null;
+			}
+			paramList = null;
+			sql = null;
+		}
+
+		return result;
+	}
+
+	/**
+	 * add by stones 20130614
+	 * **/
+	public boolean exeSearchEline(Connection conn, String siteIdin) throws Exception {
+		if (null == conn) {
+			throw new Exception("connection is null");
+		}
+		String sql = null;
+		PreparedStatement ps = null;
+		try {
+			/**
+			 * insert into serviceinfo (serviceId,pwId,serviceType,name,aXcId,zXcId,activeStatus,rootSite,branchSite,aAcId,zAcId,createUser,createTime,aSiteId,zSiteId,isSingle,cestype) select s1.serviceId,s1.pwId,s1.serviceType,concat('eline_',unix_timestamp()*1000) name,s1.aXcId,s2.aXcId,s1.activeStatus,s1.rootSite,s1.branchSite,s1.aAcId,s2.aAcId,s1.createUser,now() createTime,s1.aSiteId,s2.aSiteId,2,s1.cestype from serviceinfo s1 LEFT JOIN serviceinfo s2 on s1.pwId=s2.pwId where s1.isSingle=1 and s1.serviceType=1 and s2.isSingle=1 and s2.serviceType=1 and s1.id < s2.id and s1.pwId in (select pwid from ( select pwId,count(1) cou from serviceinfo where serviceType=1 and isSingle=1 GROUP BY pwId )a where cou=2 )
+			 **/
+			sql = new StringBuffer().append(" insert into serviceinfo (serviceId,pwId,serviceType,name,aXcId,zXcId,activeStatus,rootSite,branchSite,aAcId,zAcId,createUser,createTime,aSiteId,zSiteId,isSingle,cestype,clientId) ").append(" select s1.serviceId,s1.pwId,s1.serviceType,concat('eline_',unix_timestamp()*1000) name,s1.aXcId,s2.aXcId,s1.activeStatus,s1.rootSite,s1.branchSite,s1.aAcId,s2.aAcId,s1.createUser,now() createTime,s1.aSiteId,s2.aSiteId,0,s1.cestype ,0").append("  from serviceinfo s1 LEFT JOIN serviceinfo s2 on s1.pwId=s2.pwId ").append(" where s1.isSingle=1 and s1.serviceType=1 and s2.isSingle=1 and s2.serviceType=1 and (s1.aSiteId in ").append(siteIdin).append(") and (s1.zSiteId in ").append(siteIdin).append(" )  ").append(" and s1.id < s2.id and s1.pwId in (select pwid from ( select pwId,count(1) cou from serviceinfo where serviceType=1 and isSingle=1 GROUP BY pwId )a where cou=2 ) ").toString();
+			// System.out.println("1 sql : "+sql);
+			ps = conn.prepareStatement(sql);
+			ps.executeUpdate();
+
+			/**
+			 * delete s from serviceinfo s where isSingle=1 and pwid in( select pwid from ( select pwId,count(1) cou from serviceinfo where serviceType=1 and isSingle=1 GROUP BY pwId )a where cou=2 )
+			 * **/
+			sql = new StringBuffer().append(" delete s from serviceinfo s where isSingle=1 and serviceType=1 and (s.aSiteId in ").append(siteIdin).append(") and (s.zSiteId in ").append(siteIdin).append(" )  ").append(" and pwid in( select pwid from ( select pwId,count(1) cou from serviceinfo where serviceType=1 and isSingle=1 GROUP BY pwId )a where cou=2 ) ").toString();
+			// System.out.println("2 sql : "+sql);
+			ps = conn.prepareStatement(sql);
+			ps.executeUpdate();
+		} catch (Exception e) {
+			ExceptionManage.dispose(e, this.getClass());
+		} finally {
+			if (ps != null) {
+				try {
+					ps.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e, this.getClass());
+				}
+				ps = null;
+			}
+			sql = null;
+		}
+		return true;
+	}
+
+	/**
+	 * 通过acId,siteId查询
+	 * 
+	 * @param acId
+	 * @param connection
+	 * @return
+	 * @throws SQLException
+	 */
+	public List<ElineInfo> queryByAcIdAndSiteIdCondition(int acId, int siteId, Connection connection) throws SQLException {
+		List<ElineInfo> elineInfos = null;
+		String sql = "select*from serviceinfo where serviceType=1 and ((aAcId= ? and aSiteId = ? )or (zAcId = ? and zSiteId=?))";
+		PreparedStatement preparedStatement = null;
+		try {
+			preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.setInt(1, acId);
+			preparedStatement.setInt(2, siteId);
+			preparedStatement.setInt(3, acId);
+			preparedStatement.setInt(4, siteId);
+			elineInfos = this.excuteQuery(preparedStatement);
+		} catch (Exception e) {
+			ExceptionManage.dispose(e, this.getClass());
+		} finally {
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e, this.getClass());
+				}
+				preparedStatement = null;
+			}
+		}
+		return elineInfos;
+	}
+
+	/**
+	 * 通过serviceId查询一组eline业务
+	 * 
+	 * @param serviceId
+	 * @param connection
+	 * @return
+	 */
+	public List<ElineInfo> queryByServiceId(int serviceId, Connection connection) {
+
+		List<ElineInfo> etreeinfoList = new ArrayList<ElineInfo>();
+		String sql = "select*from serviceinfo where serviceType=3 and serviceId=?";
+		PreparedStatement preparedStatement = null;
+		try {
+			preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.setInt(1, serviceId);
+			etreeinfoList = this.excuteQuery(preparedStatement);
+		} catch (Exception e) {
+			ExceptionManage.dispose(e, this.getClass());
+		}finally{
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e, this.getClass());
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+		return etreeinfoList;
+
+	}
+
+	/**
+	 * 批量修改状态
+	 * 
+	 * @param serviceIdList
+	 *            业务集合
+	 * @param status
+	 *            修改激活状态
+	 * @param connection
+	 *            数据库连接
+	 * @throws Exception
+	 */
+	public void updateStatusByServiceId(List<Integer> serviceIdList, int status, Connection connection) throws Exception {
+
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		String sql = null;
+		String ids = null;
+		PreparedStatement preparedStatement = null;
+		try {
+
+			if (null == serviceIdList) {
+				sql = "update serviceinfo set activeStatus=? where serviceType=1";
+			} else {
+				ids = serviceIdList.toString();
+				sql = "update serviceinfo set activeStatus=? where axcid in (" + ids.subSequence(1, ids.length() - 1) + ") " + " or zxcid in (" + ids.subSequence(1, ids.length() - 1) + ") and serviceType=1";
+			}
+
+			preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.setInt(1, status);
+
+			preparedStatement.executeUpdate();
+		} catch (Exception e) {
+			ExceptionManage.dispose(e, this.getClass());
+		} finally {
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e, this.getClass());
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+			ids = null;
+		}
+	}
+
+	public List<ElineInfo> selectServiceInfoById(int id, Connection connection) throws Exception {
+		String sql = "select * from serviceinfo where id=?";
+		PreparedStatement preparedStatement = null;
+		try {
+			preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.setInt(1, id);
+			return this.excuteQuery(preparedStatement);
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+		}
+	}
+
+	/**
+	 * 根据网元ID和是否为单网元查询
+	 * 
+	 * @param siteId
+	 *            网元主键
+	 * @param isSingle
+	 *            是否为单网元 1=单网元 0=网络
+	 * @param connection
+	 * @return
+	 * @throws Exception
+	 */
+	public List<ElineInfo> selectBySiteAndisSingle(int siteId, int isSingle, Connection connection) throws Exception {
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		List<ElineInfo> elineInfoList = null;
+		try {
+			sql = "select * from serviceinfo where serviceType = 1 and isSingle=? and (aSiteId = ? or zSiteId = ?)";
+
+			preparedStatement = connection.prepareStatement(sql.toString());
+			preparedStatement.setInt(1, isSingle);
+			preparedStatement.setInt(2, siteId);
+			preparedStatement.setInt(3, siteId);
+
+			elineInfoList = this.excuteQuery(preparedStatement);
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+				}
+				preparedStatement = null;
+			}
+		}
+		return elineInfoList;
+	}
+	
+	public void doSearche(List<ElineInfo> elineInfos,Connection conn) throws Exception{
+		if (null == conn) {
+			throw new Exception("connection is null");
+		}
+		String ids = new String("(");
+		for (ElineInfo elineInfo : elineInfos) {
+			ids = ids + elineInfo.getId() + ",";
+		}
+		ids = ids.substring(0, ids.length() - 1) + ")";
+		String sql = null;
+		PreparedStatement ps = null;
+		try {
+			sql = new StringBuffer().append("INSERT INTO serviceinfo ( serviceId, pwId, serviceType, NAME, aXcId, zXcId, activeStatus, rootSite, branchSite, aAcId, zAcId, createUser, createTime, aSiteId, zSiteId, isSingle, cestype, clientId) SELECT s1.serviceId, s1.pwId, s1.serviceType, concat( 'eline_"+elineInfos.get(0).getaAcId()+"', "+System.currentTimeMillis()+") NAME, s1.aXcId, s2.zXcId, s1.activeStatus, s1.rootSite, s1.branchSite, s1.aAcId, s2.zAcId, s1.createUser, now() createTime, s1.aSiteId, s2.zSiteId, 0, s1.cestype, 0 FROM serviceinfo s1 ,serviceinfo s2 WHERE s1.id ="+elineInfos.get(0).getId()+" and s2.id ="+elineInfos.get(1).getId()+"").toString();
+			ps = conn.prepareStatement(sql);
+			ps.executeUpdate();
+
+			/**
+			 * delete s from serviceinfo s where isSingle=1 and pwid in( select pwid from ( select pwId,count(1) cou from serviceinfo where serviceType=1 and isSingle=1 GROUP BY pwId )a where cou=2 )
+			 * **/
+			sql = " delete s from serviceinfo s where isSingle=1 and serviceType=1 and id in "+ids;
+			ps = conn.prepareStatement(sql);
+			ps.executeUpdate();
+		} catch (Exception e) {
+			ExceptionManage.dispose(e, this.getClass());
+		} finally {
+			if (ps != null) {
+				try {
+					ps.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e, this.getClass());
+				}
+				ps = null;
+			}
+			sql = null;
+		}
+	}
+	
+	/**
+	 * 
+	 * 判断pwId是否别其他的所使用
+	 * @param pwId
+	 * @param connection
+	 * @return
+	 * @throws Exception
+	 */
+	public boolean isRelatedPW(int pwId, Connection connection) throws Exception {
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+		boolean falg = false;
+		try {
+			sql = "select * from serviceinfo where (serviceType = 2 or serviceType = 3 or serviceType = 40) and pwId = ?";
+			preparedStatement = connection.prepareStatement(sql.toString());
+			preparedStatement.setInt(1, pwId);
+			resultSet = preparedStatement.executeQuery();
+			if(resultSet.next()){
+				return true;
+			}
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (resultSet != null) {
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+				}
+				resultSet = null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+				}
+				preparedStatement = null;
+			}
+		}
+		return falg;
+	}
+	
+	/**
+	 * 
+	 * 判断ac是否别其他的所使用
+	 * @param acId
+	 * @param connection
+	 * @return
+	 * @throws Exception
+	 */
+	public boolean isRelatedAcByVPWS(int acId, Connection connection) throws Exception {
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+		boolean flag = false;
+		try {
+			sql = "select * from serviceinfo where (serviceType = 40 ) and (aAcId = ? or zAcId = ?)";
+			preparedStatement = connection.prepareStatement(sql.toString());
+			preparedStatement.setInt(1, acId);
+			preparedStatement.setInt(2, acId);
+			resultSet = preparedStatement.executeQuery();
+			if(resultSet.next()){
+				return true;
+			}
+		} finally {
+			if (resultSet != null) {
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+				}
+				resultSet = null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+				}
+				preparedStatement = null;
+			}
+		}
+		return flag;
+	}
+	
+	public List<String> isRelatedACByVPLS(Connection connection) throws Exception {
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+		List<String> azAcList = new ArrayList<String>();
+		try {
+			sql = "select * from serviceinfo where (serviceType = 2 or serviceType = 3)";
+			preparedStatement = connection.prepareStatement(sql.toString());
+			resultSet = preparedStatement.executeQuery();
+			while (resultSet.next()) {
+				if(null != resultSet.getString("amostAcIds") && !resultSet.getString("amostAcIds").equals(""))
+				{
+					azAcList.add(resultSet.getString("amostAcIds"));	
+				}
+				if(null != resultSet.getString("zmostAcIds") && !resultSet.getString("zmostAcIds").equals(""))
+				{
+					azAcList.add(resultSet.getString("zmostAcIds"));
+				}
+			}
+		} finally {
+			if (resultSet != null) {
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+				}
+				resultSet = null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+				}
+				preparedStatement = null;
+			}
+		}
+		return azAcList;
+	}
+	
+	/**
+	 * 修改状态
+	 * 
+	 * @param siteId
+	 *            网元id
+	 * @param status
+	 *            修改激活状态
+	 * @param type
+	 * 			  业务类型 1/40/0 = eline/dual/ces
+	 * @param connection
+	 *            数据库连接
+	 * @throws Exception
+	 */
+	public void updateStatusByType(int siteId, int status, int type, Connection connection) throws Exception {
+
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		try {
+			if(type == EServiceType.DUAL.getValue()){
+				sql = "update serviceinfo set activeStatus=? where serviceType=? and (rootSite = ? or branchMainSite = ? or branchProtectSite = ?)";
+			}else{
+				sql = "update serviceinfo set activeStatus=? where serviceType=? and (aSiteId = ? or zSiteId = ?)";
+			}
+
+			preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.setInt(1, status);
+			preparedStatement.setInt(2, type);
+			preparedStatement.setInt(3, siteId);
+			preparedStatement.setInt(4, siteId);
+			if(type == EServiceType.DUAL.getValue()){
+				preparedStatement.setInt(5, siteId);
+			}
+			preparedStatement.executeUpdate();
+		} catch (Exception e) {
+			ExceptionManage.dispose(e, this.getClass());
+		} finally {
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e, this.getClass());
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+	}
+
+	public List<ElineInfo> selectByPwId(ElineInfo eline, Connection connection) throws Exception {
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+		List<ElineInfo> elineList = null;
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		try {
+			elineList = new ArrayList<ElineInfo>();
+			sql = "SELECT * FROM serviceinfo WHERE pwId ="+eline.getPwId()+" and serviceType="+EServiceType.ELINE.getValue();
+			preparedStatement = connection.prepareStatement(sql);
+			elineList = this.excuteQuery(preparedStatement);
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+		return elineList;
+	}
+
+}

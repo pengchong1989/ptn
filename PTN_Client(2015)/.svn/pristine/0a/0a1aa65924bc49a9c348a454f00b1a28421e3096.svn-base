@@ -1,0 +1,37 @@
+COLSYS_LOG_DIR=logs
+
+log4j.appender.A01=org.apache.log4j.DailyRollingFileAppender
+
+log4j.appender.A01.File=${COLSYS_LOG_DIR}/ptnlog.log
+
+log4j.appender.A01.layout.ConversionPattern=[%d{yyyy-MM-dd HH\:mm\:ss}] %p %c - %m%n
+
+log4j.appender.A01.layout=org.apache.log4j.PatternLayout
+
+log4j.appender.A01.Threshold = Debug
+
+log4j.appender.A01.encoding=UTF-8
+
+log4j.appender.ErrorLever=org.apache.log4j.ConsoleAppender
+
+log4j.appender.ErrorLever.File=${COLSYS_LOG_DIR}/ptnlog.log
+
+log4j.appender.ErrorLever.layout.ConversionPattern=[%d{yyyy-MM-dd HH\:mm\:ss}] %p %c - %m%n
+
+log4j.appender.ErrorLever.layout=org.apache.log4j.PatternLayout
+
+log4j.appender.ErrorLever.Threshold = Error
+
+log4j.appender.ErrorLever.encoding=UTF-8
+
+#Generator
+log4j.appender.console=org.apache.log4j.ConsoleAppender
+
+# Keep backup file
+log4j.appender.MaxBackupIndex=10
+
+#MaxfileSize
+log4j.appender.A01.File.MaxFileSize=50MB
+
+log4j.rootLogger = INFO, A01, ErrorLever
+

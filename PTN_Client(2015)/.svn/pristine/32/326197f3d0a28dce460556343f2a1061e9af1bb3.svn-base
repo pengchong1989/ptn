@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nms.db.dao.ptn.BlackWhiteMacNameMapper" >
+  <resultMap id="BaseResultMap" type="BlackAndwhiteMacInfo" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="siteId" property="siteId" jdbcType="INTEGER" />
+    <result column="vplsServiceName" property="vplsServiceName" jdbcType="VARCHAR" />
+    <result column="elanBussinessId" property="elanBussinessId" jdbcType="INTEGER" />
+    <result column="nameList" property="nameList" jdbcType="INTEGER" />
+    <result column="mac" property="mac" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, siteId, vplsServiceName, elanBussinessId, nameList, mac
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from blackwhitemacnamelist
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from blackwhitemacnamelist
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="BlackAndwhiteMacInfo" >
+    insert into blackwhitemacnamelist (id, siteId, vplsServiceName, 
+      elanBussinessId, nameList, mac
+      )
+    values (#{id,jdbcType=INTEGER}, #{siteid,jdbcType=INTEGER}, #{vplsservicename,jdbcType=VARCHAR}, 
+      #{elanbussinessid,jdbcType=INTEGER}, #{namelist,jdbcType=INTEGER}, #{mac,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="BlackAndwhiteMacInfo" >
+    insert into blackwhitemacnamelist
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="siteid != null" >
+        siteId,
+      </if>
+      <if test="vplsservicename != null" >
+        vplsServiceName,
+      </if>
+      <if test="elanbussinessid != null" >
+        elanBussinessId,
+      </if>
+      <if test="namelist != null" >
+        nameList,
+      </if>
+      <if test="mac != null" >
+        mac,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="siteid != null" >
+        #{siteid,jdbcType=INTEGER},
+      </if>
+      <if test="vplsservicename != null" >
+        #{vplsservicename,jdbcType=VARCHAR},
+      </if>
+      <if test="elanbussinessid != null" >
+        #{elanbussinessid,jdbcType=INTEGER},
+      </if>
+      <if test="namelist != null" >
+        #{namelist,jdbcType=INTEGER},
+      </if>
+      <if test="mac != null" >
+        #{mac,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="BlackAndwhiteMacInfo" >
+    update blackwhitemacnamelist
+    <set >
+      <if test="siteid != null" >
+        siteId = #{siteid,jdbcType=INTEGER},
+      </if>
+      <if test="vplsservicename != null" >
+        vplsServiceName = #{vplsservicename,jdbcType=VARCHAR},
+      </if>
+      <if test="elanbussinessid != null" >
+        elanBussinessId = #{elanbussinessid,jdbcType=INTEGER},
+      </if>
+      <if test="namelist != null" >
+        nameList = #{namelist,jdbcType=INTEGER},
+      </if>
+      <if test="mac != null" >
+        mac = #{mac,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="BlackAndwhiteMacInfo" >
+    update blackwhitemacnamelist
+    set siteId = #{siteid,jdbcType=INTEGER},
+      vplsServiceName = #{vplsservicename,jdbcType=VARCHAR},
+      elanBussinessId = #{elanbussinessid,jdbcType=INTEGER},
+      nameList = #{namelist,jdbcType=INTEGER},
+      mac = #{mac,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  
+   <select id="selectByBlackAndwhiteMacInfo" resultMap="BaseResultMap" parameterType="BlackAndwhiteMacInfo" >
+    select 
+    <include refid="Base_Column_List" />
+    from blackwhitemacnamelist
+    where 1=1
+    <if test="id>0"> and id =#{id}</if>
+    <if test="siteId>0"> and siteId =#{siteId}</if>
+  </select>
+</mapper>

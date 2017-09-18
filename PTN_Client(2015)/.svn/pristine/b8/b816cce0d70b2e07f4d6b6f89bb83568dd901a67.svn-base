@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nms.db.dao.system.user.UserInstMapper" >
+
+ <sql id="Base_Column_List" >
+    User_Id , User_Name, User_Pass, roleInfo_id, isAll, user_inface, pswExpires ,beforeRemind,deadTime, startip, endip
+  </sql>      
+   <select id="selectUserList" parameterType="UserInst" resultType="UserInst">
+       select 
+       <include refid="Base_Column_List" />
+       from user_inst        
+       <where>   
+         1=1         
+            <choose>
+               <when test="User_Id>0">
+                 and User_Id=#{User_Id}
+               </when>
+	           <when test="User_Name!=null and User_Name!='' ">
+	             and User_Name=#{User_Name}
+	           </when>
+	           <when test="User_Pass !=null and User_Pass !='' ">
+	             and and User_Pass=#{User_Pass}
+	           </when>
+	        </choose>    			
+	    </where>
+    </select>
+    
+   <select id="querByroleId" parameterType="UserInst" resultType="UserInst">
+   		select u.user_id , u.user_name, u.user_pass,u.isAll,u.user_inface, u.roleInfo_id ,u.pswExpires,u.beforeRemind,u.startip,u.endip,i.roleName,
+   		i.roleEnName  from user_inst u ,roleinfo i where 1=1 and i.id=u.roleInfo_id
+   		<if test="user_id >0">
+   			and u.user_id= #{user_id}
+   		</if>
+   		<if test="User_Group != null and User_Group != '' ">
+   			and i.roleName = #{User_Group} and i.roleEnName = #{User_Group}
+   		</if>
+   </select>
+</mapper>

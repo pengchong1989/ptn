@@ -1,0 +1,248 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nms.db.dao.ptn.clock.FrequencyInfoMapper" >
+  <resultMap id="BaseResultMap" type="FrequencyInfo" >
+    <id column="Id" property="id" jdbcType="INTEGER" />
+    <result column="siteId" property="siteid" jdbcType="INTEGER" />
+    <result column="workMode" property="workmode" jdbcType="INTEGER" />
+    <result column="qlEnable" property="qlenable" jdbcType="INTEGER" />
+    <result column="clockPRI" property="clockpri" jdbcType="VARCHAR" />
+    <result column="outInselect" property="outinselect" jdbcType="INTEGER" />
+    <result column="outOutselect1" property="outoutselect1" jdbcType="INTEGER" />
+    <result column="outOutselect2" property="outoutselect2" jdbcType="INTEGER" />
+    <result column="outSelect" property="outselect" jdbcType="VARCHAR" />
+    <result column="smOuter" property="smouter" jdbcType="INTEGER" />
+    <result column="smSystem" property="smsystem" jdbcType="INTEGER" />
+    <result column="qlIn" property="qlin" jdbcType="INTEGER" />
+    <result column="qlOut" property="qlout" jdbcType="INTEGER" />
+    <result column="inQLout" property="inqlout" jdbcType="INTEGER" />
+    <result column="inQLvalue" property="inqlvalue" jdbcType="VARCHAR" />
+    <result column="outQLvalue" property="outqlvalue" jdbcType="VARCHAR" />
+    <result column="InResumeTime" property="inresumetime" jdbcType="INTEGER" />
+    <result column="waitResumeTime" property="waitresumetime" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    Id, siteId, workMode, qlEnable, clockPRI, outInselect, outOutselect1, outOutselect2, 
+    outSelect, smOuter, smSystem, qlIn, qlOut, inQLout, inQLvalue, outQLvalue, InResumeTime, 
+    waitResumeTime
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from clock_freque
+    where Id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from clock_freque
+    where Id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="FrequencyInfo" >
+    insert into clock_freque (Id, siteId, workMode, 
+      qlEnable, clockPRI, outInselect, 
+      outOutselect1, outOutselect2, outSelect, 
+      smOuter, smSystem, qlIn, 
+      qlOut, inQLout, inQLvalue, 
+      outQLvalue, InResumeTime, waitResumeTime
+      )
+    values (#{id,jdbcType=INTEGER}, #{siteid,jdbcType=INTEGER}, #{workmode,jdbcType=INTEGER}, 
+      #{qlenable,jdbcType=INTEGER}, #{clockpri,jdbcType=VARCHAR}, #{outinselect,jdbcType=INTEGER}, 
+      #{outoutselect1,jdbcType=INTEGER}, #{outoutselect2,jdbcType=INTEGER}, #{outselect,jdbcType=VARCHAR}, 
+      #{smouter,jdbcType=INTEGER}, #{smsystem,jdbcType=INTEGER}, #{qlin,jdbcType=INTEGER}, 
+      #{qlout,jdbcType=INTEGER}, #{inqlout,jdbcType=INTEGER}, #{inqlvalue,jdbcType=VARCHAR}, 
+      #{outqlvalue,jdbcType=VARCHAR}, #{inresumetime,jdbcType=INTEGER}, #{waitresumetime,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="FrequencyInfo" >
+    insert into clock_freque
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        Id,
+      </if>
+      <if test="siteid != null" >
+        siteId,
+      </if>
+      <if test="workmode != null" >
+        workMode,
+      </if>
+      <if test="qlenable != null" >
+        qlEnable,
+      </if>
+      <if test="clockpri != null" >
+        clockPRI,
+      </if>
+      <if test="outinselect != null" >
+        outInselect,
+      </if>
+      <if test="outoutselect1 != null" >
+        outOutselect1,
+      </if>
+      <if test="outoutselect2 != null" >
+        outOutselect2,
+      </if>
+      <if test="outselect != null" >
+        outSelect,
+      </if>
+      <if test="smouter != null" >
+        smOuter,
+      </if>
+      <if test="smsystem != null" >
+        smSystem,
+      </if>
+      <if test="qlin != null" >
+        qlIn,
+      </if>
+      <if test="qlout != null" >
+        qlOut,
+      </if>
+      <if test="inqlout != null" >
+        inQLout,
+      </if>
+      <if test="inqlvalue != null" >
+        inQLvalue,
+      </if>
+      <if test="outqlvalue != null" >
+        outQLvalue,
+      </if>
+      <if test="inresumetime != null" >
+        InResumeTime,
+      </if>
+      <if test="waitresumetime != null" >
+        waitResumeTime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="siteid != null" >
+        #{siteid,jdbcType=INTEGER},
+      </if>
+      <if test="workmode != null" >
+        #{workmode,jdbcType=INTEGER},
+      </if>
+      <if test="qlenable != null" >
+        #{qlenable,jdbcType=INTEGER},
+      </if>
+      <if test="clockpri != null" >
+        #{clockpri,jdbcType=VARCHAR},
+      </if>
+      <if test="outinselect != null" >
+        #{outinselect,jdbcType=INTEGER},
+      </if>
+      <if test="outoutselect1 != null" >
+        #{outoutselect1,jdbcType=INTEGER},
+      </if>
+      <if test="outoutselect2 != null" >
+        #{outoutselect2,jdbcType=INTEGER},
+      </if>
+      <if test="outselect != null" >
+        #{outselect,jdbcType=VARCHAR},
+      </if>
+      <if test="smouter != null" >
+        #{smouter,jdbcType=INTEGER},
+      </if>
+      <if test="smsystem != null" >
+        #{smsystem,jdbcType=INTEGER},
+      </if>
+      <if test="qlin != null" >
+        #{qlin,jdbcType=INTEGER},
+      </if>
+      <if test="qlout != null" >
+        #{qlout,jdbcType=INTEGER},
+      </if>
+      <if test="inqlout != null" >
+        #{inqlout,jdbcType=INTEGER},
+      </if>
+      <if test="inqlvalue != null" >
+        #{inqlvalue,jdbcType=VARCHAR},
+      </if>
+      <if test="outqlvalue != null" >
+        #{outqlvalue,jdbcType=VARCHAR},
+      </if>
+      <if test="inresumetime != null" >
+        #{inresumetime,jdbcType=INTEGER},
+      </if>
+      <if test="waitresumetime != null" >
+        #{waitresumetime,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="FrequencyInfo" >
+    update clock_freque
+    <set >
+      <if test="siteid != null" >
+        siteId = #{siteid,jdbcType=INTEGER},
+      </if>
+      <if test="workmode != null" >
+        workMode = #{workmode,jdbcType=INTEGER},
+      </if>
+      <if test="qlenable != null" >
+        qlEnable = #{qlenable,jdbcType=INTEGER},
+      </if>
+      <if test="clockpri != null" >
+        clockPRI = #{clockpri,jdbcType=VARCHAR},
+      </if>
+      <if test="outinselect != null" >
+        outInselect = #{outinselect,jdbcType=INTEGER},
+      </if>
+      <if test="outoutselect1 != null" >
+        outOutselect1 = #{outoutselect1,jdbcType=INTEGER},
+      </if>
+      <if test="outoutselect2 != null" >
+        outOutselect2 = #{outoutselect2,jdbcType=INTEGER},
+      </if>
+      <if test="outselect != null" >
+        outSelect = #{outselect,jdbcType=VARCHAR},
+      </if>
+      <if test="smouter != null" >
+        smOuter = #{smouter,jdbcType=INTEGER},
+      </if>
+      <if test="smsystem != null" >
+        smSystem = #{smsystem,jdbcType=INTEGER},
+      </if>
+      <if test="qlin != null" >
+        qlIn = #{qlin,jdbcType=INTEGER},
+      </if>
+      <if test="qlout != null" >
+        qlOut = #{qlout,jdbcType=INTEGER},
+      </if>
+      <if test="inqlout != null" >
+        inQLout = #{inqlout,jdbcType=INTEGER},
+      </if>
+      <if test="inqlvalue != null" >
+        inQLvalue = #{inqlvalue,jdbcType=VARCHAR},
+      </if>
+      <if test="outqlvalue != null" >
+        outQLvalue = #{outqlvalue,jdbcType=VARCHAR},
+      </if>
+      <if test="inresumetime != null" >
+        InResumeTime = #{inresumetime,jdbcType=INTEGER},
+      </if>
+      <if test="waitresumetime != null" >
+        waitResumeTime = #{waitresumetime,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where Id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="FrequencyInfo" >
+    update clock_freque
+    set siteId = #{siteid,jdbcType=INTEGER},
+      workMode = #{workmode,jdbcType=INTEGER},
+      qlEnable = #{qlenable,jdbcType=INTEGER},
+      clockPRI = #{clockpri,jdbcType=VARCHAR},
+      outInselect = #{outinselect,jdbcType=INTEGER},
+      outOutselect1 = #{outoutselect1,jdbcType=INTEGER},
+      outOutselect2 = #{outoutselect2,jdbcType=INTEGER},
+      outSelect = #{outselect,jdbcType=VARCHAR},
+      smOuter = #{smouter,jdbcType=INTEGER},
+      smSystem = #{smsystem,jdbcType=INTEGER},
+      qlIn = #{qlin,jdbcType=INTEGER},
+      qlOut = #{qlout,jdbcType=INTEGER},
+      inQLout = #{inqlout,jdbcType=INTEGER},
+      inQLvalue = #{inqlvalue,jdbcType=VARCHAR},
+      outQLvalue = #{outqlvalue,jdbcType=VARCHAR},
+      InResumeTime = #{inresumetime,jdbcType=INTEGER},
+      waitResumeTime = #{waitresumetime,jdbcType=VARCHAR}
+    where Id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

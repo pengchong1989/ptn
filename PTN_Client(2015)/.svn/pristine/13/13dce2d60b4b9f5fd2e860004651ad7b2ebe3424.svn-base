@@ -1,0 +1,23 @@
+package com.nms.db.dao.ptn.qos;
+
+import org.apache.ibatis.annotations.Param;
+
+import com.nms.db.bean.ptn.qos.QosMappingAttr;
+
+public interface QosMappingAttrMapper {
+    int deleteByPrimaryKey(Integer id);
+
+    
+
+    int insertSelective(QosMappingAttr record);
+
+    QosMappingAttr selectByPrimaryKey(Integer id);
+
+    int updateByPrimaryKeySelective(QosMappingAttr record);
+
+    int updateByPrimaryKey(QosMappingAttr record);
+    
+    public int insert(@Param("qos")QosMappingAttr qos);
+    
+    public int update(@Param("qos")QosMappingAttr qos);
+}

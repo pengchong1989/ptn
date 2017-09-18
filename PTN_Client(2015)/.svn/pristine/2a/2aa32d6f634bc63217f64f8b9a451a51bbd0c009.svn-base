@@ -1,0 +1,205 @@
+package com.nms.model.ptn;
+
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.nms.db.bean.ptn.MacLearningInfo;
+import com.nms.db.dao.ptn.MacLearningDao;
+import com.nms.model.util.ObjectService;
+import com.nms.ui.manager.ExceptionManage;
+
+public class MacLearningService extends ObjectService {
+	public void setConnection(Connection connection) {
+		super.connection = connection;
+	}
+
+	public void setPtnuser(String ptnuser) {
+		super.ptnuser = ptnuser;
+	}
+	
+	private MacLearningDao macDao = new MacLearningDao();
+	
+	public void save(MacLearningInfo macInfo) throws Exception {
+		if(macInfo == null){
+			throw new Exception("macInfo is null");
+		}
+		connection.setAutoCommit(false);
+		try {
+			macDao.insert(macInfo, connection);
+			if(!connection.getAutoCommit()){
+				connection.commit();
+			}
+		} catch (Exception e) {
+			connection.rollback();
+			ExceptionManage.dispose(e, this.getClass());
+		} finally {
+			connection.setAutoCommit(true);
+		}
+	}
+
+	public void update(MacLearningInfo macInfo) throws SQLException {
+		connection.setAutoCommit(false);
+		try {
+			macDao.update(macInfo, connection);
+			if(!connection.getAutoCommit()){
+				connection.commit();
+			}
+		} catch (Exception e) {
+			connection.rollback();
+			ExceptionManage.dispose(e, this.getClass());
+		} finally {
+			connection.setAutoCommit(true);
+		}
+	}
+
+	/**
+	 * 多选删除
+	 * 虚拟网元操作
+	 */
+	public void delete(List<MacLearningInfo> list) throws SQLException {
+		connection.setAutoCommit(false);
+		try {
+			if(list != null){
+				for (MacLearningInfo mac : list) {
+					macDao.delete(mac.getId(), connection);
+				}
+			}
+			if(!connection.getAutoCommit()){
+				connection.commit();
+			}
+		} catch (Exception e) {
+			connection.rollback();
+			ExceptionManage.dispose(e, this.getClass());
+		} finally {
+			connection.setAutoCommit(true);
+		}
+		
+	}
+
+	/**
+	 * 根据网元id查询对应的mac
+	 * @param siteId
+	 * @return
+	 * @throws SQLException
+	 */
+	public List<MacLearningInfo> selectBySiteId(int siteId) throws SQLException {
+		connection.setAutoCommit(false);
+		List<MacLearningInfo> macLearningInfoList = new ArrayList<MacLearningInfo>();
+		try {
+			macLearningInfoList = macDao.selectBySiteId(siteId, connection);
+			
+			if(!connection.getAutoCommit()){
+				connection.commit();
+			}
+		} catch (Exception e) {
+			connection.rollback();
+			ExceptionManage.dispose(e, this.getClass());
+		} finally {
+			connection.setAutoCommit(true);
+		}
+		return macLearningInfoList;
+	}
+
+	public void delete(MacLearningInfo macInfo) throws SQLException {
+		connection.setAutoCommit(false);
+		try {
+			macDao.delete(macInfo.getId(), connection);
+			if(!connection.getAutoCommit()){
+				connection.commit();
+			}
+		} catch (Exception e) {
+			connection.rollback();
+			ExceptionManage.dispose(e, this.getClass());
+		} finally {
+			connection.setAutoCommit(true);
+		}
+		
+	}
+
+	public MacLearningInfo selectById(int id) throws SQLException {
+		connection.setAutoCommit(false);
+		MacLearningInfo macLearningInfo = new MacLearningInfo();
+		try {
+			macLearningInfo = macDao.selectById(id, connection);
+			if(!connection.getAutoCommit()){
+				connection.commit();
+			}
+		} catch (Exception e) {
+			connection.rollback();
+			ExceptionManage.dispose(e, this.getClass());
+		} finally {
+			connection.setAutoCommit(true);
+		}
+		return macLearningInfo;
+	}
+
+	public void deleteByPortId(int portId) throws SQLException {
+		connection.setAutoCommit(false);
+		try {
+			macDao.deleteByPortId(portId, connection);
+			if(!connection.getAutoCommit()){
+				connection.commit();
+			}
+		} catch (Exception e) {
+			connection.rollback();
+			ExceptionManage.dispose(e, this.getClass());
+		} finally {
+			connection.setAutoCommit(true);
+		}
+		
+	}
+
+	public List<MacLearningInfo> queryBySiteId(int siteId) throws SQLException {
+		connection.setAutoCommit(false);
+		List<MacLearningInfo> macLearningInfoList = new ArrayList<MacLearningInfo>();
+		try {
+			macLearningInfoList = macDao.queryBySiteId(siteId, connection);
+			if(!connection.getAutoCommit()){
+				connection.commit();
+			}
+		} catch (Exception e) {
+			connection.rollback();
+			ExceptionManage.dispose(e, this.getClass());
+		} finally {
+			connection.setAutoCommit(true);
+		}
+		return macLearningInfoList;
+	}
+
+	public List<Integer> selectAllPortId(int siteId) throws SQLException {
+		connection.setAutoCommit(false);
+		List<Integer> integerList = new ArrayList<Integer>();
+		try {
+			integerList = macDao.selectAllPortId(siteId, connection);
+			if(!connection.getAutoCommit()){
+				connection.commit();
+			}
+		} catch (Exception e) {
+			connection.rollback();
+			ExceptionManage.dispose(e, this.getClass());
+		} finally {
+			connection.setAutoCommit(true);
+		}
+		return integerList;
+	}
+
+	public boolean selectCountByPortId(int portId) throws SQLException {
+		connection.setAutoCommit(false);
+		boolean flag = false;
+		try {
+			flag = macDao.selectCountByPortId(portId, connection);
+			if(!connection.getAutoCommit()){
+				connection.commit();
+			}
+		} catch (Exception e) {
+			connection.rollback();
+			ExceptionManage.dispose(e, this.getClass());
+		} finally {
+			connection.setAutoCommit(true);
+		}
+		return flag;
+	}
+
+}

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<driveRoot  xmlns="http://drive.bean.com">
+	<attribute length="4" description="盘类型" value="" mapping=""/>
+	<attribute length="2" description="盘地址" value="" mapping=""/>
+	<attribute length="2" description="盘特征字" value="" mapping=""/>
+	<attribute length="2" description="备用" value="" mapping=""/>
+	<attribute length="4" description="盘数据长度" value="" mapping="">
+		<listRoot file="com/nms/drive/analysis/xmltool/file/告警NE下单盘配置_SUB.xml">
+		</listRoot>
+	</attribute>
+</driveRoot>

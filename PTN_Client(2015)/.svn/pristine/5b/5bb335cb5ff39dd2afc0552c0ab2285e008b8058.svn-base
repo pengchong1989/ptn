@@ -1,0 +1,368 @@
+package com.nms.db.dao.ptn.path.protect;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.nms.db.bean.ptn.path.protect.ProtectRorateInfo;
+import com.nms.ui.manager.ExceptionManage;
+
+
+public class ProtectRorateInfoDao {
+
+	/**
+	 * 查询所有
+	 * @param connection
+	 * @return
+	 * @throws Exception
+	 */
+	public List<ProtectRorateInfo> queryAll(Connection connection)throws Exception {
+		String sql = null;
+		List<ProtectRorateInfo> protectList = null;
+		try {
+			sql = "select id,recoverMain,forceStand,lockMain,manpowerStand,clear,roratePractise,protectTunnelId " +
+					"from protect_rorate";
+			protectList = this.executeQuery(connection, sql);
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			sql = null;
+		}
+		return protectList;
+	}
+
+	private List<ProtectRorateInfo> executeQuery(Connection connection,String sql)throws Exception {
+		
+		List<ProtectRorateInfo> protectList = null;
+		ResultSet resultSet = null;
+		PreparedStatement preparedStatement = null;
+		ProtectRorateInfo protect = null;
+		try {
+			protectList = new ArrayList<ProtectRorateInfo>();
+			connection.setAutoCommit(false);
+			preparedStatement = connection.prepareStatement(sql);
+			resultSet = preparedStatement.executeQuery();
+			
+			while (resultSet.next()) {
+				protect = new ProtectRorateInfo();
+				protect.setId(resultSet.getInt("id"));
+				protect.setRecoverMain(resultSet.getInt("recoverMain"));
+				protect.setForceStand(resultSet.getInt("forceStand"));
+				protect.setLockMain(resultSet.getInt("lockMain"));
+				protect.setManpowerStand(resultSet.getInt("manpowerStand"));
+				protect.setClear(resultSet.getInt("clear"));
+				protect.setRoratePractise(resultSet.getInt("roratePractise"));
+				protect.setSiteId(resultSet.getInt("siteId"));
+				protect.setTunnelbusinessid(resultSet.getInt("tunnelbusinessid"));
+				protect.setTunnelId(resultSet.getInt("tunnelId"));
+				protectList.add(protect);
+			}
+			if(!connection.getAutoCommit()){
+				connection.commit();
+			}
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			connection.setAutoCommit(true);
+			if (resultSet != null) {
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				resultSet = null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+			protect = null;
+		}
+		
+		
+		return protectList;
+	}
+	
+
+	/**
+	 * 根据条件查询
+	 * @param protectRorateInfo
+	 * @param connection
+	 * @return
+	 * @throws Exception
+	 */
+	public List<ProtectRorateInfo> queryByCondition(ProtectRorateInfo protectRorateInfo, Connection connection)throws Exception {
+		if (null == protectRorateInfo) {
+			throw new Exception("protectRorateInfo is null");
+		}
+
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		List<ProtectRorateInfo> protectRorateList = null;
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+//		ProtectRorateInfo protect = null;
+		ResultSet resultSet=null;
+		try {
+			connection.setAutoCommit(false);
+			protectRorateList = new ArrayList<ProtectRorateInfo>();
+			sql = "select*from protect_rorate where 1=1 ";
+			if(protectRorateInfo.getSiteId()>0){
+				sql += " and siteId=" + protectRorateInfo.getSiteId();
+			}
+			if(protectRorateInfo.getTunnelbusinessid()>0){
+				sql += " and tunnelbusinessid=" + protectRorateInfo.getTunnelbusinessid();
+			}
+//			if(protectRorateInfo.getZsiteId()>0){
+//				sql += " and zsiteId=" + protectRorateInfo.getZsiteId();
+//			}
+//			if(protectRorateInfo.getZtunnelbusinessid()>0){
+//				sql += " and ztunnelbusinessid=" + protectRorateInfo.getZtunnelbusinessid();
+//			}
+			if(protectRorateInfo.getTunnelId()>0){
+				sql += " and tunnelId=" + protectRorateInfo.getTunnelId();
+			}
+			
+			preparedStatement = connection.prepareStatement(sql);
+			resultSet = preparedStatement.executeQuery();
+			while (resultSet.next()) {
+				ProtectRorateInfo	protect = new ProtectRorateInfo();
+				protect.setId(resultSet.getInt("id"));
+				protect.setRecoverMain(resultSet.getInt("recoverMain"));
+				protect.setForceStand(resultSet.getInt("forceStand"));
+				protect.setLockMain(resultSet.getInt("lockMain"));
+				protect.setManpowerStand(resultSet.getInt("manpowerStand"));
+				protect.setClear(resultSet.getInt("clear"));
+				protect.setRoratePractise(resultSet.getInt("roratePractise"));
+				protect.setSiteId(resultSet.getInt("siteId"));
+				protect.setTunnelbusinessid(resultSet.getInt("tunnelbusinessid"));
+				protect.setTunnelId(resultSet.getInt("tunnelId"));
+				protectRorateList.add(protect);
+			}
+//			protectRorateList = this.executeQuery(connection, sql);
+			if(!connection.getAutoCommit()){
+				connection.commit();
+			}
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			connection.setAutoCommit(true);
+			if (resultSet != null) {
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e, getClass());
+				}
+				resultSet = null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e, getClass());
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+		
+		return protectRorateList;
+	}
+ 
+
+	/**
+	 * 更新
+	 * @param protectRorateInfo
+	 * @param connection
+	 * @throws Exception
+	 */
+	public void update(ProtectRorateInfo protectRorateInfo, Connection connection)throws Exception {
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+		
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		
+		try {
+			sql = "update protect_rorate set recoverMain=?,forceStand=?,lockMain=?,manpowerStand=?" +
+					",clear=?,roratePractise=?,siteId=? ,tunnelbusinessid=? where id=?";
+			
+			preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.setInt(1, protectRorateInfo.getRecoverMain());
+			preparedStatement.setInt(2, protectRorateInfo.getForceStand());
+			preparedStatement.setInt(3, protectRorateInfo.getLockMain());
+			preparedStatement.setInt(4, protectRorateInfo.getManpowerStand());
+			preparedStatement.setInt(5, protectRorateInfo.getClear());
+			preparedStatement.setInt(6, protectRorateInfo.getRoratePractise());
+			preparedStatement.setInt(7, protectRorateInfo.getSiteId());
+			preparedStatement.setInt(8, protectRorateInfo.getTunnelbusinessid());
+//			preparedStatement.setInt(9, protectRorateInfo.getZsiteId());
+//			preparedStatement.setInt(10, protectRorateInfo.getZtunnelbusinessid());
+			preparedStatement.setInt(9, protectRorateInfo.getId());
+			preparedStatement.executeUpdate();
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+
+	}
+
+	/**
+	 * 删除记录
+	 * @param protectRorateInfo
+	 * @param connection
+	 * @throws Exception
+	 */
+	public void delete(ProtectRorateInfo protectRorateInfo,Connection connection)throws Exception {
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+		
+		PreparedStatement preparedStatement = null;
+		String sql = null;
+		
+		try {
+			sql = "delete from protect_rorate where 1=1 ";
+			if(protectRorateInfo.getSiteId()>0){
+				sql += " and siteId=" + protectRorateInfo.getSiteId();
+			}
+			if(protectRorateInfo.getTunnelbusinessid()>0){
+				sql += " and tunnelbusinessid=" + protectRorateInfo.getTunnelbusinessid();
+			}
+			if(protectRorateInfo.getTunnelId()>0){
+				sql += " and tunnelId=" + protectRorateInfo.getTunnelId();
+			}
+//			if(protectRorateInfo.getZsiteId()>0){
+//				sql += " and zsiteId=" + protectRorateInfo.getZsiteId();
+//			}
+//			if(protectRorateInfo.getZtunnelbusinessid()>0){
+//				sql += " and ztunnelbusinessid=" + protectRorateInfo.getZtunnelbusinessid();
+//			}
+			preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.executeUpdate();
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+	}
+
+	/**
+	 * 插入
+	 * @param protectRorateInfo
+	 * @param connection
+	 * @throws Exception
+	 */
+	public void insert(ProtectRorateInfo protectRorateInfo,Connection connection) throws Exception{
+		if (null == protectRorateInfo) {
+			throw new Exception("protectRorateInfo is null");
+		}
+
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+		
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		
+		try {
+			sql = "insert into protect_rorate(recoverMain,forceStand,lockMain,manpowerStand,clear," +
+					"roratePractise,siteId,tunnelbusinessid,tunnelId) values(?,?,?,?,?,?,?,?,?)";
+			
+			connection.setAutoCommit(false);
+			preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.setInt(1, protectRorateInfo.getRecoverMain());
+			preparedStatement.setInt(2, protectRorateInfo.getForceStand());
+			preparedStatement.setInt(3, protectRorateInfo.getLockMain());
+			preparedStatement.setInt(4, protectRorateInfo.getManpowerStand());
+			preparedStatement.setInt(5, protectRorateInfo.getClear());
+			preparedStatement.setInt(6, protectRorateInfo.getRoratePractise());
+			preparedStatement.setInt(7, protectRorateInfo.getSiteId());
+			preparedStatement.setInt(8, protectRorateInfo.getTunnelbusinessid());
+//			preparedStatement.setInt(9, protectRorateInfo.getZsiteId());
+//			preparedStatement.setInt(10, protectRorateInfo.getZtunnelbusinessid());
+			preparedStatement.setInt(9, protectRorateInfo.getTunnelId());
+			preparedStatement.executeUpdate();
+	
+			if(!connection.getAutoCommit()){
+				connection.commit();
+			}
+		} catch (Exception e) {
+			connection.rollback();
+			throw e;
+		} finally {
+			connection.setAutoCommit(true);
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+
+			sql = null;
+		}
+	}
+	
+	/**
+	 * 删除记录
+	 * @param protectRorateInfo
+	 * @param connection
+	 * @throws Exception
+	 */
+	public void deleteBysiteId(int siteId,Connection connection)throws Exception {
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+		
+		PreparedStatement preparedStatement = null;
+		String sql = null;
+		
+		try {
+			sql = "delete from protect_rorate where siteId=? ";
+			preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.setInt(1, siteId);
+			preparedStatement.executeUpdate();
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+	}
+	
+}

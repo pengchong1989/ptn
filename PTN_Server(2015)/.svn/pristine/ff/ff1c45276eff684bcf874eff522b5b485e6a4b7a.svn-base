@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<driveRoot  xmlns="http://drive.bean.com">
+	<attribute length="2" description="条目数" value="1" mapping="(1)">
+		<listRoot file="com/nms/drive/analysis/xmltool/file/status/Lag端口状态配置块_SUB.xml"/>
+	</attribute>
+</driveRoot>

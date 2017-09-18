@@ -1,0 +1,374 @@
+package com.nms.db.dao.equipment.port;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.nms.db.bean.equipment.port.V35PortInfo;
+import com.nms.ui.manager.ExceptionManage;
+
+
+public class V35PortDao {
+	/**
+	 * 插入Sql
+	 */
+	private final String INSERTSQL = "insert into v35Port_inst(siteId ,fourthLeg ,timeModel,frame,time1,time2,time3,time4,time5" +
+			                           ",time6,time7,time8,time9,time10,time11,time12,time13,time14,time15,time16,time17,time18," +
+			                           "time19,time20,time21,time22,time23,time24,time25,time26,time27,time28,time29,time30,time31) " +
+			                           "values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+	/**
+	 * 更新Sql
+	 */
+	private final String UPDATESQL = "update v35Port_inst set siteId=?,fourthLeg=? ,timeModel=?,frame=?,time1=?,time2=?,time3=?,time4=?,time5=?" +
+			                           ",time6=?,time7=?,time8=?,time9=?,time10=?,time11=?,time12=?,time13=?,time14=?,time15=?,time16=?,time17=?,time18=?," +
+			                           "time19=?,time20=?,time21=?,time22=?,time23=?,time24=?,time25=?,time26=?,time27=?,time28=?,time29=?,time30=?,time31=?" +
+			                           " where id=?";
+
+	/**
+	 * 查询Sql
+	 */
+	private final String SELECTSQL = "SELECT * FROM v35Port_inst where 1=1";
+	
+	/**
+	 * 删除
+	 */
+	private final String DELETE_BY_SITE = "delete from v35Port_inst where siteid=?";
+
+	public int insert(V35PortInfo v35PortInfo, Connection connection) throws Exception {
+		if (null == v35PortInfo) {
+			throw new Exception("v35PortInfo is null");
+		}
+
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		int result = 0;
+		ResultSet resultSet = null;
+
+		try {
+			sql = INSERTSQL;
+			preparedStatement = connection.prepareStatement(sql, java.sql.Statement.RETURN_GENERATED_KEYS);
+			preparedStatement.setInt(1, v35PortInfo.getSiteId());
+			preparedStatement.setInt(2, v35PortInfo.getFourthLeg());
+			preparedStatement.setInt(3, v35PortInfo.getTimeModel());
+			preparedStatement.setInt(4, v35PortInfo.getFrame());
+			
+			preparedStatement.setInt(5, v35PortInfo.getTime1());
+			preparedStatement.setInt(6, v35PortInfo.getTime2());
+			preparedStatement.setInt(7, v35PortInfo.getTime3());
+			preparedStatement.setInt(8, v35PortInfo.getTime4());
+			preparedStatement.setInt(9, v35PortInfo.getTime5());
+			preparedStatement.setInt(10, v35PortInfo.getTime6());
+			preparedStatement.setInt(11, v35PortInfo.getTime7());
+			preparedStatement.setInt(12, v35PortInfo.getTime8());
+			preparedStatement.setInt(13, v35PortInfo.getTime9());
+			preparedStatement.setInt(14, v35PortInfo.getTime10());
+			
+			preparedStatement.setInt(15, v35PortInfo.getTime11());
+			preparedStatement.setInt(16, v35PortInfo.getTime12());
+			preparedStatement.setInt(17, v35PortInfo.getTime13());
+			preparedStatement.setInt(18, v35PortInfo.getTime14());
+			preparedStatement.setInt(19, v35PortInfo.getTime15());
+			preparedStatement.setInt(20, v35PortInfo.getTime16());
+			preparedStatement.setInt(21, v35PortInfo.getTime17());
+			preparedStatement.setInt(22, v35PortInfo.getTime18());
+			preparedStatement.setInt(23, v35PortInfo.getTime19());
+			preparedStatement.setInt(24, v35PortInfo.getTime20());
+			
+			preparedStatement.setInt(25, v35PortInfo.getTime21());
+			preparedStatement.setInt(26, v35PortInfo.getTime22());
+			preparedStatement.setInt(27, v35PortInfo.getTime23());
+			preparedStatement.setInt(28, v35PortInfo.getTime24());
+			preparedStatement.setInt(29, v35PortInfo.getTime25());
+			preparedStatement.setInt(30, v35PortInfo.getTime26());
+			preparedStatement.setInt(31, v35PortInfo.getTime27());
+			preparedStatement.setInt(32, v35PortInfo.getTime28());
+			preparedStatement.setInt(33, v35PortInfo.getTime29());
+			preparedStatement.setInt(34, v35PortInfo.getTime30());
+			
+			preparedStatement.setInt(35, v35PortInfo.getTime31());
+			preparedStatement.executeUpdate();
+			resultSet = preparedStatement.getGeneratedKeys();
+			while (resultSet.next()) {
+				result = resultSet.getInt(1);
+			}
+
+		} catch (Exception e) {
+			throw e;
+		} finally {			
+			if (resultSet != null) {
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				resultSet = null;
+			}			
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+
+			sql = null;
+		}
+
+		return result;
+	}
+
+	/**
+	 * 
+	 * @param v35PortInfo
+	 * @param connection
+	 * @return
+	 * @throws Exception
+	 */
+	public int update(V35PortInfo v35PortInfo, Connection connection) throws Exception {
+		if (null == v35PortInfo) {
+			throw new Exception("v35PortInfo is null");
+		}
+
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		int result = 0;
+
+		try {
+			sql = UPDATESQL;
+
+			preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.setInt(1, v35PortInfo.getSiteId());
+			preparedStatement.setInt(2, v35PortInfo.getFourthLeg());
+			preparedStatement.setInt(3, v35PortInfo.getTimeModel());
+			preparedStatement.setInt(4, v35PortInfo.getFrame());
+			
+			preparedStatement.setInt(5, v35PortInfo.getTime1());
+			preparedStatement.setInt(6, v35PortInfo.getTime2());
+			preparedStatement.setInt(7, v35PortInfo.getTime3());
+			preparedStatement.setInt(8, v35PortInfo.getTime4());
+			preparedStatement.setInt(9, v35PortInfo.getTime5());
+			preparedStatement.setInt(10, v35PortInfo.getTime6());
+			preparedStatement.setInt(11, v35PortInfo.getTime7());
+			preparedStatement.setInt(12, v35PortInfo.getTime8());
+			preparedStatement.setInt(13, v35PortInfo.getTime9());
+			preparedStatement.setInt(14, v35PortInfo.getTime10());
+			
+			preparedStatement.setInt(15, v35PortInfo.getTime11());
+			preparedStatement.setInt(16, v35PortInfo.getTime12());
+			preparedStatement.setInt(17, v35PortInfo.getTime13());
+			preparedStatement.setInt(18, v35PortInfo.getTime14());
+			preparedStatement.setInt(19, v35PortInfo.getTime15());
+			preparedStatement.setInt(20, v35PortInfo.getTime16());
+			preparedStatement.setInt(21, v35PortInfo.getTime17());
+			preparedStatement.setInt(22, v35PortInfo.getTime18());
+			preparedStatement.setInt(23, v35PortInfo.getTime19());
+			preparedStatement.setInt(24, v35PortInfo.getTime20());
+			
+			preparedStatement.setInt(25, v35PortInfo.getTime21());
+			preparedStatement.setInt(26, v35PortInfo.getTime22());
+			preparedStatement.setInt(27, v35PortInfo.getTime23());
+			preparedStatement.setInt(28, v35PortInfo.getTime24());
+			preparedStatement.setInt(29, v35PortInfo.getTime25());
+			preparedStatement.setInt(30, v35PortInfo.getTime26());
+			preparedStatement.setInt(31, v35PortInfo.getTime27());
+			preparedStatement.setInt(32, v35PortInfo.getTime28());
+			preparedStatement.setInt(33, v35PortInfo.getTime29());
+			preparedStatement.setInt(34, v35PortInfo.getTime30());
+			
+			preparedStatement.setInt(35, v35PortInfo.getTime31());
+			preparedStatement.setInt(36, v35PortInfo.getId());
+			result = preparedStatement.executeUpdate();
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+
+		return result;
+	}
+
+	/**
+	 * 
+	 * @param v35PortInfo
+	 * @param connection
+	 * @return
+	 * @throws Exception
+	 */
+	public List<V35PortInfo> queryByCondition(V35PortInfo v35PortInfo, Connection connection) throws Exception {
+		if (null == v35PortInfo) {
+			throw new Exception("e1Info is null");
+		}
+
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		String sql = null;
+		List<V35PortInfo> list = null;
+		try {
+
+			sql = SELECTSQL;
+			if (v35PortInfo.getId() > 0) {
+				sql += " and Id=" + v35PortInfo.getId();
+			}
+			if (v35PortInfo.getSiteId() > 0) {
+				sql += " and siteId=" + v35PortInfo.getSiteId();
+			}
+			list = this.excuteQuery(connection, sql);
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			sql = null;
+		}
+		return list;
+	}
+
+	/**
+	 * 执行查询语句
+	 * 
+	 * @param connection
+	 *            数据库连接
+	 * @param sql
+	 *            sql语句
+	 * @return 查询集合
+	 * @throws Exception
+	 */
+	private List<V35PortInfo> excuteQuery(Connection connection, String sql) throws Exception {
+		List<V35PortInfo> v35PortInfos = null;
+		ResultSet resultSet = null;
+		PreparedStatement preparedStatement = null;
+		V35PortInfo v35PortInfo = null;
+		try {
+			v35PortInfos = new ArrayList<V35PortInfo>();
+			preparedStatement = connection.prepareStatement(sql);
+			resultSet = preparedStatement.executeQuery();
+
+			while (resultSet.next()) {
+				v35PortInfo = new V35PortInfo();
+				v35PortInfo.setId(resultSet.getInt("id"));
+				v35PortInfo.setSiteId(resultSet.getInt("siteId"));
+				v35PortInfo.setFourthLeg(resultSet.getInt("fourthLeg"));
+				v35PortInfo.setTimeModel(resultSet.getInt("timeModel"));
+				v35PortInfo.setFrame(resultSet.getInt("frame"));
+				v35PortInfo.setTime1(resultSet.getInt("time1"));
+				v35PortInfo.setTime2(resultSet.getInt("time2"));
+				v35PortInfo.setTime3(resultSet.getInt("time3"));
+				v35PortInfo.setTime4(resultSet.getInt("time4"));
+				v35PortInfo.setTime5(resultSet.getInt("time5"));
+				v35PortInfo.setTime6(resultSet.getInt("time6"));
+				v35PortInfo.setTime7(resultSet.getInt("time7"));
+				v35PortInfo.setTime8(resultSet.getInt("time8"));
+				v35PortInfo.setTime9(resultSet.getInt("time9"));
+				v35PortInfo.setTime10(resultSet.getInt("time10"));
+				v35PortInfo.setTime11(resultSet.getInt("time11"));
+				v35PortInfo.setTime12(resultSet.getInt("time12"));
+				v35PortInfo.setTime13(resultSet.getInt("time13"));
+				v35PortInfo.setTime14(resultSet.getInt("time14"));
+				v35PortInfo.setTime15(resultSet.getInt("time15"));
+				v35PortInfo.setTime16(resultSet.getInt("time16"));
+				v35PortInfo.setTime17(resultSet.getInt("time17"));
+				v35PortInfo.setTime18(resultSet.getInt("time18"));
+				v35PortInfo.setTime19(resultSet.getInt("time19"));
+				v35PortInfo.setTime20(resultSet.getInt("time20"));
+				v35PortInfo.setTime21(resultSet.getInt("time21"));
+				v35PortInfo.setTime22(resultSet.getInt("time22"));
+				v35PortInfo.setTime23(resultSet.getInt("time23"));
+				v35PortInfo.setTime24(resultSet.getInt("time24"));
+				v35PortInfo.setTime25(resultSet.getInt("time25"));
+				v35PortInfo.setTime26(resultSet.getInt("time26"));
+				v35PortInfo.setTime27(resultSet.getInt("time27"));
+				v35PortInfo.setTime28(resultSet.getInt("time28"));
+				v35PortInfo.setTime29(resultSet.getInt("time29"));
+				v35PortInfo.setTime30(resultSet.getInt("time30"));
+				v35PortInfo.setTime31(resultSet.getInt("time31"));
+				v35PortInfos.add(v35PortInfo);
+			}
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (resultSet != null) {
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				resultSet = null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+			v35PortInfo = null;
+		}
+
+		return v35PortInfos;
+	}
+	
+
+	/**
+	 * 根据网元ID删除
+	 * 
+	 * 
+	 * @param siteid
+	 *            网元id
+	 * @param connection
+	 *            数据库连接
+	 * 
+	 * @return
+	 * @throws Exception
+	 * 
+	 * @Exception 异常对象
+	 */
+	public void deleteBySite(int siteId, Connection connection) throws Exception {
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+		PreparedStatement preparedStatement = null;
+		try {
+			preparedStatement = connection.prepareStatement(this.DELETE_BY_SITE);
+			preparedStatement.setInt(1, siteId);
+			preparedStatement.executeUpdate();
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+		}
+	}
+	
+
+	
+	
+}

@@ -1,0 +1,22 @@
+package com.nms.model.path;
+
+import org.apache.ibatis.session.SqlSession;
+
+import com.nms.db.dao.path.SetNameRuleMapper;
+import com.nms.model.util.ObjectService_Mybatis;
+
+public class NameRuleService_MB extends ObjectService_Mybatis {
+	private SetNameRuleMapper mapper = null;
+	
+	public void setPtnuser(String ptnuser) {
+		super.ptnuser = ptnuser;
+	}
+
+	public void setSqlSession(SqlSession sqlSession) {
+		super.sqlSession = sqlSession;
+	}
+	
+	public void setMapper(SetNameRuleMapper mapper) {
+		this.mapper = mapper;
+	}
+}

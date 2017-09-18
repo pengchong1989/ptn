@@ -1,0 +1,337 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nms.db.dao.ptn.path.eth.EtreeInfoMapper" >
+  <resultMap id="BaseResultMap" type="EtreeInfo" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="serviceId" property="serviceId" jdbcType="INTEGER" />
+    <result column="pwId" property="pwId" jdbcType="INTEGER" />
+    <result column="serviceType" property="serviceType" jdbcType="INTEGER" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="aXcId" property="aXcId" jdbcType="INTEGER" />
+    <result column="zXcId" property="zXcId" jdbcType="INTEGER" />
+    <result column="activeStatus" property="activeStatus" jdbcType="INTEGER" />
+    <result column="rootSite" property="rootSite" jdbcType="INTEGER" />
+    <result column="branchSite" property="branchSite" jdbcType="INTEGER" />
+    <result column="aAcId" property="aAcId" jdbcType="INTEGER" />
+    <result column="zAcId" property="zAcId" jdbcType="INTEGER" />
+    <result column="createUser" property="createUser" jdbcType="VARCHAR" />
+    <result column="createTime" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="aSiteId" property="aSiteId" jdbcType="INTEGER" />
+    <result column="zSiteId" property="zSiteId" jdbcType="INTEGER" />
+    <result column="isSingle" property="isSingle" jdbcType="INTEGER" />
+    <result column="cestype" property="cestype" jdbcType="INTEGER" />
+    <result column="jobstatus" property="jobStatus" jdbcType="VARCHAR" />
+    <result column="clientId" property="clientId" jdbcType="INTEGER" />
+    <result column="branchMainSite" property="branchMainSite" jdbcType="INTEGER" />
+    <result column="branchProtectSite" property="branchProtectSite" jdbcType="INTEGER" />
+    <result column="zmostAcIds" property="amostAcId" jdbcType="VARCHAR" />
+    <result column="amostAcIds" property="zmostAcId" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, serviceId, pwId, serviceType, name, aXcId, zXcId, activeStatus, rootSite, branchSite, 
+    aAcId, zAcId, createUser, createTime, aSiteId, zSiteId, isSingle, cestype, jobstatus, 
+    clientId, branchMainSite, branchProtectSite, zmostAcIds, amostAcIds
+  </sql>
+  <select id="selectBySiteAndisSingle" resultMap="BaseResultMap" parameterType="EtreeInfo" >
+  select * from serviceinfo where serviceType = 3 
+  <if test="isSingle > -1">
+ 	 and isSingle=#{isSingle}
+  </if>
+  <if test="aSiteId > 0">
+     and (aSiteId = #{aSiteId} or zSiteId = #{aSiteId})
+  </if>
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from serviceinfo
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="EtreeInfo" >
+    insert into serviceinfo (id, serviceId, pwId, 
+      serviceType, name, aXcId, 
+      zXcId, activeStatus, rootSite, 
+      branchSite, aAcId, zAcId, 
+      createUser, createTime, aSiteId, 
+      zSiteId, isSingle, cestype, 
+      jobstatus, clientId, branchMainSite, 
+      branchProtectSite, zmostAcIds, amostAcIds
+      )
+    values (#{id,jdbcType=INTEGER}, #{serviceid,jdbcType=INTEGER}, #{pwid,jdbcType=INTEGER}, 
+      #{servicetype,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{axcid,jdbcType=INTEGER}, 
+      #{zxcid,jdbcType=INTEGER}, #{activestatus,jdbcType=INTEGER}, #{rootsite,jdbcType=INTEGER}, 
+      #{branchsite,jdbcType=INTEGER}, #{aacid,jdbcType=INTEGER}, #{zacid,jdbcType=INTEGER}, 
+      #{createuser,jdbcType=VARCHAR}, #{createtime,jdbcType=TIMESTAMP}, #{asiteid,jdbcType=INTEGER}, 
+      #{zsiteid,jdbcType=INTEGER}, #{issingle,jdbcType=INTEGER}, #{cestype,jdbcType=INTEGER}, 
+      #{jobstatus,jdbcType=VARCHAR}, #{clientid,jdbcType=INTEGER}, #{branchmainsite,jdbcType=INTEGER}, 
+      #{branchprotectsite,jdbcType=INTEGER}, #{zmostacids,jdbcType=VARCHAR}, #{amostacids,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="EtreeInfo" >
+    insert into serviceinfo
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="serviceid != null" >
+        serviceId,
+      </if>
+      <if test="pwid != null" >
+        pwId,
+      </if>
+      <if test="servicetype != null" >
+        serviceType,
+      </if>
+      <if test="name != null" >
+        name,
+      </if>
+      <if test="axcid != null" >
+        aXcId,
+      </if>
+      <if test="zxcid != null" >
+        zXcId,
+      </if>
+      <if test="activestatus != null" >
+        activeStatus,
+      </if>
+      <if test="rootsite != null" >
+        rootSite,
+      </if>
+      <if test="branchsite != null" >
+        branchSite,
+      </if>
+      <if test="aacid != null" >
+        aAcId,
+      </if>
+      <if test="zacid != null" >
+        zAcId,
+      </if>
+      <if test="createuser != null" >
+        createUser,
+      </if>
+      <if test="createtime != null" >
+        createTime,
+      </if>
+      <if test="asiteid != null" >
+        aSiteId,
+      </if>
+      <if test="zsiteid != null" >
+        zSiteId,
+      </if>
+      <if test="issingle != null" >
+        isSingle,
+      </if>
+      <if test="cestype != null" >
+        cestype,
+      </if>
+      <if test="jobstatus != null" >
+        jobstatus,
+      </if>
+      <if test="clientid != null" >
+        clientId,
+      </if>
+      <if test="branchmainsite != null" >
+        branchMainSite,
+      </if>
+      <if test="branchprotectsite != null" >
+        branchProtectSite,
+      </if>
+      <if test="zmostacids != null" >
+        zmostAcIds,
+      </if>
+      <if test="amostacids != null" >
+        amostAcIds,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="serviceid != null" >
+        #{serviceid,jdbcType=INTEGER},
+      </if>
+      <if test="pwid != null" >
+        #{pwid,jdbcType=INTEGER},
+      </if>
+      <if test="servicetype != null" >
+        #{servicetype,jdbcType=INTEGER},
+      </if>
+      <if test="name != null" >
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="axcid != null" >
+        #{axcid,jdbcType=INTEGER},
+      </if>
+      <if test="zxcid != null" >
+        #{zxcid,jdbcType=INTEGER},
+      </if>
+      <if test="activestatus != null" >
+        #{activestatus,jdbcType=INTEGER},
+      </if>
+      <if test="rootsite != null" >
+        #{rootsite,jdbcType=INTEGER},
+      </if>
+      <if test="branchsite != null" >
+        #{branchsite,jdbcType=INTEGER},
+      </if>
+      <if test="aacid != null" >
+        #{aacid,jdbcType=INTEGER},
+      </if>
+      <if test="zacid != null" >
+        #{zacid,jdbcType=INTEGER},
+      </if>
+      <if test="createuser != null" >
+        #{createuser,jdbcType=VARCHAR},
+      </if>
+      <if test="createtime != null" >
+        #{createtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="asiteid != null" >
+        #{asiteid,jdbcType=INTEGER},
+      </if>
+      <if test="zsiteid != null" >
+        #{zsiteid,jdbcType=INTEGER},
+      </if>
+      <if test="issingle != null" >
+        #{issingle,jdbcType=INTEGER},
+      </if>
+      <if test="cestype != null" >
+        #{cestype,jdbcType=INTEGER},
+      </if>
+      <if test="jobstatus != null" >
+        #{jobstatus,jdbcType=VARCHAR},
+      </if>
+      <if test="clientid != null" >
+        #{clientid,jdbcType=INTEGER},
+      </if>
+      <if test="branchmainsite != null" >
+        #{branchmainsite,jdbcType=INTEGER},
+      </if>
+      <if test="branchprotectsite != null" >
+        #{branchprotectsite,jdbcType=INTEGER},
+      </if>
+      <if test="zmostacids != null" >
+        #{zmostacids,jdbcType=VARCHAR},
+      </if>
+      <if test="amostacids != null" >
+        #{amostacids,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="EtreeInfo" >
+    update serviceinfo
+    <set >
+      <if test="serviceid != null" >
+        serviceId = #{serviceid,jdbcType=INTEGER},
+      </if>
+      <if test="pwid != null" >
+        pwId = #{pwid,jdbcType=INTEGER},
+      </if>
+      <if test="servicetype != null" >
+        serviceType = #{servicetype,jdbcType=INTEGER},
+      </if>
+      <if test="name != null" >
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="axcid != null" >
+        aXcId = #{axcid,jdbcType=INTEGER},
+      </if>
+      <if test="zxcid != null" >
+        zXcId = #{zxcid,jdbcType=INTEGER},
+      </if>
+      <if test="activestatus != null" >
+        activeStatus = #{activestatus,jdbcType=INTEGER},
+      </if>
+      <if test="rootsite != null" >
+        rootSite = #{rootsite,jdbcType=INTEGER},
+      </if>
+      <if test="branchsite != null" >
+        branchSite = #{branchsite,jdbcType=INTEGER},
+      </if>
+      <if test="aacid != null" >
+        aAcId = #{aacid,jdbcType=INTEGER},
+      </if>
+      <if test="zacid != null" >
+        zAcId = #{zacid,jdbcType=INTEGER},
+      </if>
+      <if test="createuser != null" >
+        createUser = #{createuser,jdbcType=VARCHAR},
+      </if>
+      <if test="createtime != null" >
+        createTime = #{createtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="asiteid != null" >
+        aSiteId = #{asiteid,jdbcType=INTEGER},
+      </if>
+      <if test="zsiteid != null" >
+        zSiteId = #{zsiteid,jdbcType=INTEGER},
+      </if>
+      <if test="issingle != null" >
+        isSingle = #{issingle,jdbcType=INTEGER},
+      </if>
+      <if test="cestype != null" >
+        cestype = #{cestype,jdbcType=INTEGER},
+      </if>
+      <if test="jobstatus != null" >
+        jobstatus = #{jobstatus,jdbcType=VARCHAR},
+      </if>
+      <if test="clientid != null" >
+        clientId = #{clientid,jdbcType=INTEGER},
+      </if>
+      <if test="branchmainsite != null" >
+        branchMainSite = #{branchmainsite,jdbcType=INTEGER},
+      </if>
+      <if test="branchprotectsite != null" >
+        branchProtectSite = #{branchprotectsite,jdbcType=INTEGER},
+      </if>
+      <if test="zmostacids != null" >
+        zmostAcIds = #{zmostacids,jdbcType=VARCHAR},
+      </if>
+      <if test="amostacids != null" >
+        amostAcIds = #{amostacids,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="EtreeInfo" >
+    update serviceinfo
+    set serviceId = #{serviceid,jdbcType=INTEGER},
+      pwId = #{pwid,jdbcType=INTEGER},
+      serviceType = #{servicetype,jdbcType=INTEGER},
+      name = #{name,jdbcType=VARCHAR},
+      aXcId = #{axcid,jdbcType=INTEGER},
+      zXcId = #{zxcid,jdbcType=INTEGER},
+      activeStatus = #{activestatus,jdbcType=INTEGER},
+      rootSite = #{rootsite,jdbcType=INTEGER},
+      branchSite = #{branchsite,jdbcType=INTEGER},
+      aAcId = #{aacid,jdbcType=INTEGER},
+      zAcId = #{zacid,jdbcType=INTEGER},
+      createUser = #{createuser,jdbcType=VARCHAR},
+      createTime = #{createtime,jdbcType=TIMESTAMP},
+      aSiteId = #{asiteid,jdbcType=INTEGER},
+      zSiteId = #{zsiteid,jdbcType=INTEGER},
+      isSingle = #{issingle,jdbcType=INTEGER},
+      cestype = #{cestype,jdbcType=INTEGER},
+      jobstatus = #{jobstatus,jdbcType=VARCHAR},
+      clientId = #{clientid,jdbcType=INTEGER},
+      branchMainSite = #{branchmainsite,jdbcType=INTEGER},
+      branchProtectSite = #{branchprotectsite,jdbcType=INTEGER},
+      zmostAcIds = #{zmostacids,jdbcType=VARCHAR},
+      amostAcIds = #{amostacids,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  
+  <select id="queryAllEtree" resultMap="BaseResultMap" parameterType="map" >
+  select * from serviceInfo where serviceType =#{serviceType} and name=#{name}
+  </select>
+  
+   <select id="queryAllEtrees" resultMap="BaseResultMap" parameterType="map" >
+   <if test="serviceType==3">
+   select * from serviceInfo where serviceType =#{serviceType} and name=#{name} and branchSite=#{branchsite}
+   </if>
+   <if test="serviceType==40">
+   select * from serviceInfo where serviceType =#{serviceType} and name=#{name} and (branchMainSite=#{branchsite} or branchProtectSite=#{branchsite} )
+   </if>
+   <if test="serviceType==2">
+   select * from serviceInfo where serviceType =#{serviceType} and name=#{name} and (aSiteId=#{branchsite} or zSIteId=#{branchsite})
+   </if>
+  </select>
+</mapper>

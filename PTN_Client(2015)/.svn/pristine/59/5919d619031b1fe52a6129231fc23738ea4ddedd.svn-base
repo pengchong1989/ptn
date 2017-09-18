@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nms.db.dao.ptn.LabelInfoMapper" >
+  <resultMap id="BaseResultMap" type="LabelInfo" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="lsrId" property="lsrId" jdbcType="INTEGER" />
+    <result column="labelValue" property="labelValue" jdbcType="INTEGER" />
+    <result column="labelStatus" property="labelStatus" jdbcType="INTEGER" />
+    <result column="siteid" property="siteid" jdbcType="INTEGER" />
+    <result column="type" property="type" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, lsrId, labelValue, labelStatus, siteid, type
+  </sql>
+  <select id="quertyByLabelValue" resultType="LabelInfo" parameterType="LabelInfo" >
+    select 
+    <include refid="Base_Column_List" />
+    from labelinfo
+    where labelValue = #{labelValue} and siteid = #{siteid} and type = #{type}
+  </select>
+  <select id="queryByCondition" resultType="LabelInfo" parameterType="LabelInfo" >
+    select 
+    <include refid="Base_Column_List" />
+    from labelinfo where 1=1
+    <if test="siteid > 0">
+    and siteid = #{siteid}
+    </if>
+    <if test="labelValue > 0">
+    and labelValue = #{labelValue}
+    </if> 
+    <if test="type != null and type != ''">
+    and type = #{type}
+    </if>
+  </select>
+  <select id="selectUsedLabel" resultType="LabelInfo" parameterType="LabelInfo" >
+    select 
+    <include refid="Base_Column_List" />
+    from labelinfo where labelStatus = 0
+    <if test="siteid > 0">
+    and siteid = #{siteid}
+    </if>
+    <if test="labelValue > 0">
+    and labelValue = #{labelValue}
+    </if> 
+    <if test="type != null and type != ''">
+    and type = #{type}
+    </if>
+  </select>
+  <select id="queryByLabelvalues" resultType="LabelInfo">
+  	select * from labelinfo where labelStatus=0 and siteid=#{siteId} and type=#{type}
+  	<if test="condition != null and condition.size() > 0">
+  	 and labelValue in
+  	<foreach item="item" index="index" collection="condition" open="(" separator="," close=")">  
+ 	 #{item}  
+ 	</foreach>
+  	</if>
+  </select>
+  <select id="queryByLabelvaluesForCX" resultType="LabelInfo">
+  	select * from labelinfo where labelStatus=0 and siteid=#{siteId} 
+  	<if test="condition != null and condition.size() > 0">
+  	 and labelvalue in
+  	<foreach item="item" index="index" collection="condition" open="(" separator="," close=")">  
+ 	 #{item}  
+ 	</foreach>
+  	</if>
+  </select>
+  <select id="queryLabelListBySite" resultType="java.lang.Integer">
+  <choose>
+  	<when test="manufacturerA == 1 and manufacturerZ == 0">
+	SELECT labelvalue FROM ( SELECT DISTINCT labelvalue FROM labelinfo a where a.siteid=#{aSiteId} AND a.labelStatus =1 UNION ALL  
+    SELECT DISTINCT labelvalue FROM labelinfo z where z.siteid=#{zSiteId} AND z.labelStatus =1 and z.type=#{type}) AS tbl GROUP BY tbl.labelvalue HAVING COUNT(*) = 2
+  	</when>
+  	<when test="manufacturerA == 0 and manufacturerZ == 1">
+	SELECT labelvalue FROM ( SELECT DISTINCT labelvalue FROM labelinfo a where a.siteid=#{aSiteId} AND a.labelStatus =1 and a.type=#{type} UNION ALL  
+    SELECT DISTINCT labelvalue FROM labelinfo z where z.siteid=#{zSiteId} AND z.labelStatus =1) AS tbl GROUP BY tbl.labelvalue HAVING COUNT(*) = 2
+  	</when>
+  	<when test="manufacturerA == 1 and manufacturerZ == 1">
+	SELECT labelvalue FROM ( SELECT DISTINCT labelvalue FROM labelinfo a where a.siteid=#{aSiteId} AND a.labelStatus =1 UNION ALL  
+    SELECT DISTINCT labelvalue FROM labelinfo z where z.siteid=#{zSiteId} AND z.labelStatus =1) AS tbl GROUP BY tbl.labelvalue HAVING COUNT(*) = 2
+  	</when>
+  	<otherwise>
+    SELECT labelvalue FROM ( SELECT DISTINCT labelvalue FROM labelinfo a where a.siteid=#{aSiteId} AND a.labelStatus =1 and a.type=#{type} UNION ALL 
+    SELECT DISTINCT labelvalue FROM labelinfo z where z.siteid=#{zSiteId} AND z.labelStatus =1 and z.type=#{type}) AS tbl GROUP BY tbl.labelvalue HAVING COUNT(*) = 2
+  	</otherwise>
+  </choose>
+  <if test="condition != null and condition.size() > 0">
+  	 and tmp.labelValue not in
+  	<foreach item="item" index="index" collection="condition" open="(" separator="," close=")">  
+ 	 #{item}  
+ 	</foreach>
+  	</if>
+  </select>
+  <select id="quertyAllLabel" resultType="java.lang.Integer" parameterType="LabelInfo">
+  SELECT labelvalue FROM (SELECT DISTINCT labelvalue FROM labelinfo a where a.siteid=#{siteid} AND a.labelStatus =1 and a.type=#{type} UNION ALL  
+  SELECT DISTINCT labelvalue FROM labelinfo z where z.siteid=#{siteid} AND z.labelStatus =1 and z.type=#{type}) AS tbl GROUP BY tbl.labelvalue HAVING COUNT(*) = 2
+  </select>
+  <select id="isUsedLabel" resultType="java.lang.String" parameterType="LabelInfo">
+  select labelvalue from labelinfo a where a.siteid=#{siteid} AND a.labelStatus = 0 and a.labelValue = #{labelValue} and a.type=#{type}
+  </select>
+  <select id="isUsedLabelForCX" resultType="java.lang.String" parameterType="LabelInfo">
+  select labelvalue from labelinfo a where a.siteid=#{siteid} AND a.labelStatus = 0 and a.labelValue = #{labelValue}
+  </select>
+  <select id="queryMaxLabelValue" resultType="java.lang.String" parameterType="LabelInfo">
+ 	 select MAX(labelvalue) as maxlabelvalue from labelinfo where siteid=#{siteid} and type=#{type} and lsrId = 1
+  </select>
+  <delete id="delete" parameterType="java.lang.Integer" >
+    delete from labelinfo
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="LabelInfo" >
+    insert ignore into labelinfo (id, lsrId, labelValue, 
+      labelStatus, siteid, type
+      )
+    values (#{id,jdbcType=INTEGER}, #{lsrId,jdbcType=INTEGER}, #{labelValue,jdbcType=INTEGER}, 
+      #{labelStatus,jdbcType=INTEGER}, #{siteid,jdbcType=INTEGER}, #{type,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertNewLabel" parameterType="LabelInfo" >
+  insert ignore into labelinfo(lsrId,labelValue,labelStatus,siteid,type) 
+  select #{lsrId},#{labelValue},#{labelStatus},#{siteid},#{type} from dual where (#{labelValue},#{siteid},#{type}) not in (select labelValue,siteid,type from labelinfo)
+  </insert>
+  <update id="updateBatch" parameterType="LabelInfo" >
+    update labelinfo
+    <set >
+      labelStatus = #{labelStatus}
+    </set>
+    where siteid = #{siteid} and labelvalue = #{labelValue} and type = #{type}
+  </update>
+  <update id="initAllLabel">
+  update labelinfo set labelStatus=1 where labelStatus=0
+  </update>
+</mapper>

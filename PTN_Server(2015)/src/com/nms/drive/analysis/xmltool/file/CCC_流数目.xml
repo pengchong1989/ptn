@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<driveRoot  xmlns="http://drive.bean.com">		
+	<attribute length="1" description="流ID" value="0" mapping="0"/>
+	<attribute length="1" description="流使能" value="0" mapping="(0)/1=(不使能)/使能"/>
+	<attribute length="4" description="备用" value="16" mapping="(16)"/>
+	<attribute length="2" description="VLAN ID" value="2" mapping="(2)"/>
+	<attribute length="1" description="源MAC地址1" value="0" mapping="(00)"/>
+	<attribute length="1" description="源MAC地址2" value="0" mapping="(00)"/>
+	<attribute length="1" description="源MAC地址3" value="0" mapping="(00)"/>
+	<attribute length="1" description="源MAC地址4" value="0" mapping="(00)"/>
+	<attribute length="1" description="源MAC地址5" value="0" mapping="(00)"/>
+	<attribute length="1" description="源MAC地址6" value="1" mapping="(01)"/>
+	<attribute length="1" description="目的MAC地址1" value="0" mapping="(00)"/>
+	<attribute length="1" description="目的MAC地址2" value="0" mapping="(00)"/>
+	<attribute length="1" description="目的MAC地址3" value="0" mapping="(00)"/>
+	<attribute length="1" description="目的MAC地址4" value="0" mapping="(00)"/>
+	<attribute length="1" description="目的MAC地址5" value="0" mapping="(00)"/>
+	<attribute length="1" description="目的MAC地址6" value="1" mapping="(01)"/>
+	<attribute length="1" description="802.1P" value="1" mapping="(1)"/>
+	<attribute length="1" description="源IP地址1" value="0" mapping=""/>
+	<attribute length="1" description="源IP地址2" value="0" mapping=""/>
+	<attribute length="1" description="源IP地址3" value="10" mapping="(A)"/>
+	<attribute length="1" description="源IP地址4" value="26" mapping="(1A)"/>
+	<attribute length="1" description="源IP地址5" value="1" mapping="(1)"/>
+	<attribute length="1" description="源IP地址6" value="254" mapping="(FE)"/>
+	<attribute length="1" description="目的IP地址1" value="0" mapping=""/>
+	<attribute length="1" description="目的IP地址2" value="0" mapping=""/>							
+	<attribute length="1" description="目的IP地址3" value="10" mapping="(A)"/>
+	<attribute length="1" description="目的IP地址4" value="26" mapping="(1A)"/>
+	<attribute length="1" description="目的IP地址5" value="1" mapping="(1)"/>
+	<attribute length="1" description="目的IP地址6" value="254" mapping="(FE)"/>
+	<attribute length="1" description="IP DSCP" value="0" mapping="(00)-63"/>
+	<attribute length="2" description="源TCP/UDP端口号" value="0" mapping="0-65535"/>
+	<attribute length="2" description="宿TCP/UDP端口号" value="0" mapping="0-65535"/>
+	<attribute length="1" description="端口类型" value="0" mapping="0/1/2=无/TCP/UDP"/>
+	<attribute length="1" description="IPTOS" value="0" mapping="0-7"/>
+	<attribute length="1" description="(流)模式" value="0" mapping="(0)/1/2/=(不使能)/trTCM/Modified trTCM"/>
+	<attribute length="2" description="(流)CIR" value="0" mapping="(0)"/>
+	<attribute length="2" description="(流)PIR" value="100" mapping="(100)"/>
+	<attribute length="1" description="(流)CM" value="0" mapping="(0)/1=(color-blind)/color-aware"/>
+	<attribute length="3" description="(流)CBS" value="0" mapping="(0)"/>
+	<attribute length="3" description="(流)PBS" value="0" mapping="(0)"/>
+	<attribute length="1" description="策略" value="0" mapping="(0)/1=(指配PHB)/基于用户优先级到PHB映射"/>
+	<attribute length="1" description="指配PHB" value="0" mapping="(0)/1/2/3/4/5/6/7=(BE)/AF1/AF2/AF3/AF4/EF/CS6/CS7"/>
+	<attribute length="6" description="备用" value="0" mapping="(00)"/>
+</driveRoot>

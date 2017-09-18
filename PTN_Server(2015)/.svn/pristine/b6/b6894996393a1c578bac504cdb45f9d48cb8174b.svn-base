@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nms.db.dao.ptn.path.GroupSpreadInfoMapper" >
+  <resultMap id="BaseResultMap" type="GroupSpreadInfo" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="smId" property="smId" jdbcType="INTEGER" />
+    <result column="vsId" property="vpls_vs" jdbcType="INTEGER" />
+    <result column="portChoose" property="portChoice" jdbcType="VARCHAR" />
+    <result column="macAddress" property="macAddress" jdbcType="VARCHAR" />
+    <result column="siteId" property="siteId" jdbcType="INTEGER" />
+  </resultMap>
+  
+  <sql id="Base_Column_List" >
+    id, smId, vsId, portChoose, macAddress, siteId
+  </sql>
+
+  <delete id="delete" parameterType="java.lang.Integer" >
+    delete from group_spread where id=#{id}
+  </delete>
+  
+  <insert id="insert" parameterType="GroupSpreadInfo"  useGeneratedKeys="true" keyProperty="id">
+    insert into group_spread(smId, vsId, portChoose, macAddress, siteId) values(#{smId},#{vpls_vs},#{portChoice},#{macAddress},#{siteId})
+  </insert>
+ 
+  <update id="update" parameterType="GroupSpreadInfo" >
+    update group_spread set smId=#{smId}, vsId=#{vpls_vs}, portChoose=#{portChoice}, macAddress=#{macAddress}, siteId=#{siteId} where id=#{id}
+  </update>
+  
+   <select id="queryByCondition" resultMap="BaseResultMap" parameterType="GroupSpreadInfo" >
+    select 
+    <include refid="Base_Column_List" />
+    from group_spread where 1=1
+    <if test="id>0"> and id=#{id}</if>
+    <if test="smId>0"> and smId=#{smId}</if>
+    <if test="siteId>0"> and siteId=#{siteId}</if>
+			
+  </select>
+</mapper>

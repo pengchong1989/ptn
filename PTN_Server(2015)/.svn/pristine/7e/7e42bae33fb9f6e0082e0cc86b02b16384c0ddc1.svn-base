@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nms.db.dao.ptn.path.StaticUnicastInfoMapper" >
+  <resultMap id="BaseResultMap" type="StaticUnicastInfo" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="suId" property="suId" jdbcType="INTEGER" />
+    <result column="vsId" property="vplsVs" jdbcType="INTEGER" />
+    <result column="singlePortChoose" property="portChoice" jdbcType="INTEGER" />
+    <result column="macAddress" property="macAddress" jdbcType="VARCHAR" />
+    <result column="siteId" property="siteId" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, suId, vsId, singlePortChoose, macAddress, siteId
+  </sql>
+       
+ <select id="selectByStaticUniInfo" parameterType="StaticUnicastInfo" resultMap="BaseResultMap">
+   select * from single_spread where siteId=#{siteId} and vsId=#{vplsVs}
+ </select>
+   
+ <select id="queryByCondition" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+   SELECT * FROM `single_spread` WHERE siteId=#{siteId}
+ </select>
+ 
+ <update id="update" parameterType="StaticUnicastInfo">
+     update single_spread set vsId=#{vplsVs},singlePortChoose=#{portChoice},macAddress=#{macAddress} ,siteId=#{siteId} where suId=#{suId}
+ </update>
+ 
+ <insert id="insert" parameterType="StaticUnicastInfo"  useGeneratedKeys="true" keyProperty="id">
+   insert into single_spread
+   (suId,vsId,singlePortChoose,macAddress,siteId)
+    values(#{suId},#{vplsVs},#{portChoice},#{macAddress},#{siteId})
+ </insert>
+ 
+ <delete id="delete" parameterType="java.lang.Integer">
+   delete from single_spread where id=#{id}
+ </delete>
+ 
+ <select id="queryByConditions" parameterType="StaticUnicastInfo" resultMap="BaseResultMap">
+  SELECT * FROM single_spread WHERE siteId=#{siteId}
+  <if test="suId>0"> and suId=#{suId}</if>					
+ </select>
+ 
+  <delete id="deleteBySiteId" parameterType="java.lang.Integer">
+   delete from single_spread where siteId=#{siteId}
+ </delete>
+ 
+  <select id="selectNameByXcId" parameterType="map" resultType="java.lang.String">
+  select name FROM serviceinfo WHERE (((aXcId=#{xcId} AND aSiteId=#{siteId}) or (zXcId=#{xcId} AND zSiteId=#{siteId})) AND serviceType=2)
+  OR (((aXcId=#{xcId} AND rootSite=#{siteId}) or (zXcId=#{xcId} AND branchSite=#{siteId})) AND serviceType=3)
+ </select>
+</mapper>

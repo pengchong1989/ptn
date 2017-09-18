@@ -1,0 +1,149 @@
+package com.nms.model.ptn.qos;
+
+import java.sql.Connection;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.nms.db.bean.ptn.qos.QosMappingAttr;
+import com.nms.db.bean.ptn.qos.QosMappingMode;
+import com.nms.db.dao.ptn.qos.QosMappingTemplateDao;
+import com.nms.db.enums.QosTemplateTypeEnum;
+import com.nms.model.util.ObjectService;
+import com.nms.ui.manager.ExceptionManage;
+
+public class QosMappingTemplateService extends ObjectService{
+	
+	public void setConnection(Connection connection) {
+		super.connection = connection;
+	}
+
+	public void setPtnuser(String ptnuser) {
+		super.ptnuser = ptnuser;
+	}
+	
+	private QosMappingTemplateDao qosMappingTemplateDao = new QosMappingTemplateDao();
+	
+	/**
+	 * 更新或新增QosMappingMode
+	 * @param qosMappingModeList
+	 * @return
+	 * @throws Exception
+	 */
+	public int saveOrUpdate(List<QosMappingAttr> qosMappingAttrList)throws Exception{
+		
+		int groupid = 0;
+		try {
+			connection.setAutoCommit(false);
+			int count = 0;
+			List<QosMappingAttr> qosMappingAttrSel ;
+			QosMappingAttr qosMappingAttrBusi = qosMappingAttrList.get(0);
+			if(qosMappingAttrBusi.getGroupid()>0){
+				groupid = qosMappingAttrBusi.getGroupid();
+				for(QosMappingAttr qosMappingAttr : qosMappingAttrList){
+					qosMappingTemplateDao.update(qosMappingAttr, connection);
+				}
+			}else{
+				for(QosMappingAttr qosMappingAttr:qosMappingAttrList){
+					qosMappingAttrSel = this.queryByCondition(qosMappingAttr);
+					if(1==qosMappingAttrSel.size()){
+						count++;
+					}
+				}
+				if(count!=qosMappingAttrList.size()){
+					groupid = qosMappingTemplateDao.queryMaxGroupId(connection)+1;
+					for(QosMappingAttr qosMappingAttr : qosMappingAttrList){
+						qosMappingAttr.setGroupid(groupid);
+						qosMappingTemplateDao.insert(qosMappingAttr, connection);
+					}
+				}
+			}
+			if(!connection.getAutoCommit()){
+				connection.commit();
+			}
+		} catch (Exception e) {
+			connection.rollback();
+			ExceptionManage.dispose(e, getClass());
+		}finally{
+			connection.setAutoCommit(true);
+		}
+		return groupid;
+	}
+	
+	/**
+	 * 根据id批量删除
+	 * @param idList
+	 * @return
+	 * @throws Exception
+	 */
+	public int delete(int groupid) throws Exception{
+		return	qosMappingTemplateDao.delete(groupid, connection);
+	}
+	
+	
+	/**
+	 * 条件查询qos模板
+	 * @param qosMappingMode
+	 * @return
+	 * @throws Exception
+	 */
+	public List<QosMappingAttr> queryByCondition(QosMappingAttr qosMappingAttr) throws Exception{
+		List<QosMappingAttr> qosMappingAttrList = null;
+		qosMappingAttrList = qosMappingTemplateDao.queryByCondition(qosMappingAttr, connection);
+		return qosMappingAttrList;
+	}
+	
+	/**
+	 * 条件查询qos模板
+	 * @param qosMappingMode
+	 * @return
+	 * @throws Exception
+	 */
+	public List<QosMappingMode> refresh(QosMappingAttr condition) throws Exception{
+		List<QosMappingAttr> qosMappingAttrList = null;
+		qosMappingAttrList = qosMappingTemplateDao.refresh(condition,connection);
+		QosMappingMode qosMappingMode;
+		List<QosMappingMode> qosMappingModeList = new ArrayList<QosMappingMode>();
+		for(QosMappingAttr qosMappingAttr:qosMappingAttrList){
+			qosMappingMode = new QosMappingMode();
+			qosMappingMode.setName(qosMappingAttr.getName());
+			qosMappingMode.setType(qosMappingAttr.getMappingType());
+			qosMappingMode.setTypeName(QosTemplateTypeEnum.from(qosMappingAttr.getMappingType()).toString());
+			qosMappingAttr.setId(0);
+			qosMappingMode.setQosMappingAttrList(this.getExpInfoDate(qosMappingAttr));
+			qosMappingModeList.add(qosMappingMode);
+		}
+		return qosMappingModeList;
+	}
+	
+	/**
+	 * 核对数据
+	 * @param qosMappingMode
+	 * @return
+	 * @throws Exception
+	 */
+	public List<QosMappingAttr> getExpInfoDate(QosMappingAttr qosMappingAttr) throws Exception{
+		List<QosMappingAttr> qosMappingAttrList = null;
+		qosMappingAttrList = qosMappingTemplateDao.getExpInfoDate(qosMappingAttr, connection);
+		return qosMappingAttrList;
+	}
+	
+	/**
+	 * 名字是否重复
+	 * @param afterName
+	 * @param beforeName
+	 * @return
+	 */
+	public boolean nameRepetition(String afterName, String beforeName, int type) {
+		int result = 0;
+		try {
+			result = this.qosMappingTemplateDao.query_name(afterName, beforeName, type,connection);
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		}
+		if(0== result){
+			return false;
+		}else{
+			return true;
+		}
+	}
+}

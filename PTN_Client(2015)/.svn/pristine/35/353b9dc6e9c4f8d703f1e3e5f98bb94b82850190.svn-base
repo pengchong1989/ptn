@@ -1,0 +1,19 @@
+package com.nms.db.dao.system.loginlog;
+
+import com.nms.db.bean.system.loginlog.UserLock;
+
+
+
+public interface UserLockMapper {
+    int deleteByPrimaryKey(Integer id);
+
+    int insert(UserLock record);
+
+    int insertSelective(UserLock record);
+
+    UserLock selectByPrimaryKey(Integer id);
+
+    int updateByPrimaryKeySelective(UserLock record);
+
+    int updateByPrimaryKey(UserLock record);
+}

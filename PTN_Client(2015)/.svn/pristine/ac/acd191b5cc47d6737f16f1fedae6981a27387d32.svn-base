@@ -1,0 +1,386 @@
+package com.nms.db.dao.client;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.nms.db.bean.client.Client;
+import com.nms.db.fac.f.DButil;
+import com.nms.ui.manager.ExceptionManage;
+/**
+ * 客户信息业务关联Dao类
+ * @author dzy
+ *
+ */
+public class ClientDao {
+	
+	/**
+	 * 刷新
+	 * @param connection 
+	 * @return 
+	 * 			通过结果返回
+	 * @throws Exception
+	 */
+	public List<Client> select(Connection connection) throws Exception {
+	
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		String sql = null;
+		Client client=null;
+		List<Client> clientList = null ;
+		ResultSet resultSet = null;
+		PreparedStatement preparedStatement = null;
+
+		try {
+			clientList = new ArrayList<Client>();
+			
+			sql = "select id,name,adress,phoneNumber,linkMan,area,grade,remark from client where 1=1 ";
+			
+			
+			preparedStatement = connection.prepareStatement(sql);
+			resultSet = preparedStatement.executeQuery();
+			while(resultSet.next()){
+				client = new Client();
+				client.setId(resultSet.getInt("id"));
+				client.setName((resultSet.getString("name")));
+				client.setAdress((resultSet.getString("adress")));
+				client.setPhoneNumber(resultSet.getString("phoneNumber"));
+				client.setLinkMan(resultSet.getString("linkMan"));
+				client.setGrade(resultSet.getString("grade"));
+				client.setArea(resultSet.getString("area"));
+				client.setRemark(resultSet.getString("remark"));
+				clientList.add(client);
+			} 
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (resultSet != null) {
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				resultSet = null;
+			}
+
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+			client=null;
+			sql = null;
+		}
+
+		return clientList;
+	}
+	
+	/**
+	 * 新增
+	 * @param clientCondition  新增类
+	 * @param connection
+	 * @return result
+	 * 		返回 新增的 主键id
+	 * @throws Exception
+	 */
+	public int insert(Client clientCondition, Connection connection) throws Exception {
+		if (null == clientCondition) {
+			throw new Exception("clientCondition is null");
+		}
+
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		int result = 0;
+		ResultSet resultSet = null;
+		try {
+			sql = "insert into `client`(name,adress,phoneNumber,linkMan,area,grade,remark) values(?,?,?,?,?,?,?)";
+			preparedStatement = connection.prepareStatement(sql);
+			preparedStatement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+			preparedStatement.setString(1, clientCondition.getName());
+			preparedStatement.setString(2, clientCondition.getAdress());
+			preparedStatement.setString(3, clientCondition.getPhoneNumber());
+			preparedStatement.setString(4, clientCondition.getLinkMan());
+			preparedStatement.setString(5, clientCondition.getArea());
+			preparedStatement.setString(6, clientCondition.getGrade());
+			preparedStatement.setString(7, clientCondition.getRemark());
+			 preparedStatement.executeUpdate();
+			resultSet = preparedStatement.getGeneratedKeys();
+			if (resultSet.next()) {
+				result = resultSet.getInt(1);
+			}
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			
+			if (resultSet != null) {
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				resultSet = null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+		return result;
+	}
+	
+	/**
+	 * 修改
+	 * @param clientCondition  修改的客户信息
+	 * @param connection
+	 * @return
+	 * @throws Exception
+	 */
+	public int update(Client clientCondition, Connection connection) throws Exception {
+		if (null == clientCondition) {
+			throw new Exception("clientCondition is null");
+		}
+
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		int result = 0;
+
+		try {
+			sql = "update client set name=?,adress=?,phoneNumber=?,linkMan=?,area=?,grade=?,remark=? where id =? ";
+			preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.setString(1, clientCondition.getName());
+			preparedStatement.setString(2, clientCondition.getAdress());
+			preparedStatement.setString(3, clientCondition.getPhoneNumber());
+			preparedStatement.setString(4, clientCondition.getLinkMan());
+			preparedStatement.setString(5, clientCondition.getArea());
+			preparedStatement.setString(6, clientCondition.getGrade());
+			preparedStatement.setString(7, clientCondition.getRemark());
+			preparedStatement.setInt(8, clientCondition.getId());
+			result = preparedStatement.executeUpdate();
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+
+			sql = null;
+		}
+
+		return result;
+	}
+	
+	/**
+	 *  删除
+	 * @param clientCondition  删除类
+	 * @param connection
+	 * @return
+	 * @throws Exception
+	 */
+	public int delete(Client clientCondition, Connection connection) throws Exception {
+		if (null == clientCondition) {
+			throw new Exception("clientCondition is null");
+		}
+
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		int result = 0;
+
+		try {
+			sql = "delete from client where id = ? ";
+			preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.setInt(1, clientCondition.getId());
+			result = preparedStatement.executeUpdate();
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+
+			sql = null;
+		}
+
+		return result;	
+	}
+	
+	/**
+	 * 查询名字
+	 * @param afterName
+	 * 			          更改的名字
+	 * @param beforeName
+	 * 				原名字
+	 * @param connection
+	 * @return
+	 * @throws Exception
+	 */
+	public int query_name(String afterName, String beforeName, 
+			Connection connection) throws Exception {
+		if (null == afterName) {
+			throw new Exception("afterName is null");
+		}
+
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		String sql = null;
+		List<Object> paramList = new ArrayList<Object>();
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+		int result = 0;
+		try {
+			sql = " select count(*) as selectcount from client where name=? ";
+			paramList.add(afterName);
+			if (null != beforeName) {
+				sql += " and Name!=?";
+				paramList.add(beforeName);
+			}
+			preparedStatement = (PreparedStatement) connection.prepareStatement(sql);
+			for (int i = 0; i < paramList.size(); i++) {
+				preparedStatement.setObject(i + 1, paramList.get(i));
+			}
+			resultSet = preparedStatement.executeQuery();
+			if (resultSet.next()) {
+				result = resultSet.getInt("selectcount");
+			}
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (resultSet != null) {
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				resultSet = null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+			paramList = null;
+			sql = null;
+		}
+
+		return result;
+	}
+
+	/**
+	 * 根据条件查询查询
+	 * @param client
+	 * 				客户对象
+	 * @param connection
+	 * @return
+	 * @throws Exception
+	 */
+	public List<Client> select(Client client, Connection connection) throws Exception {
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+		if (null == client) {
+			throw new Exception("clientID is null");
+		}
+
+		String sql = null;
+		List<Client> clientList = null ;
+		ResultSet resultSet = null;
+		PreparedStatement preparedStatement = null;
+		sql = "select id ,name,adress,phoneNumber,linkMan,area,grade,remark from client where 1=1 ";
+		try {
+			clientList = new ArrayList<Client>();
+			if(client.getId()>0){		
+				sql+=" and id= "+client.getId();
+			}
+			if(null!=client.getName()&&!"".equals(client.getName())){
+				sql+=" and name="+DButil.toSingleMark(client.getName());
+			}
+			preparedStatement = connection.prepareStatement(sql);
+			resultSet = preparedStatement.executeQuery();
+			while(resultSet.next()){
+				client = new Client();
+				client.setId(resultSet.getInt("id"));
+				client.setName((resultSet.getString("name")));
+				client.setAdress((resultSet.getString("adress")));
+				client.setPhoneNumber(resultSet.getString("phoneNumber"));
+				client.setLinkMan(resultSet.getString("linkMan"));
+				client.setGrade(resultSet.getString("grade"));
+				client.setArea(resultSet.getString("area"));
+				client.setRemark(resultSet.getString("remark"));
+				clientList.add(client);
+			} 
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			
+
+			if (resultSet != null) {
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				resultSet = null;
+			}
+			
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+			client=null;
+			sql = null;
+		}
+
+		return clientList;
+	}
+
+}

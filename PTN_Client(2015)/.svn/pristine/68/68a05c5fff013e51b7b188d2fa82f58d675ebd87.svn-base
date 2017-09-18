@@ -1,0 +1,22 @@
+package com.nms.model.ptn.clock;
+
+import org.apache.ibatis.session.SqlSession;
+
+import com.nms.db.dao.ptn.clock.ClockSourceMapper;
+import com.nms.model.util.ObjectService_Mybatis;
+
+public class FrequencyClockManageService_MB extends ObjectService_Mybatis {
+	private ClockSourceMapper mapper = null;
+	
+	public void setPtnuser(String ptnuser) {
+		super.ptnuser = ptnuser;
+	}
+
+	public void setSqlSession(SqlSession sqlSession) {
+		super.sqlSession = sqlSession;
+	}
+	
+	public void setMapper(ClockSourceMapper mapper) {
+		this.mapper = mapper;
+	}
+}

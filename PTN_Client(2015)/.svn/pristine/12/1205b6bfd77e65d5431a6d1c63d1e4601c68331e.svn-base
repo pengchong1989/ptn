@@ -1,0 +1,1111 @@
+package com.nms.db.dao.ptn.path.ces;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.nms.db.bean.ptn.path.ces.CesInfo;
+import com.nms.db.enums.EServiceType;
+import com.nms.db.fac.f.DButil;
+import com.nms.ui.manager.DateUtil;
+import com.nms.ui.manager.ExceptionManage;
+
+public class CesInfoDao {
+
+	/**
+	 * 根据名称查询
+	 */
+	private final String SELECT_BY_NAME = "select count(*) as selectcount from serviceinfo where serviceType=0 and (aSiteId = ? or zSiteId = ?) and name=?";
+
+	/**
+	 * 新增cesinfo
+	 * 
+	 * @param cesinfo
+	 *            实体
+	 * @param connection
+	 *            数据库连接
+	 * @return 插入的记录数
+	 * @throws Exception
+	 */
+	public int insert(CesInfo cesInfo, Connection connection) throws Exception {
+		if (null == cesInfo) {
+			throw new Exception("cesInfo is null");
+		}
+
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+		int result = 0;
+		try {
+			cesInfo.setCreateTime(DateUtil.getDate(DateUtil.FULLTIME));
+
+			sql = "insert into serviceinfo(serviceId,pwId,serviceType,name,aXcId,zXcId,activeStatus,aAcId,zAcId,createUser,createTime,aSiteId,zSiteId,issingle,cestype,jobStatus,clientId) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+			preparedStatement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+			preparedStatement.setInt(1, cesInfo.getServiceId());
+			preparedStatement.setInt(2, cesInfo.getPwId());
+			preparedStatement.setInt(3, cesInfo.getServiceType());
+			preparedStatement.setString(4, cesInfo.getName());
+			preparedStatement.setInt(5, cesInfo.getAxcId());
+			preparedStatement.setInt(6, cesInfo.getZxcId());
+			preparedStatement.setInt(7, cesInfo.getActiveStatus());
+			preparedStatement.setInt(8, cesInfo.getaAcId());
+			preparedStatement.setInt(9, cesInfo.getzAcId());
+			preparedStatement.setString(10, cesInfo.getCreateUser());
+			preparedStatement.setString(11, cesInfo.getCreateTime());
+			preparedStatement.setInt(12, cesInfo.getaSiteId());
+			preparedStatement.setInt(13, cesInfo.getzSiteId());
+			preparedStatement.setInt(14, cesInfo.getIsSingle());
+			preparedStatement.setInt(15, cesInfo.getCestype());
+			preparedStatement.setString(16, cesInfo.getJobStatus());
+			preparedStatement.setInt(17, cesInfo.getClientId());
+			preparedStatement.executeUpdate();
+			resultSet = preparedStatement.getGeneratedKeys();
+			if (resultSet.next()) {
+				result = resultSet.getInt(1);
+			}
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (resultSet != null) {
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				resultSet = null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+
+			sql = null;
+		}
+
+		return result;
+	}
+
+	/**
+	 * 修改cesinfo
+	 * 
+	 * @param cesinfo
+	 *            实体
+	 * @param connection
+	 *            数据库连接
+	 * @return 修改的记录数
+	 * @throws Exception
+	 */
+	public int update(CesInfo cesInfo, Connection connection) throws Exception {
+		if (null == cesInfo) {
+			throw new Exception("cesInfo is null");
+		}
+
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		int result = 0;
+		try {
+			sql = "update serviceinfo set serviceId=?,pwId=?,name=?,aXcId=?,zXcId=?,activeStatus=?, createUser=?, createTime=?, aAcId=?, zAcId=?, aSiteId=?, zSiteId=?,jobstatus=? ,isSingle=? ,clientId = ? where id=? and serviceType=0";
+
+			preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.setInt(1, cesInfo.getServiceId());
+			preparedStatement.setInt(2, cesInfo.getPwId());
+			preparedStatement.setString(3, cesInfo.getName());
+			preparedStatement.setInt(4, cesInfo.getAxcId());
+			preparedStatement.setInt(5, cesInfo.getZxcId());
+			preparedStatement.setInt(6, cesInfo.getActiveStatus());
+			preparedStatement.setString(7, cesInfo.getCreateUser());
+			preparedStatement.setString(8, cesInfo.getCreateTime());
+			preparedStatement.setInt(9, cesInfo.getaAcId());
+			preparedStatement.setInt(10, cesInfo.getzAcId());
+			preparedStatement.setInt(11, cesInfo.getaSiteId());
+			preparedStatement.setInt(12, cesInfo.getzSiteId());
+			preparedStatement.setString(13, cesInfo.getJobStatus());
+			preparedStatement.setInt(14, cesInfo.getIsSingle());
+			preparedStatement.setInt(15, cesInfo.getClientId());
+			preparedStatement.setInt(16, cesInfo.getId());
+
+			result = preparedStatement.executeUpdate();
+
+		} catch (Exception e) {
+			System.out.println("sql= error");
+			throw e;
+		} finally {
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+
+		return result;
+	}
+
+	/**
+	 * 通过主键删除cesinfo
+	 * 
+	 * @param id
+	 *            主键
+	 * @param connection
+	 *            数据库连接
+	 * @return 删除的记录数
+	 * @throws Exception
+	 */
+	public int delete(int cesId, Connection connection) throws Exception {
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		int result = 0;
+
+		try {
+
+			sql = "delete from serviceinfo where serviceType=0 and id = " + cesId;
+			preparedStatement = connection.prepareStatement(sql);
+			result = preparedStatement.executeUpdate();
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+
+		return result;
+	}
+
+	/**
+	 * 通过条件查询
+	 * 
+	 * @param cesinfoCondition
+	 *            查询条件
+	 * @param connection
+	 *            数据库连接
+	 * @return List<PwInfo>集合
+	 * @throws Exception
+	 */
+	public List<CesInfo> queryByCondition(CesInfo cesinfoCondition, Connection connection) throws Exception {
+
+		if (null == cesinfoCondition) {
+			throw new Exception("cesinfoCondition is null");
+		}
+
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+		String sql = null;
+		List<CesInfo> cesInfos = null;
+		try {
+			sql = "SELECT s.jobstatus,s.cestype,s.issingle , s.id, s.serviceId, s.pwId, s.serviceType, s.name, s.aXcId, s.zXcId, s.aAcId, s.zAcId, s.activeStatus,s.aSiteId,s.zSiteId,s.createTime,s.createUser,sa.CellId AS showaSiteName,sz.CellId AS showzSiteName, s.clientId FROM serviceinfo s, pwinfo p,site_inst sa,site_inst sz WHERE s.pwId = p.pwId and p.aSiteId = sa.site_inst_id and p.zSiteId = sz.site_inst_id and serviceType=0 and s.issingle=0";
+			if (cesinfoCondition.getId() > 0) {
+				sql += " and s.id=" + cesinfoCondition.getId();
+			}
+			if (cesinfoCondition.getPwId() > 0) {
+				sql += " and  s.pwId=" + cesinfoCondition.getPwId();
+			}
+			if (cesinfoCondition.getActiveStatus() != 0) {
+				sql += " and s.activeStatus=" + cesinfoCondition.getActiveStatus();
+			}
+			if (cesinfoCondition.getZxcId() != 0) {
+				sql += " and s.zXcId=" + cesinfoCondition.getZxcId();
+			}
+			if (cesinfoCondition.getAxcId() != 0) {
+				sql += " and s.aXcId=" + cesinfoCondition.getAxcId();
+			}
+			if (cesinfoCondition.getServiceId() > 0) {
+				sql += " and s.serviceId=" + cesinfoCondition.getServiceId();
+			}
+			cesInfos = this.excuteQuery_join(connection, sql, null);
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			sql = null;
+		}
+		return cesInfos;
+	}
+
+	/**
+	 * 通过条件查询
+	 * 
+	 * @param cesinfoCondition
+	 *            查询条件
+	 * @param connection
+	 *            数据库连接
+	 * @return List<PwInfo>集合
+	 * @throws Exception
+	 */
+	public List<CesInfo> queryByCondition_nojoin(CesInfo cesinfoCondition, Connection connection) throws Exception {
+
+		if (null == cesinfoCondition) {
+			throw new Exception("cesinfoCondition is null");
+		}
+
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+		String sql = null;
+		List<CesInfo> cesInfos = null;
+		PreparedStatement preparedStatement = null;
+		try {
+			sql = "SELECT * from serviceinfo s where  serviceType=0 ";
+			if (cesinfoCondition.getId() > 0) {
+				sql += " and s.id=" + cesinfoCondition.getId();
+			}
+			if (cesinfoCondition.getPwId() > 0) {
+				sql += " and  s.pwId=" + cesinfoCondition.getPwId();
+			}
+			if (cesinfoCondition.getActiveStatus() != 0) {
+				sql += " and s.activeStatus=" + cesinfoCondition.getActiveStatus();
+			}
+			if (cesinfoCondition.getZxcId() != 0) {
+				sql += " and s.zXcId=" + cesinfoCondition.getZxcId();
+			}
+			if (cesinfoCondition.getAxcId() != 0) {
+				sql += " and s.aXcId=" + cesinfoCondition.getAxcId();
+			}
+			if (cesinfoCondition.getaAcId() != 0) {
+				sql += " and s.aAcId=" + cesinfoCondition.getaAcId();
+			}
+			if (cesinfoCondition.getzAcId() != 0) {
+				sql += " and s.zAcId=" + cesinfoCondition.getzAcId();
+			}
+			if (cesinfoCondition.getaSiteId() != 0) {
+				sql += " and s.aSiteId= " + cesinfoCondition.getaSiteId();
+			}
+			if (cesinfoCondition.getzSiteId() != 0) {
+				sql += " and s.zSiteId= " + cesinfoCondition.getzSiteId();
+			}
+			if (cesinfoCondition.getCreateTime() != null && !cesinfoCondition.getCreateTime().equals("")) {
+				sql += " and s.createTime= " + DButil.toSingleMark(cesinfoCondition.getCreateTime());
+			}
+			if (cesinfoCondition.getCreateUser() != null && !cesinfoCondition.getCreateUser().equals("")) {
+				sql += " and s.createUser= " + DButil.toSingleMark(cesinfoCondition.getCreateUser());
+			}
+			if (cesinfoCondition.getClientId() != 0) {
+				sql += " and s.clientId= " + cesinfoCondition.getClientId();
+			}
+			preparedStatement = connection.prepareStatement(sql);
+			cesInfos = this.excuteQuery(preparedStatement);
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+		return cesInfos;
+	}
+
+	/**
+	 * 通过条件查询
+	 * 
+	 * @param cesinfoCondition
+	 *            查询条件
+	 * @param connection
+	 *            数据库连接
+	 * @return List<PwInfo>集合
+	 * @throws Exception
+	 */
+	public CesInfo queryByIdCondition(CesInfo cesinfoCondition, Connection connection) throws Exception {
+
+		if (null == cesinfoCondition) {
+			throw new Exception("cesinfoCondition is null");
+		}
+
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+		String sql = null;
+		CesInfo cesInfo = null;
+		List<CesInfo> cesInfoList = null;
+		try {
+			sql = "SELECT s.jobstatus,s.cestype,s.issingle , s.id, s.serviceId, s.pwId, s.serviceType, s.name, s.aXcId, s.zXcId, s.aAcId, s.zAcId, s.activeStatus,s.aSiteId,s.zSiteId,s.createTime,s.createUser,sa.CellId AS showaSiteName,sz.CellId AS showzSiteName ,s.clientId as clientId FROM serviceinfo s, pwinfo p,site_inst sa,site_inst sz WHERE s.pwId = p.pwId and p.aSiteId = sa.site_inst_id and p.zSiteId = sz.site_inst_id and serviceType=0 and s.issingle=0";
+			if (cesinfoCondition.getId() > 0) {
+				sql += " and s.id=" + cesinfoCondition.getId();
+			}
+			cesInfoList = this.excuteQuery_join(connection, sql, null);
+			if (cesInfoList != null && cesInfoList.size() > 0) {
+				cesInfo = cesInfoList.get(0);
+			}
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			sql = null;
+		}
+		return cesInfo;
+
+	}
+
+	/**
+	 * 查询单网元下的所有ces
+	 * 
+	 * @param siteId
+	 * @param connection
+	 * @return
+	 * @throws Exception
+	 */
+	public List<CesInfo> queryNodeBySite(int siteId, Connection connection) throws Exception {
+
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		String sql = null;
+		List<CesInfo> cesInfos = null;
+		PreparedStatement preparedStatement = null;
+		try {
+
+			sql = "select * from serviceinfo where serviceType=0 and (asiteid=? or zsiteid=?)";
+			preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.setInt(1, siteId);
+			preparedStatement.setInt(2, siteId);
+
+			cesInfos = this.excuteQuery(preparedStatement);
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+		return cesInfos;
+	}
+
+	/**
+	 * 执行查询语句
+	 * 
+	 * @param connection
+	 *            数据库连接
+	 * @param sql
+	 *            sql语句
+	 * @return 查询集合
+	 * @throws Exception
+	 */
+	private List<CesInfo> excuteQuery_join(Connection connection, String sql, List<Object> parameterList) throws Exception {
+		List<CesInfo> cesInfoList = null;
+		ResultSet resultSet = null;
+		PreparedStatement preparedStatement = null;
+		CesInfo cesInfo = null;
+		try {
+			cesInfoList = new ArrayList<CesInfo>();
+			preparedStatement = connection.prepareStatement(sql);
+
+			if (null != parameterList && parameterList.size() > 0) {
+				for (int i = 0; i < parameterList.size(); i++) {
+					preparedStatement.setObject(i + 1, parameterList.get(i));
+				}
+			}
+
+			resultSet = preparedStatement.executeQuery();
+			while (resultSet.next()) {
+				cesInfo = new CesInfo();
+				cesInfo.setId(resultSet.getInt("id"));
+				cesInfo.setServiceId(resultSet.getInt("serviceId"));
+				cesInfo.setPwId(resultSet.getInt("pwId"));
+				cesInfo.setServiceType(resultSet.getInt("serviceType"));
+				cesInfo.setName(resultSet.getString("name"));
+				cesInfo.setAxcId(resultSet.getInt("aXcId"));
+				cesInfo.setZxcId(resultSet.getInt("zXcId"));
+				cesInfo.setaAcId(resultSet.getInt("aAcId"));
+				cesInfo.setzAcId(resultSet.getInt("zAcId"));
+				cesInfo.setaSiteId(resultSet.getInt("aSiteId"));
+				cesInfo.setzSiteId(resultSet.getInt("zSiteId"));
+				cesInfo.setASiteName(resultSet.getString("showaSiteName"));
+				cesInfo.setZSiteName(resultSet.getString("showzSiteName"));
+				cesInfo.setCreateTime(DateUtil.strDate(resultSet.getString("createTime"), DateUtil.FULLTIME));
+				cesInfo.setCreateUser(resultSet.getString("createUser"));
+				cesInfo.setIsSingle(resultSet.getInt("issingle"));
+				cesInfo.setCestype(resultSet.getInt("cestype"));
+				cesInfo.setJobStatus(resultSet.getString("jobStatus"));
+				cesInfo.setClientId(resultSet.getInt("clientId"));
+				cesInfo.setActiveStatus(resultSet.getInt("activeStatus"));
+				cesInfoList.add(cesInfo);
+			}
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (resultSet != null) {
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				resultSet = null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+			cesInfo = null;
+		}
+
+		return cesInfoList;
+	}
+
+	/**
+	 * 执行查询语句 不关联其他表
+	 * 
+	 * @param connection
+	 *            数据库连接
+	 * @param sql
+	 *            sql语句
+	 * @return 查询集合
+	 * @throws Exception
+	 */
+	private List<CesInfo> excuteQuery(PreparedStatement preparedStatement) throws Exception {
+		List<CesInfo> cesInfoList = null;
+		ResultSet resultSet = null;
+		CesInfo cesInfo = null;
+		try {
+			cesInfoList = new ArrayList<CesInfo>();
+			resultSet = preparedStatement.executeQuery();
+			while (resultSet.next()) {
+				cesInfo = new CesInfo();
+				cesInfo.setId(resultSet.getInt("id"));
+				cesInfo.setServiceId(resultSet.getInt("serviceId"));
+				cesInfo.setPwId(resultSet.getInt("pwId"));
+				cesInfo.setServiceType(resultSet.getInt("serviceType"));
+				cesInfo.setName(resultSet.getString("name"));
+				cesInfo.setAxcId(resultSet.getInt("aXcId"));
+				cesInfo.setZxcId(resultSet.getInt("zXcId"));
+				cesInfo.setaAcId(resultSet.getInt("aAcId"));
+				cesInfo.setzAcId(resultSet.getInt("zAcId"));
+				cesInfo.setaSiteId(resultSet.getInt("aSiteId"));
+				cesInfo.setzSiteId(resultSet.getInt("zSiteId"));
+				cesInfo.setActiveStatus(resultSet.getInt("activeStatus"));
+				cesInfo.setCreateTime(resultSet.getString("createTime"));
+				cesInfo.setCreateUser(resultSet.getString("createUser"));
+				cesInfo.setIsSingle(resultSet.getInt("issingle"));
+				cesInfo.setCestype(resultSet.getInt("cestype"));
+				cesInfo.setJobStatus(resultSet.getString("jobStatus"));
+				cesInfo.setActiveStatus(resultSet.getInt("activeStatus"));
+				cesInfoList.add(cesInfo);
+			}
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (resultSet != null) {
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				resultSet = null;
+			}
+			cesInfo = null;
+		}
+
+		return cesInfoList;
+	}
+
+	public void updateStatus(List<Integer> idList, int status, Connection connection) throws Exception {
+
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		String sql = null;
+		String ids = null;
+		PreparedStatement preparedStatement = null;
+		try {
+
+			if (null == idList) {
+				sql = "update serviceinfo set activeStatus=? where serviceType=0";
+			} else {
+				ids = idList.toString();
+				sql = "update serviceinfo set activeStatus=? where id in (" + ids.subSequence(1, ids.length() - 1) + ")  and serviceType=0";
+			}
+
+			preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.setInt(1, status);
+			preparedStatement.executeUpdate();
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+			ids = null;
+		}
+	}
+
+	public void updateStatus(int siteId, int status, Connection connection) throws Exception {
+
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		try {
+
+			sql = "update serviceinfo set activeStatus=? where serviceType=0 and (aSiteId = ? or zSiteId = ?)";
+
+			preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.setInt(1, status);
+			preparedStatement.setInt(2, siteId);
+			preparedStatement.setInt(3, siteId);
+			preparedStatement.executeUpdate();
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+	}
+
+	/**
+	 * 
+	 * @author kk
+	 * 
+	 * @param
+	 * 
+	 * @return
+	 * 
+	 * @Exception 异常对象
+	 */
+	public List<CesInfo> querySynchro(int siteId, int xcid, Connection connection) throws Exception {
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		try {
+			sql = "select * from serviceinfo where serviceType=0 and ((asiteid=? and axcid=?) or (zsiteid=? and zxcid=?))";
+			preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.setInt(1, siteId);
+			preparedStatement.setInt(2, xcid);
+			preparedStatement.setInt(3, siteId);
+			preparedStatement.setInt(4, xcid);
+			return this.excuteQuery(preparedStatement);
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+	}
+
+	/**
+	 * 查询名称是否重复
+	 * 
+	 * @author kk
+	 * 
+	 * @param
+	 * 
+	 * @return
+	 * @throws Exception
+	 * 
+	 * @Exception 异常对象
+	 */
+	public int query_name(String afterName, String beforeName, Connection connection) throws Exception {
+		if (null == afterName) {
+			throw new Exception("afterName is null");
+		}
+
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		String sql = null;
+		List<Object> paramList = new ArrayList<Object>();
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+		int result = 0;
+		try {
+			sql = "select count(*) as selectcount from serviceinfo where serviceType=0 and name=?";
+			paramList.add(afterName);
+			if (null != beforeName) {
+				sql += " and name!=?";
+				paramList.add(beforeName);
+			}
+			preparedStatement = connection.prepareStatement(sql);
+			for (int i = 0; i < paramList.size(); i++) {
+				preparedStatement.setObject(i + 1, paramList.get(i));
+			}
+			resultSet = preparedStatement.executeQuery();
+			if (resultSet.next()) {
+				result = resultSet.getInt("selectcount");
+			}
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (resultSet != null) {
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				resultSet = null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+			paramList = null;
+			sql = null;
+		}
+
+		return result;
+	}
+
+	/**
+	 * 单网元名称验证
+	 * 
+	 * @param afterName
+	 * @param beforeName
+	 * @param connection
+	 * @param siteId
+	 * @return
+	 * @throws Exception
+	 */
+	public int query_nameBySingle(String afterName, String beforeName, Connection connection, int siteId) throws Exception {
+		if (null == afterName) {
+			throw new Exception("afterName is null");
+		}
+
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		String sql = null;
+		List<Object> paramList = new ArrayList<Object>();
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+		int result = 0;
+		try {
+			sql = this.SELECT_BY_NAME;
+			paramList.add(siteId);
+			paramList.add(siteId);
+			paramList.add(afterName);
+			if (null != beforeName) {
+				sql += " and name!=?";
+				paramList.add(beforeName);
+			}
+			preparedStatement = connection.prepareStatement(sql);
+			for (int i = 0; i < paramList.size(); i++) {
+				preparedStatement.setObject(i + 1, paramList.get(i));
+			}
+			resultSet = preparedStatement.executeQuery();
+			if (resultSet.next()) {
+				result = resultSet.getInt("selectcount");
+			}
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (resultSet != null) {
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				resultSet = null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+			paramList = null;
+			sql = null;
+		}
+
+		return result;
+	}
+
+	/**
+	 * add by stones 20130618
+	 * **/
+	public boolean exeSearchCes(Connection conn, String siteIdin) throws Exception {
+		if (null == conn) {
+			throw new Exception("connection is null");
+		}
+		String sql = null;
+		PreparedStatement ps = null;
+		try {
+			/**
+			 * insert into serviceinfo (serviceId,pwId,serviceType,name,aXcId,zXcId,activeStatus,rootSite,branchSite,aAcId,zAcId,createUser,createTime,aSiteId,zSiteId,isSingle,cestype) select s1.serviceId,s1.pwId,s1.serviceType,concat('ces_',unix_timestamp()*1000) name,s1.aXcId,s2.aXcId,s1.activeStatus,s1.rootSite,s1.branchSite, s1.aAcId,s2.aAcId,s1.createUser,now() createTime, s1.aSiteId,s2.aSiteId,2, case when s1.cestype=1 and s2.cestype=1 then 1 when s1.cestype=1 and s2.cestype=3 then 2 when s1.cestype=3 and s2.cestype=1 then 4 when s1.cestype=3 and s2.cestype=3 then 3 end cestype from serviceinfo s1 LEFT JOIN serviceinfo s2 on s1.pwId=s2.pwId where s1.isSingle=1 and s1.serviceType=0 and s2.isSingle=1 and s2.serviceType=0 and s1.id < s2.id and s1.pwId in (select pwid from ( select pwId,count(1) cou from serviceinfo where serviceType=0 and isSingle=1 GROUP BY pwId )a where cou=2 )
+			 * **/
+			/**
+			 * list20131029 sql = new StringBuffer().append("insert into serviceinfo (serviceId,pwId,serviceType,name,aXcId,zXcId,activeStatus,rootSite,branchSite,aAcId,zAcId,createUser,createTime,aSiteId,zSiteId,isSingle,cestype,clientId) ") .append("select s1.serviceId,s1.pwId,s1.serviceType,concat('ces_',unix_timestamp()*1000) name,s1.aXcId,s2.aXcId,s1.activeStatus,s1.rootSite,s1.branchSite, s1.aAcId,s2.aAcId,s1.createUser,now() createTime, s1.aSiteId,s2.aSiteId,0,") .append(" case when s1.cestype=1 and s2.cestype=1 then 1 when s1.cestype=1 and s2.cestype=3 then 2 when s1.cestype=3 and s2.cestype=1 then 4 when s1.cestype=3 and s2.cestype=3 then 3 end cestype,0") .append(" from serviceinfo s1 LEFT JOIN serviceinfo s2 on s1.pwId=s2.pwId") .append(" where s1.isSingle=1 and s1.serviceType=0 and s2.isSingle=1 and s2.serviceType=0 and (s1.aSiteId in ").append(siteIdin).append(") and (s1.zSiteId in ").append(siteIdin).append(" )  ") .append(" and s1.id < s2.id and s1.pwId in ") .append(" (select pwid from (  select pwId,count(1) cou from serviceinfo where serviceType=0 and isSingle=1 GROUP BY pwId  )a where cou=2 ) ") .toString();
+			 **/
+			sql = new StringBuffer().append("insert into serviceinfo (serviceId,pwId,serviceType,name,aXcId,zXcId,activeStatus,rootSite, branchSite,aAcId,zAcId,createUser,createTime,aSiteId,zSiteId,isSingle,cestype,clientId) ").append("select s1.serviceId,s1.pwId,s1.serviceType,concat('ces_',"+System.currentTimeMillis()+") name,s1.aXcId,s2.zXcId,s1.activeStatus, s1.rootSite,s1.branchSite, s1.aAcId,s2.zAcId,s1.createUser,now() createTime, s1.aSiteId,s2.zSiteId,0,").append(" case when s1.cestype=2 and s2.cestype=2 then 2 when s1.cestype=3 and s2.cestype=3 then 3 when s1.cestype=2 and s2.cestype=3 then 4 when s1.cestype=3 and s2.cestype=2 then 5 end cestype,0").append(" from serviceinfo s1 LEFT JOIN serviceinfo s2 on s1.pwId=s2.pwId").append(" where s1.isSingle=1 and s1.serviceType=0 and s2.isSingle=1 and s2.serviceType=0 and  (s1.aSiteId in ").append(siteIdin).append(") and (s1.zSiteId in ").append(siteIdin).append(" )  ").append(" and s1.zSiteId=0 and s2.aSiteId=0 and s1.pwId in ").append(" (select pwid from (  select pwId,count(1) cou from serviceinfo where serviceType=0 and isSingle=1 GROUP BY pwId  )a where cou=2 ) ").toString();
+			// System.out.println("ces,line779 sql : "+sql);
+			ps = conn.prepareStatement(sql);
+			ps.executeUpdate();
+
+			/**
+			 * delete s from serviceinfo s where isSingle=1 and pwid in( select pwid from ( select pwId,count(1) cou from serviceinfo where serviceType=0 and isSingle=1 GROUP BY pwId )a where cou=2 )
+			 * **/
+			sql = new StringBuffer().append(" delete s from serviceinfo s where isSingle=1 and serviceType=0 and (s.aSiteId in ").append(siteIdin).append(") and (s.zSiteId in ").append(siteIdin).append(" )  ").append(" ").append(" and pwid in( select pwid from ( select pwId,count(1) cou from serviceinfo where serviceType=0 and isSingle=1 GROUP BY pwId )a where cou=2 ) ").toString();
+			// System.out.println("22 sql : "+sql);
+			ps = conn.prepareStatement(sql);
+			ps.executeUpdate();
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (ps != null) {
+				try {
+					ps.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				ps = null;
+			}
+			sql = null;
+		}
+		return true;
+
+	}
+
+	public List<CesInfo> selectServiceInfoById(int id, Connection connection) throws Exception {
+		String sql = "select * from serviceinfo where id=? and serviceType=0 ";
+		PreparedStatement preparedStatement = null;
+		try {
+			preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.setInt(1, id);
+			return this.excuteQuery(preparedStatement);
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+				}
+				preparedStatement = null;
+			}
+		}
+	}
+
+	/**
+	 * 根据网元id和是否为单站查询
+	 * 
+	 * @param siteId
+	 *            网元名称
+	 * @param isSingle
+	 *            是否为单网元数据。 1=单网元 0=网络
+	 * @param connection
+	 * @return
+	 * @throws Exception
+	 */
+	public List<CesInfo> queryBySingle(int siteId, int isSingle, Connection connection) throws Exception {
+
+		StringBuffer stringBuffer = null;
+		PreparedStatement preparedStatement = null;
+		List<CesInfo> cesInfoList = null;
+		try {
+			stringBuffer = new StringBuffer();
+			stringBuffer.append("select * from serviceinfo where serviceType = 0 and isSingle=? and (aSiteId = ? or zSiteId = ?)");
+
+			preparedStatement = connection.prepareStatement(stringBuffer.toString());
+			preparedStatement.setInt(1, isSingle);
+			preparedStatement.setInt(2, siteId);
+			preparedStatement.setInt(3, siteId);
+
+			cesInfoList = this.excuteQuery(preparedStatement);
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+				}
+				preparedStatement = null;
+			}
+		}
+		return cesInfoList;
+	}
+
+	public List<CesInfo> selectAll(Connection connection) throws Exception {
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+		String sql = null;
+		List<CesInfo> cesInfos = null;
+		try {
+			sql = "SELECT s.jobstatus,s.cestype,s.issingle , s.id, s.serviceId, s.pwId, s.serviceType," + " s.name, s.aXcId, s.zXcId, s.aAcId, s.zAcId, s.activeStatus,s.aSiteId,s.zSiteId," + "s.createTime,s.createUser,s.aSiteId AS showaSiteName,s.zSiteId AS showzSiteName," + " s.clientId FROM serviceinfo s, pwinfo p WHERE s.pwId = p.pwId and serviceType=0";
+			cesInfos = this.excuteQuery_join(connection, sql, null);
+		} catch (Exception e) {
+			throw e;
+		}
+		return cesInfos;
+	}
+
+	/**
+	 * 过滤查询，ces列表页面用
+	 * @param cesInfo 过滤条件
+	 * @param connection 数据库连接
+	 * @return
+	 * @throws Exception
+	 */
+	public List<CesInfo> filterQuery(CesInfo cesInfo, Connection connection) throws Exception {
+
+		if (null == cesInfo) {
+			throw new Exception("cesInfo is null");
+		}
+
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		StringBuffer sql = new StringBuffer();
+		List<CesInfo> cesInfoList = null;
+		List<Object> parameterList = new ArrayList<Object>();
+		try {
+			sql.append("SELECT ");
+			sql.append("s.jobstatus, s.cestype, s.issingle, s.id, s.serviceId, s.pwId, s.serviceType, s. NAME, s.aXcId, s.zXcId, s.aAcId, s.zAcId, s.activeStatus, s.aSiteId, s.zSiteId, s.createTime, s.createUser, sa.CellId AS showaSiteName, sz.CellId AS showzSiteName, s.clientId ");
+			sql.append("FROM ");
+			sql.append("serviceinfo s, pwinfo p, site_inst sa, site_inst sz ");
+			sql.append("WHERE ");
+			sql.append("s.pwId = p.pwId AND p.aSiteId = sa.site_inst_id AND p.zSiteId = sz.site_inst_id AND serviceType = 0 and s.isSingle =0");
+
+			// 名称条件
+			if (null != cesInfo.getName() && !"".equals(cesInfo.getName())) {
+				sql.append(" AND s.`name` LIKE ?");
+				parameterList.add("%" + cesInfo.getName() + "%");
+			}
+			// pw条件
+			if (cesInfo.getPwId() > 0) {
+				sql.append(" AND s.pwId=?");
+				parameterList.add(cesInfo.getPwId());
+			}
+			// 激活状态
+			if (cesInfo.getActiveStatus() > 0) {
+				sql.append(" AND s.activeStatus=?");
+				parameterList.add(cesInfo.getActiveStatus());
+			}
+			// 网元
+			if (cesInfo.getaSiteId() > 0) {
+				sql.append(" AND (s.aSiteId=? OR s.zSiteId=?)");
+				parameterList.add(cesInfo.getaSiteId());
+				parameterList.add(cesInfo.getaSiteId());
+			}
+			//端口
+			if(cesInfo.getAportId()>0)
+			{
+				sql.append(" and (s.aAcId in (SELECT portId FROM port_inst WHERE portId=?) or s.zAcId in (SELECT portId FROM port_inst WHERE portId=?))");
+				parameterList.add(cesInfo.getAportId());
+				parameterList.add(cesInfo.getAportId());
+			}
+			// ces类型
+			if (cesInfo.getCestype() > 0) {
+				sql.append(" AND s.cestype=?");
+				parameterList.add(cesInfo.getCestype());
+			}
+			cesInfoList = this.excuteQuery_join(connection, sql.toString(), parameterList);
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			sql = null;
+			parameterList = null;
+		}
+		return cesInfoList;
+	}
+	
+	public List<CesInfo> filterSingle(CesInfo cesInfo, int siteId, Connection connection) throws Exception {
+
+		if (null == cesInfo) {
+			throw new Exception("cesInfo is null");
+		}
+
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		StringBuffer sql = new StringBuffer();
+		List<CesInfo> cesInfoList = null;
+		List<Object> parameterList = new ArrayList<Object>();
+		try {
+			sql.append("SELECT s.jobstatus, s.cestype, s.issingle, s.id, s.serviceId, s.pwId, s.serviceType, s. NAME, s.aXcId, s.zXcId, s.aAcId, s.zAcId, s.activeStatus, s.aSiteId, s.zSiteId, s.createTime, s.createUser, sa.CellId AS showaSiteName, sa.CellId AS showzSiteName, s.clientId FROM serviceinfo s, site_inst sa WHERE  serviceType = 0 AND sa.site_inst_id=?");
+		
+			parameterList.add(siteId);
+			
+			// 名称条件
+			if (null != cesInfo.getName() && !"".equals(cesInfo.getName())) {
+				sql.append(" AND s.`name` LIKE ?");
+				parameterList.add("%" + cesInfo.getName() + "%");
+			}
+			// pw条件
+			if (cesInfo.getPwId() > 0) {
+				sql.append(" AND s.pwId=?");
+				parameterList.add(cesInfo.getPwId());
+			}
+			// 激活状态
+			if (cesInfo.getActiveStatus() > 0) {
+				sql.append(" AND s.activeStatus=?");
+				parameterList.add(cesInfo.getActiveStatus());
+			}
+			// 网元
+			if (cesInfo.getaSiteId() > 0) {
+				sql.append(" AND (s.aSiteId=? OR s.zSiteId=?)");
+				parameterList.add(cesInfo.getaSiteId());
+				parameterList.add(cesInfo.getaSiteId());
+			}
+			//端口
+			if(cesInfo.getAportId()>0)
+			{
+				sql.append(" and (s.aAcId in (SELECT portId FROM port_inst WHERE portId=?) or s.zAcId in (SELECT portId FROM port_inst WHERE portId=?))");
+				parameterList.add(cesInfo.getAportId());
+				parameterList.add(cesInfo.getAportId());
+			}
+			// ces类型
+			if (cesInfo.getCestype() > 0) {
+				sql.append(" AND s.cestype=?");
+				parameterList.add(cesInfo.getCestype());
+			}
+			cesInfoList = this.excuteQuery_join(connection, sql.toString(), parameterList);
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			sql = null;
+			parameterList = null;
+		}
+		return cesInfoList;
+	}
+	
+	public void doSearche(List<CesInfo> cesInfos,Connection conn) throws Exception{
+		if (null == conn) {
+			throw new Exception("connection is null");
+		}
+		String ids = new String("(");
+		for (CesInfo cesInfo : cesInfos) {
+			ids = ids + cesInfo.getId() + ",";
+		}
+		ids = ids.substring(0, ids.length() - 1) + ")";
+		String sql = null;
+		PreparedStatement ps = null;
+		try {
+			sql = new StringBuffer().append("INSERT INTO serviceinfo ( serviceId, pwId, serviceType, NAME, aXcId, zXcId, activeStatus, rootSite, branchSite, aAcId, zAcId, createUser, createTime, aSiteId, zSiteId, isSingle, cestype, clientId ) SELECT s1.serviceId, s1.pwId, s1.serviceType, concat( 'ces_',  "+System.currentTimeMillis()+"  ) NAME, s1.aXcId, s2.zXcId, s1.activeStatus, s1.rootSite, s1.branchSite, s1.aAcId, s2.zAcId, s1.createUser, now() createTime, s1.aSiteId, s2.zSiteId, 0, s1.cestype, 0 FROM serviceinfo s1 ,serviceinfo s2 WHERE s1.id ="+cesInfos.get(0).getId()+" and s2.id ="+cesInfos.get(1).getId()+"").toString();
+			ps = conn.prepareStatement(sql);
+			ps.executeUpdate();
+
+			/**
+			 * delete s from serviceinfo s where isSingle=1 and pwid in( select pwid from ( select pwId,count(1) cou from serviceinfo where serviceType=1 and isSingle=1 GROUP BY pwId )a where cou=2 )
+			 * **/
+			sql = " delete s from serviceinfo s where isSingle=1 and serviceType=0 and id in "+ids;
+			ps = conn.prepareStatement(sql);
+			ps.executeUpdate();
+		} catch (Exception e) {
+			ExceptionManage.dispose(e, this.getClass());
+		} finally {
+			if (ps != null) {
+				try {
+					ps.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e, this.getClass());
+				}
+				ps = null;
+			}
+			sql = null;
+		}
+	}
+
+	public List<CesInfo> selectByPwId(CesInfo ces, Connection connection) throws Exception {
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+		List<CesInfo> cesList = null;
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		try {
+			cesList = new ArrayList<CesInfo>();
+			sql = "SELECT * FROM serviceinfo WHERE pwId ="+ces.getPwId()+" and serviceType="+EServiceType.CES.getValue();
+			preparedStatement = connection.prepareStatement(sql);
+			cesList = this.excuteQuery(preparedStatement);
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+		return cesList;
+	}
+	
+}

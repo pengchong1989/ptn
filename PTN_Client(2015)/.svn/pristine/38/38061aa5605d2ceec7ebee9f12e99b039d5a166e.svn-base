@@ -1,0 +1,9 @@
+package com.nms.db.dao.ptn.qos;
+
+import java.util.List;
+
+import com.nms.db.bean.ptn.qos.QosMappingMode;
+
+public interface QosMappingModeMapper {
+    public List<QosMappingMode> queryByCondition(QosMappingMode qosMappingMode);
+}

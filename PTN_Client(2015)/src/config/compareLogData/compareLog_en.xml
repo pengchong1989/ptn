@@ -1,0 +1,10 @@
+<beaninfo>
+	<attribute 
+		businessProperty="true"
+		name="value_before" 
+		displayName="value_after"/>	
+	<attribute 
+		businessProperty="true"
+		name="value_after" 
+		displayName="value_after"/>	
+</beaninfo>

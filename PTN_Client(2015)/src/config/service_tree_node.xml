@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xml-body>
+
+<node nodename="启动管理" clickNodeClass="com.nms.rmi.ui.ServiceStartPanel"></node>
+
+<node nodename="数据库管理" clickNodeClass="">	
+	<childNode nodename="数据库初始化" clickNodeClass="com.nms.rmi.ui.DatabaseInitializePanel"></childNode>
+	<childNode nodename="数据库备份" clickNodeClass="com.nms.rmi.ui.DatabaseBackupsPanel"></childNode>
+	<childNode nodename="数据库恢复" clickNodeClass="com.nms.rmi.ui.DatabaseRecoverPanel"></childNode>
+	<childNode nodename="数据库升级" clickNodeClass="com.nms.rmi.ui.DatabaseUpgradePanel"></childNode>
+	<childNode nodename="自动定时备份" clickNodeClass="com.nms.rmi.ui.AutoDatabaseBackupsPanel"></childNode>
+</node>
+
+<node nodename="License导入" clickNodeClass="com.nms.rmi.ui.LicensePanel"></node> 
+
+<node nodename="系统配置" clickNodeClass="com.nms.rmi.ui.SystemConfigPanel"></node> 
+</xml-body>

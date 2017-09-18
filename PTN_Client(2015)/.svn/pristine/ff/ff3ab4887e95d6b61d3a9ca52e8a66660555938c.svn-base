@@ -1,0 +1,386 @@
+package com.nms.db.dao.equipment.port;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.nms.db.bean.equipment.port.PortStmTimeslot;
+import com.nms.ui.manager.ExceptionManage;
+
+public class PortStmTimeslotDao {
+	
+	private  final String SQL_INSERT="insert into port_stm_timeslot(siteId,portid,portstmid,timeslotnumber,timeslotname,managerStatus, isUsed)" +
+			" values(?,?,?,?,?,? , ?)";
+	private  final String SQL_QUERY_SITEID="select * from port_stm_timeslot where siteId=?";
+	private  final String SQL_QUERY_SITEID_PORTID_NAME="select * from port_stm_timeslot where siteId=? and portId=? and timeslotname=?";
+	private  final String SQL_QUERY_SITEID_NUMBER_NAME="select * from port_stm_timeslot where siteId=? and portid=? and timeslotname=?";
+	private  final String SQL_QUERY_PORTID="select * from port_stm_timeslot where portid=?";
+	private  final String UPDATEUSER = "update port_stm_timeslot set isUsed = ? where id=?";
+	private  final String SQL_QUERY_ID="select * from port_stm_timeslot where id=?";
+	private  final String SQL_UPDATE="update port_stm_timeslot set managerStatus=?,jobstatus=?,expectjtwo=?,sendjtwo=?,realityjtwo=?,lptim=?,expectvfive=?,sendvfive=?,realityvfive=?,checkvfive=? where id=?";
+	private final String DELETE_BY_SITE="delete from port_stm_timeslot where siteid=?";
+	
+	public void insert(PortStmTimeslot portStmTimeslot , Connection connection) throws Exception{
+		
+		PreparedStatement preparedStatement=null;
+		try {
+			preparedStatement=connection.prepareStatement(SQL_INSERT);
+			preparedStatement.setInt(1, portStmTimeslot.getSiteId());
+			preparedStatement.setInt(2, portStmTimeslot.getPortid());
+			preparedStatement.setInt(3, portStmTimeslot.getPortstmid());
+			preparedStatement.setString(4, portStmTimeslot.getTimeslotnumber());
+			preparedStatement.setString(5, portStmTimeslot.getTimeslotname());
+			preparedStatement.setInt(6, portStmTimeslot.getManagerStatus());
+			preparedStatement.setInt(7, portStmTimeslot.getIsUsed());
+			
+			preparedStatement.executeUpdate();
+		} catch (Exception e) {
+			throw e;
+		} finally{
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+		}
+	}
+	
+	
+	public int update(PortStmTimeslot portStmTimeslot , Connection connection) throws Exception{
+		int result = 0;
+		PreparedStatement preparedStatement=null;
+		try {
+			preparedStatement=connection.prepareStatement(SQL_UPDATE);
+			preparedStatement.setInt(1, portStmTimeslot.getManagerStatus());
+			preparedStatement.setString(2, portStmTimeslot.getJobstatus());
+			preparedStatement.setString(3, portStmTimeslot.getExpectjtwo());
+			preparedStatement.setString(4, portStmTimeslot.getSendjtwo());
+			preparedStatement.setString(5, portStmTimeslot.getRealityjtwo());
+			preparedStatement.setInt(6, portStmTimeslot.getLptim());
+			preparedStatement.setString(7, portStmTimeslot.getExpectvfive());
+			preparedStatement.setString(8, portStmTimeslot.getSendvfive());
+			preparedStatement.setString(9, portStmTimeslot.getRealityvfive());
+			preparedStatement.setInt(10, portStmTimeslot.getCheckvfive());
+			preparedStatement.setInt(11, portStmTimeslot.getId());
+			
+			result = preparedStatement.executeUpdate();
+		} catch (Exception e) {
+			throw e;
+		} finally{
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+		}
+		return result;
+	}
+	
+	public PortStmTimeslot queryById(int id , Connection connection) throws Exception{
+		PreparedStatement preparedStatement=null;
+		PortStmTimeslot portStmTimeslot=null;
+		try {
+			preparedStatement=connection.prepareStatement(SQL_QUERY_ID);
+			preparedStatement.setInt(1, id);
+			if(this.exextueQuery(preparedStatement)!=null&&this.exextueQuery(preparedStatement).size()>0){
+				portStmTimeslot = this.exextueQuery(preparedStatement).get(0);
+			}
+			
+		} catch (Exception e) {
+			throw e;
+		} finally{
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+		}
+		return portStmTimeslot;
+	}
+	
+	public List<PortStmTimeslot> quertyBySite(int siteId, Connection connection) throws Exception{
+		
+		PreparedStatement preparedStatement=null;
+		List<PortStmTimeslot> list=null;
+		try {
+			preparedStatement=connection.prepareStatement(SQL_QUERY_SITEID);
+			preparedStatement.setInt(1, siteId);
+			
+			list = this.exextueQuery(preparedStatement);
+		} catch (Exception e) {
+			throw e;
+		} finally{
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+		}
+		return list;
+	}
+	
+	/**
+	 * 
+	
+	* 通过siteId portId name查询PortStmTimeslot
+	
+	* @author wangwf
+	
+	* @param   siteId
+	
+	* @param   portId
+	
+	* @param   name
+	
+	* @return PortStmTimeslot对象集合
+	
+	* @Exception 异常对象
+	 */
+	public List<PortStmTimeslot> selectBySiteIdAndPortIdAndName(int siteId, int portId, String name, Connection connection) throws Exception{
+		
+		PreparedStatement preparedStatement=null;
+		List<PortStmTimeslot> list=null;
+		try {
+			preparedStatement=connection.prepareStatement(SQL_QUERY_SITEID_PORTID_NAME);
+			preparedStatement.setInt(1, siteId);
+			preparedStatement.setInt(2, portId);
+			preparedStatement.setString(3, name);
+			
+			list = this.exextueQuery(preparedStatement);
+		} catch (Exception e) {
+			throw e;
+		} finally{
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+		}
+		return list;
+	}
+	public List<PortStmTimeslot> selectBySiteIdAndNumberAndName(int siteId, int portId, String name, Connection connection) throws Exception{
+		
+		PreparedStatement preparedStatement=null;
+		List<PortStmTimeslot> list=null;
+		try {
+			preparedStatement=connection.prepareStatement(SQL_QUERY_SITEID_NUMBER_NAME);
+			preparedStatement.setInt(1, siteId);
+			preparedStatement.setInt(2, portId);
+			preparedStatement.setString(3, name);
+			
+			list = this.exextueQuery(preparedStatement);
+		} catch (Exception e) {
+			throw e;
+		} finally{
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+		}
+		return list;
+	}
+	
+	public List<PortStmTimeslot> exextueQuery(PreparedStatement preparedStatement) throws Exception{
+		List<PortStmTimeslot> portstmTimeslotList=null;
+		ResultSet resultSet=null;
+		PortStmTimeslot portStmTimeslot=null;
+		try {
+			portstmTimeslotList=new ArrayList<PortStmTimeslot>();
+			resultSet=preparedStatement.executeQuery();
+			while(resultSet.next()){
+				portStmTimeslot=new PortStmTimeslot();
+				
+				portStmTimeslot.setId(resultSet.getInt("id"));
+				portStmTimeslot.setSiteId(resultSet.getInt("siteId"));
+				portStmTimeslot.setPortid(resultSet.getInt("portid"));
+				portStmTimeslot.setPortstmid(resultSet.getInt("portstmid"));
+				portStmTimeslot.setTimeslotname(resultSet.getString("timeslotname"));
+				portStmTimeslot.setTimeslotnumber(resultSet.getString("timeslotnumber"));
+				portStmTimeslot.setManagerStatus(resultSet.getInt("ManagerStatus"));
+				portStmTimeslot.setJobstatus(resultSet.getString("Jobstatus"));
+				portStmTimeslot.setExpectjtwo(resultSet.getString("Expectjtwo"));
+				portStmTimeslot.setSendjtwo(resultSet.getString("Sendjtwo"));
+				portStmTimeslot.setRealityjtwo(resultSet.getString("Realityjtwo"));
+				portStmTimeslot.setLptim(resultSet.getInt("Lptim"));
+				portStmTimeslot.setExpectvfive(resultSet.getString("Expectvfive"));
+				portStmTimeslot.setSendvfive(resultSet.getString("Sendvfive"));
+				portStmTimeslot.setRealityvfive(resultSet.getString("Realityvfive"));
+				portStmTimeslot.setCheckvfive(resultSet.getInt("Checkvfive"));
+				portStmTimeslot.setIsUsed(resultSet.getInt("isUsed"));
+				portStmTimeslot.setManagerStatus(resultSet.getInt("managerStatus"));
+				portstmTimeslotList.add(portStmTimeslot);
+			}
+			
+		} catch (Exception e) {
+			throw e;
+		} finally{
+			if (resultSet != null) {
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				resultSet = null;
+			}
+			portStmTimeslot=null;
+		}
+		return portstmTimeslotList;
+		
+	}
+
+	public List<PortStmTimeslot> quertyByPortId(int portId,
+			Connection connection) throws Exception {
+		PreparedStatement preparedStatement=null;
+		List<PortStmTimeslot> list=null;
+		try {
+			preparedStatement=connection.prepareStatement(SQL_QUERY_PORTID);
+			preparedStatement.setInt(1, portId);
+			
+			list = this.exextueQuery(preparedStatement);
+		} catch (Exception e) {
+			throw e;
+		} finally{
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+		}
+		return list;
+	}
+	
+	//修改此时隙端口是否使用
+	public int setUsed(int id ,int used, Connection connection) throws Exception {
+		
+
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		int result = 0;
+
+		try {
+			sql = UPDATEUSER;
+			
+			preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.setInt(1, used);
+			preparedStatement.setInt(2, id);
+			result = preparedStatement.executeUpdate();
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+
+		return result;
+	}
+	
+	/**
+	 * 根据网元ID删除
+	 * 
+	 * @author kk
+	 * 
+	 * @param siteid
+	 *            网元id
+	 * @param connection
+	 *            数据库连接
+	 * 
+	 * @return
+	 * @throws Exception 
+	 * @throws Exception
+	 * 
+	 * @Exception 异常对象
+	 */
+	public void deleteBySite(int siteId, Connection connection) throws Exception {
+		if(null==connection){
+			throw new Exception("connection is null");
+		}
+		
+		PreparedStatement preparedStatement=null;
+		try {
+			preparedStatement=connection.prepareStatement(this.DELETE_BY_SITE);
+			preparedStatement.setInt(1, siteId);
+			preparedStatement.executeUpdate();
+			
+		} catch (Exception e) {
+			throw e;
+		} finally{
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+		}
+	}
+	
+	
+	public void updateStatus(int siteId, int status, Connection connection) throws Exception {
+		
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+		
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		try {
+			
+			sql = "update port_stm_timeslot set managerStatus=? where siteId = ?";
+			
+			preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.setInt(1, status);
+			preparedStatement.setInt(2, siteId);
+			preparedStatement.executeUpdate();
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+	}
+}

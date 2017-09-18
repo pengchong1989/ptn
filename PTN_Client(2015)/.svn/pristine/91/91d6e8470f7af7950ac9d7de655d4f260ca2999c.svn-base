@@ -1,0 +1,210 @@
+package com.nms.db.dao.ptn;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.nms.db.bean.ptn.EthLoopInfo;
+
+/**
+ * 
+ * @author zk
+ *function:环回 数据库的操作
+ */
+public class EthLoopInfoDao {
+	/**
+	 * 修改 EthLoopInfo thLoopInfo
+	 * @param info  thLoopInfo
+	 * @param conn  数据库连接
+	 * @return   记录数
+	 * @throws Exception
+	 */
+	public int update(EthLoopInfo thLoopInfo,Connection connection)throws Exception{
+		if (null == thLoopInfo) {
+			throw new Exception("EthLoopInfo is null");
+		}
+
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+		
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		int result = 0;
+		
+		try {
+			sql = "update ethloop set loopEnable=?, portNumber=?,loopRule=?,vlanVaue=?,ip=?,macAddress=? where siteid=?";
+			preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.setInt(1,thLoopInfo.getLoopEnable());
+			preparedStatement.setInt(2, thLoopInfo.getPortNumber());
+			preparedStatement.setInt(3, thLoopInfo.getLoopRule());
+			preparedStatement.setString(4, thLoopInfo.getVlanVaue());
+			preparedStatement.setString(5, thLoopInfo.getIp());
+			preparedStatement.setString(6, thLoopInfo.getMacAddress());
+			preparedStatement.setInt(7,thLoopInfo.getSiteId());
+			result = preparedStatement.executeUpdate();
+		} catch (Exception e) {
+			throw e;
+		}finally{
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		
+		}
+		return result;
+	}
+	
+	/**
+	 * 查询全部
+	 * @param condition	查询条件
+	 * @param connection  数据库连接
+	 * @return	List<EthLoopInfo>
+	 * @throws Exception
+	 */
+	public List<EthLoopInfo> queryByCondition(int siteId,Connection connection)throws Exception{
+
+		if(connection == null){
+			throw new Exception("Connection is null");
+		}
+		List<EthLoopInfo> EthLoopInfoList = null;
+		String sql = null;
+		ResultSet resultSet = null;
+		PreparedStatement preparedStatement = null;
+		EthLoopInfo info = null;
+		
+		try{
+			EthLoopInfoList = new ArrayList<EthLoopInfo>();
+			sql = "select *from ethloop where siteid=?";
+			preparedStatement =  connection.prepareStatement(sql);
+			preparedStatement.setInt(1, siteId);
+			resultSet  = preparedStatement.executeQuery();
+			while(resultSet.next()){
+				info = new EthLoopInfo();
+				info.setId(resultSet.getInt("id"));
+				info.setSiteId(resultSet.getInt("siteid"));
+				info.setLoopEnable(resultSet.getInt("loopEnable"));
+				info.setPortNumber(resultSet.getInt("portNumber"));
+				info.setLoopRule(resultSet.getInt("loopRule"));
+				info.setVlanVaue(resultSet.getString("vlanVaue"));
+				info.setIp(resultSet.getString("ip"));
+				info.setMacAddress(resultSet.getString("macAddress"));
+				EthLoopInfoList.add(info);
+			}
+		}catch(Exception e){
+			throw e;
+		}finally{
+			if(resultSet != null){
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				resultSet = null;
+			}
+			if(preparedStatement != null){
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+			info = null;
+		}
+		return EthLoopInfoList;
+	}
+	/**
+	 * 添加 EthLoopInfo
+	 * @param info 
+	 * @param connection
+	 * @return
+	 * @throws Exception
+	 */
+	public int insert(EthLoopInfo info,Connection connection)throws Exception{
+		if (null == info) {
+			throw new Exception("EthLoopInfo is null");
+		}
+
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+		String sql = null;
+		int result = 0;
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null; 
+		try {
+			sql = "insert into ethloop (siteid,loopEnable,portNumber,loopRule,vlanVaue,ip,macAddress) values(?,?,?,?,?,?,?)";
+			preparedStatement = connection.prepareStatement(sql,Statement.RETURN_GENERATED_KEYS);
+			preparedStatement.setInt(1, info.getSiteId());
+			preparedStatement.setInt(2, info.getLoopEnable());
+			preparedStatement.setInt(3, info.getPortNumber());
+			preparedStatement.setInt(4, info.getLoopRule());
+			preparedStatement.setString(5, info.getVlanVaue());
+			preparedStatement.setString(6, info.getIp());
+			preparedStatement.setString(7, info.getMacAddress());
+			preparedStatement.executeUpdate();
+			resultSet = preparedStatement.getGeneratedKeys();
+			if(resultSet.next()){
+				result = resultSet.getInt(1);
+            }
+		} catch (Exception e) {
+			throw e;
+		}finally{
+			if (resultSet != null) {
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				resultSet = null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+		return result;
+	}
+
+	public void delete(int siteId, Connection connection) throws Exception {
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+		
+		PreparedStatement preparedStatement = null;
+		String sql = null;
+		try {
+			sql = "delete from ethloop where siteid = ?";
+			preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.setInt(1, siteId);
+			preparedStatement.executeUpdate();
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+	}
+}

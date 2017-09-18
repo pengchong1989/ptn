@@ -1,0 +1,115 @@
+package com.nms.model.ptn.path.protect;
+
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.List;
+
+import com.nms.db.bean.ptn.Businessid;
+import com.nms.db.bean.ptn.path.protect.PwProtect;
+import com.nms.db.dao.ptn.BusinessidDao;
+import com.nms.db.dao.ptn.path.protect.PwProtectDao;
+import com.nms.model.equipment.shlef.SiteService;
+import com.nms.model.util.ObjectService;
+import com.nms.model.util.Services;
+import com.nms.ui.manager.BusinessIdException;
+import com.nms.ui.manager.ConstantUtil;
+import com.nms.ui.manager.ExceptionManage;
+import com.nms.ui.manager.ResourceUtil;
+import com.nms.ui.manager.keys.StringKeysTip;
+
+public class PwProtetcService extends ObjectService{
+	public void setConnection(Connection connection) {
+		super.connection = connection;
+	}
+
+	public void setPtnuser(String ptnuser) {
+		super.ptnuser = ptnuser;
+	}
+	private final static int ISUSEDSTATUS = 1;
+	private PwProtectDao pwProtectDao = new PwProtectDao();
+	private BusinessidDao businessidDao = new BusinessidDao();
+	
+	/**
+	 * 新增
+	 * @param pwProtect
+	 * @return
+	 */
+	public int insert(PwProtect pwProtect){
+		Businessid businessid = null;
+		SiteService siteService = null;
+		int result = 0;
+		try {
+			siteService=(SiteService) ConstantUtil.serviceFactory.newService(Services.SITE, this.connection);
+			if(pwProtect.getBusinessId() == 0)
+			{
+				businessid = businessidDao.query(pwProtect.getSiteId(), "pwProtect",connection);
+			}else
+			{
+				businessid = businessidDao.query(pwProtect.getBusinessId(), pwProtect.getSiteId(), "pwProtect",connection);
+			}
+			if(businessid == null){
+				throw new BusinessIdException(siteService.getSiteName(pwProtect.getSiteId()) + ResourceUtil.srcStr(StringKeysTip.TIP_PWPROTECTID));
+			}
+			businessidDao.update(businessid.getId(), ISUSEDSTATUS, connection);
+			pwProtect.setBusinessId(businessid.getIdValue());
+			result=pwProtectDao.insert(connection, pwProtect);
+		} catch (Exception e) {
+			ExceptionManage.dispose(e, this.getClass());
+		} finally {
+//			UiUtil.closeService(siteService);
+		}
+		return result;
+	}
+	
+	/**
+	 * 根据网元id删除
+	 * @param pwProtect
+	 * @return
+	 */
+	public int delete(PwProtect pwProtect){
+		try {
+			// 释放id
+			Businessid businessId = new Businessid();
+			businessId.setIdStatus(0);
+			businessId.setIdValue(pwProtect.getBusinessId());
+			businessId.setType("pwProtect");
+			businessId.setSiteId(pwProtect.getSiteId());
+			businessidDao.updateBusinessid(businessId, connection);
+			
+			pwProtectDao.delete(connection, pwProtect);
+			
+		} catch (Exception e) {
+			ExceptionManage.dispose(e, this.getClass());
+		}
+		return 0;
+	}
+	
+	/**
+	 * 条件查询
+	 * @param pwProtect
+	 * @return
+	 */
+	public List<PwProtect> select(PwProtect pwProtect){
+		List<PwProtect> pwProtects = null;
+		try {
+			pwProtects = pwProtectDao.queryByCondition(connection, pwProtect);
+		} catch (SQLException e) {
+			ExceptionManage.dispose(e, this.getClass());
+		}
+		return pwProtects;
+	}
+	
+	/**
+	 * 修改
+	 * @param pwProtect
+	 * @return
+	 */
+	public int update(PwProtect pwProtect){
+		try {
+			return pwProtectDao.update(connection, pwProtect);
+		} catch (Exception e) {
+			ExceptionManage.dispose(e, this.getClass());
+		}
+		return 0;
+	}
+}

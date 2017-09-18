@@ -1,0 +1,1710 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xml-boby>
+	<table tableName="acbuffer">
+	<attribute name="id" type="int" length="11" decimal="0" AllowNulls="false" defaultValue="0"/>
+	<attribute name="acId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="bufferEnable" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="vlanId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="sourceMac" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="targetMac" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="eightIp" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="sourceIp" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="targetIp" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="ipDscp" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="model" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="cir" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="pir" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="cm" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="cbs" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="pbs" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="strategy" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="phb" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="portId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="siteId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="clientVlanIdValue" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="clientVlanIdMask" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="operatorVlanIdValue" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="operatorVlanIdMask" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="clientVlanPriorityValue" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="clientVlanPriorityMask" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="operatorVlanPriorityValue" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="operatorVlanPriorityMask" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="ethernetTypeValue" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="ethernetTypeMask" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="sourceMacLabelMask" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="sinkMacLabelMask" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="iPTypeValue" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="iPTypeMask" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="sourceIpLabelMask" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="sinkIpLabelMask" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="appendBufferName" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="qosName" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="qosType" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="simpleQosId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="ebs" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="eir" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	</table>
+
+	<table tableName="acinfo">
+	<attribute name="id" type="int" length="11" decimal="0" AllowNulls="false" defaultValue="0"/>
+	<attribute name="siteId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="portId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="lagId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="portModel" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="operatorVlanId" type="varchar" length="255" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="clientVlanId" type="varchar" length="255" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="managerEnable" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="exitRule" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="vlanId" type="varchar" length="255" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="vlancri" type="varchar" length="255" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="vlanpri" type="varchar" length="255" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="horizontalDivision" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="macAddressLearn" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="tagAction" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="jobStatus" type="varchar" length="255" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="acBusinessId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="bufType" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="name" type="varchar" length="255" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="isUser" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="model" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="acStatus" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	</table>
+
+	<table tableName="acl_inst">
+	<attribute name="id" type="int" length="8" decimal="0" AllowNulls="false" defaultValue="0"/>
+	<attribute name="siteid" type="int" length="8" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="act" type="int" length="8" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="direction" type="int" length="8" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="portNumber" type="int" length="8" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="vlanId" type="int" length="8" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="isSourceMac" type="int" length="8" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="sourceMac" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="isPurposeMac" type="int" length="8" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="purposeMac" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="isSourceIp" type="int" length="8" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="sourceIp" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="isPurposeIp" type="int" length="8" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="purposeIp" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="isMatchCos" type="int" length="8" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="cosValue" type="int" length="8" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="isMatchDSCP" type="int" length="8" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="dscpValue" type="int" length="8" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="isMatchTOS" type="int" length="8" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="tosValue" type="int" length="8" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="isSourcePort" type="int" length="8" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="sourcePort" type="int" length="8" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="isPurposePort" type="int" length="8" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="purposePort" type="int" length="8" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="ruleObject" type="int" length="8" decimal="0" AllowNulls="true" defaultValue="0"/>
+	</table>
+
+	<table tableName="alarm_filter">
+	<attribute name="id" type="int" length="8" decimal="0" AllowNulls="false" defaultValue="0"/>
+	<attribute name="siteid" type="int" length="8" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="cardid" type="int" length="8" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="objectid" type="int" length="8" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="objecttype" type="int" length="8" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="alarmcode" type="int" length="8" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="alarmlevel" type="int" length="8" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="begintime" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="endtime" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	</table>
+
+	<table tableName="alarm_voice">
+	<attribute name="id" type="int" length="11" decimal="0" AllowNulls="false" defaultValue="0"/>
+	<attribute name="type" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="time" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="switch" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	</table>
+
+	<table tableName="all_config">
+	<attribute name="id" type="int" length="11" decimal="0" AllowNulls="false" defaultValue="0"/>
+	<attribute name="singleMACAddress" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="addressAgeSwitch" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="macAddressAgeDate" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="throwWrapDateGap" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="fdiStatus" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="fidMel" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="apsRecoverTime" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="crcVerify" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="throwWrap" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="receiveBadWrap" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="align" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="mirrorModel" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="mirrorByPort" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="mirrorPort" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="mplsTPControl" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="channelType" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="siteId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="tmsWorsen" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="tmsLose" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="tmcfdi" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="tmcmel" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="apsModel" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="roundEnable" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="vlanMAC" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="vlanValue" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="macNumber" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="lacp" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="equipmentPriority" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	</table>
+
+	<table tableName="blacklistmac">
+	<attribute name="id" type="int" length="11" decimal="0" AllowNulls="false" defaultValue="0"/>
+	<attribute name="siteId" type="int" length="11" decimal="0" AllowNulls="false" defaultValue="0"/>
+	<attribute name="vlanId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="mac" type="varchar" length="255" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="portId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	</table>
+
+	<table tableName="blackwhitemacnamelist">
+	<attribute name="id" type="int" length="8" decimal="0" AllowNulls="false" defaultValue="0"/>
+	<attribute name="siteId" type="int" length="8" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="vplsServiceName" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="elanBussinessId" type="int" length="8" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="nameList" type="int" length="8" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="mac" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	</table>
+
+	<table tableName="businessid">
+	<attribute name="id" type="int" length="11" decimal="0" AllowNulls="false" defaultValue="0"/>
+	<attribute name="siteid" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="type" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="idvalue" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="idStatus" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	</table>
+
+	<table tableName="capability">
+	<attribute name="id" type="int" length="11" decimal="0" AllowNulls="false" defaultValue="0"/>
+	<attribute name="CapabilityType" type="varchar" length="20" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="CapabilityName" type="varchar" length="50" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="CapabilityDesc" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="CapabilityDisp" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="CapabilityProlate" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="CapabilityCode" type="int" length="12" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="CapabilityCounter" type="varchar" length="20" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="Manufacturer" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="UnitName" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="CapabilityDesc_en" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	</table>
+
+	<table tableName="card_inst">
+	<attribute name="id" type="int" length="11" decimal="0" AllowNulls="false" defaultValue="0"/>
+	<attribute name="siteId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="equipId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="slotId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="cardName" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="cardType" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="imagePath" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="cardx" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="cardy" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	</table>
+
+	<table tableName="client">
+	<attribute name="id" type="int" length="11" decimal="0" AllowNulls="false" defaultValue="0"/>
+	<attribute name="name" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="adress" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="phoneNumber" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="linkMan" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="area" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="grade" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="remark" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	</table>
+
+	<table tableName="clock_freque">
+	<attribute name="Id" type="int" length="11" decimal="0" AllowNulls="false" defaultValue="0"/>
+	<attribute name="siteId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="workMode" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="qlEnable" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="clockPRI" type="varchar" length="255" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="outInselect" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="outOutselect1" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="outOutselect2" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="outSelect" type="varchar" length="255" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="smOuter" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="smSystem" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="qlIn" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="qlOut" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="inQLout" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="inQLvalue" type="varchar" length="255" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="outQLvalue" type="varchar" length="255" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="InResumeTime" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="waitResumeTime" type="varchar" length="255" decimal="0" AllowNulls="true" defaultValue=""/>
+	</table>
+
+	<table tableName="code">
+	<attribute name="id" type="int" length="11" decimal="0" AllowNulls="false" defaultValue="0"/>
+	<attribute name="codeGroupId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="codeValue" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="codeName" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="orderby" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="codeENName" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	</table>
+
+	<table tableName="codegroup">
+	<attribute name="id" type="int" length="11" decimal="0" AllowNulls="false" defaultValue="0"/>
+	<attribute name="codeGroupName" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="codeIdentily" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="codeDesc" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	</table>
+
+	<table tableName="current_alarm">
+	<attribute name="id" type="int" length="8" decimal="0" AllowNulls="false" defaultValue="0"/>
+	<attribute name="siteid" type="int" length="8" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="slotId" type="int" length="8" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="objectid" type="int" length="8" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="objecttype" type="int" length="8" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="objectname" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="alarmcode" type="int" length="8" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="alarmlevel" type="int" length="8" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="happenedtime" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="confirmtime" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="clearedtime" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="ackuser" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="comments" type="varchar" length="1000" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="capabilityCode" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="capabilityIdentity" type="varchar" length="255" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="alarmlevel_temp" type="int" length="8" decimal="0" AllowNulls="true" defaultValue="0"/>
+	</table>
+
+	<table tableName="dualprotect">
+	<attribute name="id" type="int" length="11" decimal="0" AllowNulls="false" defaultValue="0"/>
+	<attribute name="protectType" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="regainModel" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="apsEnable" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="waitTime" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="lagId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="rotateWay" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="dualRelevanceGroupId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="role" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="siteId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="businessId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="dualStatus" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	</table>
+
+	<table tableName="dualrelevance">
+	<attribute name="id" type="int" length="11" decimal="0" AllowNulls="false" defaultValue="0"/>
+	<attribute name="objId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="dualGroupId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="siteId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="objType" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="tunnelId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	</table>
+
+	<table tableName="e1_inst">
+	<attribute name="id" type="int" length="11" decimal="0" AllowNulls="false" defaultValue="0"/>
+	<attribute name="siteId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="outputClockSrc" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="tdmClocksrc" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="rtpEnable" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="E1Id" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="legShield" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="legEnable" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="prestoreTimeEnable" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="prestoreTime" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="pinCount" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="pwLable" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="legId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="portName" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="modle" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="linecoding" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="impedance" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="portid" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="cardid" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	</table>
+
+	<table tableName="e1leg_inst">
+	<attribute name="id" type="int" length="11" decimal="0" AllowNulls="false" defaultValue="0"/>
+	<attribute name="E1Id" type="int" length="11" decimal="0" AllowNulls="false" defaultValue="0"/>
+	<attribute name="legShield" type="int" length="11" decimal="0" AllowNulls="false" defaultValue="0"/>
+	<attribute name="legEnable" type="int" length="11" decimal="0" AllowNulls="false" defaultValue="0"/>
+	<attribute name="prestoreTimeEnable" type="int" length="11" decimal="0" AllowNulls="false" defaultValue="0"/>
+	<attribute name="prestoreTime" type="int" length="11" decimal="0" AllowNulls="false" defaultValue="0"/>
+	<attribute name="pinCount" type="int" length="11" decimal="0" AllowNulls="false" defaultValue="0"/>
+	<attribute name="pwLable" type="int" length="11" decimal="0" AllowNulls="false" defaultValue="0"/>
+	<attribute name="legId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	</table>
+
+	<table tableName="ecn_ccn">
+	<attribute name="id" type="int" length="11" decimal="0" AllowNulls="false" defaultValue="0"/>
+	<attribute name="neId" type="varchar" length="11" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="ccnName" type="varchar" length="10" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="admin" type="varchar" length="10" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="oper" type="varchar" length="10" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="ip" type="varchar" length="25" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="peer" type="varchar" length="25" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="mtu" type="varchar" length="10" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="portname" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="status" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	</table>
+
+	<table tableName="ecn_interface">
+	<attribute name="id" type="int" length="11" decimal="0" AllowNulls="false" defaultValue="0"/>
+	<attribute name="neId" type="varchar" length="20" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="interfaceName" type="varchar" length="20" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="area" type="varchar" length="20" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="type" type="varchar" length="20" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="hello_interval" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="dead_interval" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="retransmit_interval" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="transmit_delay" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="passive" type="tinyint" length="4" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="cost" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="prioriy" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="authentication_type" type="varchar" length="20" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="activeStatus" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="OSPFStatus" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	</table>
+
+	<table tableName="ecn_mcn">
+	<attribute name="id" type="int" length="11" decimal="0" AllowNulls="false" defaultValue="0"/>
+	<attribute name="neId" type="varchar" length="20" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="ip" type="varchar" length="20" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="mtu" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	</table>
+
+	<table tableName="equip_inst">
+	<attribute name="id" type="int" length="11" decimal="0" AllowNulls="false" defaultValue="0"/>
+	<attribute name="siteId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="imagePath" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="equipx" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="equipy" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	</table>
+
+	<table tableName="ethernetoam">
+	<attribute name="id" type="int" length="11" decimal="0" AllowNulls="false" defaultValue="0"/>
+	<attribute name="siteId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="thernetOAMEnabl" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="mdMLevel" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="mpLable" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="mdName" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="mdLevel" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="maName" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="ccmsend" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="vlan" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="mepId" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="mepType" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="port" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="ccmSendEnable" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="ccmReceiveEnable" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="ccmPriority" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="lbmTlvType" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="lbmTlvTypeLength" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="lbmPriority" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="lbmDiscard" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="ltmPriority" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="aisSendEnabel" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="clientMdLevel" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="aisPriority" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="lckSendEnabel" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="lckPriority" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="aisLckSendCycle" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="tstSendEnabel" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="tstSendLevel" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="tstPurposeMepMac" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="tstPriority" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="sendWay" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="tstDiscard" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="tstTlvType" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="tstTlvLength" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="tstSendCycle" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="lmENable" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="lmPriority" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="lmSendCycle" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="dmENable" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="dmPriority" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="dmSendCycle" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="remoteMepId1" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="macAddress1" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="remoteMepId2" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="macAddress2" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="remoteMepId3" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="macAddress3" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="remoteMepId4" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="macAddress4" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="mipCreate" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="mipPort" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="slot" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="mipSlot" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="itemNumber" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="PortName" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="mipPortName" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	</table>
+
+	<table tableName="ethloop">
+	<attribute name="id" type="int" length="8" decimal="0" AllowNulls="false" defaultValue="0"/>
+	<attribute name="siteid" type="int" length="8" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="loopEnable" type="int" length="8" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="portNumber" type="int" length="8" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="loopRule" type="int" length="8" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="vlanVaue" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="ip" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="macAddress" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	</table>
+
+	<table tableName="externalclockinterface">
+	<attribute name="id" type="int" length="11" decimal="0" AllowNulls="false" defaultValue="0"/>
+	<attribute name="siteId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="interfaceName" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="managingStatus" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="workingStatus" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="interfaceMode" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="inputImpedance" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="sanBits" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="timeOffsetCompensation" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="activeStatus" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	</table>
+
+	<table tableName="field">
+	<attribute name="ID" type="int" length="11" decimal="0" AllowNulls="false" defaultValue="0"/>
+	<attribute name="FieldName" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="FieldX" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="FieldY" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="mSiteId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="objectType" type="varchar" length="200" decimal="0" AllowNulls="false" defaultValue=""/>
+	<attribute name="parentId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="workIP" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	</table>
+
+	<table tableName="frequencymanage_ne">
+	<attribute name="id" type="int" length="11" decimal="0" AllowNulls="false" defaultValue="0"/>
+	<attribute name="siteId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="startTreaty" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="oscillationLevel" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="systemRecoverTime" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="qualityLevel" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="exportRecoverTime" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="exportClockModel" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="handleModel" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="clockSuppress" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="systemJobStatus" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="systemSourcce" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="exportJobStatus" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="exportSourcce" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	</table>
+
+	<table tableName="frequencymanageclock">
+	<attribute name="id" type="int" length="11" decimal="0" AllowNulls="false" defaultValue="0"/>
+	<attribute name="siteId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="port" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="clockType" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="systemPriorLevel" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="exportPriorLevel" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="physicsState" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="logicState" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="receiveSSMValue" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="receiveSSMRealityValue" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="SSMSend" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="selectQuelityLevel" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="DNUGroup" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="recoverModel" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="externalOrder" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="manageState" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="jobState" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	</table>
+
+	<table tableName="group_spread">
+	<attribute name="id" type="int" length="11" decimal="0" AllowNulls="false" defaultValue="0"/>
+	<attribute name="smId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="vsId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="portChoose" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="macAddress" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="siteId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	</table>
+
+	<table tableName="history_alarm">
+	<attribute name="id" type="int" length="8" decimal="0" AllowNulls="false" defaultValue="0"/>
+	<attribute name="siteid" type="int" length="8" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="slotId" type="int" length="8" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="objectid" type="int" length="8" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="objecttype" type="int" length="8" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="objectname" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="alarmcode" type="int" length="8" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="alarmlevel" type="int" length="8" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="happenedtime" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="confirmtime" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="clearedtime" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="ackuser" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="comments" type="varchar" length="1000" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="alarmlevel_temp" type="int" length="8" decimal="0" AllowNulls="true" defaultValue="0"/>
+	</table>
+
+	<table tableName="history_performance">
+	<attribute name="id" type="int" length="8" decimal="0" AllowNulls="false" defaultValue="0"/>
+	<attribute name="siteId" type="int" length="8" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="slotId" type="int" length="8" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="objectid" type="int" length="8" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="objectname" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="objecttype" type="int" length="8" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="performancecode" type="int" length="8" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="performancevalue" type="float" length="20,0" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="performancetime" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="performanceEndtime" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="taskId" type="int" length="8" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="isCardOrSite" type="int" length="8" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="startTime" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	</table>
+
+	<table tableName="labelinfo">
+	<attribute name="id" type="int" length="11" decimal="0" AllowNulls="false" defaultValue="0"/>
+	<attribute name="lsrId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="labelValue" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="labelStatus" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="siteid" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="type" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	</table>
+
+	<table tableName="lagport_inst">
+	<attribute name="lagid" type="int" length="11" decimal="0" AllowNulls="false" defaultValue="0"/>
+	<attribute name="siteId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="type" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="name" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="number" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="lagMode" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	</table>
+
+	<table tableName="login_log">
+	<attribute name="id" type="int" length="11" decimal="0" AllowNulls="false" defaultValue="0"/>
+	<attribute name="user_id" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="loginTime" type="varchar" length="255" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="outTime" type="varchar" length="255" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="IP" type="varchar" length="255" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="state" type="int" length="255" decimal="0" AllowNulls="true" defaultValue="0"/>
+	</table>
+
+	<table tableName="loop_protect">
+	<attribute name="id" type="int" length="11" decimal="0" AllowNulls="false" defaultValue="0"/>
+	<attribute name="protectType" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="westSlot" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="westPort" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="eastSlot" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="eastPort" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="loopNodeNumber" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="nodeId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="logicId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="waittime" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="delaytime" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="apsenable" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="backType" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="loopId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="targetNodeId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="westLspId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="eastLspId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="siteId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="name" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="createUser" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="createTime" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="isSingle" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="activeStatus" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="westNodeId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="loopBusinessId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="eastNodeId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	</table>
+
+	<table tableName="lspinfo">
+	<attribute name="id" type="int" length="11" decimal="0" AllowNulls="false" defaultValue="0"/>
+	<attribute name="tunnelId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="pathStatus" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="aSiteId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="zSiteId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="aPortId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="zPortId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="frontLabelValue" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="backLabelValue" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="alspbusinessid" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="zlspbusinessid" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="atunnelbusinessid" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="ztunnelbusinessid" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="segmentId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="aoppositeId" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="zoppositeId" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="sourceMac" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="targetMac" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="frontTtl" type="int" length="8" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="backTtl" type="int" length="8" decimal="0" AllowNulls="true" defaultValue="0"/>
+	</table>
+
+	<table tableName="maclearninglimit">
+	<attribute name="id" type="int" length="11" decimal="0" AllowNulls="false" defaultValue="0"/>
+	<attribute name="siteId" type="int" length="11" decimal="0" AllowNulls="false" defaultValue="0"/>
+	<attribute name="portId" type="int" length="11" decimal="0" AllowNulls="false" defaultValue="0"/>
+	<attribute name="model" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="vlanId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="count" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	</table>
+
+	<table tableName="mappingrelation">
+	<attribute name="id" type="int" length="11" decimal="0" AllowNulls="false" defaultValue="0"/>
+	<attribute name="tableId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="siteId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="portId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	</table>
+
+	<table tableName="mappingtemplate">
+	<attribute name="id" type="int" length="11" decimal="0" AllowNulls="false" defaultValue="0"/>
+	<attribute name="grade" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="name" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="mappingtype" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="direction" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="model" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="value" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="groupid" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="color" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	</table>
+
+	<table tableName="mspprotect">
+	<attribute name="id" type="int" length="11" decimal="0" AllowNulls="false" defaultValue="0"/>
+	<attribute name="businessId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="protectType" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="recoveryMode" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="workPortId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="ProtectPortId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="WaitTime" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="delayTime" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="sfPriority" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="sdPriority" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="apsEnable" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="sdEnable" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="ProtectStatus" type="varchar" length="255" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="NowWorkPortId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="rotateOrder" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="siteId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="mspStatus" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="name" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	</table>
+
+	<table tableName="mspwinfo">
+	<attribute name="id" type="int" length="11" decimal="0" AllowNulls="false" defaultValue="0"/>
+	<attribute name="siteId" type="int" length="11" decimal="0" AllowNulls="false" defaultValue="0"/>
+	<attribute name="pwId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="frontTunnelId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="backTunnelId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="frontInlabel" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="frontOutlabel" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="backInlabel" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="backOutlabel" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	</table>
+
+	<table tableName="oamlinkinfo">
+	<attribute name="id" type="int" length="11" decimal="0" AllowNulls="false" defaultValue="0"/>
+	<attribute name="siteId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="objId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="objType" type="varchar" length="8" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="oamEnable" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="mode" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="mib" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="errorFrameEvent" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="lpb" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="unDirection" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="reserve1" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="reserve2" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="maxFrameLength" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="responseOutTimeThreshold" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="errorSymboEventCycle" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="errorSymboEventThreshold" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="errorFrameEventCycle" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="errorFrameEventThreshold" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="errorFrameCycleEventCycle" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="errorFrameCycleEventThreshold" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="errorFrameSecondEventCycle" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="errorFrameSecondEventThreshold" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="reserve3" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="remoteLoop" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="linkEvent" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="organicId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="factoryInfo" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="sendCycle" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="linkfailCycle" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="oamFrame" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="equipExit" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	</table>
+
+	<table tableName="oammepinfo">
+	<attribute name="id" type="int" length="11" decimal="0" AllowNulls="false" defaultValue="0"/>
+	<attribute name="serviceId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="siteId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="objType" type="varchar" length="20" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="objId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="megIcc" type="varchar" length="8" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="megUmc" type="varchar" length="8" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="mel" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="reserve1" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="reserve2" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="localMepId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="remoteMepId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="lpbOutTime" type="double" length="0" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="targetMacAdd" type="varchar" length="16" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="lck" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="lm" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="lmCycle" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="lmReserve1" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="dm" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="dmCycle" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="dmReserve1" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="reserve3" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="reserve4" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="reserve5" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="cv" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="cvCycle" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="cvReserve1" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="aps" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="ssm" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="sccTest" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="fdi" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="ringEnable" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="ringCycle" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="ringTestWay" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="offLineTestTLV" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="ringTLVLength" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="ringTLVInfo" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="tstEnable" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="tstCycle" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="tstTLVType" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="tstTLVLength" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="lspTc" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="csfEnable" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="pwTc" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="megid" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="ltEXP" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="ltTTL" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="ltEnable" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="lbTTL" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	</table>
+
+	<table tableName="oammipinfo">
+	<attribute name="id" type="int" length="11" decimal="0" AllowNulls="false" defaultValue="0"/>
+	<attribute name="serviceId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="siteId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="objType" type="varchar" length="8" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="objId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="megIcc" type="varchar" length="8" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="megUmc" type="varchar" length="8" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="mipId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="aMId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="zMId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="megid" type="varchar" length="255" decimal="0" AllowNulls="true" defaultValue=""/>
+	</table>
+
+	<table tableName="offlinesitebusi">
+	<attribute name="id" type="int" length="11" decimal="0" AllowNulls="false" defaultValue="0"/>
+	<attribute name="operId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="operType" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="Action" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="SiteId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="actionIdentify" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="parentBusiId" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="portId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="acId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="type" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	</table>
+
+	<table tableName="operation_log">
+	<attribute name="id" type="int" length="11" decimal="0" AllowNulls="false" defaultValue="0"/>
+	<attribute name="user_id" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="startTime" type="varchar" length="255" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="overTime" type="varchar" length="255" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="operationType" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="operationResult" type="int" length="255" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="IP" type="varchar" length="255" decimal="0" AllowNulls="true" defaultValue=""/>
+	</table>
+
+	<table tableName="ospf_area">
+	<attribute name="id" type="int" length="11" decimal="0" AllowNulls="false" defaultValue="0"/>
+	<attribute name="neId" type="varchar" length="255" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="area_range" type="varchar" length="255" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="type" type="varchar" length="255" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="summary" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="metric" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="status" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	</table>
+
+	<table tableName="ospf_info">
+	<attribute name="id" type="int" length="11" decimal="0" AllowNulls="false" defaultValue="0"/>
+	<attribute name="neId" type="varchar" length="255" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="enabled" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="defmetric" type="int" length="255" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="abr" type="varchar" length="255" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="refbandwidth" type="int" length="255" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="distance" type="int" length="255" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="spf_holdtime" type="int" length="255" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="spf_maxholdtime" type="int" length="255" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="spf_delay" type="int" length="255" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="refresh_time" type="int" length="255" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="version" type="varchar" length="255" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="compatiblerfc1583" type="varchar" length="255" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="ospf_area_id" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	</table>
+
+	<table tableName="ospf_redistribute">
+	<attribute name="id" type="int" length="11" decimal="0" AllowNulls="false" defaultValue="0"/>
+	<attribute name="neId" type="varchar" length="11" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="redistribute_type" type="varchar" length="50" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="type" type="varchar" length="50" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="metrictype" type="varchar" length="50" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="metric" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="enable" type="tinyint" length="4" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="status" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	</table>
+
+	<table tableName="performance_task">
+	<attribute name="id" type="int" length="8" decimal="0" AllowNulls="false" defaultValue="0"/>
+	<attribute name="siteId" type="int" length="8" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="objectid" type="int" length="8" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="objecttype" type="varchar" length="8" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="threadname" type="varchar" length="400" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="taskname" type="varchar" length="400" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="perfortype" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="monitorcycle" type="int" length="8" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="createtime" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="endtime" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="runstates" type="int" length="8" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="creater" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="taskDescribe" type="varchar" length="1000" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="slotCard" type="varchar" length="1000" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="performanceCount" type="int" length="8" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="performanceBeginCount" type="int" length="8" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="performanceType" type="int" length="8" decimal="0" AllowNulls="true" defaultValue="0"/>
+	</table>
+
+	<table tableName="pmlimit">
+	<attribute name="id" type="int" length="11) unsigne" decimal="0" AllowNulls="false" defaultValue="0"/>
+	<attribute name="HighTemp" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="CRCError" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="packetLose" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="tmsWorsen" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="tmsLose" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="receiveBadWrap" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="align" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="lowTemp" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="tmpWorsen" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="tmpLose" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="tmcWorsen" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="tmcLose" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="siteId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	</table>
+
+	<table tableName="port_inst">
+	<attribute name="portId" type="int" length="11" decimal="0" AllowNulls="false" defaultValue="0"/>
+	<attribute name="cardId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="equipId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="siteId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="portName" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="portType" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="portStatus" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="bandwidth" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="manageStatus" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="jobStatus" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="imagePath" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="portx" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="porty" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="isOccupy" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="number" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="slotnumber" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="isEnabled_code" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="parentId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="lagId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="lagNumber" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="linecoding" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="impedance" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="macAddress" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="qinqEnabled" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="expMappingLLspInput" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="expMappingLLspOutput" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="expMappingELspInput" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="expMappingELspOutput" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="mappingVlanpriToColor" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="mappingPriorityToVlanpri" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="laserEnabled" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	</table>
+
+	<table tableName="port_lag">
+	<attribute name="id" type="int" length="11" decimal="0" AllowNulls="false" defaultValue="0"/>
+	<attribute name="siteId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="lagId" type="int" length="11" decimal="0" AllowNulls="false" defaultValue="0"/>
+	<attribute name="lagModel" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="portMember" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="portStatus" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="buffer" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="mtu" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="vlanRelevance" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="ip" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="sourceMAC" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="targetMAC" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="sourceIP" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="targetIP" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="pw" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="dscp" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="exportQueue" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="portLimitation" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="broadcastBate" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="broadcastFlux" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="groupBroadcastBate" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="groupBroadcastFlux" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="floodBate" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="floodFlux" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="isUsed" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="maxFrameLength" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="vlanIC" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="vlanPriority" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="msgLoop" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="resumeModel" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="inportLimitation" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="meangerStatus" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="sMac" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="lblNetWrap" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="lblVlanTpId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="lblouterTpid" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="lblNetVlanMode" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="statusActive" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="admin" type="varchar" length="20" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="portid" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="type" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="role" type="varchar" length="10" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="expMappingLLspInput" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="expMappingLLspOutput" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="expMappingELspInput" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="expMappingELspOutput" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="mappingVlanpriToColor" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="mappingPriorityToVlanpri" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="lagStatus" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	</table>
+
+	<table tableName="port_stm">
+	<attribute name="id" type="int" length="11" decimal="0" AllowNulls="false" defaultValue="0"/>
+	<attribute name="portid" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="jobwavelength" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="sfpexpect" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="sfpreality" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="sfpvender" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="siteid" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	</table>
+
+	<table tableName="port_stm_timeslot">
+	<attribute name="id" type="int" length="11" decimal="0" AllowNulls="false" defaultValue="0"/>
+	<attribute name="siteId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="portid" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="portstmid" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="timeslotnumber" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="timeslotname" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="managerStatus" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="jobstatus" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="expectjtwo" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="sendjtwo" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="realityjtwo" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="lptim" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="expectvfive" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="sendvfive" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="realityvfive" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="checkvfive" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="isUsed" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	</table>
+
+	<table tableName="portattr">
+	<attribute name="id" type="int" length="11" decimal="0" AllowNulls="false" defaultValue="0"/>
+	<attribute name="siteId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="portId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="portSpeed" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="actualSpeed" type="varchar" length="255" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="workModel" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="maxFrameSize" type="varchar" length="255" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="fluidControl" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="exitLimit" type="varchar" length="255" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="entranceLimit" type="varchar" length="255" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="slowAgreement" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="tenWan" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="messageLoopback" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="ethernetPackaging" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="vlanTpId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="outerVlanTpId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="vlanMode" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="isBroadcast" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="broadcast" type="varchar" length="255" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="isUnicast" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="unicast" type="varchar" length="255" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="isMulticast" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="multicast" type="varchar" length="255" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="vlanId" type="varchar" length="255" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="vlanPri" type="varchar" length="255" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="vlanRelevance" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="eightIpRelevance" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="sourceMacRelevance" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="destinationMacRelevance" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="sourceIpRelevance" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="destinationIpRelevance" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="pwRelevance" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="dscpRelevance" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="staticMac" type="varchar" length="255" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="neighbourId" type="varchar" length="255" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="operMac" type="varchar" length="255" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="operId" type="varchar" length="255" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="neighbourFind" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="ccnEnable" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="nniVlanid" type="varchar" length="255" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="nniVlanpri" type="varchar" length="255" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="sfpExpectType" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="sfpActual" type="varchar" length="255" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="workWavelength" type="varchar" length="255" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="sfpVender" type="varchar" length="255" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="mappingEnable" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	</table>
+
+	<table tableName="portchildattr">
+	<attribute name="Id" type="int" length="11" decimal="0" AllowNulls="false" defaultValue="0"/>
+	<attribute name="siteId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="type" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="name" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="pwId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="portId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="model" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="TagRecognition" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="TagBehavior" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="TagValnId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="TagValnPri" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="macAddresslearn" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="portSplitHorizon" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="VCTrafficPolicing" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="cir" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="pir" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="cm" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="cbs" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="pbs" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="isused" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="buftype" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="acServiceId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="controlEnabl" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="lagid" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="jobstatus" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	</table>
+
+	<table tableName="protect_rorate">
+	<attribute name="id" type="int" length="11" decimal="0" AllowNulls="false" defaultValue="0"/>
+	<attribute name="recoverMain" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="forceStand" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="lockMain" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="manpowerStand" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="clear" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="roratePractise" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="siteId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="tunnelbusinessid" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="tunnelId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	</table>
+
+	<table tableName="protectioninfo">
+	<attribute name="id" type="int" length="11" decimal="0" AllowNulls="false" defaultValue="0"/>
+	<attribute name="tunnelId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="siteId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="objProtectType" type="varchar" length="8" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="protectionType" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="mainSlot" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="mainPort" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="mainTunnelId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="standbySlot" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="standbyPort" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="standbyTunnelId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="protractedTime" type="varchar" length="256" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="returnType" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="reserve" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	</table>
+
+	<table tableName="pwbuffer">
+	<attribute name="id" type="int" length="11" decimal="0" AllowNulls="false" defaultValue="0"/>
+	<attribute name="acId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="bufferEnable" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="vlanId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="sourceMac" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="targetMac" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="eightIp" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="sourceIp" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="targetIp" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="ipDscp" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="model" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="cir" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="pir" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="cm" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="cbs" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="pbs" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="strategy" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="phb" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	</table>
+
+	<table tableName="pwinfo">
+	<attribute name="pwId" type="int" length="11" decimal="0" AllowNulls="false" defaultValue="0"/>
+	<attribute name="pwName" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="pwStatus" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="tunnelId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="inlabelValue" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="outlabelValue" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="aSiteId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="zSiteId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="direction" type="varchar" length="1000" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="createTime" type="datetime" length="0" decimal="0" AllowNulls="true" defaultValue="1970-01-01 00:00:00"/>
+	<attribute name="createUser" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="apwServiceId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="zpwServiceId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="rserviceId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="rserviceType" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="aPortConfigId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="zPortConfigId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="type" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="isSingle" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="aoppositeId" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="zoppositeId" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="jobstatus" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="expStrategy" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="expAssignment" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="phbToExpId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="phbStrategy" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="phbAssignment" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="expTophbId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="payload" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="aVlanEnable" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="aOutVlanValue" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="aSourceMac" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="atargetMac" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="zVlanEnable" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="zOutVlanValue" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="zSourceMac" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="ztargetMac" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="businessType" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="backInlabel" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="backOutlabel" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="atp_id" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="ztp_id" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	</table>
+
+	<table tableName="pwnnibuffer">
+	<attribute name="Id" type="int" length="11" decimal="0" AllowNulls="false" defaultValue="0"/>
+	<attribute name="siteId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="pwId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="pwBusinessId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="exitRule" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="svlan" type="varchar" length="255" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="tpid" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="vlanpri" type="varchar" length="255" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="horizontalDivision" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="macAddressLearn" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="tagAction" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="ControlEnable" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	</table>
+
+	<table tableName="pwprotect">
+	<attribute name="id" type="int" length="11" decimal="0" AllowNulls="false" defaultValue="0"/>
+	<attribute name="protectType" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="mainSlot" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="mainPort" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="mainTunnelId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="mainPwId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="standSlot" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="standPort" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="standTunnelId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="standPwId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="delayTime" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="backType" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="businessId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="siteId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="serviceId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	</table>
+
+	<table tableName="qinqchildinst">
+	<attribute name="id" type="int" length="11" decimal="0" AllowNulls="false" defaultValue="0"/>
+	<attribute name="qinqId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="aSiteId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="zSiteId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="aPortId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="zPortId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="aServiceId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="zServiceId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="segmentId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="pathStatus" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="aSiteVlanIdRule" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="zSiteVlanIdRule" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	</table>
+
+	<table tableName="qinqinst">
+	<attribute name="qinqId" type="int" length="11" decimal="0" AllowNulls="false" defaultValue="0"/>
+	<attribute name="qinqName" type="varchar" length="255" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="tpId" type="varchar" length="255" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="aSiteId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="zSiteId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="aPortId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="zPortId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="aAcPortId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="zAcPortId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="acVlanIdRule" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="minVlanId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="maxVlanId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="createTime" type="varchar" length="255" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="createUser" type="varchar" length="255" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="vlanId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="qinqStatus" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="basedInVlanId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	</table>
+
+	<table tableName="qosinfo">
+	<attribute name="id" type="int" length="4" decimal="0" AllowNulls="false" defaultValue="0"/>
+	<attribute name="siteId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="groupId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="qosType" type="varchar" length="16" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="qosname" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="seq" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="cos" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="direction" type="varchar" length="1000" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="cir" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="cbs" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="eir" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="ebs" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="pir" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="pbs" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="strategy" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="colorSense" type="int" length="4" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="status" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	</table>
+
+	<table tableName="qosmodel">
+	<attribute name="id" type="int" length="11" decimal="0" AllowNulls="false" defaultValue="0"/>
+	<attribute name="name" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="type" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="siteId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="typeName" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="businessId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	</table>
+
+	<table tableName="qosqueue">
+	<attribute name="id" type="int" length="11" decimal="0" AllowNulls="false" defaultValue="0"/>
+	<attribute name="serviceId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="siteId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="objType" type="varchar" length="32" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="objId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="queueType" type="varchar" length="32" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="cos" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="cir" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="weight" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="greenLowThresh" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="greenHighThresh" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="greenProbability" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="yellowLowThresh" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="yellowHighThresh" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="yellowProbability" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="wredEnable" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="mostBandwidth" type="varchar" length="32" decimal="0" AllowNulls="true" defaultValue=""/>
+	</table>
+
+	<table tableName="qosrelevance">
+	<attribute name="id" type="int" length="11" decimal="0" AllowNulls="false" defaultValue="0"/>
+	<attribute name="objType" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="objId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="siteId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="qosGroupId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	</table>
+
+	<table tableName="qostable">
+	<attribute name="id" type="int" length="11" decimal="0" AllowNulls="false" defaultValue="0"/>
+	<attribute name="qosModelId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="grade" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="name" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="value" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="siteId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="model" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="direction" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="color" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	</table>
+
+	<table tableName="qostemplateinfo">
+	<attribute name="id" type="int" length="11" decimal="0" AllowNulls="false" defaultValue="0"/>
+	<attribute name="templateName" type="varchar" length="32" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="qosType" type="varchar" length="16" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="seq" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="cos" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="direction" type="varchar" length="8" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="cir" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="cbs" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="eir" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="ebs" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="pir" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="pbs" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="strategy" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="colorSense" type="int" length="4" decimal="0" AllowNulls="true" defaultValue="0"/>
+	</table>
+
+	<table tableName="roleinfo">
+	<attribute name="id" type="int" length="11" decimal="0" AllowNulls="false" defaultValue="0"/>
+	<attribute name="roleName" type="varchar" length="255" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="remark" type="varchar" length="255" decimal="0" AllowNulls="true" defaultValue=""/>
+	</table>
+
+	<table tableName="rolemanage">
+	<attribute name="id" type="int" length="11" decimal="0" AllowNulls="false" defaultValue="0"/>
+	<attribute name="name" type="varchar" length="255" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="name_en" type="varchar" length="255" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="label" type="int" length="255" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="parentId" type="int" length="11" decimal="0" AllowNulls="false" defaultValue="0"/>
+	<attribute name="isVisible" type="int" length="11) unsigned zerofil" decimal="0" AllowNulls="true" defaultValue="0"/>
+	</table>
+
+	<table tableName="rolerelevance">
+	<attribute name="id" type="int" length="11" decimal="0" AllowNulls="false" defaultValue="0"/>
+	<attribute name="infoId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="manageId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	</table>
+
+	<table tableName="segment">
+	<attribute name="ID" type="int" length="11" decimal="0" AllowNulls="false" defaultValue="0"/>
+	<attribute name="NAME" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="BANDWIDTH" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="TYPE" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="ASITEID" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="speed" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="ZSITEID" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="APORTID" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="ZPORTID" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="CREATUSER" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="CREATTIME" type="datetime" length="0" decimal="0" AllowNulls="true" defaultValue="1970-01-01 00:00:00"/>
+	<attribute name="ASLOT" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="ZSLOT" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	</table>
+
+	<table tableName="serviceinfo">
+	<attribute name="id" type="int" length="11" decimal="0" AllowNulls="false" defaultValue="0"/>
+	<attribute name="serviceId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="pwId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="serviceType" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="name" type="char" length="200" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="aXcId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="zXcId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="activeStatus" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="rootSite" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="branchSite" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="aAcId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="zAcId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="createUser" type="char" length="40" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="createTime" type="datetime" length="0" decimal="0" AllowNulls="true" defaultValue="1970-01-01 00:00:00"/>
+	<attribute name="aSiteId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="zSiteId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="isSingle" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="cestype" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="jobstatus" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="clientId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="branchMainSite" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="branchProtectSite" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	</table>
+
+	<table tableName="single_spread">
+	<attribute name="id" type="int" length="11" decimal="0" AllowNulls="false" defaultValue="0"/>
+	<attribute name="suId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="vsId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="singlePortChoose" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="macAddress" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="siteId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	</table>
+
+	<table tableName="site_inst">
+	<attribute name="site_inst_id" type="int" length="11" decimal="0" AllowNulls="false" defaultValue="0"/>
+	<attribute name="site_Hum_id" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="CellDescribe" type="varchar" length="2000" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="CellId" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="CellType" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="CellEditon" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="CellIcccode" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="CellTPoam" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="CellTimeZone" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="CellTime" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="CellTimeServer" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="CellIdentifier" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="FieldID" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="SiteX" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="SiteY" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="Type" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="Swich" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="username" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="userpwd" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="loginstatus" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="versions" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="isGateway" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="manufacturer" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="siteType" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="createTime" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="isCreateDiscardFlow" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	</table>
+
+	<table tableName="site_roate">
+	<attribute name="id" type="int" length="11" decimal="0" AllowNulls="false" defaultValue="0"/>
+	<attribute name="siteId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="typeId" type="int" length="255" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="type" type="varchar" length="255" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="roate" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="siteRoate" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	</table>
+
+	<table tableName="sitelock">
+	<attribute name="id" type="int" length="11" decimal="0" AllowNulls="false" defaultValue="0"/>
+	<attribute name="siteId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="lockType" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="lockStatus" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="lockUser" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="lockDate" type="datetime" length="0" decimal="0" AllowNulls="true" defaultValue="1970-01-01 00:00:00"/>
+	<attribute name="clearUser" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="clearDate" type="datetime" length="0" decimal="0" AllowNulls="true" defaultValue="1970-01-01 00:00:00"/>
+	<attribute name="isForceClear" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	</table>
+
+	<table tableName="slot_inst">
+	<attribute name="id" type="int" length="11" decimal="0" AllowNulls="false" defaultValue="0"/>
+	<attribute name="siteId" type="int" length="11" decimal="0" AllowNulls="false" defaultValue="0"/>
+	<attribute name="equipId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="cardId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="imagePath" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="slotType" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="slotx" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="sloty" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="bestCardName" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="number" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="masterCardAddress" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	</table>
+
+	<table tableName="timeclockinterfac">
+	<attribute name="id" type="int" length="11" decimal="0" AllowNulls="false" defaultValue="0"/>
+	<attribute name="siteId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="port" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="rate" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="ssmSendingEnabled" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="dnuGroup" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="portName" type="varchar" length="255" decimal="0" AllowNulls="true" defaultValue=""/>
+	</table>
+
+	<table tableName="timeneptp">
+	<attribute name="id" type="int" length="11" decimal="0" AllowNulls="false" defaultValue="0"/>
+	<attribute name="siteId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="model" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="ClockType" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="clockPrecision" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="clockVariance" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="priorOne" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="priorTwo" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="manufacturerOUI" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="clockRegion" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="clockRegionOne" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="clockRegionTwoJbox" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="clockRegionTwo" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="clockRegionThreeJbox" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="clockRegionThree" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="clockRegionFourJbox" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="clockRegionFour" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="clockRegionDelay" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="followModel" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="todsendTime" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="timeID" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="timeType" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="ftimeID" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="ftimePort" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="leapNumber" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="systemVarianceValue" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="todState" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="zTimeID" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="zTimeTpye" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="zTimePrecision" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="zTimeVariance" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="zTimePriorOne" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="zTimePriorTwo" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	</table>
+
+	<table tableName="timeportdisposition">
+	<attribute name="id" type="int" length="11" decimal="0" AllowNulls="false" defaultValue="0"/>
+	<attribute name="siteId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="port" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="portEnable" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="clockModel" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="delayMechanism" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="vlanID" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="operationMode" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="portStatus" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="timeStampMode" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="AnncPacketsInterval" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="AnncTimeoutSetting" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="SyncPacketsInterval" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="Delay_ReqPacketsInterval" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="Pdel_ReqPacketsInterval" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="lineDelayCompensation" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="delayCompensationMeasure" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="portMapping" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="interfaceType" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	</table>
+
+	<table tableName="timeportdispositiontod">
+	<attribute name="id" type="int" length="11" decimal="0" AllowNulls="false" defaultValue="0"/>
+	<attribute name="siteId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="port" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="interfaceType" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="physicalStatus" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="logicalStatus" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="priority1" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="clockType" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="clockAccuracy" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="clockVariance" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="priority2" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	</table>
+
+	<table tableName="tunnel">
+	<attribute name="tunnelId" type="int" length="11" decimal="0" AllowNulls="false" defaultValue="0"/>
+	<attribute name="tunnelName" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="tunnelType" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="tunnelStatus" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="bandwidth" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="aSiteId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="zSiteId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="aPortId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="zPortId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="direction" type="varchar" length="1000" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="createTime" type="datetime" length="0" decimal="0" AllowNulls="true" defaultValue="1970-01-01 00:00:00"/>
+	<attribute name="createUser" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="isReverse" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="protectTunnelId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="protectType" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="protectTunnelName" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="isSingle" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="jobStatus" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="waittime" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="delaytime" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="apsenable" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="position" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="protectBack" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="aprotectId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="zprotectId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="sncpIds" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="inBandwidthControl" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="outBandwidthControl" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	</table>
+
+	<table tableName="udaattr">
+	<attribute name="id" type="int" length="11" decimal="0" AllowNulls="false" defaultValue="0"/>
+	<attribute name="groupId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="attrName" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="attrENName" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="attrType" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="isNeedText" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="codeGroupId" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="defaultValue" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="width" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="height" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="distanceLeft" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="distanceTop" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="isTableShow" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="isMustFill" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	</table>
+
+	<table tableName="udagroup">
+	<attribute name="id" type="int" length="11" decimal="0" AllowNulls="false" defaultValue="0"/>
+	<attribute name="groupName" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="groupType" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="parentId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="parentName" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	</table>
+
+	<table tableName="unload_manager">
+	<attribute name="id" type="int" length="11" decimal="0" AllowNulls="false" defaultValue="0"/>
+	<attribute name="unloadType" type="int" length="255" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="cellType" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="unloadLimit" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="spillEntry" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="holdEntry" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="unloadMod" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="fileWay" type="varchar" length="255" decimal="0" AllowNulls="true" defaultValue=""/>
+	</table>
+
+	<table tableName="user_field">
+	<attribute name="id" type="int" length="11" decimal="0" AllowNulls="false" defaultValue="0"/>
+	<attribute name="user_id" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="field_id" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	</table>
+
+	<table tableName="user_inst">
+	<attribute name="user_id" type="int" length="11" decimal="0" AllowNulls="false" defaultValue="0"/>
+	<attribute name="user_name" type="varchar" length="200" decimal="0" AllowNulls="false" defaultValue=""/>
+	<attribute name="user_pass" type="varchar" length="200" decimal="0" AllowNulls="false" defaultValue=""/>
+	<attribute name="roleInfo_id" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="isAll" type="int" length="1" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="user_inface" type="varchar" length="255" decimal="0" AllowNulls="true" defaultValue=""/>
+	</table>
+
+	<table tableName="user_lock">
+	<attribute name="id" type="int" length="11" decimal="0" AllowNulls="false" defaultValue="0"/>
+	<attribute name="user_id" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="lockTime" type="varchar" length="255" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="clearTime" type="varchar" length="255" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="lockType" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="clearType" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="lockUsername" type="varchar" length="255" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="clearUsername" type="varchar" length="255" decimal="0" AllowNulls="true" defaultValue=""/>
+	</table>
+
+	<table tableName="userdesgin">
+	<attribute name="id" type="int" length="11" decimal="0" AllowNulls="false" defaultValue="0"/>
+	<attribute name="isLockSelect" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="timeValue" type="varchar" length="20" decimal="0" AllowNulls="true" defaultValue=""/>
+	</table>
+
+	<table tableName="v35port_inst">
+	<attribute name="id" type="int" length="11" decimal="0" AllowNulls="false" defaultValue="0"/>
+	<attribute name="siteId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="fourthLeg" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="timeModel" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="frame" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="time1" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="time2" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="time3" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="time4" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="time5" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="time6" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="time7" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="time8" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="time9" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="time10" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="time11" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="time12" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="time13" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="time14" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="time15" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="time16" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="time17" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="time18" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="time19" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="time20" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="time21" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="time22" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="time23" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="time24" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="time25" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="time26" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="time27" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="time28" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="time29" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="time30" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="time31" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	</table>
+
+	<table tableName="warninglevel">
+	<attribute name="id" type="int" length="11" decimal="0" AllowNulls="false" defaultValue="0"/>
+	<attribute name="WarningName" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="WarningNote" type="varchar" length="2000" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="WarningLevel_temp" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="WarningLevel" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="WarningCode" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="WarningObject" type="varchar" length="200" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="WarningType" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="WarningDescribe" type="varchar" length="2000" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="WaringEffect" type="varchar" length="2000" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="WaringRemark" type="varchar" length="2000" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="Manufacturer" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	</table>
+
+	<table tableName="workips">
+	<attribute name="id" type="int" length="11" decimal="0" AllowNulls="false" defaultValue="0"/>
+	<attribute name="fileId" type="int" length="11" decimal="0" AllowNulls="true" defaultValue="0"/>
+	<attribute name="workIp1" type="varchar" length="20" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="workIp2" type="varchar" length="20" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="workIp3" type="varchar" length="20" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="workIp4" type="varchar" length="20" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="workIp5" type="varchar" length="20" decimal="0" AllowNulls="true" defaultValue=""/>
+	<attribute name="workIp6" type="varchar" length="20" decimal="0" AllowNulls="true" defaultValue=""/>
+	</table>
+
+</xml-boby>

@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<driveRoot  xmlns="http://drive.bean.com">
+	<attribute length="1" description="工作站的用户" value="" mapping=""/>
+</driveRoot>

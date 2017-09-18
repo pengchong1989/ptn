@@ -1,0 +1,579 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nms.db.dao.ptn.port.AcbufferMapper" >
+  <resultMap id="BaseResultMap" type="Acbuffer" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="acId" property="acid" jdbcType="INTEGER" />
+    <result column="bufferEnable" property="bufferenable" jdbcType="INTEGER" />
+    <result column="vlanId" property="vlanid" jdbcType="INTEGER" />
+    <result column="sourceMac" property="sourcemac" jdbcType="VARCHAR" />
+    <result column="targetMac" property="targetmac" jdbcType="VARCHAR" />
+    <result column="eightIp" property="eightip" jdbcType="INTEGER" />
+    <result column="sourceIp" property="sourceip" jdbcType="VARCHAR" />
+    <result column="targetIp" property="targetip" jdbcType="VARCHAR" />
+    <result column="ipDscp" property="ipdscp" jdbcType="INTEGER" />
+    <result column="model" property="model" jdbcType="INTEGER" />
+    <result column="cir" property="cir" jdbcType="INTEGER" />
+    <result column="pir" property="pir" jdbcType="INTEGER" />
+    <result column="cm" property="cm" jdbcType="INTEGER" />
+    <result column="cbs" property="cbs" jdbcType="INTEGER" />
+    <result column="pbs" property="pbs" jdbcType="INTEGER" />
+    <result column="strategy" property="strategy" jdbcType="INTEGER" />
+    <result column="phb" property="phb" jdbcType="INTEGER" />
+    <result column="portId" property="portid" jdbcType="INTEGER" />
+    <result column="siteId" property="siteid" jdbcType="INTEGER" />
+    <result column="clientVlanIdValue" property="clientvlanidvalue" jdbcType="VARCHAR" />
+    <result column="clientVlanIdMask" property="clientvlanidmask" jdbcType="VARCHAR" />
+    <result column="operatorVlanIdValue" property="operatorvlanidvalue" jdbcType="VARCHAR" />
+    <result column="operatorVlanIdMask" property="operatorvlanidmask" jdbcType="VARCHAR" />
+    <result column="clientVlanPriorityValue" property="clientvlanpriorityvalue" jdbcType="VARCHAR" />
+    <result column="clientVlanPriorityMask" property="clientvlanprioritymask" jdbcType="VARCHAR" />
+    <result column="operatorVlanPriorityValue" property="operatorvlanpriorityvalue" jdbcType="VARCHAR" />
+    <result column="operatorVlanPriorityMask" property="operatorvlanprioritymask" jdbcType="VARCHAR" />
+    <result column="ethernetTypeValue" property="ethernettypevalue" jdbcType="VARCHAR" />
+    <result column="ethernetTypeMask" property="ethernettypemask" jdbcType="VARCHAR" />
+    <result column="sourceMacLabelMask" property="sourcemaclabelmask" jdbcType="VARCHAR" />
+    <result column="sinkMacLabelMask" property="sinkmaclabelmask" jdbcType="VARCHAR" />
+    <result column="iPTypeValue" property="iptypevalue" jdbcType="VARCHAR" />
+    <result column="iPTypeMask" property="iptypemask" jdbcType="VARCHAR" />
+    <result column="sourceIpLabelMask" property="sourceiplabelmask" jdbcType="VARCHAR" />
+    <result column="sinkIpLabelMask" property="sinkiplabelmask" jdbcType="VARCHAR" />
+    <result column="appendBufferName" property="appendbuffername" jdbcType="VARCHAR" />
+    <result column="qosName" property="qosname" jdbcType="VARCHAR" />
+    <result column="qosType" property="qostype" jdbcType="VARCHAR" />
+    <result column="simpleQosId" property="simpleqosid" jdbcType="INTEGER" />
+    <result column="ebs" property="ebs" jdbcType="INTEGER" />
+    <result column="eir" property="eir" jdbcType="INTEGER" />
+    <result column="sourceTcpPort" property="sourcetcpport" jdbcType="INTEGER" />
+    <result column="endTcpPort" property="endtcpport" jdbcType="INTEGER" />
+    <result column="IPToS" property="iptos" jdbcType="INTEGER" />
+    <result column="portType" property="porttype" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, acId, bufferEnable, vlanId, sourceMac, targetMac, eightIp, sourceIp, targetIp, 
+    ipDscp, model, cir, pir, cm, cbs, pbs, strategy, phb, portId, siteId, clientVlanIdValue, 
+    clientVlanIdMask, operatorVlanIdValue, operatorVlanIdMask, clientVlanPriorityValue, 
+    clientVlanPriorityMask, operatorVlanPriorityValue, operatorVlanPriorityMask, ethernetTypeValue, 
+    ethernetTypeMask, sourceMacLabelMask, sinkMacLabelMask, iPTypeValue, iPTypeMask, 
+    sourceIpLabelMask, sinkIpLabelMask, appendBufferName, qosName, qosType, simpleQosId, 
+    ebs, eir, sourceTcpPort, endTcpPort, IPToS, portType
+  </sql>
+  <select id="query" resultType="Acbuffer" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from acbuffer where acId=#{acId}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from acbuffer
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="Acbuffer" >
+    insert into acbuffer (id, acId, bufferEnable, 
+      vlanId, sourceMac, targetMac, 
+      eightIp, sourceIp, targetIp, 
+      ipDscp, model, cir, 
+      pir, cm, cbs, pbs, 
+      strategy, phb, portId, 
+      siteId, clientVlanIdValue, clientVlanIdMask, 
+      operatorVlanIdValue, operatorVlanIdMask, 
+      clientVlanPriorityValue, clientVlanPriorityMask, 
+      operatorVlanPriorityValue, operatorVlanPriorityMask, 
+      ethernetTypeValue, ethernetTypeMask, sourceMacLabelMask, 
+      sinkMacLabelMask, iPTypeValue, iPTypeMask, 
+      sourceIpLabelMask, sinkIpLabelMask, appendBufferName, 
+      qosName, qosType, simpleQosId, 
+      ebs, eir, sourceTcpPort, 
+      endTcpPort, IPToS, portType
+      )
+    values (#{id,jdbcType=INTEGER}, #{acId,jdbcType=INTEGER}, #{bufferEnable,jdbcType=INTEGER}, 
+      #{vlanId,jdbcType=INTEGER}, #{sourceMac,jdbcType=VARCHAR}, #{targetMac,jdbcType=VARCHAR}, 
+      #{eightIp,jdbcType=INTEGER}, #{sourceIp,jdbcType=VARCHAR}, #{targetIp,jdbcType=VARCHAR}, 
+      #{ipDscp,jdbcType=INTEGER}, #{model,jdbcType=INTEGER}, #{cir,jdbcType=INTEGER}, 
+      #{pir,jdbcType=INTEGER}, #{cm,jdbcType=INTEGER}, #{cbs,jdbcType=INTEGER}, #{pbs,jdbcType=INTEGER}, 
+      #{strategy,jdbcType=INTEGER}, #{phb,jdbcType=INTEGER}, #{portId,jdbcType=INTEGER}, 
+      #{siteId,jdbcType=INTEGER}, #{clientVlanIdValue,jdbcType=VARCHAR}, #{clientVlanIdMask,jdbcType=VARCHAR}, 
+      #{operatorVlanIdValue,jdbcType=VARCHAR}, #{operatorVlanIdMask,jdbcType=VARCHAR}, 
+      #{clientVlanPriorityValue,jdbcType=VARCHAR}, #{clientVlanPriorityMask,jdbcType=VARCHAR}, 
+      #{operatorVlanPriorityValue,jdbcType=VARCHAR}, #{operatorVlanPriorityMask,jdbcType=VARCHAR}, 
+      #{ethernetTypeValue,jdbcType=VARCHAR}, #{ethernetTypeMask,jdbcType=VARCHAR}, #{sourceMacLabelMask,jdbcType=VARCHAR}, 
+      #{sinkMacLabelMask,jdbcType=VARCHAR}, #{iPTypeValue,jdbcType=VARCHAR}, #{iPTypeMask,jdbcType=VARCHAR}, 
+      #{sourceIpLabelMask,jdbcType=VARCHAR}, #{sinkIpLabelMask,jdbcType=VARCHAR}, #{appendBufferName,jdbcType=VARCHAR}, 
+      #{qosName,jdbcType=VARCHAR}, #{qosType,jdbcType=VARCHAR}, #{simpleQosId,jdbcType=INTEGER}, 
+      #{ebs,jdbcType=INTEGER}, #{eir,jdbcType=INTEGER}, #{sourceTcpPortId,jdbcType=INTEGER}, 
+      #{endTcpPortId,jdbcType=INTEGER}, #{IPTOS,jdbcType=INTEGER}, #{portType,jdbcType=INTEGER}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="Acbuffer" >
+    insert into acbuffer
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="acid != null" >
+        acId,
+      </if>
+      <if test="bufferenable != null" >
+        bufferEnable,
+      </if>
+      <if test="vlanid != null" >
+        vlanId,
+      </if>
+      <if test="sourcemac != null" >
+        sourceMac,
+      </if>
+      <if test="targetmac != null" >
+        targetMac,
+      </if>
+      <if test="eightip != null" >
+        eightIp,
+      </if>
+      <if test="sourceip != null" >
+        sourceIp,
+      </if>
+      <if test="targetip != null" >
+        targetIp,
+      </if>
+      <if test="ipdscp != null" >
+        ipDscp,
+      </if>
+      <if test="model != null" >
+        model,
+      </if>
+      <if test="cir != null" >
+        cir,
+      </if>
+      <if test="pir != null" >
+        pir,
+      </if>
+      <if test="cm != null" >
+        cm,
+      </if>
+      <if test="cbs != null" >
+        cbs,
+      </if>
+      <if test="pbs != null" >
+        pbs,
+      </if>
+      <if test="strategy != null" >
+        strategy,
+      </if>
+      <if test="phb != null" >
+        phb,
+      </if>
+      <if test="portid != null" >
+        portId,
+      </if>
+      <if test="siteid != null" >
+        siteId,
+      </if>
+      <if test="clientvlanidvalue != null" >
+        clientVlanIdValue,
+      </if>
+      <if test="clientvlanidmask != null" >
+        clientVlanIdMask,
+      </if>
+      <if test="operatorvlanidvalue != null" >
+        operatorVlanIdValue,
+      </if>
+      <if test="operatorvlanidmask != null" >
+        operatorVlanIdMask,
+      </if>
+      <if test="clientvlanpriorityvalue != null" >
+        clientVlanPriorityValue,
+      </if>
+      <if test="clientvlanprioritymask != null" >
+        clientVlanPriorityMask,
+      </if>
+      <if test="operatorvlanpriorityvalue != null" >
+        operatorVlanPriorityValue,
+      </if>
+      <if test="operatorvlanprioritymask != null" >
+        operatorVlanPriorityMask,
+      </if>
+      <if test="ethernettypevalue != null" >
+        ethernetTypeValue,
+      </if>
+      <if test="ethernettypemask != null" >
+        ethernetTypeMask,
+      </if>
+      <if test="sourcemaclabelmask != null" >
+        sourceMacLabelMask,
+      </if>
+      <if test="sinkmaclabelmask != null" >
+        sinkMacLabelMask,
+      </if>
+      <if test="iptypevalue != null" >
+        iPTypeValue,
+      </if>
+      <if test="iptypemask != null" >
+        iPTypeMask,
+      </if>
+      <if test="sourceiplabelmask != null" >
+        sourceIpLabelMask,
+      </if>
+      <if test="sinkiplabelmask != null" >
+        sinkIpLabelMask,
+      </if>
+      <if test="appendbuffername != null" >
+        appendBufferName,
+      </if>
+      <if test="qosname != null" >
+        qosName,
+      </if>
+      <if test="qostype != null" >
+        qosType,
+      </if>
+      <if test="simpleqosid != null" >
+        simpleQosId,
+      </if>
+      <if test="ebs != null" >
+        ebs,
+      </if>
+      <if test="eir != null" >
+        eir,
+      </if>
+      <if test="sourcetcpport != null" >
+        sourceTcpPort,
+      </if>
+      <if test="endtcpport != null" >
+        endTcpPort,
+      </if>
+      <if test="iptos != null" >
+        IPToS,
+      </if>
+      <if test="porttype != null" >
+        portType,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="acid != null" >
+        #{acid,jdbcType=INTEGER},
+      </if>
+      <if test="bufferenable != null" >
+        #{bufferenable,jdbcType=INTEGER},
+      </if>
+      <if test="vlanid != null" >
+        #{vlanid,jdbcType=INTEGER},
+      </if>
+      <if test="sourcemac != null" >
+        #{sourcemac,jdbcType=VARCHAR},
+      </if>
+      <if test="targetmac != null" >
+        #{targetmac,jdbcType=VARCHAR},
+      </if>
+      <if test="eightip != null" >
+        #{eightip,jdbcType=INTEGER},
+      </if>
+      <if test="sourceip != null" >
+        #{sourceip,jdbcType=VARCHAR},
+      </if>
+      <if test="targetip != null" >
+        #{targetip,jdbcType=VARCHAR},
+      </if>
+      <if test="ipdscp != null" >
+        #{ipdscp,jdbcType=INTEGER},
+      </if>
+      <if test="model != null" >
+        #{model,jdbcType=INTEGER},
+      </if>
+      <if test="cir != null" >
+        #{cir,jdbcType=INTEGER},
+      </if>
+      <if test="pir != null" >
+        #{pir,jdbcType=INTEGER},
+      </if>
+      <if test="cm != null" >
+        #{cm,jdbcType=INTEGER},
+      </if>
+      <if test="cbs != null" >
+        #{cbs,jdbcType=INTEGER},
+      </if>
+      <if test="pbs != null" >
+        #{pbs,jdbcType=INTEGER},
+      </if>
+      <if test="strategy != null" >
+        #{strategy,jdbcType=INTEGER},
+      </if>
+      <if test="phb != null" >
+        #{phb,jdbcType=INTEGER},
+      </if>
+      <if test="portid != null" >
+        #{portid,jdbcType=INTEGER},
+      </if>
+      <if test="siteid != null" >
+        #{siteid,jdbcType=INTEGER},
+      </if>
+      <if test="clientvlanidvalue != null" >
+        #{clientvlanidvalue,jdbcType=VARCHAR},
+      </if>
+      <if test="clientvlanidmask != null" >
+        #{clientvlanidmask,jdbcType=VARCHAR},
+      </if>
+      <if test="operatorvlanidvalue != null" >
+        #{operatorvlanidvalue,jdbcType=VARCHAR},
+      </if>
+      <if test="operatorvlanidmask != null" >
+        #{operatorvlanidmask,jdbcType=VARCHAR},
+      </if>
+      <if test="clientvlanpriorityvalue != null" >
+        #{clientvlanpriorityvalue,jdbcType=VARCHAR},
+      </if>
+      <if test="clientvlanprioritymask != null" >
+        #{clientvlanprioritymask,jdbcType=VARCHAR},
+      </if>
+      <if test="operatorvlanpriorityvalue != null" >
+        #{operatorvlanpriorityvalue,jdbcType=VARCHAR},
+      </if>
+      <if test="operatorvlanprioritymask != null" >
+        #{operatorvlanprioritymask,jdbcType=VARCHAR},
+      </if>
+      <if test="ethernettypevalue != null" >
+        #{ethernettypevalue,jdbcType=VARCHAR},
+      </if>
+      <if test="ethernettypemask != null" >
+        #{ethernettypemask,jdbcType=VARCHAR},
+      </if>
+      <if test="sourcemaclabelmask != null" >
+        #{sourcemaclabelmask,jdbcType=VARCHAR},
+      </if>
+      <if test="sinkmaclabelmask != null" >
+        #{sinkmaclabelmask,jdbcType=VARCHAR},
+      </if>
+      <if test="iptypevalue != null" >
+        #{iptypevalue,jdbcType=VARCHAR},
+      </if>
+      <if test="iptypemask != null" >
+        #{iptypemask,jdbcType=VARCHAR},
+      </if>
+      <if test="sourceiplabelmask != null" >
+        #{sourceiplabelmask,jdbcType=VARCHAR},
+      </if>
+      <if test="sinkiplabelmask != null" >
+        #{sinkiplabelmask,jdbcType=VARCHAR},
+      </if>
+      <if test="appendbuffername != null" >
+        #{appendbuffername,jdbcType=VARCHAR},
+      </if>
+      <if test="qosname != null" >
+        #{qosname,jdbcType=VARCHAR},
+      </if>
+      <if test="qostype != null" >
+        #{qostype,jdbcType=VARCHAR},
+      </if>
+      <if test="simpleqosid != null" >
+        #{simpleqosid,jdbcType=INTEGER},
+      </if>
+      <if test="ebs != null" >
+        #{ebs,jdbcType=INTEGER},
+      </if>
+      <if test="eir != null" >
+        #{eir,jdbcType=INTEGER},
+      </if>
+      <if test="sourcetcpport != null" >
+        #{sourcetcpport,jdbcType=INTEGER},
+      </if>
+      <if test="endtcpport != null" >
+        #{endtcpport,jdbcType=INTEGER},
+      </if>
+      <if test="iptos != null" >
+        #{iptos,jdbcType=INTEGER},
+      </if>
+      <if test="porttype != null" >
+        #{porttype,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="Acbuffer" >
+    update acbuffer
+    <set >
+      <if test="acid != null" >
+        acId = #{acid,jdbcType=INTEGER},
+      </if>
+      <if test="bufferenable != null" >
+        bufferEnable = #{bufferenable,jdbcType=INTEGER},
+      </if>
+      <if test="vlanid != null" >
+        vlanId = #{vlanid,jdbcType=INTEGER},
+      </if>
+      <if test="sourcemac != null" >
+        sourceMac = #{sourcemac,jdbcType=VARCHAR},
+      </if>
+      <if test="targetmac != null" >
+        targetMac = #{targetmac,jdbcType=VARCHAR},
+      </if>
+      <if test="eightip != null" >
+        eightIp = #{eightip,jdbcType=INTEGER},
+      </if>
+      <if test="sourceip != null" >
+        sourceIp = #{sourceip,jdbcType=VARCHAR},
+      </if>
+      <if test="targetip != null" >
+        targetIp = #{targetip,jdbcType=VARCHAR},
+      </if>
+      <if test="ipdscp != null" >
+        ipDscp = #{ipdscp,jdbcType=INTEGER},
+      </if>
+      <if test="model != null" >
+        model = #{model,jdbcType=INTEGER},
+      </if>
+      <if test="cir != null" >
+        cir = #{cir,jdbcType=INTEGER},
+      </if>
+      <if test="pir != null" >
+        pir = #{pir,jdbcType=INTEGER},
+      </if>
+      <if test="cm != null" >
+        cm = #{cm,jdbcType=INTEGER},
+      </if>
+      <if test="cbs != null" >
+        cbs = #{cbs,jdbcType=INTEGER},
+      </if>
+      <if test="pbs != null" >
+        pbs = #{pbs,jdbcType=INTEGER},
+      </if>
+      <if test="strategy != null" >
+        strategy = #{strategy,jdbcType=INTEGER},
+      </if>
+      <if test="phb != null" >
+        phb = #{phb,jdbcType=INTEGER},
+      </if>
+      <if test="portid != null" >
+        portId = #{portid,jdbcType=INTEGER},
+      </if>
+      <if test="siteid != null" >
+        siteId = #{siteid,jdbcType=INTEGER},
+      </if>
+      <if test="clientvlanidvalue != null" >
+        clientVlanIdValue = #{clientvlanidvalue,jdbcType=VARCHAR},
+      </if>
+      <if test="clientvlanidmask != null" >
+        clientVlanIdMask = #{clientvlanidmask,jdbcType=VARCHAR},
+      </if>
+      <if test="operatorvlanidvalue != null" >
+        operatorVlanIdValue = #{operatorvlanidvalue,jdbcType=VARCHAR},
+      </if>
+      <if test="operatorvlanidmask != null" >
+        operatorVlanIdMask = #{operatorvlanidmask,jdbcType=VARCHAR},
+      </if>
+      <if test="clientvlanpriorityvalue != null" >
+        clientVlanPriorityValue = #{clientvlanpriorityvalue,jdbcType=VARCHAR},
+      </if>
+      <if test="clientvlanprioritymask != null" >
+        clientVlanPriorityMask = #{clientvlanprioritymask,jdbcType=VARCHAR},
+      </if>
+      <if test="operatorvlanpriorityvalue != null" >
+        operatorVlanPriorityValue = #{operatorvlanpriorityvalue,jdbcType=VARCHAR},
+      </if>
+      <if test="operatorvlanprioritymask != null" >
+        operatorVlanPriorityMask = #{operatorvlanprioritymask,jdbcType=VARCHAR},
+      </if>
+      <if test="ethernettypevalue != null" >
+        ethernetTypeValue = #{ethernettypevalue,jdbcType=VARCHAR},
+      </if>
+      <if test="ethernettypemask != null" >
+        ethernetTypeMask = #{ethernettypemask,jdbcType=VARCHAR},
+      </if>
+      <if test="sourcemaclabelmask != null" >
+        sourceMacLabelMask = #{sourcemaclabelmask,jdbcType=VARCHAR},
+      </if>
+      <if test="sinkmaclabelmask != null" >
+        sinkMacLabelMask = #{sinkmaclabelmask,jdbcType=VARCHAR},
+      </if>
+      <if test="iptypevalue != null" >
+        iPTypeValue = #{iptypevalue,jdbcType=VARCHAR},
+      </if>
+      <if test="iptypemask != null" >
+        iPTypeMask = #{iptypemask,jdbcType=VARCHAR},
+      </if>
+      <if test="sourceiplabelmask != null" >
+        sourceIpLabelMask = #{sourceiplabelmask,jdbcType=VARCHAR},
+      </if>
+      <if test="sinkiplabelmask != null" >
+        sinkIpLabelMask = #{sinkiplabelmask,jdbcType=VARCHAR},
+      </if>
+      <if test="appendbuffername != null" >
+        appendBufferName = #{appendbuffername,jdbcType=VARCHAR},
+      </if>
+      <if test="qosname != null" >
+        qosName = #{qosname,jdbcType=VARCHAR},
+      </if>
+      <if test="qostype != null" >
+        qosType = #{qostype,jdbcType=VARCHAR},
+      </if>
+      <if test="simpleqosid != null" >
+        simpleQosId = #{simpleqosid,jdbcType=INTEGER},
+      </if>
+      <if test="ebs != null" >
+        ebs = #{ebs,jdbcType=INTEGER},
+      </if>
+      <if test="eir != null" >
+        eir = #{eir,jdbcType=INTEGER},
+      </if>
+      <if test="sourcetcpport != null" >
+        sourceTcpPort = #{sourcetcpport,jdbcType=INTEGER},
+      </if>
+      <if test="endtcpport != null" >
+        endTcpPort = #{endtcpport,jdbcType=INTEGER},
+      </if>
+      <if test="iptos != null" >
+        IPToS = #{iptos,jdbcType=INTEGER},
+      </if>
+      <if test="porttype != null" >
+        portType = #{porttype,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="update" parameterType="Acbuffer" >
+    update acbuffer
+    set acId = #{acId,jdbcType=INTEGER},
+      bufferEnable = #{bufferEnable,jdbcType=INTEGER},
+      vlanId = #{vlanId,jdbcType=INTEGER},
+      sourceMac = #{sourceMac,jdbcType=VARCHAR},
+      targetMac = #{targetMac,jdbcType=VARCHAR},
+      eightIp = #{eightIp,jdbcType=INTEGER},
+      sourceIp = #{sourceIp,jdbcType=VARCHAR},
+      targetIp = #{targetIp,jdbcType=VARCHAR},
+      ipDscp = #{ipDscp,jdbcType=INTEGER},
+      model = #{model,jdbcType=INTEGER},
+      cir = #{cir,jdbcType=INTEGER},
+      pir = #{pir,jdbcType=INTEGER},
+      cm = #{cm,jdbcType=INTEGER},
+      cbs = #{cbs,jdbcType=INTEGER},
+      pbs = #{pbs,jdbcType=INTEGER},
+      strategy = #{strategy,jdbcType=INTEGER},
+      phb = #{phb,jdbcType=INTEGER},
+      portId = #{portId,jdbcType=INTEGER},
+      siteId = #{siteId,jdbcType=INTEGER},
+      clientVlanIdValue = #{clientVlanIdValue,jdbcType=VARCHAR},
+      clientVlanIdMask = #{clientVlanIdMask,jdbcType=VARCHAR},
+      operatorVlanIdValue = #{operatorVlanIdValue,jdbcType=VARCHAR},
+      operatorVlanIdMask = #{operatorVlanIdMask,jdbcType=VARCHAR},
+      clientVlanPriorityValue = #{clientVlanPriorityValue,jdbcType=VARCHAR},
+      clientVlanPriorityMask = #{clientVlanPriorityMask,jdbcType=VARCHAR},
+      operatorVlanPriorityValue = #{operatorVlanPriorityValue,jdbcType=VARCHAR},
+      operatorVlanPriorityMask = #{operatorVlanPriorityMask,jdbcType=VARCHAR},
+      ethernetTypeValue = #{ethernetTypeValue,jdbcType=VARCHAR},
+      ethernetTypeMask = #{ethernetTypeMask,jdbcType=VARCHAR},
+      sourceMacLabelMask = #{sourceMacLabelMask,jdbcType=VARCHAR},
+      sinkMacLabelMask = #{sinkMacLabelMask,jdbcType=VARCHAR},
+      iPTypeValue = #{iPTypeValue,jdbcType=VARCHAR},
+      iPTypeMask = #{iPTypeMask,jdbcType=VARCHAR},
+      sourceIpLabelMask = #{sourceIpLabelMask,jdbcType=VARCHAR},
+      sinkIpLabelMask = #{sinkIpLabelMask,jdbcType=VARCHAR},
+      appendBufferName = #{appendBufferName,jdbcType=VARCHAR},
+      qosName = #{qosName,jdbcType=VARCHAR},
+      qosType = #{qosType,jdbcType=VARCHAR},
+      simpleQosId = #{simpleQosId,jdbcType=INTEGER},
+      ebs = #{ebs,jdbcType=INTEGER},
+      eir = #{eir,jdbcType=INTEGER},
+      sourceTcpPort = #{sourceTcpPortId,jdbcType=INTEGER},
+      endTcpPort = #{endTcpPortId,jdbcType=INTEGER},
+      IPToS = #{IPTOS,jdbcType=INTEGER},
+      portType = #{portType,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

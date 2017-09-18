@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<driveRoot xmlns="http://drive.bean.com">
+	<attribute length="2" description="PW ID" value="0" mapping="(00)"/>
+	<attribute length="4" description="入标签 " value="0" mapping="(00)"/>
+	<attribute length="4" description="出标签" value="0" mapping="(00)"/>
+	<attribute length="4" description="LSP ID" value="0" mapping="(00)"/>
+	<attribute length="1" description="CV使能" value="0" mapping="(00)"/>
+	<attribute length="1" description="CV周期" value="0" mapping="(00)"/>
+	<attribute length="1" description="LOC" value="0" mapping="(00)"/>
+	<attribute length="1" description="RDI" value="0" mapping="(00)"/>
+</driveRoot>

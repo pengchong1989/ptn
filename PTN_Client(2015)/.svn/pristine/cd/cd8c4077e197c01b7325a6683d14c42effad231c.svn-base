@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nms.db.dao.ptn.qos.QosQueueMapper" >
+  <resultMap id="BaseResultMap" type="QosQueue" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="serviceId" property="serviceId" jdbcType="INTEGER" />
+    <result column="siteId" property="siteId" jdbcType="INTEGER" />
+    <result column="objType" property="objType" jdbcType="VARCHAR" />
+    <result column="objId" property="objId" jdbcType="INTEGER" />
+    <result column="queueType" property="queueType" jdbcType="VARCHAR" />
+    <result column="cos" property="cos" jdbcType="INTEGER" />
+    <result column="cir" property="cir" jdbcType="INTEGER" />
+    <result column="weight" property="weight" jdbcType="INTEGER" />
+    <result column="greenLowThresh" property="greenLowThresh" jdbcType="INTEGER" />
+    <result column="greenHighThresh" property="greenHighThresh" jdbcType="INTEGER" />
+    <result column="greenProbability" property="greenProbability" jdbcType="INTEGER" />
+    <result column="yellowLowThresh" property="yellowLowThresh" jdbcType="INTEGER" />
+    <result column="yellowHighThresh" property="yellowHighThresh" jdbcType="INTEGER" />
+    <result column="yellowProbability" property="yellowProbability" jdbcType="INTEGER" />
+    <result column="wredEnable" property="wredEnable" jdbcType="INTEGER" />
+    <result column="mostBandwidth" property="mostBandwidth" jdbcType="VARCHAR" />
+    <result column="discard" property="disCard" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, serviceId, siteId, objType, objId, queueType, cos, cir, weight, greenLowThresh, 
+    greenHighThresh, greenProbability, yellowLowThresh, yellowHighThresh, yellowProbability, 
+    wredEnable, mostBandwidth, discard
+  </sql>
+  <select id="queryByCondition" resultType="QosQueue" parameterType="QosQueue">
+    select * from qosQueue where 1=1
+    <if test="objType != null and objType != ''">
+  	 and objType = #{objType}
+    </if>
+    <if test="objId > 0">
+    and objId = #{objId}
+    </if>
+    <if test="siteId > 0">
+    and siteId = #{siteId}
+    </if>
+    <if test="queueType != null and queueType != ''">
+     and queueType = #{queueType} 
+    </if>
+  </select>
+  <delete id="deleteByServiceId" parameterType="java.lang.Integer" >
+    delete from qosqueue
+    where serviceId = #{serviceId} and objType = #{objType}
+  </delete>
+  <insert id="insert" parameterType="QosQueue" >
+    insert into qosqueue (id, serviceId, siteId, 
+      objType, objId, queueType, 
+      cos, cir, weight, greenLowThresh, 
+      greenHighThresh, greenProbability, yellowLowThresh, 
+      yellowHighThresh, yellowProbability, wredEnable, 
+      mostBandwidth, discard)
+    values (#{id,jdbcType=INTEGER}, #{serviceId,jdbcType=INTEGER}, #{siteId,jdbcType=INTEGER}, 
+      #{objType,jdbcType=VARCHAR}, #{objId,jdbcType=INTEGER}, #{queueType,jdbcType=VARCHAR}, 
+      #{cos,jdbcType=INTEGER}, #{cir,jdbcType=INTEGER}, #{weight,jdbcType=INTEGER}, #{greenLowThresh,jdbcType=INTEGER}, 
+      #{greenHighThresh,jdbcType=INTEGER}, #{greenProbability,jdbcType=INTEGER}, #{yellowLowThresh,jdbcType=INTEGER}, 
+      #{yellowHighThresh,jdbcType=INTEGER}, #{yellowProbability,jdbcType=INTEGER}, #{wredEnable,jdbcType=INTEGER}, 
+      #{mostBandwidth,jdbcType=VARCHAR}, #{disCard,jdbcType=INTEGER})
+  </insert>
+  <update id="update" parameterType="QosQueue" >
+    update qosqueue
+    set serviceId = #{serviceId,jdbcType=INTEGER},
+      siteId = #{siteId,jdbcType=INTEGER},
+      objType = #{objType,jdbcType=VARCHAR},
+      objId = #{objId,jdbcType=INTEGER},
+      queueType = #{queueType,jdbcType=VARCHAR},
+      cos = #{cos,jdbcType=INTEGER},
+      cir = #{cir,jdbcType=INTEGER},
+      weight = #{weight,jdbcType=INTEGER},
+      greenLowThresh = #{greenLowThresh,jdbcType=INTEGER},
+      greenHighThresh = #{greenHighThresh,jdbcType=INTEGER},
+      greenProbability = #{greenProbability,jdbcType=INTEGER},
+      yellowLowThresh = #{yellowLowThresh,jdbcType=INTEGER},
+      yellowHighThresh = #{yellowHighThresh,jdbcType=INTEGER},
+      yellowProbability = #{yellowProbability,jdbcType=INTEGER},
+      wredEnable = #{wredEnable,jdbcType=INTEGER},
+      mostBandwidth = #{mostBandwidth,jdbcType=VARCHAR},
+      discard = #{disCard,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  
+
+</mapper>

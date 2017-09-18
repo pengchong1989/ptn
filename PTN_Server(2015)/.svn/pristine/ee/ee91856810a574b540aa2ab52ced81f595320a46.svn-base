@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<driveRoot  xmlns="http://drive.bean.com">
+	<attribute length="2" description="保护名称" value="0" mapping="(0)/1=(不关联)/关联"/>
+	<attribute length="1" description="保护类型" value="0" mapping="(0)/1=(不关联)/关联"/>
+	<attribute length="1" description="主用端口" value="0" mapping="(0)/1=(不关联)/关联"/>
+	<attribute length="1" description="主用LSP告警" value="0" mapping="(0)/1=(不关联)/关联"/>
+	<attribute length="1" description="备用端口" value="0" mapping="(0)/1=(不关联)/关联"/>
+	<attribute length="1" description="备用LSP告警" value="0" mapping="(0)/1=(不关联)/关联"/>
+	<attribute length="1" description="倒换状态" value="0" mapping="(0)/1=(不关联)/关联"/>
+	<attribute length="1" description="拖延时间(ms)" value="0" mapping="(0)/1=(不关联)/关联"/>
+	<attribute length="4" description="接收APS" value="0" mapping="(0)/1=(不关联)/关联"/>
+	<attribute length="4" description="发送APS" value="0" mapping="(0)/1=(不关联)/关联"/>
+	<attribute length="1" description="返回类型" value="0" mapping="(0)/1=(不关联)/关联"/>
+	<attribute length="1" description="当前工作路径" value="0" mapping="(0)/1=(不关联)/关联"/>
+	<attribute length="1" description="拖延时间高8位" value="0" mapping="(0)/1=(不关联)/关联"/>
+</driveRoot>

@@ -1,0 +1,240 @@
+package com.nms.model.ptn.qos;
+
+import java.sql.Connection;
+import java.util.List;
+
+import com.nms.db.bean.ptn.Businessid;
+import com.nms.db.bean.ptn.qos.QosMappingAttr;
+import com.nms.db.bean.ptn.qos.QosMappingMode;
+import com.nms.db.dao.ptn.BusinessidDao;
+import com.nms.db.dao.ptn.qos.QosMappingAttrDao;
+import com.nms.db.dao.ptn.qos.QosMappingModeDao;
+import com.nms.db.enums.QosTemplateTypeEnum;
+import com.nms.model.util.ObjectService;
+import com.nms.model.util.Services;
+import com.nms.ui.manager.BusinessIdException;
+import com.nms.ui.manager.ConstantUtil;
+import com.nms.ui.manager.ExceptionManage;
+import com.nms.ui.manager.UiUtil;
+
+public class QosMappingModeService extends ObjectService{
+	
+	public void setConnection(Connection connection) {
+		super.connection = connection;
+	}
+
+	public void setPtnuser(String ptnuser) {
+		super.ptnuser = ptnuser;
+	}
+	
+	private QosMappingModeDao qosMappingModeDao = new QosMappingModeDao();
+	
+	/**
+	 * 更新或新增QosMappingMode
+	 * @param qosMappingModeList
+	 * @return
+	 * @throws Exception
+	 */
+	public int saveOrUpdate(List<QosMappingMode> qosMappingModeList) throws Exception{
+		int result = 0;
+		try {
+			connection.setAutoCommit(false);
+			QosMappingModeAttrService mappingModeAttrService = (QosMappingModeAttrService) ConstantUtil.serviceFactory.newService(Services.QosMappingModeAttrService, this.connection);
+			for(QosMappingMode mappingMode : qosMappingModeList){
+				if(mappingMode.getId()>0){
+					qosMappingModeDao.update(mappingMode, connection);
+					List<QosMappingAttr> list = mappingMode.getQosMappingAttrList();
+					mappingModeAttrService.saveOrUpdate(list);
+				}else{
+					result = qosMappingModeDao.insert(mappingMode, connection);
+				}
+			}
+			if(!connection.getAutoCommit()){
+				connection.commit();
+			}
+		} catch (Exception e) {
+			ExceptionManage.dispose(e, getClass());
+		}finally{
+			connection.setAutoCommit(true);
+		}
+		return result;
+	}
+	/**
+	 * 更新或新增QosMappingMode
+	 * @param qosMappingModeList
+	 * @return
+	 * @throws Exception
+	 */
+	public int saveForCX(QosMappingMode mappingMode){
+		int result = 0;
+		int type = 0;
+		int direction = 0;
+		try {
+//		connection.setAutoCommit(false);
+			type = mappingMode.getQosMappingAttrList().get(0).getModel();
+			direction = mappingMode.getQosMappingAttrList().get(0).getDirection();
+			//新建
+			BusinessidDao businessidDao = new BusinessidDao();
+			Businessid businessid = null;
+			
+			//llsp输入
+			if(UiUtil.getCodeByValue("EXPTYPE", "0").getId()==type&&UiUtil.getCodeByValue("EXPDIRECTION", "1").getId()==direction){
+				//查询businessid
+				businessid = businessidDao.query(mappingMode.getSiteId(), "llsppmappinginput", connection);
+			}
+			//llsp输出
+			if(UiUtil.getCodeByValue("EXPTYPE", "0").getId()==type&&UiUtil.getCodeByValue("EXPDIRECTION", "0").getId()==direction){
+				//查询businessid
+				businessid = businessidDao.query(mappingMode.getSiteId(), "llsppmappingoutput", connection);
+			}
+			//elsp输入
+			if(UiUtil.getCodeByValue("EXPTYPE", "1").getId()==type&&UiUtil.getCodeByValue("EXPDIRECTION", "1").getId()==direction){
+				//查询businessid
+				businessid = businessidDao.query(mappingMode.getSiteId(), "elsppmappinginput", connection);
+			}
+			//elsp输出
+			if(UiUtil.getCodeByValue("EXPTYPE", "1").getId()==type&&UiUtil.getCodeByValue("EXPDIRECTION", "0").getId()==direction){
+				//查询businessid
+				businessid = businessidDao.query(mappingMode.getSiteId(), "elsppmappingoutput", connection);
+			}
+			//vlanpirtocolormapping
+			if(QosTemplateTypeEnum.VLANPRI_COLOR.getValue()==mappingMode.getType()){
+				//查询businessid
+				businessid = businessidDao.query(mappingMode.getSiteId(), "vlanpirtocolormapping", connection);
+			}
+			//costovlanpirmapping
+			if(QosTemplateTypeEnum.COS_VLANPRI.getValue()==mappingMode.getType()){
+				//查询businessid
+				businessid = businessidDao.query(mappingMode.getSiteId(), "costovlanpirmapping", connection);
+			}
+			if (businessid == null) {
+				throw new BusinessIdException("BusinessId is null");
+			}
+			// 修改此id为已用状态
+			businessidDao.update(businessid.getId(), 1, super.connection);
+			
+			mappingMode.setBusinessId(businessid.getIdValue());
+			result = qosMappingModeDao.insert(mappingMode, connection);
+			for(QosMappingAttr qosMappingAttr:mappingMode.getQosMappingAttrList()){
+				qosMappingAttr.setPhbId(result);
+			}
+			QosMappingModeAttrService mappingModeAttrService = (QosMappingModeAttrService) ConstantUtil.serviceFactory.newService(Services.QosMappingModeAttrService, this.connection);
+			mappingModeAttrService.saveOrUpdate(mappingMode.getQosMappingAttrList());
+//		UiUtil.closeService(mappingModeAttrService);
+		} catch (Exception e) {
+			ExceptionManage.dispose(e, getClass());
+		}
+		return result;
+	}
+	/**
+	 * 根据id批量删除
+	 * @param idList
+	 * @return
+	 * @throws Exception
+	 */
+	public int delete(List<Integer> idList) throws Exception{
+		
+		try {
+			connection.setAutoCommit(false);
+			for(Integer id : idList){
+				qosMappingModeDao.delete(id, connection);
+			}
+			if(!connection.getAutoCommit()){
+				connection.commit();
+			}
+		} catch (Exception e) {
+			ExceptionManage.dispose(e, getClass());
+		}finally{
+			connection.setAutoCommit(true);
+		}
+		return 0;
+		
+	}
+	
+	
+	
+	/**
+	 * 条件查询qos模板
+	 * @param qosMappingMode
+	 * @return
+	 * @throws Exception
+	 */
+	public List<QosMappingMode> queryByCondition(QosMappingMode qosMappingMode) throws Exception{
+		List<QosMappingMode> mappingModes = null;
+		List<QosMappingAttr> mappingAttrs = null;
+		QosMappingAttr qosMappingAttr = new QosMappingAttr();
+		QosMappingModeAttrService mappingModeAttrService = (QosMappingModeAttrService) ConstantUtil.serviceFactory.newService(Services.QosMappingModeAttrService, this.connection);
+		mappingModes = qosMappingModeDao.queryByCondition(qosMappingMode, connection);
+		for(QosMappingMode mappingMode :mappingModes){
+			qosMappingAttr.setPhbId(mappingMode.getId());
+			qosMappingAttr.setSiteId(mappingMode.getSiteId());
+			mappingAttrs = mappingModeAttrService.queryByCondition(qosMappingAttr);
+			mappingMode.setQosMappingAttrList(mappingAttrs);
+		}
+		return mappingModes;
+	}
+	
+	public void restoreData(QosMappingMode qosMappingMode) throws Exception{
+		try {
+			this.connection.setAutoCommit(false);
+			QosMappingAttrDao qosMappingAttrDao = new QosMappingAttrDao();
+			QosMappingModeDao qosMappingModeDao = new QosMappingModeDao();
+			BusinessidDao businessidDao = new BusinessidDao();
+			//删除模板详细数据
+			qosMappingAttrDao.deleteByQosModelId(qosMappingMode.getId(), this.connection);
+			//删除模板
+			qosMappingModeDao.delete(qosMappingMode.getId(), this.connection);
+			// 修改此id为未用状态
+			businessidDao.update(qosMappingMode.getBusinessId(), 0, super.connection);
+			if(!this.connection.getAutoCommit()){
+				this.connection.commit();
+			}
+		} catch (Exception e) {
+			ExceptionManage.dispose(e, getClass());
+		}finally{
+			this.connection.setAutoCommit(true);
+		}
+	}
+	
+	/**
+	 * 根据条件删除
+	 * @param idList
+	 * @return
+	 * @throws Exception
+	 */
+	public int deleteForSiteId(int siteId) throws Exception{
+		qosMappingModeDao.deleteForSiteId(siteId, connection);
+		return 0;
+		
+	}
+	
+	/**
+	 * 更新或新增QosMappingMode
+	 * @param qosMappingModeList
+	 * @return
+	 * @throws Exception
+	 */
+	public int save(QosMappingMode mappingMode) throws Exception{
+		return qosMappingModeDao.insert(mappingMode, connection);
+	}
+	
+	public int Update(List<QosMappingMode> qosMappingModeList) throws Exception{
+		int result = 0;
+		try {
+			connection.setAutoCommit(false);
+			QosMappingModeAttrService mappingModeAttrService = (QosMappingModeAttrService) ConstantUtil.serviceFactory.newService(Services.QosMappingModeAttrService, this.connection);
+			for(QosMappingMode mappingMode : qosMappingModeList){
+				List<QosMappingAttr> list = mappingMode.getQosMappingAttrList();
+				mappingModeAttrService.saveOrUpdate(list);
+			}
+			if(!connection.getAutoCommit()){
+				connection.commit();
+			}
+		} catch (Exception e) {
+			ExceptionManage.dispose(e, getClass());
+		}finally{
+			connection.setAutoCommit(true);
+		}
+		return result;
+	}
+}

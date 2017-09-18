@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 703_CARD板卡下所有端口配置 (703的板卡) -->
+<xml-boby>
+
+<card cardName="ZXCTN 605-G22_CARD" cardType="" imagePath="/com/nms/ui/images/topo/zx/g22/ZXCTN 605-G22.png" x="72" y="56" >
+    <port portName="ge"  seq="1" portType="NONE" bandWidth="" imagePath="/com/nms/ui/images/topo/sztc/port_g.png" x="321" y="61" number="1" module="(e)"></port>
+	<port portName="ge"  seq="2" portType="NONE" bandWidth="" imagePath="/com/nms/ui/images/topo/sztc/port_g.png" x="360" y="61" number="2" module="(e)"></port>
+	<port portName="NC"  seq="" portType="system" bandWidth="" imagePath="/com/nms/ui/images/topo/sztc/port_up.png" x="543" y="28" number="" ></port>
+	<port portName="NC"  seq="" portType="system" bandWidth="" imagePath="/com/nms/ui/images/topo/sztc/port_up.png" x="579" y="28" number="" ></port>
+	<port portName="TOD"  seq="" portType="system" bandWidth="" imagePath="/com/nms/ui/images/topo/sztc/port_up.png" x="613" y="28" number="" module="(o)"></port>
+	<port portName="ge"  seq="3" portType="NONE" bandWidth="" imagePath="/com/nms/ui/images/topo/sztc/port_down.png" x="543" y="58" number="3" module="(o)"></port>
+	<port portName="ge"  seq="4" portType="NONE" bandWidth="" imagePath="/com/nms/ui/images/topo/sztc/port_down.png" x="579" y="58" number="4" module="(o)"></port>
+	<port portName="NMS"  seq="" portType="system" bandWidth="" imagePath="/com/nms/ui/images/topo/sztc/port_down.png" x="613" y="58" number="" module="(o)"></port>
+</card>
+
+</xml-boby>

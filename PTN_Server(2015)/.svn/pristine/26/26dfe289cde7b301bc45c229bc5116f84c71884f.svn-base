@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<driveRoot  xmlns="http://drive.bean.com">
+	<attribute length="1" description="(WAN1)端口使能" value="1" mapping="0/(1)=(关)/开"/>
+	<attribute length="1" description="(WAN1)工作模式" value="1" mapping="00/(01)=自动协商/(1000M全双工)"/>
+	<attribute length="1" description="(WAN1)802.3流控" value="0" mapping="(0)/1=(不使能)/使能"/>
+	<attribute length="2" description="(WAN1)MTU" value="1518" mapping="(1518)"/>
+	<attribute length="25" description="(WAN1)备用" value="0" mapping="(00)"/>
+	<attribute length="1" description="(WAN2)端口使能" value="1" mapping="0/(1)=(关)/开"/>
+	<attribute length="1" description="(WAN2)工作模式" value="1" mapping="00/(01)=自动协商/(1000M全双工)"/>
+	<attribute length="1" description="(WAN2)802.3流控" value="0" mapping="(0)/1=(不使能)/使能"/>
+	<attribute length="2" description="(WAN2)MTU" value="1518" mapping="(1518)"/>
+	<attribute length="25" description="(WAN2)备用" value="0" mapping="(00)"/>
+	<attribute length="1" description="(WAN3)端口使能" value="1" mapping="0/(1)=(关)/开"/>
+	<attribute length="1" description="(WAN3)工作模式" value="1" mapping="00/(01)=自动协商/(1000M全双工)"/>
+	<attribute length="1" description="(WAN3)802.3流控" value="0" mapping="(0)/1=(不使能)/使能"/>
+	<attribute length="2" description="(WAN3)MTU" value="1518" mapping="(1518)"/>
+	<attribute length="25" description="(WAN3)备用" value="0" mapping="(00)"/>
+	<attribute length="1" description="(WAN4)端口使能" value="1" mapping="0/(1)=(关)/开"/>
+	<attribute length="1" description="(WAN4)工作模式" value="1" mapping="00/(01)=自动协商/(1000M全双工)"/>
+	<attribute length="1" description="(WAN4)802.3流控" value="0" mapping="(0)/1=(不使能)/使能"/>
+	<attribute length="2" description="(WAN4)MTU" value="1518" mapping="(1518)"/>
+	<attribute length="25" description="(WAN4)备用" value="0" mapping="(00)"/>
+</driveRoot>

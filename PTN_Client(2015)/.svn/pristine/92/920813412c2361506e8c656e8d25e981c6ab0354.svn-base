@@ -1,0 +1,328 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nms.db.dao.equipment.port.E1InfoMapper" >
+  <resultMap id="BaseResultMap" type="E1Info" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="siteId" property="siteId" jdbcType="INTEGER" />
+    <result column="outputClockSrc" property="e1LegOutPutClockSource" jdbcType="INTEGER" />
+    <result column="tdmClocksrc" property="tdmClockSource" jdbcType="INTEGER" />
+    <result column="rtpEnable" property="rtpEnable" jdbcType="INTEGER" />
+    <result column="E1Id" property="e1Id" jdbcType="INTEGER" />
+    <result column="legShield" property="legShield" jdbcType="INTEGER" />
+    <result column="legEnable" property="legEnable" jdbcType="INTEGER" />
+    <result column="prestoreTimeEnable" property="prestoreTimeEnable" jdbcType="INTEGER" />
+    <result column="prestoreTime" property="prestoreTime" jdbcType="INTEGER" />
+    <result column="pinCount" property="pinCount" jdbcType="INTEGER" />
+    <result column="pwLable" property="pwLabel" jdbcType="INTEGER" />
+    <result column="legId" property="legId" jdbcType="INTEGER" />
+    <result column="portName" property="portName" jdbcType="VARCHAR" />
+    <result column="modle" property="model" jdbcType="VARCHAR" />
+    <result column="linecoding" property="linecoding" jdbcType="VARCHAR" />
+    <result column="impedance" property="impedance" jdbcType="INTEGER" />
+    <result column="cardid" property="cardId" jdbcType="INTEGER" />
+    <result column="alarmReversalEnabled" property="isAlarmRevesal" jdbcType="INTEGER" />
+    <result column="fzType" property="fzType" jdbcType="INTEGER" />
+    <result column="frameformat" property="frameformat" jdbcType="INTEGER" />
+    <result column="complexFrame" property="complexFrame" jdbcType="INTEGER" />
+    <result column="portid" property="portId" jdbcType="INTEGER" />
+     <collection property="portInst" ofType="PortInst" >
+        <result column="isEnabled_code" property="isEnabled_code" jdbcType="INTEGER" />
+        <result column="JobStatus" property="jobStatus" jdbcType="INTEGER" />
+        <result column="IsOccupy" property="isOccupy" jdbcType="INTEGER" />
+     </collection>
+  </resultMap>
+
+
+  <sql id="Base_Column_List" >
+    id, siteId, outputClockSrc, tdmClocksrc, rtpEnable, E1Id, legShield, legEnable, prestoreTimeEnable, 
+    prestoreTime, pinCount, pwLable, legId, portName, modle, linecoding, impedance, portid, 
+    cardid, alarmReversalEnabled, fzType, frameFormat, complexFrame
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from e1_inst
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from e1_inst
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="E1Info"  useGeneratedKeys="true" keyProperty="e1Info.id">
+   insert into E1_inst
+   (siteId ,outputClockSrc ,tdmClocksrc, rtpEnable,E1Id ,
+   legShield ,legEnable, prestoreTimeEnable, prestoreTime,
+   pinCount,pwLable,legId,portName,
+   modle,linecoding,impedance,portid,cardid,
+   alarmReversalEnabled,fzType,frameFormat,complexFrame) 
+   values(#{e1Info.siteId},#{e1Info.e1LegOutPutClockSource},#{e1Info.tdmClockSource},
+   #{e1Info.rtpEnable},#{e1Info.e1Id},#{e1Info.legShield},#{e1Info.legEnable},
+   #{e1Info.prestoreTimeEnable},#{e1Info.prestoreTime},#{e1Info.pinCount},#{e1Info.pwLabel},
+   #{e1Info.legId},#{e1Info.portName},#{e1Info.model},#{e1Info.linecoding},
+   #{e1Info.impedance},#{e1Info.portId},#{e1Info.cardId},#{e1Info.isAlarmRevesal},
+   #{e1Info.fzType},#{e1Info.frameformat},#{e1Info.complexFrame})
+  </insert>
+  <insert id="insertSelective" parameterType="E1Info" >
+    insert into e1_inst
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="siteid != null" >
+        siteId,
+      </if>
+      <if test="outputclocksrc != null" >
+        outputClockSrc,
+      </if>
+      <if test="tdmclocksrc != null" >
+        tdmClocksrc,
+      </if>
+      <if test="rtpenable != null" >
+        rtpEnable,
+      </if>
+      <if test="e1id != null" >
+        E1Id,
+      </if>
+      <if test="legshield != null" >
+        legShield,
+      </if>
+      <if test="legenable != null" >
+        legEnable,
+      </if>
+      <if test="prestoretimeenable != null" >
+        prestoreTimeEnable,
+      </if>
+      <if test="prestoretime != null" >
+        prestoreTime,
+      </if>
+      <if test="pincount != null" >
+        pinCount,
+      </if>
+      <if test="pwlable != null" >
+        pwLable,
+      </if>
+      <if test="legid != null" >
+        legId,
+      </if>
+      <if test="portname != null" >
+        portName,
+      </if>
+      <if test="modle != null" >
+        modle,
+      </if>
+      <if test="linecoding != null" >
+        linecoding,
+      </if>
+      <if test="impedance != null" >
+        impedance,
+      </if>
+      <if test="portid != null" >
+        portid,
+      </if>
+      <if test="cardid != null" >
+        cardid,
+      </if>
+      <if test="alarmreversalenabled != null" >
+        alarmReversalEnabled,
+      </if>
+      <if test="fztype != null" >
+        fzType,
+      </if>
+      <if test="frameformat != null" >
+        frameFormat,
+      </if>
+      <if test="complexframe != null" >
+        complexFrame,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="siteid != null" >
+        #{siteid,jdbcType=INTEGER},
+      </if>
+      <if test="outputclocksrc != null" >
+        #{outputclocksrc,jdbcType=INTEGER},
+      </if>
+      <if test="tdmclocksrc != null" >
+        #{tdmclocksrc,jdbcType=INTEGER},
+      </if>
+      <if test="rtpenable != null" >
+        #{rtpenable,jdbcType=INTEGER},
+      </if>
+      <if test="e1id != null" >
+        #{e1id,jdbcType=INTEGER},
+      </if>
+      <if test="legshield != null" >
+        #{legshield,jdbcType=INTEGER},
+      </if>
+      <if test="legenable != null" >
+        #{legenable,jdbcType=INTEGER},
+      </if>
+      <if test="prestoretimeenable != null" >
+        #{prestoretimeenable,jdbcType=INTEGER},
+      </if>
+      <if test="prestoretime != null" >
+        #{prestoretime,jdbcType=INTEGER},
+      </if>
+      <if test="pincount != null" >
+        #{pincount,jdbcType=INTEGER},
+      </if>
+      <if test="pwlable != null" >
+        #{pwlable,jdbcType=INTEGER},
+      </if>
+      <if test="legid != null" >
+        #{legid,jdbcType=INTEGER},
+      </if>
+      <if test="portname != null" >
+        #{portname,jdbcType=VARCHAR},
+      </if>
+      <if test="modle != null" >
+        #{modle,jdbcType=VARCHAR},
+      </if>
+      <if test="linecoding != null" >
+        #{linecoding,jdbcType=VARCHAR},
+      </if>
+      <if test="impedance != null" >
+        #{impedance,jdbcType=INTEGER},
+      </if>
+      <if test="portid != null" >
+        #{portid,jdbcType=INTEGER},
+      </if>
+      <if test="cardid != null" >
+        #{cardid,jdbcType=INTEGER},
+      </if>
+      <if test="alarmreversalenabled != null" >
+        #{alarmreversalenabled,jdbcType=INTEGER},
+      </if>
+      <if test="fztype != null" >
+        #{fztype,jdbcType=INTEGER},
+      </if>
+      <if test="frameformat != null" >
+        #{frameformat,jdbcType=INTEGER},
+      </if>
+      <if test="complexframe != null" >
+        #{complexframe,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="E1Info" >
+    update e1_inst
+    <set >
+      <if test="siteid != null" >
+        siteId = #{siteid,jdbcType=INTEGER},
+      </if>
+      <if test="outputclocksrc != null" >
+        outputClockSrc = #{outputclocksrc,jdbcType=INTEGER},
+      </if>
+      <if test="tdmclocksrc != null" >
+        tdmClocksrc = #{tdmclocksrc,jdbcType=INTEGER},
+      </if>
+      <if test="rtpenable != null" >
+        rtpEnable = #{rtpenable,jdbcType=INTEGER},
+      </if>
+      <if test="e1id != null" >
+        E1Id = #{e1id,jdbcType=INTEGER},
+      </if>
+      <if test="legshield != null" >
+        legShield = #{legshield,jdbcType=INTEGER},
+      </if>
+      <if test="legenable != null" >
+        legEnable = #{legenable,jdbcType=INTEGER},
+      </if>
+      <if test="prestoretimeenable != null" >
+        prestoreTimeEnable = #{prestoretimeenable,jdbcType=INTEGER},
+      </if>
+      <if test="prestoretime != null" >
+        prestoreTime = #{prestoretime,jdbcType=INTEGER},
+      </if>
+      <if test="pincount != null" >
+        pinCount = #{pincount,jdbcType=INTEGER},
+      </if>
+      <if test="pwlable != null" >
+        pwLable = #{pwlable,jdbcType=INTEGER},
+      </if>
+      <if test="legid != null" >
+        legId = #{legid,jdbcType=INTEGER},
+      </if>
+      <if test="portname != null" >
+        portName = #{portname,jdbcType=VARCHAR},
+      </if>
+      <if test="modle != null" >
+        modle = #{modle,jdbcType=VARCHAR},
+      </if>
+      <if test="linecoding != null" >
+        linecoding = #{linecoding,jdbcType=VARCHAR},
+      </if>
+      <if test="impedance != null" >
+        impedance = #{impedance,jdbcType=INTEGER},
+      </if>
+      <if test="portid != null" >
+        portid = #{portid,jdbcType=INTEGER},
+      </if>
+      <if test="cardid != null" >
+        cardid = #{cardid,jdbcType=INTEGER},
+      </if>
+      <if test="alarmreversalenabled != null" >
+        alarmReversalEnabled = #{alarmreversalenabled,jdbcType=INTEGER},
+      </if>
+      <if test="fztype != null" >
+        fzType = #{fztype,jdbcType=INTEGER},
+      </if>
+      <if test="frameformat != null" >
+        frameFormat = #{frameformat,jdbcType=INTEGER},
+      </if>
+      <if test="complexframe != null" >
+        complexFrame = #{complexframe,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="E1Info" >
+    update e1_inst
+    set siteId = #{siteid,jdbcType=INTEGER},
+      outputClockSrc = #{outputclocksrc,jdbcType=INTEGER},
+      tdmClocksrc = #{tdmclocksrc,jdbcType=INTEGER},
+      rtpEnable = #{rtpenable,jdbcType=INTEGER},
+      E1Id = #{e1id,jdbcType=INTEGER},
+      legShield = #{legshield,jdbcType=INTEGER},
+      legEnable = #{legenable,jdbcType=INTEGER},
+      prestoreTimeEnable = #{prestoretimeenable,jdbcType=INTEGER},
+      prestoreTime = #{prestoretime,jdbcType=INTEGER},
+      pinCount = #{pincount,jdbcType=INTEGER},
+      pwLable = #{pwlable,jdbcType=INTEGER},
+      legId = #{legid,jdbcType=INTEGER},
+      portName = #{portname,jdbcType=VARCHAR},
+      modle = #{modle,jdbcType=VARCHAR},
+      linecoding = #{linecoding,jdbcType=VARCHAR},
+      impedance = #{impedance,jdbcType=INTEGER},
+      portid = #{portid,jdbcType=INTEGER},
+      cardid = #{cardid,jdbcType=INTEGER},
+      alarmReversalEnabled = #{alarmreversalenabled,jdbcType=INTEGER},
+      fzType = #{fztype,jdbcType=INTEGER},
+      frameFormat = #{frameformat,jdbcType=INTEGER},
+      complexFrame = #{complexframe,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  
+  <select id="queryByCondition" resultMap="BaseResultMap" parameterType="E1Info" >
+    SELECT * FROM E1_inst e1 , port_inst p WHERE e1.portId=p.portid 
+    <if test="id > 0 ">
+    	and e1.Id= #{id}
+    </if>
+    <if test="siteId > 0 ">
+    	and e1.siteId= #{siteId}
+    </if>
+    <if test="legId > 0 ">
+    	and e1.legId= #{legId}
+    </if>
+    <if test="pwLabel > 0 ">
+    	and e1.pwLabel= #{pwLabel}
+    </if>
+    <if test="portName != null and portName != ''  ">
+    	and e1.portName= #{portName}
+    </if>
+  </select>
+  
+</mapper>

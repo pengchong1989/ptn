@@ -1,0 +1,147 @@
+﻿package com.nms.model.ptn.port;
+
+import java.sql.Connection;
+import java.util.List;
+import java.util.Map;
+
+import com.nms.db.bean.ptn.port.Acbuffer;
+import com.nms.db.dao.ptn.port.AcbufferDao;
+import com.nms.model.util.ObjectService;
+import com.nms.ui.manager.ExceptionManage;
+
+public class AcBufferService extends ObjectService {
+
+	public void setConnection(Connection connection) {
+		super.connection = connection;
+	}
+
+	public void setPtnuser(String ptnuser) {
+		super.ptnuser = ptnuser;
+	}
+	
+	private AcbufferDao bufferDao = new AcbufferDao();
+	
+	public int saveOrUpdate(List<Acbuffer> bufferinfos) throws Exception {
+
+		if (bufferinfos == null ) {
+			throw new Exception("bufferinfos is null");
+		}
+		
+		int result = 0;
+		try {
+			for(Acbuffer buffer : bufferinfos) {
+				if(buffer.getId() > 0) {//更新流
+					result = bufferDao.update(buffer, connection);
+				} else { //新建流
+					result = bufferDao.insert(buffer, connection);
+				}
+			}
+		} catch (Exception e) {
+			connection.rollback();
+			ExceptionManage.dispose(e,this.getClass());
+		}finally{
+			
+		}
+		return result;
+	}
+
+	/**
+	 * 
+	 * @param acId
+	 * @return
+	 * @throws Exception
+	 */
+	public void deletebyAcId(int acId) throws Exception {
+		try {
+			bufferDao.delete(acId, connection);
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		}
+	}
+	
+	public void deletebybufferId(int bufferId) throws Exception {
+		try {
+			bufferDao.deletebyBufferId(bufferId, connection);
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		}
+	}
+	
+
+	/**
+	 * 
+	 * @param 条件查询
+	 * @return
+	 * @throws Exception
+	 */
+	public List<Acbuffer> select(int acId) throws Exception {
+		List<Acbuffer> buuferInfoList = null;
+
+		try {
+			buuferInfoList = bufferDao.query(acId, connection);
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		}
+		return buuferInfoList;
+	}
+	
+	/**
+	 * 
+	 * @param 条件查询
+	 * @return
+	 * @throws Exception
+	 */
+	public List<Acbuffer> select(Acbuffer acbuffer) throws Exception {
+		List<Acbuffer> buuferInfoList = null;
+
+		try {
+			buuferInfoList = bufferDao.queryByCondition(acbuffer, connection);
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		}
+		return buuferInfoList;
+	}
+	/**
+	 * 查询附加流数量
+	 * @param acbuffer
+	 * @return
+	 */
+	public java.util.List<Acbuffer> appendBufferCount(Acbuffer acbuffer) {
+		List<Acbuffer> buuferInfoList = null;
+
+		try {
+			buuferInfoList = bufferDao.appendBufferCount(acbuffer, connection);
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		}
+		return buuferInfoList;
+	}
+	/**
+	 * 查询附加流
+	 * @param buffer
+	 * @param exitMap
+	 * @return
+	 */
+	public List<Acbuffer> checkBuffer(Acbuffer buffer, Map<Integer,String> exitMap) {
+		List<Acbuffer> buuferInfoList = null;
+
+		try {
+			buuferInfoList = bufferDao.checkBuffer(buffer,exitMap, connection);
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		}
+		return buuferInfoList;
+		
+	}
+
+	public List<Acbuffer> selectForCondition(Acbuffer bufferAction) {
+		List<Acbuffer> buuferInfoList = null;
+
+		try {
+			buuferInfoList = bufferDao.selectForCondition(bufferAction, connection);
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		}
+		return buuferInfoList;
+	}
+}

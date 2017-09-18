@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nms.db.dao.ptn.clock.ExternalClockInterfaceMapper" >
+  <resultMap id="BaseResultMap" type="ExternalClockInterface" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="siteId" property="siteId" jdbcType="INTEGER" />
+    <result column="interfaceName" property="interfaceName" jdbcType="VARCHAR" />
+    <result column="managingStatus" property="managingStatus" jdbcType="INTEGER" />
+    <result column="workingStatus" property="workingStatus" jdbcType="VARCHAR" />
+    <result column="interfaceMode" property="interfaceMode" jdbcType="INTEGER" />
+    <result column="inputImpedance" property="inputImpedance" jdbcType="INTEGER" />
+    <result column="sanBits" property="sanBits" jdbcType="INTEGER" />
+    <result column="timeOffsetCompensation" property="timeOffsetCompensation" jdbcType="VARCHAR" />
+    <result column="activeStatus" property="activeStatus" jdbcType="INTEGER" />
+  </resultMap>
+
+  <sql id="Base_Column_List" >
+    id, siteId, interfaceName, managingStatus, workingStatus, interfaceMode, inputImpedance, 
+    sanBits, timeOffsetCompensation, activeStatus
+  </sql>
+
+  <insert id="insert" parameterType="ExternalClockInterface" useGeneratedKeys="true" keyProperty="id">
+    insert into externalclockinterface(siteId,interfaceName,managingStatus,workingStatus,
+	interfaceMode,inputImpedance,sanBits,timeOffsetCompensation,activeStatus )
+	value(#{siteId},#{interfaceName},#{managingStatus},#{workingStatus},#{interfaceMode},#{inputImpedance},#{sanBits},#{timeOffsetCompensation},#{activeStatus})
+  </insert>
+ 
+ 
+  <update id="update" parameterType="ExternalClockInterface" >
+   update externalclockinterface set interfaceName=#{interfaceName}, managingStatus=#{managingStatus},workingStatus=#{workingStatus},interfaceMode=#{interfaceMode},
+   inputImpedance=#{inputImpedance},sanBits=#{sanBits},timeOffsetCompensation=#{timeOffsetCompensation} ,activeStatus =#{activeStatus} where id=#{id}
+  </update>
+  
+   <update id="updateActiveStatus" parameterType="map" >
+   update externalclockinterface set activeStatus=#{value} where siteId=#{siteId}
+  </update>
+  
+   <select id="select" resultMap="BaseResultMap" parameterType="ExternalClockInterface" >
+    select 
+    <include refid="Base_Column_List" />
+    from externalclockinterface
+    where 1=1
+    <if test="siteId!=0"> and siteid = #{siteId}</if>
+    <if test="interfaceName!=null and interfaceName!='' "> and interfaceName =#{interfaceName}</if>
+    <if test="id!=0"> and id = #{id}</if>
+  </select>
+
+  <delete id="delete" parameterType="ExternalClockInterface">
+  delete from externalclockinterface where interfaceName=#{interfaceName}
+  </delete>
+</mapper>

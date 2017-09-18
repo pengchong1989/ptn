@@ -1,0 +1,196 @@
+﻿package com.nms.ui.manager;
+
+import com.nms.db.enums.EServiceType;
+import com.nms.model.client.ClientService_MB;
+import com.nms.model.path.NameRuleService;
+import com.nms.model.path.SegmentService_MB;
+import com.nms.model.perform.PerformanceTaskService;
+import com.nms.model.ptn.CccService;
+import com.nms.model.ptn.path.ces.CesInfoService;
+import com.nms.model.ptn.path.eth.DualInfoService;
+import com.nms.model.ptn.path.eth.ElanInfoService;
+import com.nms.model.ptn.path.eth.ElineService;
+import com.nms.model.ptn.path.eth.EtreeService;
+import com.nms.model.ptn.path.protect.WrappingProtectService;
+import com.nms.model.ptn.path.pw.PwInfoService;
+import com.nms.model.ptn.path.qinq.QinQInstService;
+import com.nms.model.ptn.path.tunnel.TunnelService;
+import com.nms.model.ptn.port.AcInfoService;
+import com.nms.model.system.SubnetService;
+import com.nms.model.util.Services;
+
+public class VerifyNameUtil {
+
+	/**
+	 * 
+	 * 验证名称是否重复
+	 * 
+	 * @author kk
+	 * 
+	 * @param type
+	 *            类型，对应EServiceType枚举类
+	 * @param afterName
+	 *            修改之后的名称（如果是新建，就给新建的名称）
+	 * @param beforeName
+	 *            修改之前的名称(如果是新建，给NULL)
+	 * 
+	 * @return
+	 * 
+	 * @Exception 异常对象
+	 */
+	public boolean verifyName(int type, String afterName, String beforeName) {
+		boolean flag = true;
+		SegmentService_MB segmentService = null;
+		TunnelService tunnelService = null;
+		PwInfoService pwInfoService  = null;
+		ElineService elineService = null;
+		CesInfoService cesInfoService = null;
+		EtreeService etreeService = null;
+		ElanInfoService elanInfoService = null;
+		ClientService_MB clientService = null;
+		WrappingProtectService wrappingProtectService = null;
+		PerformanceTaskService taskService = null;
+		QinQInstService qinqService = null;
+		DualInfoService dualService = null;
+		try {
+			if(beforeName != null && afterName.equals(beforeName)){
+				//beforeName不为null，说明是修改，如果两次名称相同，则无需查库验证
+				flag = false;
+			}else{
+				if (type == EServiceType.ACPORT.getValue()) {
+//					AcInfoService acInfoService = (AcInfoService) ConstantUtil.serviceFactory.newService(Services.AcInfo);
+//					flag = acInfoService.nameRepetition(afterName, beforeName);
+				} else if (type == EServiceType.TUNNEL.getValue()) {
+					tunnelService = (TunnelService) ConstantUtil.serviceFactory.newService(Services.Tunnel);
+					flag = tunnelService.nameRepetition(afterName, beforeName);
+				} else if (type == EServiceType.PW.getValue()) {
+					pwInfoService = (PwInfoService) ConstantUtil.serviceFactory.newService(Services.PwInfo);
+					flag = pwInfoService.nameRepetition(afterName, beforeName);
+				} else if (type == EServiceType.ELINE.getValue()) {
+					elineService = (ElineService) ConstantUtil.serviceFactory.newService(Services.Eline);
+					flag = elineService.nameRepetition(afterName, beforeName);
+				} else if (type == EServiceType.CES.getValue()) {
+					cesInfoService = (CesInfoService) ConstantUtil.serviceFactory.newService(Services.CesInfo);
+					flag = cesInfoService.nameRepetition(afterName, beforeName);
+				}else if (type == EServiceType.ETREE.getValue()) {
+					etreeService = (EtreeService) ConstantUtil.serviceFactory.newService(Services.EtreeInfo);
+					flag = etreeService.nameRepetition(afterName, beforeName);
+				}else if (type == EServiceType.ELAN.getValue()) {
+					elanInfoService = (ElanInfoService) ConstantUtil.serviceFactory.newService(Services.ElanInfo);
+					flag = elanInfoService.nameRepetition(afterName, beforeName);
+				}else if (type == EServiceType.CLIENT.getValue()) {
+					clientService = (ClientService_MB) ConstantUtil.serviceFactory.newService_MB(Services.CLIENTSERVICE);
+					flag = clientService.nameRepetition(afterName, beforeName);
+				}else if (type == EServiceType.SECTION.getValue()) {
+					segmentService = (SegmentService_MB) ConstantUtil.serviceFactory.newService_MB(Services.SEGMENT);
+					flag = segmentService.nameRepetition(afterName, beforeName);
+				}else if (type == EServiceType.WRAPPINGPROTECT.getValue()) {
+					wrappingProtectService = (WrappingProtectService) ConstantUtil.serviceFactory.newService(Services.WRAPPINGPROTECT);;
+				    flag = wrappingProtectService.nameRepetition(afterName, beforeName);
+			    }else if (type == EServiceType.PERFORMANCETASK.getValue()) {
+				    taskService = (PerformanceTaskService) ConstantUtil.serviceFactory.newService(Services.PerformanceTask);
+				    flag = taskService.nameRepetition(afterName, beforeName);
+			    }else if (type == EServiceType.QINQ.getValue()) {
+			    	qinqService = (QinQInstService) ConstantUtil.serviceFactory.newService(Services.QinQ);
+			    	flag = qinqService.nameRepetition(afterName, beforeName);
+			    }else if (type == EServiceType.DUAL.getValue()) {
+			    	dualService = (DualInfoService) ConstantUtil.serviceFactory.newService(Services.DUALINFO);
+			    	flag = dualService.nameRepetition(afterName, beforeName);
+			    }
+			}
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,VerifyNameUtil.class);
+		}finally{
+			UiUtil.closeService(tunnelService);
+			UiUtil.closeService(pwInfoService);
+			UiUtil.closeService(elineService);
+			UiUtil.closeService(cesInfoService);
+			UiUtil.closeService(etreeService);
+			UiUtil.closeService(elanInfoService);
+			UiUtil.closeService_MB(clientService);
+			UiUtil.closeService_MB(segmentService);
+			UiUtil.closeService(wrappingProtectService);
+			UiUtil.closeService(taskService);
+			UiUtil.closeService(qinqService);
+			UiUtil.closeService(dualService);
+		}
+		return flag;
+	}
+	
+	/**
+	 * 单网元名称验证
+	 * @param type
+	 * @param afterName
+	 * @param beforeName
+	 * @param siteId
+	 * @return
+	 */
+	public boolean verifyNameBySingle(int type, String afterName, String beforeName,int siteId) {
+		boolean flag = true;
+		AcInfoService acInfoService = null;
+		TunnelService tunnelService = null;
+		PwInfoService pwInfoService = null;
+		ElineService elineService = null;
+		CesInfoService cesInfoService = null;
+		EtreeService etreeService = null;
+		ElanInfoService elanInfoService = null;
+		SubnetService subnetService = null;
+		NameRuleService nameService=null;
+		CccService cccService=null;
+		try {
+			if(beforeName != null && afterName.equals(beforeName)){
+				//beforeName不为null，说明是修改，如果两次名称相同，则无需查库验证
+				flag = false;
+			}else{
+				if (type == EServiceType.ACPORT.getValue()) {
+					acInfoService = (AcInfoService) ConstantUtil.serviceFactory.newService(Services.AcInfo);
+					flag = acInfoService.nameRepetitionBySingle(afterName, beforeName,siteId);
+				} else if (type == EServiceType.TUNNEL.getValue()) {
+					tunnelService = (TunnelService) ConstantUtil.serviceFactory.newService(Services.Tunnel);
+					flag = tunnelService.nameRepetitionBySingle(afterName, beforeName,siteId);
+				} else if (type == EServiceType.PW.getValue()) {
+					pwInfoService = (PwInfoService) ConstantUtil.serviceFactory.newService(Services.PwInfo);
+					flag = pwInfoService.nameRepetitionBySingle(afterName, beforeName,siteId);
+				} else if (type == EServiceType.ELINE.getValue()) {
+					elineService = (ElineService) ConstantUtil.serviceFactory.newService(Services.Eline);
+					flag = elineService.nameRepetitionBySingle(afterName, beforeName,siteId);
+				} else if (type == EServiceType.CES.getValue()) {
+					cesInfoService = (CesInfoService) ConstantUtil.serviceFactory.newService(Services.CesInfo);
+					flag = cesInfoService.nameRepetitionBySingle(afterName, beforeName,siteId);
+				}else if (type == EServiceType.ETREE.getValue()) {
+					etreeService = (EtreeService) ConstantUtil.serviceFactory.newService(Services.EtreeInfo);
+					flag = etreeService.nameRepetitionBySingle(afterName, beforeName,siteId);
+				}else if (type == EServiceType.ELAN.getValue()) {
+					elanInfoService = (ElanInfoService) ConstantUtil.serviceFactory.newService(Services.ElanInfo);
+					flag = elanInfoService.nameRepetitionBySingle(afterName, beforeName,siteId);
+				}else if (type == EServiceType.SUBNET.getValue()) {
+					subnetService = (SubnetService) ConstantUtil.serviceFactory.newService(Services.SUBNETSERVICE);
+					flag = subnetService.nameRepetition(afterName, beforeName,siteId);
+//				}else if (type == EServiceType.CLIENT.getValue()) {
+//					ClientService clientService = (ClientService) ConstantUtil.serviceFactory.newService(Services.CLIENTSERVICE);
+//					flag = clientService.nameRepetition(afterName, beforeName);
+				}else if (type == EServiceType.RULENAME.getValue()) {
+					nameService = (NameRuleService) ConstantUtil.serviceFactory.newService(Services.NAMERULESERVICE);
+					flag = nameService.nameRepetition(afterName, beforeName,siteId);
+				}else if (type == EServiceType.CCC.getValue()) {
+					cccService = (CccService) ConstantUtil.serviceFactory.newService(Services.CCCMANAGEMENT);
+					flag = cccService.nameRepetitionBySingle(afterName, beforeName,siteId);
+				}
+			}
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,VerifyNameUtil.class);
+		}finally{
+			UiUtil.closeService(acInfoService);
+			UiUtil.closeService(tunnelService);
+			UiUtil.closeService(pwInfoService);
+			UiUtil.closeService(elineService);
+			UiUtil.closeService(cesInfoService);
+			UiUtil.closeService(etreeService);
+			UiUtil.closeService(elanInfoService);
+			UiUtil.closeService(subnetService);
+			UiUtil.closeService(cccService);
+		}
+		return flag;
+	}
+
+}

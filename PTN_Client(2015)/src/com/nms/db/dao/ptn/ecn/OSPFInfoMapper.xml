@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nms.db.dao.ptn.ecn.OSPFInfoMapper" >
+  <resultMap id="BaseResultMap" type="OSPFInfo" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="neId" property="neid" jdbcType="VARCHAR" />
+    <result column="enabled" property="enabled" jdbcType="INTEGER" />
+    <result column="defmetric" property="defmetric" jdbcType="INTEGER" />
+    <result column="abr" property="abr" jdbcType="VARCHAR" />
+    <result column="refbandwidth" property="refbandwidth" jdbcType="INTEGER" />
+    <result column="distance" property="distance" jdbcType="INTEGER" />
+    <result column="spf_holdtime" property="spfHoldtime" jdbcType="INTEGER" />
+    <result column="spf_maxholdtime" property="spfMaxholdtime" jdbcType="INTEGER" />
+    <result column="spf_delay" property="spfDelay" jdbcType="INTEGER" />
+    <result column="refresh_time" property="refreshTime" jdbcType="INTEGER" />
+    <result column="version" property="version" jdbcType="VARCHAR" />
+    <result column="compatiblerfc1583" property="compatiblerfc1583" jdbcType="VARCHAR" />
+    <result column="ospf_area_id" property="ospfAreaId" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, neId, enabled, defmetric, abr, refbandwidth, distance, spf_holdtime, spf_maxholdtime, 
+    spf_delay, refresh_time, version, compatiblerfc1583, ospf_area_id
+  </sql>
+ 
+  <select id="queryByNeID" parameterType="java.lang.String" resultType="OSPFInfo">
+  SELECT * from ospf_info WHERE neId = #{0}
+  </select>
+</mapper>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<driveRoot xmlns="http://drive.bean.com">
+	<attribute length="1" description="性能数据类型" value="0" mapping="0" />
+	<attribute length="2" description="NE地址" value="0" mapping="0" />
+	<attribute length="1" description="NE状态" value="0" mapping="0" />
+	<attribute length="1" description="备用" value="0" mapping="0" />
+	<attribute length="2" description="盘总数" value="1" mapping="1">
+		<listRoot file="com/nms/drive/analysis/xmltool/file/性能NE下单盘配置.xml" />
+	</attribute>
+</driveRoot>

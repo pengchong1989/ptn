@@ -1,0 +1,121 @@
+package com.nms.model.ptn.clock;
+
+import java.sql.Connection;
+
+import com.nms.db.bean.ptn.clock.TodConfigInfo;
+import com.nms.db.dao.ptn.clock.TodDispositionInfoDao;
+import com.nms.model.util.ObjectService;
+import com.nms.ui.manager.ExceptionManage;
+
+public class TodDispositionInfoService extends ObjectService{
+	public void setConnection(Connection connection) {
+		super.connection = connection;
+	}
+
+	public void setPtnuser(String prnuser) {
+		super.ptnuser = prnuser;
+	}
+
+	private TodDispositionInfoDao todDispositionInfoDao = new TodDispositionInfoDao();
+
+	/**
+	 *添加数据
+	 *
+	 * @param todDispositionInfo 实体
+	 * @return 只要不是0就是插入成功
+	 * @throws Exception
+	 */
+	public int insertTodDispositionInfo(TodConfigInfo todConfigInfo) throws Exception {
+		if (null == todConfigInfo) {
+			throw new Exception("todConfigInfo is null");
+		}
+		int information = 0;
+		try {
+			connection.setAutoCommit(false);
+			information = todDispositionInfoDao.insert(todConfigInfo, connection);
+			if(!connection.getAutoCommit()){
+				connection.commit();
+			}
+		} catch (Exception e) {
+			connection.rollback();
+			ExceptionManage.dispose(e,this.getClass());
+		} finally {
+			connection.setAutoCommit(true);
+		}
+		return information;
+	}
+
+	/**
+	 * function:删除相关联数据
+	 * 
+	 * @param frequencyInfo_neClock
+	 *            实体
+	 * @return
+	 * @throws Exception
+	 */
+	public int delete(TodConfigInfo todConfigInfo)
+			throws Exception {
+		if (null == todConfigInfo) {
+			throw new Exception("todConfigInfo is null");
+		}
+		int information = 0;
+		try {
+			connection.setAutoCommit(false);
+			information = todDispositionInfoDao.delete(todConfigInfo, connection);
+			if(!connection.getAutoCommit()){
+				connection.commit();
+			}
+		} catch (Exception e) {
+			connection.rollback();
+			ExceptionManage.dispose(e,this.getClass());
+		} finally {
+			connection.setAutoCommit(true);
+		}
+		return information;
+	}
+
+	/**
+	 * 查询相关信息
+	 * 
+	 * @return List<FrequencyInfo_neClock>
+	 * @throws Exception
+	 */
+
+	public TodConfigInfo select(int id) throws Exception {
+		TodConfigInfo todConfigInfo=null;
+		try {
+			todConfigInfo = todDispositionInfoDao.select(connection,id);
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		}
+		return todConfigInfo;
+	}
+
+	/**
+	 * 删除相关的数据
+	 * 
+	 * @param todConfigInfo
+	 *            实体
+	 * @return int 1:成功，0不成功
+	 * @throws Exception
+	 */
+	public int update(TodConfigInfo todConfigInfo)throws Exception {
+		if (null == todConfigInfo) {
+			throw new Exception("todConfigInfo is null");
+		}
+		int isOK = 0;
+		try {
+			connection.setAutoCommit(false);
+			isOK = todDispositionInfoDao.update(todConfigInfo,connection);
+			if(!connection.getAutoCommit()){
+				connection.commit();
+			}
+		} catch (Exception e) {
+			connection.rollback();
+			ExceptionManage.dispose(e,this.getClass());
+		} finally {
+			connection.setAutoCommit(true);
+		}
+		return isOK;
+	}
+}

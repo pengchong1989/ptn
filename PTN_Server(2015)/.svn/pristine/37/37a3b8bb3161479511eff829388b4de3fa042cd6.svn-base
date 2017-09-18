@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nms.db.dao.system.UdaGroupMapper" >
+  <resultMap id="BaseResultMap" type="UdaGroup" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="groupName" property="groupName" jdbcType="VARCHAR" />
+    <result column="groupType" property="groupType" jdbcType="VARCHAR" />
+    <result column="parentId" property="parentId" jdbcType="INTEGER" />
+    <result column="parentName" property="parentName" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, groupName, groupType, parentId, parentName
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from udagroup
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from udagroup
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="UdaGroup"   useGeneratedKeys="true" keyProperty="id">
+    insert into udagroup
+    (groupName,groupType,parentId,parentName) 
+    values(#{groupName},#{groupType},#{parentId},#{parentName})
+  </insert>
+  <insert id="insertSelective" parameterType="UdaGroup" >
+    insert into udagroup
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="groupname != null" >
+        groupName,
+      </if>
+      <if test="grouptype != null" >
+        groupType,
+      </if>
+      <if test="parentid != null" >
+        parentId,
+      </if>
+      <if test="parentname != null" >
+        parentName,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="groupname != null" >
+        #{groupname,jdbcType=VARCHAR},
+      </if>
+      <if test="grouptype != null" >
+        #{grouptype,jdbcType=VARCHAR},
+      </if>
+      <if test="parentid != null" >
+        #{parentid,jdbcType=INTEGER},
+      </if>
+      <if test="parentname != null" >
+        #{parentname,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="UdaGroup" >
+    update udagroup
+    <set >
+      <if test="groupname != null" >
+        groupName = #{groupname,jdbcType=VARCHAR},
+      </if>
+      <if test="grouptype != null" >
+        groupType = #{grouptype,jdbcType=VARCHAR},
+      </if>
+      <if test="parentid != null" >
+        parentId = #{parentid,jdbcType=INTEGER},
+      </if>
+      <if test="parentname != null" >
+        parentName = #{parentname,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="UdaGroup" >
+    update udagroup
+    set groupName = #{groupname,jdbcType=VARCHAR},
+      groupType = #{grouptype,jdbcType=VARCHAR},
+      parentId = #{parentid,jdbcType=INTEGER},
+      parentName = #{parentname,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  
+   <select id="queryByCondition" resultMap="BaseResultMap" parameterType="UdaGroup" >
+    select id,groupName,groupType,parentId,parentName from udagroup where 1=1
+    <if test="id>0"> and id=#{id}</if>
+    <if test="groupType!=null"> and groupType=#{groupType}</if>
+	<if test="parentId!=0"> and parentId=#{parentId}</if>		
+
+  </select>
+  
+   <update id="update" parameterType="UdaGroup" >
+    update udagroup set 
+    groupName=#{groupName},groupType=#{groupType},parentId=#{parentId},
+    parentName=#{parentName}  where id=#{id}
+  </update>
+  
+   <delete id="delete" parameterType="java.lang.Integer" >
+    delete from udagroup
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+</mapper>

@@ -1,0 +1,92 @@
+package com.nms.model.system;
+
+import java.sql.Connection;
+
+import com.nms.db.bean.system.WorkIps;
+import com.nms.db.dao.system.WorkIpsDao;
+import com.nms.model.util.ObjectService;
+import com.nms.ui.manager.ExceptionManage;
+
+public class WorkIpsService extends ObjectService {
+	public void setConnection(Connection connection) {
+		super.connection = connection;
+	}
+
+	public void setPtnuser(String ptnuser) {
+		super.ptnuser = ptnuser;
+	}
+	private WorkIpsDao workIpsDaO = new WorkIpsDao();
+	
+	/**
+	 * 新增或修改workIps对象，通过workIps()来判断是修改还是新增
+	 * 
+	 * @param workIps
+	 *            实体
+	 * @return 执行成功的记录数
+	 * @throws Exception
+	 */
+	public int saveOrUpdate(WorkIps workIps) throws Exception {
+
+		if (workIps == null) {
+			throw new Exception("workIps is null");
+		}
+
+		int result = 0;
+		try {
+
+			if (workIps.getId() == 0) {
+				result = this.workIpsDaO.insert(workIps, connection);
+			} else {
+				result = this.workIpsDaO.update(workIps, connection);
+			}
+
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		}
+		return result;
+	}
+
+	/**
+	 * 通过主键删除workips对象
+	 * 
+	 * @param id
+	 *            主键
+	 * @return 删除的记录数
+	 * @throws Exception
+	 */
+	public int delete(int id) throws Exception {
+
+		int result = 0;
+		try {
+			connection.setAutoCommit(false);
+			result = workIpsDaO.delete(id, connection);
+			if(!connection.getAutoCommit()){
+				connection.commit();
+			}
+		} catch (Exception e) {
+			connection.rollback();
+			ExceptionManage.dispose(e,this.getClass());
+		} finally {
+			connection.setAutoCommit(true);
+		}
+		return result;
+
+	}
+
+	/**
+	 * 条件查询
+	 * 
+	 * @return WorkIps
+	 * @throws Exception
+	 */
+	public WorkIps select(WorkIps workIps) throws Exception {
+		WorkIps ips = null;
+		try {
+			ips = new WorkIps();
+			ips = workIpsDaO.queryByCondition(workIps, connection);
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		}
+		return ips;
+	}
+}

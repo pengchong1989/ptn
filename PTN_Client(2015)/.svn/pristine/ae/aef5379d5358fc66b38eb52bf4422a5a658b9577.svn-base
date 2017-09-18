@@ -1,0 +1,611 @@
+package com.nms.db.dao.ptn.qos;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.nms.db.bean.ptn.qos.QosQueue;
+import com.nms.ui.manager.ExceptionManage;
+import com.nms.ui.manager.UiUtil;
+
+public class QosQueueDao {
+	/**
+	 * 新增qosQueue
+	 * 
+	 * @param qosQueue
+	 *            插入实体对象
+	 * @param connection
+	 *            数据库链接
+	 * @return 插入记录数
+	 * @throws Exception
+	 */
+	public int insert(QosQueue qosQueue, Connection conn) throws Exception {
+		if (qosQueue == null) {
+			throw new Exception("qosQueue is null");
+		}
+		if (conn == null) {
+			throw new Exception("connection is null");
+		}
+
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		int result = 0;
+
+		try {
+			sql = "insert into qosQueue(objType,objId,siteId,serviceId,cos," + "cir,weight,queueType,greenLowThresh ,greenHighThresh ,greenProbability ," + "yellowLowThresh ,yellowHighThresh ,yellowProbability ," + "wredEnable ,mostBandwidth,discard) " + "values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+			preparedStatement = conn.prepareStatement(sql);
+			preparedStatement.setString(1, qosQueue.getObjType());
+			preparedStatement.setInt(2, qosQueue.getObjId());
+			preparedStatement.setInt(3, qosQueue.getSiteId());
+			preparedStatement.setInt(4, qosQueue.getServiceId());
+			preparedStatement.setInt(5, qosQueue.getCos());
+			preparedStatement.setInt(6, qosQueue.getCir());
+			preparedStatement.setInt(7, qosQueue.getWeight());
+			preparedStatement.setString(8, qosQueue.getQueueType());
+			preparedStatement.setInt(9, qosQueue.getGreenLowThresh());
+			preparedStatement.setInt(10, qosQueue.getGreenHighThresh());
+			preparedStatement.setInt(11, qosQueue.getGreenProbability());
+			preparedStatement.setInt(12, qosQueue.getYellowLowThresh());
+			preparedStatement.setInt(13, qosQueue.getYellowHighThresh());
+			preparedStatement.setInt(14, qosQueue.getYellowProbability());
+			preparedStatement.setBoolean(15, qosQueue.isWredEnable());
+			preparedStatement.setString(16, qosQueue.getMostBandwidth());
+			preparedStatement.setInt(17, qosQueue.getDisCard());
+			result = preparedStatement.executeUpdate();
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+
+		return result;
+	}
+
+	/**
+	 * 删除qosQueue
+	 * 
+	 * @param connection
+	 *            数据库链接
+	 * @return 删除记录数
+	 * @throws Exception
+	 * @throws Exception
+	 */
+	public int delete(QosQueue qosQueue, Connection conn) throws Exception {
+
+		if (null == conn) {
+			throw new Exception("connection is null");
+		}
+
+		StringBuffer sql = new StringBuffer();
+		PreparedStatement preparedStatement = null;
+		int result = 0;
+
+		try {
+			sql.append(" delete from qosQueue where objType = ? and objId = ?");
+			if (qosQueue.getSiteId() != 0) {
+				sql.append(" and siteId = ?");
+			}
+			if (null != qosQueue.getQueueType() && !"".equals(qosQueue.getQueueType())) {
+				sql.append(" and queueType = ?");
+			}
+			preparedStatement = conn.prepareStatement(sql.toString());
+			preparedStatement.setString(1, qosQueue.getObjType());
+			preparedStatement.setInt(2, qosQueue.getObjId());
+			if (qosQueue.getSiteId() != 0) {
+				preparedStatement.setInt(3, qosQueue.getSiteId());
+			}
+			if (null != qosQueue.getQueueType() && !"".equals(qosQueue.getQueueType())) {
+				preparedStatement.setString(preparedStatement.getParameterMetaData().getParameterCount(), qosQueue.getQueueType());
+			}
+			result = preparedStatement.executeUpdate();
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+
+		return result;
+	}
+
+	public int deleteByServiceId(int serviceId, String objType, Connection conn) throws Exception {
+
+		if (null == conn) {
+			throw new Exception("connection is null");
+		}
+
+		StringBuffer sql = new StringBuffer();
+		PreparedStatement preparedStatement = null;
+		int result = 0;
+
+		try {
+			sql.append(" delete from qosQueue where objType = ? and serviceId = ?");
+			preparedStatement = conn.prepareStatement(sql.toString());
+			preparedStatement.setString(1, objType);
+			preparedStatement.setInt(2, serviceId);
+			result = preparedStatement.executeUpdate();
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+
+		return result;
+	}
+
+	/**
+	 * 修改qosQueue
+	 * 
+	 * @param qosQueue
+	 * 
+	 * @param connection
+	 *            连接数据库
+	 * @return 修改的条数
+	 * @throws Exception
+	 * @throws Exception
+	 */
+	public int update(QosQueue qosQueue, Connection conn) throws Exception {
+		// System.out.println("`````QosQueueDao.line 177 . qos="+qosQueue.toString());
+		if (null == conn) {
+			throw new Exception("connection is null");
+		}
+
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		int result = 0;
+
+		try {
+			sql = " update qosQueue set objType = ?,objId = ?,siteId= ?,serviceId = ?,cos = ?," + "cir= ?,weight= ?,queueType= ?,greenLowThresh = ?,greenHighThresh = ?,greenProbability= ? ," + "yellowLowThresh= ? ,yellowHighThresh= ? ,yellowProbability= ? ," + "wredEnable= ? ,mostBandwidth= ? ,discard= ?" + " where id = ?";
+			preparedStatement = conn.prepareStatement(sql);
+			preparedStatement.setString(1, qosQueue.getObjType());
+			preparedStatement.setInt(2, qosQueue.getObjId());
+			preparedStatement.setInt(3, qosQueue.getSiteId());
+			preparedStatement.setInt(4, qosQueue.getServiceId());
+			preparedStatement.setInt(5, qosQueue.getCos());
+			preparedStatement.setInt(6, qosQueue.getCir());
+			preparedStatement.setInt(7, qosQueue.getWeight());
+			preparedStatement.setString(8, qosQueue.getQueueType());
+			preparedStatement.setInt(9, qosQueue.getGreenLowThresh());
+			preparedStatement.setInt(10, qosQueue.getGreenHighThresh());
+			preparedStatement.setInt(11, qosQueue.getGreenProbability());
+			preparedStatement.setInt(12, qosQueue.getYellowLowThresh());
+			preparedStatement.setInt(13, qosQueue.getYellowHighThresh());
+			preparedStatement.setInt(14, qosQueue.getYellowProbability());
+			preparedStatement.setBoolean(15, qosQueue.isWredEnable());
+			preparedStatement.setString(16, qosQueue.getMostBandwidth());
+			preparedStatement.setInt(17, qosQueue.getDisCard());
+			preparedStatement.setInt(18, qosQueue.getId());
+			result = preparedStatement.executeUpdate();
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+		return result;
+	}
+
+	/*
+	 * 查询全部对象qos信息
+	 */
+	public List<QosQueue> select(Connection conn) throws Exception {
+		if (null == conn) {
+			throw new Exception("connection is null");
+		}
+
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+		List<QosQueue> qosList = null;
+		QosQueue qosQueue = null;
+
+		try {
+			qosList = new ArrayList<QosQueue>();
+			sql = " select * from qosQueue where 1 = 1";
+			preparedStatement = conn.prepareStatement(sql);
+			resultSet = preparedStatement.executeQuery();
+
+			while (resultSet.next()) {
+				qosQueue = new QosQueue();
+				qosQueue.setId(resultSet.getInt("id"));
+				qosQueue.setSiteId(resultSet.getInt("siteId"));
+				qosQueue.setServiceId(resultSet.getInt("serviceId"));
+				qosQueue.setObjType(resultSet.getString("objType"));
+				qosQueue.setObjId(resultSet.getInt("objId"));
+				qosQueue.setCos(resultSet.getInt("cos"));
+				qosQueue.setCir(resultSet.getInt("cir"));
+				qosQueue.setQueueType(resultSet.getString("queueType"));
+				qosQueue.setWeight(resultSet.getInt("weight"));
+				qosQueue.setGreenLowThresh(resultSet.getInt("greenLowThresh"));
+				qosQueue.setGreenHighThresh(resultSet.getInt("greenHighThresh"));
+				qosQueue.setGreenProbability(resultSet.getInt("greenProbability"));
+				qosQueue.setYellowLowThresh(resultSet.getInt("yellowLowThresh"));
+				qosQueue.setYellowHighThresh(resultSet.getInt("yellowHighThresh"));
+				qosQueue.setYellowProbability(resultSet.getInt("yellowProbability"));
+				qosQueue.setWredEnable(resultSet.getBoolean("wredEnable"));
+				qosQueue.setMostBandwidth(resultSet.getString("mostBandwidth"));
+				qosQueue.setDisCard(resultSet.getInt("discard"));
+				qosList.add(qosQueue);
+			}
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (null != resultSet) {
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e, this.getClass());
+				}
+				resultSet = null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e, this.getClass());
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+		return qosList;
+	}
+
+	/*
+	 * 根据对象id和类型查询
+	 */
+	public List<QosQueue> queryByCondition(QosQueue qos, Connection conn) throws Exception {
+		if (null == conn) {
+			throw new Exception("connection is null");
+		}
+		StringBuffer sql = new StringBuffer();
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+		List<QosQueue> templateList = null;
+		QosQueue qosQueue = null;
+		List<Object> list;
+		try {
+			list = new ArrayList<Object>();
+			templateList = new ArrayList<QosQueue>();
+			sql.append(" select * from qosQueue where 1=1 ");
+			if (UiUtil.isNull(qos.getObjType())) {
+				sql.append(" and objType = ?");
+				list.add(qos.getObjType());
+			}
+			if (qos.getObjId() != 0) {
+				sql.append(" and objId = ?");
+				list.add(qos.getObjId());
+			}
+			if (qos.getSiteId() != 0) {
+				sql.append(" and siteId = ?");
+				list.add(qos.getSiteId());
+			}
+			if (!("".equals(qos.getQueueType()) || null == qos.getQueueType())) {
+				sql.append(" and queueType = ?");
+				list.add(qos.getQueueType());
+			}
+			preparedStatement = conn.prepareStatement(sql.toString());
+			for (int i = 0; i < list.size(); i++) {
+				preparedStatement.setObject(i + 1, list.get(i));
+			}
+
+			resultSet = preparedStatement.executeQuery();
+
+			while (resultSet.next()) {
+				qosQueue = new QosQueue();
+				qosQueue.setId(resultSet.getInt("id"));
+				qosQueue.setSiteId(resultSet.getInt("siteId"));
+				qosQueue.setServiceId(resultSet.getInt("serviceId"));
+				qosQueue.setObjType(resultSet.getString("objType"));
+				qosQueue.setObjId(resultSet.getInt("objId"));
+				qosQueue.setCos(resultSet.getInt("cos"));
+				qosQueue.setCir(resultSet.getInt("cir"));
+				qosQueue.setQueueType(resultSet.getString("queueType"));
+				qosQueue.setWeight(resultSet.getInt("weight"));
+				qosQueue.setGreenLowThresh(resultSet.getInt("greenLowThresh"));
+				qosQueue.setGreenHighThresh(resultSet.getInt("greenHighThresh"));
+				qosQueue.setGreenProbability(resultSet.getInt("greenProbability"));
+				qosQueue.setYellowLowThresh(resultSet.getInt("yellowLowThresh"));
+				qosQueue.setYellowHighThresh(resultSet.getInt("yellowHighThresh"));
+				qosQueue.setYellowProbability(resultSet.getInt("yellowProbability"));
+				qosQueue.setWredEnable(resultSet.getBoolean("wredEnable"));
+				qosQueue.setMostBandwidth(resultSet.getString("mostBandwidth"));
+				qosQueue.setDisCard(resultSet.getInt("discard"));
+				templateList.add(qosQueue);
+			}
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (null != resultSet) {
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e, this.getClass());
+				}
+				resultSet = null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e, this.getClass());
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+		return templateList;
+
+	}
+
+	public List<QosQueue> queryByServiceId(int serviceId, String objType, Connection conn) throws Exception {
+		if (null == conn) {
+			throw new Exception("connection is null");
+		}
+		StringBuffer sql = new StringBuffer();
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+		List<QosQueue> qosList = null;
+		QosQueue qosQueue = null;
+
+		try {
+			qosList = new ArrayList<QosQueue>();
+			sql.append(" select * from qosQueue where objType = '"+objType+"' and objid = "+serviceId);
+			preparedStatement = conn.prepareStatement(sql.toString());
+			resultSet = preparedStatement.executeQuery();
+
+			while (resultSet.next()) {
+				qosQueue = new QosQueue();
+				qosQueue.setId(resultSet.getInt("id"));
+				qosQueue.setSiteId(resultSet.getInt("siteId"));
+				qosQueue.setServiceId(resultSet.getInt("serviceId"));
+				qosQueue.setObjType(resultSet.getString("objType"));
+				qosQueue.setObjId(resultSet.getInt("objId"));
+				qosQueue.setCos(resultSet.getInt("cos"));
+				qosQueue.setCir(resultSet.getInt("cir"));
+				qosQueue.setQueueType(resultSet.getString("queueType"));
+				qosQueue.setWeight(resultSet.getInt("weight"));
+				qosQueue.setGreenLowThresh(resultSet.getInt("greenLowThresh"));
+				qosQueue.setGreenHighThresh(resultSet.getInt("greenHighThresh"));
+				qosQueue.setGreenProbability(resultSet.getInt("greenProbability"));
+				qosQueue.setYellowLowThresh(resultSet.getInt("yellowLowThresh"));
+				qosQueue.setYellowHighThresh(resultSet.getInt("yellowHighThresh"));
+				qosQueue.setYellowProbability(resultSet.getInt("yellowProbability"));
+				qosQueue.setWredEnable(resultSet.getBoolean("wredEnable"));
+				qosQueue.setMostBandwidth(resultSet.getString("mostBandwidth"));
+				qosQueue.setDisCard(resultSet.getInt("discard"));
+				qosList.add(qosQueue);
+			}
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (null != resultSet) {
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e, this.getClass());
+				}
+				resultSet = null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e, this.getClass());
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+		return qosList;
+
+	}
+
+	public List<QosQueue> queryByPortId(int portid, String objType, Connection conn) throws Exception {
+		if (null == conn) {
+			throw new Exception("connection is null");
+		}
+		StringBuffer sql = new StringBuffer();
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+		List<QosQueue> qosList = null;
+		QosQueue qosQueue = null;
+
+		try {
+			qosList = new ArrayList<QosQueue>();
+			sql.append(" select * from qosQueue where objType = ? and objid = ? ");
+			preparedStatement = conn.prepareStatement(sql.toString());
+			preparedStatement.setString(1, objType);
+			preparedStatement.setInt(2, portid);
+			resultSet = preparedStatement.executeQuery();
+
+			while (resultSet.next()) {
+				qosQueue = new QosQueue();
+				qosQueue.setId(resultSet.getInt("id"));
+				qosQueue.setSiteId(resultSet.getInt("siteId"));
+				qosQueue.setServiceId(resultSet.getInt("serviceId"));
+				qosQueue.setObjType(resultSet.getString("objType"));
+				qosQueue.setObjId(resultSet.getInt("objId"));
+				qosQueue.setCos(resultSet.getInt("cos"));
+				qosQueue.setCir(resultSet.getInt("cir"));
+				qosQueue.setQueueType(resultSet.getString("queueType"));
+				qosQueue.setWeight(resultSet.getInt("weight"));
+				qosQueue.setGreenLowThresh(resultSet.getInt("greenLowThresh"));
+				qosQueue.setGreenHighThresh(resultSet.getInt("greenHighThresh"));
+				qosQueue.setGreenProbability(resultSet.getInt("greenProbability"));
+				qosQueue.setYellowLowThresh(resultSet.getInt("yellowLowThresh"));
+				qosQueue.setYellowHighThresh(resultSet.getInt("yellowHighThresh"));
+				qosQueue.setYellowProbability(resultSet.getInt("yellowProbability"));
+				qosQueue.setWredEnable(resultSet.getBoolean("wredEnable"));
+				qosQueue.setMostBandwidth(resultSet.getString("mostBandwidth"));
+				qosQueue.setDisCard(resultSet.getInt("discard"));
+				qosList.add(qosQueue);
+			}
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (null != resultSet) {
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e, this.getClass());
+				}
+				resultSet = null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e, this.getClass());
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+		return qosList;
+
+	}
+
+	/**
+	 * 通过id集合获取
+	 * 
+	 * @param objIds
+	 *            id集合
+	 * @param connection
+	 * @return
+	 * @throws Exception
+	 */
+	public List<QosQueue> queryByIdWithUNI(int id, Connection connection) throws Exception {
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+		StringBuffer sql = new StringBuffer();
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+		List<QosQueue> qosList = null;
+		QosQueue qosQueue = null;
+
+		try {
+			qosList = new ArrayList<QosQueue>();
+			sql.append("SELECT q.* FROM qosQueue q, port_inst p WHERE q.objId = p.portId AND p.portType = 'UNI' ");
+
+			if (0 != id) {
+				sql.append(" AND q.objId in( ? )");
+			}
+			preparedStatement = connection.prepareStatement(sql.toString());
+			if (0 != id) {
+				preparedStatement.setInt(1, id);
+			}
+			resultSet = preparedStatement.executeQuery();
+
+			while (resultSet.next()) {
+				qosQueue = new QosQueue();
+				qosQueue.setId(resultSet.getInt("id"));
+				qosQueue.setSiteId(resultSet.getInt("siteId"));
+				qosQueue.setServiceId(resultSet.getInt("serviceId"));
+				qosQueue.setObjType(resultSet.getString("objType"));
+				qosQueue.setObjId(resultSet.getInt("objId"));
+				qosQueue.setCos(resultSet.getInt("cos"));
+				qosQueue.setCir(resultSet.getInt("cir"));
+				qosQueue.setQueueType(resultSet.getString("queueType"));
+				qosQueue.setWeight(resultSet.getInt("weight"));
+				qosQueue.setGreenLowThresh(resultSet.getInt("greenLowThresh"));
+				qosQueue.setGreenHighThresh(resultSet.getInt("greenHighThresh"));
+				qosQueue.setGreenProbability(resultSet.getInt("greenProbability"));
+				qosQueue.setYellowLowThresh(resultSet.getInt("yellowLowThresh"));
+				qosQueue.setYellowHighThresh(resultSet.getInt("yellowHighThresh"));
+				qosQueue.setYellowProbability(resultSet.getInt("yellowProbability"));
+				qosQueue.setWredEnable(resultSet.getBoolean("wredEnable"));
+				qosQueue.setMostBandwidth(resultSet.getString("mostBandwidth"));
+				qosQueue.setDisCard(resultSet.getInt("discard"));
+				qosList.add(qosQueue);
+			}
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (null != resultSet) {
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e, this.getClass());
+				}
+				resultSet = null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e, this.getClass());
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+		return qosList;
+	}
+
+	public int deleteBySiteId(int siteId, Connection conn) throws Exception {
+
+		if (null == conn) {
+			throw new Exception("connection is null");
+		}
+
+		StringBuffer sql = new StringBuffer();
+		PreparedStatement preparedStatement = null;
+		int result = 0;
+
+		try {
+			sql.append(" delete from qosQueue where siteId=?");
+			preparedStatement = conn.prepareStatement(sql.toString());
+			preparedStatement.setInt(1, siteId);
+			result = preparedStatement.executeUpdate();
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+
+		return result;
+	}
+
+}

@@ -1,0 +1,217 @@
+package com.nms.db.dao.alarm;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.nms.ui.manager.ExceptionManage;
+import com.nms.ui.ptn.alarm.model.AlarmVoiceInfo;
+
+public class AlarmVoiceInfoDao {
+
+	/**
+	 * 查询所有的声音设置
+	 * @param conn
+	 * @return
+	 * @throws Exception
+	 */
+	public List<AlarmVoiceInfo> queryAllVoice(Connection conn) throws Exception{
+		List<AlarmVoiceInfo> alarmVoiceList = new ArrayList<AlarmVoiceInfo>();
+		
+		if (null == conn) {
+			throw new Exception("connection is null");
+		}
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		try {
+			sql = "select * from alarm_voice";
+			preparedStatement = conn.prepareStatement(sql);
+			alarmVoiceList = this.executeQuery(preparedStatement);
+		} finally {
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}finally{
+					preparedStatement = null;
+				}
+			}
+			sql = null;
+		}
+		return alarmVoiceList;
+	}
+
+	/**
+	 * 执行查询方法
+	 * @param preparedStatement
+	 * @return
+	 */
+	private List<AlarmVoiceInfo> executeQuery(PreparedStatement preparedStatement) {
+		ResultSet resultSet = null;
+		List<AlarmVoiceInfo> alarmVoiceList = null;
+		AlarmVoiceInfo voice = null;
+		try {
+			alarmVoiceList = new ArrayList<AlarmVoiceInfo>();
+			resultSet = preparedStatement.executeQuery();
+
+			while (resultSet.next()) {
+				voice = new AlarmVoiceInfo();
+				voice.setId(resultSet.getInt("id"));
+				voice.setAlarmType(resultSet.getInt("type"));
+				voice.setAlarmContinueTime(resultSet.getInt("time"));
+				voice.setAlarmSwitch(resultSet.getInt("switch"));
+				voice.setAlarmSoundPath(resultSet.getString("alarmSoundPath"));
+				voice.setAlarmColorRGB(resultSet.getInt("alarmColorRGB"));
+				alarmVoiceList.add(voice);
+			}
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		} finally {
+			if (resultSet != null) {
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}finally{
+					resultSet = null;
+				}
+			}
+			voice = null;
+		}
+		return alarmVoiceList;
+	}
+
+	/**
+	 * 插入所有的数据
+	 * @param voiceList
+	 * @param conn
+	 * @return
+	 * @throws Exception 
+	 */
+	public int insertAllVoice(AlarmVoiceInfo voice, Connection conn) throws Exception {
+		if (null == voice) {
+			throw new Exception("voice is null");
+		}
+
+		if (null == conn) {
+			throw new Exception("connection is null");
+		}
+
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		int result = 0;
+
+		try {
+			sql = "insert into alarm_voice(type,time,switch,alarmSoundPath,alarmColorRGB) values(?,?,?,?,?)";
+			preparedStatement = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+			preparedStatement.setInt(1, voice.getAlarmType());
+			preparedStatement.setInt(2, voice.getAlarmContinueTime());
+			preparedStatement.setInt(3, voice.getAlarmSwitch());
+			preparedStatement.setString(4, voice.getAlarmSoundPath());
+			preparedStatement.setInt(5, voice.getAlarmColorRGB());
+			result = preparedStatement.executeUpdate();
+		} catch (Exception e) {
+			throw e;
+		} finally {
+
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}finally{
+					preparedStatement = null;
+				}
+			}
+
+			sql = null;
+		}
+		return result;
+	}
+
+	/**
+	 * 修改所有的数据
+	 * @param voice
+	 * @param conn
+	 * @return
+	 * @throws Exception 
+	 */
+	public int updateAllVoice(AlarmVoiceInfo voice, Connection conn) throws Exception {
+		if (null == voice) {
+			throw new Exception("voice is null");
+		}
+
+		if (null == conn) {
+			throw new Exception("connection is null");
+		}
+
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		int result = 0;
+
+		try {
+			sql = "update alarm_voice set type=?,time=?,switch=?,alarmSoundPath=?,alarmColorRGB=? where id=?";
+			preparedStatement = conn.prepareStatement(sql);
+			preparedStatement.setInt(1, voice.getAlarmType());
+			preparedStatement.setInt(2, voice.getAlarmContinueTime());
+			preparedStatement.setInt(3, voice.getAlarmSwitch());
+			preparedStatement.setString(4, voice.getAlarmSoundPath());
+			preparedStatement.setInt(5, voice.getAlarmColorRGB());
+			preparedStatement.setInt(6, voice.getId());
+
+			result = preparedStatement.executeUpdate();
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}finally{
+					preparedStatement = null;
+				}
+			}
+			sql = null;
+		}
+
+		return result;
+	}
+
+	public AlarmVoiceInfo selectByCondition(AlarmVoiceInfo voice, Connection conn) throws Exception {
+		if (null == conn) {
+			throw new Exception("connection is null");
+		}
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		try {
+			sql = "select * from alarm_voice where type = "+voice.getAlarmType();
+			preparedStatement = conn.prepareStatement(sql);
+			List<AlarmVoiceInfo> alarmVoiceList = this.executeQuery(preparedStatement);
+			if(alarmVoiceList.size() > 0){
+				return alarmVoiceList.get(0);
+			}
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}finally{
+					preparedStatement = null;
+				}
+			}
+			sql = null;
+		}
+		return voice;
+	}
+ 
+}

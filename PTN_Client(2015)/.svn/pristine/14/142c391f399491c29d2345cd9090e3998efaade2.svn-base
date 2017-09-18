@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 710_E1板卡下所有端口配置 (710的E1端口板) -->
+<xml-boby>
+
+<card cardName="SP16" cardType="" imagePath="/com/nms/ui/images/topo/soz/yixun_card_e1.png" x="226" y="55" >
+    <port portName="e1" seq="1" portType="e1" bandWidth="" imagePath="/com/nms/ui/images/topo/soz/port_e.png" x="94" y="18" number="1"  module="(o)"></port>
+    <port portName="e1" seq="2" portType="e1" bandWidth="" imagePath="/com/nms/ui/images/topo/soz/port_e.png" x="122" y="18" number="2"  module="(o)"></port>
+    <port portName="e1" seq="3" portType="e1" bandWidth="" imagePath="/com/nms/ui/images/topo/soz/port_e.png" x="150" y="18" number="3"  module="(o)"></port>
+    <port portName="e1" seq="4" portType="e1" bandWidth="" imagePath="/com/nms/ui/images/topo/soz/port_e.png" x="178" y="18" number="4"  module="(o)"></port>
+    <port portName="e1" seq="5" portType="e1" bandWidth="" imagePath="/com/nms/ui/images/topo/soz/port_e.png" x="212" y="18" number="5"  module="(o)"></port>
+    <port portName="e1" seq="6" portType="e1" bandWidth="" imagePath="/com/nms/ui/images/topo/soz/port_e.png" x="240" y="18" number="6"  module="(o)"></port>
+    <port portName="e1" seq="7" portType="e1" bandWidth="" imagePath="/com/nms/ui/images/topo/soz/port_e.png" x="268" y="18" number="7"  module="(o)"></port>
+    <port portName="e1" seq="8" portType="e1" bandWidth="" imagePath="/com/nms/ui/images/topo/soz/port_e.png" x="296" y="18" number="8"  module="(o)"></port>
+</card>
+
+</xml-boby>

@@ -1,0 +1,150 @@
+package com.nms.model.system;
+
+
+import java.util.List;
+import org.apache.ibatis.session.SqlSession;
+import com.nms.db.bean.system.UdaAttr;
+import com.nms.db.dao.system.UdaAttrMapper;
+import com.nms.model.util.ObjectService_Mybatis;
+
+
+public class UdaAttrService_MB extends ObjectService_Mybatis {
+
+    private UdaAttrMapper mapper = null;
+	
+	public void setPtnuser(String ptnuser) {
+		super.ptnuser = ptnuser;
+	}
+
+	public void setSqlSession(SqlSession sqlSession) {
+		super.sqlSession = sqlSession;
+	}
+	
+	public UdaAttrMapper getMapper() {
+		return mapper;
+	}
+
+	public void setMapper(UdaAttrMapper mapper) {
+		this.mapper = mapper;
+	}
+
+
+	public int saveOrUpdate(UdaAttr udaAttr) throws Exception {
+
+		if (udaAttr == null) {
+			throw new Exception("udaAttr is null");
+		}
+
+		int result = 0;
+//		try {
+//
+//			if (udaAttr.getId() == 0) {
+//				result = this.udaAttrDao.insert(udaAttr, connection);
+//			} else {
+//				result = this.udaAttrDao.update(udaAttr, connection);
+//			}
+//
+//		} catch (Exception e) {
+//			ExceptionManage.dispose(e,this.getClass());
+//		}
+		return result;
+	}
+    /**
+     * 通过主键删除udaattr对象
+     * @param id 主键
+     * @return  删除记录数
+     * @throws Exception
+     */
+	public int delete(int id) throws Exception {
+
+		int result = 0;
+
+//		try {
+//			result = udaAttrDao.delete(id, connection);
+//		} catch (Exception e) {
+//			ExceptionManage.dispose(e,this.getClass());
+//		}
+		return result;
+
+	}
+    /**
+     * 根据GroupId删除uadattr对象
+     * @param GroupId 
+     * @return
+     * @throws Exception
+     */
+	public int deleteByPortId(int GroupId) throws Exception {
+		int result = 0;
+		
+//		try {
+//			result= udaAttrDao.deleteByGroupId(GroupId, connection);
+//		} catch (Exception e) {
+//			ExceptionManage.dispose(e,this.getClass());
+//		}
+		return result;
+	}
+    /**
+     * 查询全部udaattr
+     * @return UdaAttr集合
+     * @throws Exception
+     */
+	public List<UdaAttr> select() throws Exception {
+		List<UdaAttr> udaattrList=null;
+		
+//		try {
+//			UdaAttr udaattr = new UdaAttr();
+//			udaattrList=udaAttrDao.queryByCondition(udaattr, connection);
+//		} catch (Exception e) {
+//			ExceptionManage.dispose(e,this.getClass());
+//		}
+		return udaattrList;
+	}
+    /**
+     * 根据条件查询 udaattr
+     * @param udaattr 查询条件
+     * @return udaattr集合
+     * @throws Exception
+     */
+	public List<UdaAttr> select(UdaAttr udaattr) throws Exception {
+		List<UdaAttr> udaattrList=null;
+//		
+//		try {
+//			udaattrList=udaAttrDao.queryByCondition(udaattr, connection);
+//		} catch (Exception e) {
+//			ExceptionManage.dispose(e,this.getClass());
+//		}
+		return udaattrList;
+	}
+	
+	/**
+	 * 根据parentId查询在table显示的记录
+	 * 
+	 * @param parentId
+	 *            组ID
+	 * @return UdaAttr集合
+	 * @throws Exception
+	 */
+	public List<UdaAttr> selectUdaGroup(int parentId) throws Exception {
+		List<UdaAttr> udaattrList = null;
+
+//		try {
+//			udaattrList =  udaAttrDao.queryByPatentId(parentId, connection);
+//		} catch (Exception e) {
+//			ExceptionManage.dispose(e,this.getClass());
+//		}
+		return udaattrList;
+	}
+	
+//	 public static void main(String[] args) {
+//	 UdaAttrService udaattrservice=new UdaAttrService();
+//	 udaattrservice.setConnection(DBManager.getConnection());
+//			
+//	 try {
+//	 System.out.println(udaattrservice.selectUdaGroup(1).size());
+//	 } catch (Exception e) {
+//	  
+//	 ExceptionManage.dispose(e,this.getClass());
+//	 }
+//			
+//	 }
+}

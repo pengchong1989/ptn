@@ -1,0 +1,107 @@
+package com.nms.model.ptn.path;
+
+import java.sql.Connection;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.nms.db.bean.ptn.path.GroupSpreadInfo;
+import com.nms.db.dao.ptn.path.GroupSpreadDao;
+import com.nms.model.util.ObjectService;
+import com.nms.ui.manager.ExceptionManage;
+
+public class GroupSpreadService extends ObjectService{
+	public void setConnection(Connection connection) {
+		super.connection = connection;	
+	}
+
+	public void setPtnuser(String ptnuser) {
+		super.ptnuser = ptnuser;
+	}
+	
+	private GroupSpreadDao groupSpreadDao = new GroupSpreadDao();
+	
+	/**
+	 * 修改
+	 * @param info
+	 * @throws Exception
+	 */
+	public void update(GroupSpreadInfo info) throws Exception {
+		try {
+			connection.setAutoCommit(false);
+			this.groupSpreadDao.update(info, connection);
+			if(!connection.getAutoCommit()){
+				connection.commit();
+			}
+		} catch (Exception e) {
+			connection.rollback();
+			ExceptionManage.dispose(e,this.getClass());
+		} finally {
+			connection.setAutoCommit(true);
+		}
+
+	}
+	
+	/**
+	 * 根据网元Id 查询 
+	 * @param siteId
+	 * @return FrequencyInfo List
+	 * @throws Exception
+	 */
+	public List<GroupSpreadInfo> query(GroupSpreadInfo groupInfo) throws Exception {
+		List<GroupSpreadInfo> infoList = new ArrayList<GroupSpreadInfo>();
+		try {
+			infoList = this.groupSpreadDao.queryByCondition(groupInfo, connection);
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		}
+		return  infoList;
+	}
+	/**
+	 * 添加
+	 * @return 
+	 */
+	public int insert(GroupSpreadInfo info) throws Exception {
+
+		if (connection == null) {
+			System.out.println("connection is null");
+		}
+
+		int result = 0;
+
+		try {
+			connection.setAutoCommit(false);
+			result = this.groupSpreadDao.insert(info, connection);
+			if(!connection.getAutoCommit()){
+				connection.commit();
+			}
+		} catch (Exception e) {
+			connection.rollback();
+			ExceptionManage.dispose(e,this.getClass());
+		} finally {
+			connection.setAutoCommit(true);
+		}
+		return result;
+	}
+	
+	public void delete(List<GroupSpreadInfo> infoList) throws Exception {
+
+		if (connection == null) {
+			System.out.println("connection is null");
+		}
+
+		try {
+			connection.setAutoCommit(false);
+			for(GroupSpreadInfo info :infoList){
+				this.groupSpreadDao.delete(info.getId(), connection);
+			}
+			if(!connection.getAutoCommit()){
+				connection.commit();
+			}
+		} catch (Exception e) {
+			connection.rollback();
+			ExceptionManage.dispose(e,this.getClass());
+		} finally {
+			connection.setAutoCommit(true);
+		}
+	}
+}

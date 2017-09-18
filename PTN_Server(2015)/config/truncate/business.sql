@@ -1,0 +1,17 @@
+TRUNCATE serviceinfo;
+TRUNCATE loop_protect;
+DELETE FROM qosrelevance WHERE objType='PW';
+TRUNCATE pwbuffer;
+TRUNCATE pwnnibuffer;
+TRUNCATE pwinfo;
+DELETE FROM qosrelevance WHERE objType='TUNNEL';
+TRUNCATE lspinfo;
+TRUNCATE tunnel;
+TRUNCATE protectioninfo;
+TRUNCATE protect_rorate;
+TRUNCATE dualrelevance;
+TRUNCATE dualprotect;
+TRUNCATE pwprotect;
+TRUNCATE mspwinfo;
+TRUNCATE oammepinfo;
+TRUNCATE oammipinfo;

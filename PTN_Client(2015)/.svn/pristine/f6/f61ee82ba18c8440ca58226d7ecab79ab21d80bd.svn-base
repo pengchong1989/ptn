@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nms.db.dao.perform.CapabilityMapper" >
+  <resultMap id="BaseResultMap" type="Capability" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="CapabilityType" property="capabilitytype" jdbcType="VARCHAR" />
+    <result column="CapabilityName" property="capabilityname" jdbcType="VARCHAR" />
+    <result column="CapabilityDesc" property="capabilitydesc" jdbcType="VARCHAR" />
+    <result column="CapabilityDisp" property="capabilitydisp" jdbcType="VARCHAR" />
+    <result column="CapabilityProlate" property="capabilityprolate" jdbcType="VARCHAR" />
+    <result column="CapabilityCode" property="capabilitycode" jdbcType="INTEGER" />
+    <result column="CapabilityCounter" property="capabilitycounter" jdbcType="VARCHAR" />
+    <result column="Manufacturer" property="manufacturer" jdbcType="INTEGER" />
+    <result column="UnitName" property="unitname" jdbcType="VARCHAR" />
+    <result column="CapabilityDesc_en" property="capabilitydescEn" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, CapabilityType, CapabilityName, CapabilityDesc, CapabilityDisp, CapabilityProlate, 
+    CapabilityCode, CapabilityCounter, Manufacturer, UnitName, CapabilityDesc_en
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from capability
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from capability
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="Capability" >
+    insert into capability (id, CapabilityType, CapabilityName, 
+      CapabilityDesc, CapabilityDisp, CapabilityProlate, 
+      CapabilityCode, CapabilityCounter, Manufacturer, 
+      UnitName, CapabilityDesc_en)
+    values (#{id,jdbcType=INTEGER}, #{capabilitytype,jdbcType=VARCHAR}, #{capabilityname,jdbcType=VARCHAR}, 
+      #{capabilitydesc,jdbcType=VARCHAR}, #{capabilitydisp,jdbcType=VARCHAR}, #{capabilityprolate,jdbcType=VARCHAR}, 
+      #{capabilitycode,jdbcType=INTEGER}, #{capabilitycounter,jdbcType=VARCHAR}, #{manufacturer,jdbcType=INTEGER}, 
+      #{unitname,jdbcType=VARCHAR}, #{capabilitydescEn,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="Capability" >
+    insert into capability
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="capabilitytype != null" >
+        CapabilityType,
+      </if>
+      <if test="capabilityname != null" >
+        CapabilityName,
+      </if>
+      <if test="capabilitydesc != null" >
+        CapabilityDesc,
+      </if>
+      <if test="capabilitydisp != null" >
+        CapabilityDisp,
+      </if>
+      <if test="capabilityprolate != null" >
+        CapabilityProlate,
+      </if>
+      <if test="capabilitycode != null" >
+        CapabilityCode,
+      </if>
+      <if test="capabilitycounter != null" >
+        CapabilityCounter,
+      </if>
+      <if test="manufacturer != null" >
+        Manufacturer,
+      </if>
+      <if test="unitname != null" >
+        UnitName,
+      </if>
+      <if test="capabilitydescEn != null" >
+        CapabilityDesc_en,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="capabilitytype != null" >
+        #{capabilitytype,jdbcType=VARCHAR},
+      </if>
+      <if test="capabilityname != null" >
+        #{capabilityname,jdbcType=VARCHAR},
+      </if>
+      <if test="capabilitydesc != null" >
+        #{capabilitydesc,jdbcType=VARCHAR},
+      </if>
+      <if test="capabilitydisp != null" >
+        #{capabilitydisp,jdbcType=VARCHAR},
+      </if>
+      <if test="capabilityprolate != null" >
+        #{capabilityprolate,jdbcType=VARCHAR},
+      </if>
+      <if test="capabilitycode != null" >
+        #{capabilitycode,jdbcType=INTEGER},
+      </if>
+      <if test="capabilitycounter != null" >
+        #{capabilitycounter,jdbcType=VARCHAR},
+      </if>
+      <if test="manufacturer != null" >
+        #{manufacturer,jdbcType=INTEGER},
+      </if>
+      <if test="unitname != null" >
+        #{unitname,jdbcType=VARCHAR},
+      </if>
+      <if test="capabilitydescEn != null" >
+        #{capabilitydescEn,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="Capability" >
+    update capability
+    <set >
+      <if test="capabilitytype != null" >
+        CapabilityType = #{capabilitytype,jdbcType=VARCHAR},
+      </if>
+      <if test="capabilityname != null" >
+        CapabilityName = #{capabilityname,jdbcType=VARCHAR},
+      </if>
+      <if test="capabilitydesc != null" >
+        CapabilityDesc = #{capabilitydesc,jdbcType=VARCHAR},
+      </if>
+      <if test="capabilitydisp != null" >
+        CapabilityDisp = #{capabilitydisp,jdbcType=VARCHAR},
+      </if>
+      <if test="capabilityprolate != null" >
+        CapabilityProlate = #{capabilityprolate,jdbcType=VARCHAR},
+      </if>
+      <if test="capabilitycode != null" >
+        CapabilityCode = #{capabilitycode,jdbcType=INTEGER},
+      </if>
+      <if test="capabilitycounter != null" >
+        CapabilityCounter = #{capabilitycounter,jdbcType=VARCHAR},
+      </if>
+      <if test="manufacturer != null" >
+        Manufacturer = #{manufacturer,jdbcType=INTEGER},
+      </if>
+      <if test="unitname != null" >
+        UnitName = #{unitname,jdbcType=VARCHAR},
+      </if>
+      <if test="capabilitydescEn != null" >
+        CapabilityDesc_en = #{capabilitydescEn,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="Capability" >
+    update capability
+    set CapabilityType = #{capabilitytype,jdbcType=VARCHAR},
+      CapabilityName = #{capabilityname,jdbcType=VARCHAR},
+      CapabilityDesc = #{capabilitydesc,jdbcType=VARCHAR},
+      CapabilityDisp = #{capabilitydisp,jdbcType=VARCHAR},
+      CapabilityProlate = #{capabilityprolate,jdbcType=VARCHAR},
+      CapabilityCode = #{capabilitycode,jdbcType=INTEGER},
+      CapabilityCounter = #{capabilitycounter,jdbcType=VARCHAR},
+      Manufacturer = #{manufacturer,jdbcType=INTEGER},
+      UnitName = #{unitname,jdbcType=VARCHAR},
+      CapabilityDesc_en = #{capabilitydescEn,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+  <select id="queryByCondition" resultType="Capability" parameterType="Capability" >
+    select *  from capability where 1=1
+    <if test="id > 0">
+    	and id=#{id}
+    </if>
+    <if test="capabilitycode > 0">
+    	and capabilitycode = #{capabilitycode}
+    </if>
+    <if test="manufacturer > 0">
+    	and manufacturer = #{manufacturer}
+    </if>
+     order by manufacturer, capabilitytype, capabilitycode 
+  </select>
+   <select id="queryByCapaName" resultType="Capability" parameterType="Capability" >
+    select * from capability where capabilityType=#{capabilitytype} and Manufacturer=#{manufacturer}
+  </select>
+  
+</mapper>

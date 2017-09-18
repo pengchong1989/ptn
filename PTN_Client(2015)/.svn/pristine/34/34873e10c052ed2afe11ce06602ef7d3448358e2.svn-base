@@ -1,0 +1,48 @@
+package com.nms.model.alarm;
+
+import java.sql.Connection;
+import java.util.List;
+
+import com.nms.db.dao.alarm.AlarmVoiceInfoDao;
+import com.nms.model.util.ObjectService;
+import com.nms.ui.ptn.alarm.model.AlarmVoiceInfo;
+
+public class AlarmVoiceService extends ObjectService {
+	public void setConnection(Connection connection) {
+		super.connection = connection;
+	}
+
+	public void setPtnuser(String ptnuser) {
+		super.ptnuser = ptnuser;
+	}
+
+	private AlarmVoiceInfoDao dao = new AlarmVoiceInfoDao();
+	
+	/**
+	 * 查询所有的声音设置
+	 * @throws Exception
+	 */
+	public List<AlarmVoiceInfo> queryAllVoice() throws Exception{
+		return this.dao.queryAllVoice(this.connection);
+	}
+	
+	/**
+	 * 插入所有的数据
+	 * @throws Exception 
+	 */
+	public int insertAllVoice(AlarmVoiceInfo voice) throws Exception{
+		return this.dao.insertAllVoice(voice, this.connection);
+	}
+	
+	/**
+	 * 修改所有的数据
+	 * @param voice
+	 * @param conn
+	 * @return
+	 * @throws Exception 
+	 * @throws Exception 
+	 */
+	public int updateAllVoice(AlarmVoiceInfo voice) throws Exception{
+		return this.dao.updateAllVoice(voice, this.connection);
+	}
+}

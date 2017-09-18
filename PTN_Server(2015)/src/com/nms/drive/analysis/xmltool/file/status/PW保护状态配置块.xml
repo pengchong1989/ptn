@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<driveRoot xmlns="http://drive.bean.com">
+	<attribute length="1" description="保护类型" value="0" mapping="(00)"/>
+	<attribute length="1" description="主用端口" value="0" mapping="(00)"/>
+	<attribute length="5" description="备用1" value="0" mapping="(00)"/>
+	<attribute length="2" description="主用LSP ID" value="0" mapping="(00)"/>
+	<attribute length="2" description="主用PW ID" value="0" mapping="(00)"/>
+	<attribute length="1" description="主用PW告警" value="0" mapping="(00)"/>
+	<attribute length="1" description="备用端口" value="0" mapping="(00)"/>
+	<attribute length="5" description="备用2" value="0" mapping="(00)"/>
+	<attribute length="2" description="备用LSP ID" value="0" mapping="(00)"/>
+	<attribute length="2" description="备用PW ID" value="0" mapping="(00)"/>
+	<attribute length="1" description="备用PW告警" value="0" mapping="(00)"/>
+	<attribute length="1" description="倒换状态" value="0" mapping="(00)"/>
+	<attribute length="2" description="拖延时间" value="0" mapping="(00)"/>
+	<attribute length="4" description="接受APS" value="0" mapping="(00)"/>
+	<attribute length="4" description="发送APS" value="0" mapping="(00)"/>
+	<attribute length="1" description="返回类型" value="0" mapping="(00)"/>
+	<attribute length="5" description="备用3" value="0" mapping="(00)"/>
+</driveRoot>

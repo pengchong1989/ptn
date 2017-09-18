@@ -1,0 +1,1963 @@
+package com.nms.db.dao.ptn.oam;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.nms.db.bean.ptn.oam.OamInfo;
+import com.nms.db.bean.ptn.oam.OamLinkInfo;
+import com.nms.db.bean.ptn.oam.OamMepInfo;
+import com.nms.db.bean.ptn.oam.OamMipInfo;
+import com.nms.ui.manager.ExceptionManage;
+
+public class OamInfoDao {
+	
+	/**
+	 * 修改OBJID sql语句
+	 */
+	private final String SQL_UPDATE_OBJID="update oammepinfo set objId=? where objType=? and siteId=? and serviceId=?";
+	
+	/**
+	 * 修改设备是否存在的状态sql    ethLinkOam
+	 */
+	private final String UPDATEEQUIPEXITSTATUS = "update oamlinkinfo set equipExit = ? where siteid = ?";
+
+	/**
+	 * 新增oamMepInfo
+	 * 
+	 * @param oamMepInfo
+	 *            插入实体对象
+	 * @param connection
+	 *            数据库链接
+	 * @return 插入记录数
+	 * @throws Exception
+	 */
+	public int insert(OamMepInfo oamMepInfo, Connection conn) throws Exception {
+		if (oamMepInfo == null) {
+			throw new Exception("oamMepInfo is null");
+		}
+		if (conn == null) {
+			throw new Exception("connection is null");
+		}
+		String sql = null;
+		ResultSet resultSet = null;
+		PreparedStatement preparedStatement = null;
+		int result = 0;
+		try {
+			sql = " insert into oamMepInfo(objType,objId,localMepId,remoteMepId,mel,cv,cvCycle,cvReserve1,reserve1," + "reserve2,lm,lmCycle,lmReserve1,dm,dmCycle,dmReserve1,lck,lpbOutTime," + "targetMacAdd,reserve3,reserve4,reserve5,aps," + "ssm,sccTest,megIcc,megUmc,fdi,siteId,serviceId," + "ringEnable,ringCycle,ringTestWay,offLineTestTLV," + "ringTLVLength,ringTLVInfo,tstEnable,tstCycle,tstTLVType," + "tstTLVLength,lspTc,pwTc,megId,csfEnable,ltEXP,ltTTL,ltEnable,lbTTL, vlanEnable, outVlanValue, tpId, sourceMac, endMac,oamEnable)" + "values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?," + "?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+			preparedStatement = conn.prepareStatement(sql,Statement.RETURN_GENERATED_KEYS);
+			preparedStatement.setString(1, oamMepInfo.getObjType());
+			preparedStatement.setInt(2, oamMepInfo.getObjId());
+			preparedStatement.setInt(3, oamMepInfo.getLocalMepId());
+			preparedStatement.setInt(4, oamMepInfo.getRemoteMepId());
+			preparedStatement.setInt(5, oamMepInfo.getMel());
+			preparedStatement.setBoolean(6, oamMepInfo.isCv());
+			preparedStatement.setInt(7, oamMepInfo.getCvCycle());
+			preparedStatement.setInt(8, oamMepInfo.getCvReserve1());
+			preparedStatement.setInt(9, oamMepInfo.getReserve1());
+			preparedStatement.setInt(10, oamMepInfo.getReserve2());
+			preparedStatement.setBoolean(11, oamMepInfo.isLm());
+			preparedStatement.setInt(12, oamMepInfo.getLmCycle());
+			preparedStatement.setInt(13, oamMepInfo.getLmReserve1());
+			preparedStatement.setBoolean(14, oamMepInfo.isDm());
+			preparedStatement.setInt(15, oamMepInfo.getDmCycle());
+			preparedStatement.setInt(16, oamMepInfo.getDmReserve1());
+			preparedStatement.setBoolean(17, oamMepInfo.isLck());
+			preparedStatement.setInt(18, oamMepInfo.getLpbOutTime());
+			preparedStatement.setString(19, oamMepInfo.getTargetMacAdd() == null ? "" : oamMepInfo.getTargetMacAdd());
+			preparedStatement.setInt(20, oamMepInfo.getReserve3());
+			preparedStatement.setInt(21, oamMepInfo.getReserve4());
+			preparedStatement.setInt(22, oamMepInfo.getReserve5());
+			preparedStatement.setBoolean(23, oamMepInfo.isAps());
+			preparedStatement.setBoolean(24, oamMepInfo.isSsm());
+			preparedStatement.setBoolean(25, oamMepInfo.isSccTest());
+			preparedStatement.setString(26, oamMepInfo.getMegIcc());
+			preparedStatement.setString(27, oamMepInfo.getMegUmc());
+			preparedStatement.setBoolean(28, oamMepInfo.isFdi());
+			preparedStatement.setInt(29, oamMepInfo.getSiteId());
+			preparedStatement.setInt(30, oamMepInfo.getServiceId());
+			preparedStatement.setInt(31, oamMepInfo.isRingEnable() ? 1 : 0);
+			preparedStatement.setInt(32, oamMepInfo.getRingCycle());
+			preparedStatement.setInt(33, oamMepInfo.getRingTestWay());
+			preparedStatement.setInt(34, oamMepInfo.getOffLineTestTLV());
+			preparedStatement.setInt(35, oamMepInfo.getRingTLVLength());
+			preparedStatement.setInt(36, oamMepInfo.getRingTLVInfo());
+			preparedStatement.setInt(37, oamMepInfo.isTstEnable() ? 1 : 0);
+			preparedStatement.setInt(38, oamMepInfo.getTstCycle());
+			preparedStatement.setInt(39, oamMepInfo.getTstTLVType());
+			preparedStatement.setInt(40, oamMepInfo.getTstTLVLength());
+
+			preparedStatement.setInt(41, oamMepInfo.getLspTc());
+			preparedStatement.setInt(42, oamMepInfo.getPwTc());
+			preparedStatement.setInt(43, oamMepInfo.getMegId());
+			preparedStatement.setInt(44, oamMepInfo.isCsfEnable() ? 1 : 0);
+			preparedStatement.setInt(45, oamMepInfo.getLtEXP());
+			preparedStatement.setInt(46, oamMepInfo.getLtTTL());
+			preparedStatement.setInt(47, oamMepInfo.getLtEnable());
+			preparedStatement.setInt(48, oamMepInfo.getLbTTL());
+			preparedStatement.setInt(49, oamMepInfo.getVlanEnable());
+			preparedStatement.setInt(50, oamMepInfo.getOutVlanValue());
+			preparedStatement.setInt(51, oamMepInfo.getTpId());
+			preparedStatement.setString(52, oamMepInfo.getSourceMac());
+			preparedStatement.setString(53, oamMepInfo.getEndMac());
+			preparedStatement.setInt(54, oamMepInfo.isOamEnable()?1:0);
+			result = preparedStatement.executeUpdate();
+			resultSet = preparedStatement.getGeneratedKeys();
+			if (resultSet.next()) {
+				result = resultSet.getInt(1);
+			}
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			
+			if(null!=resultSet){
+				try {
+					resultSet.close();
+				} catch (Exception e2) {
+					throw e2;
+				}
+				resultSet=null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+		return result;
+	}
+
+	/**
+	 * 新增oamMipInfo
+	 * 
+	 * @param oamMipInfo
+	 *            插入实体对象
+	 * @param connection
+	 *            数据库链接
+	 * @return 插入记录数
+	 * @throws Exception
+	 */
+	public int insert(OamMipInfo oamMipInfo, Connection conn) throws Exception {
+		if (oamMipInfo == null) {
+			throw new Exception("oamMipInfo is null");
+		}
+		if (conn == null) {
+			throw new Exception("connection is null");
+		}
+		String sql = null;
+		ResultSet resultSet = null;
+		PreparedStatement preparedStatement = null;
+		int result = 0;
+		try {
+			sql = " insert into oamMipInfo(objType,objId,megIcc,megUmc,mipId," + "aMId,zMId,siteId,serviceId ,megId,tc)values(?,?,?,?,?,?,?,?,?,?,?)";
+			preparedStatement = conn.prepareStatement(sql,Statement.RETURN_GENERATED_KEYS);
+			preparedStatement.setString(1, oamMipInfo.getObjType());
+			preparedStatement.setInt(2, oamMipInfo.getObjId());
+			preparedStatement.setString(3, oamMipInfo.getMegIcc());
+			preparedStatement.setString(4, oamMipInfo.getMegUmc());
+			preparedStatement.setInt(5, oamMipInfo.getMipId());
+			preparedStatement.setInt(6, oamMipInfo.getAMId());
+			preparedStatement.setInt(7, oamMipInfo.getZMId());
+			preparedStatement.setInt(8, oamMipInfo.getSiteId());
+			preparedStatement.setInt(9, oamMipInfo.getServiceId());
+			preparedStatement.setInt(10, oamMipInfo.getMegId());
+			preparedStatement.setInt(11, oamMipInfo.getTc());
+			result = preparedStatement.executeUpdate();
+			resultSet = preparedStatement.getGeneratedKeys();
+			if (resultSet.next()) {
+				result = resultSet.getInt(1);
+			}
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if(null!=resultSet){
+				try {
+					resultSet.close();
+				} catch (Exception e2) {
+					throw e2;
+				}
+				resultSet=null;
+			}
+			
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+		return result;
+	}
+
+	public int insert(OamLinkInfo oamLinkInfo, Connection conn) throws Exception {
+		if (oamLinkInfo == null) {
+			throw new Exception("oamLinkInfo is null ");
+		}
+		if (conn == null) {
+			throw new Exception("conn is null");
+		}
+		String sql = null;
+		ResultSet resultSet = null;
+		PreparedStatement preparedStatement = null;
+		int result = 0;
+		try {
+			sql = "insert into oamlinkinfo(siteId,objId,objType,oamEnable,mode,mib," + "errorFrameEvent,lpb,unDirection,reserve1,reserve2,maxFrameLength,responseOutTimeThreshold," + "errorSymboEventCycle,errorSymboEventThreshold,errorFrameEventCycle,errorFrameEventThreshold," + "errorFrameCycleEventCycle,errorFrameCycleEventThreshold,errorFrameSecondEventCycle,errorFrameSecondEventThreshold," + "reserve3,remoteLoop,linkEvent,organicId,factoryInfo,sendCycle,linkfailCycle ,equipExit,oamFrame) values(?,?,?,?,?,?," + "?,?,?,?,?,?,?," + "?,?,?,?,?,?,?,?," + "?,?,?,?,?,?,?,?,?)";
+			preparedStatement = conn.prepareStatement(sql,Statement.RETURN_GENERATED_KEYS);
+			preparedStatement.setInt(1, oamLinkInfo.getSiteId());
+			preparedStatement.setInt(2, oamLinkInfo.getObjId());
+			preparedStatement.setString(3, oamLinkInfo.getObjType());
+			preparedStatement.setInt(4, oamLinkInfo.isOamEnable() ? 1 : 0);
+			preparedStatement.setInt(5, oamLinkInfo.getMode());
+			preparedStatement.setInt(6, oamLinkInfo.getMib());
+			preparedStatement.setInt(7, oamLinkInfo.getErrorFrameEvent());
+			preparedStatement.setInt(8, oamLinkInfo.getLpb());
+			preparedStatement.setInt(9, oamLinkInfo.getUnDirection());
+			preparedStatement.setInt(10, oamLinkInfo.getReserve1());
+			preparedStatement.setInt(11, oamLinkInfo.getReserve2());
+			preparedStatement.setInt(12, oamLinkInfo.getMaxFrameLength());
+			preparedStatement.setInt(13, oamLinkInfo.getResponseOutTimeThreshold());
+			preparedStatement.setInt(14, oamLinkInfo.getErrorSymboEventCycle());
+			preparedStatement.setInt(15, oamLinkInfo.getErrorSymboEventThreshold());
+			preparedStatement.setInt(16, oamLinkInfo.getErrorFrameEventCycle());
+			preparedStatement.setInt(17, oamLinkInfo.getErrorFrameEventThreshold());
+			preparedStatement.setInt(18, oamLinkInfo.getErrorFrameCycleEventCycle());
+			preparedStatement.setInt(19, oamLinkInfo.getErrorFrameCycleEventThreshold());
+			preparedStatement.setInt(20, oamLinkInfo.getErrorFrameSecondEventCycle());
+			preparedStatement.setInt(21, oamLinkInfo.getErrorFrameSecondEventThreshold());
+			preparedStatement.setInt(22, oamLinkInfo.getReserve3());
+			preparedStatement.setInt(23, oamLinkInfo.getRemoteLoop());
+			preparedStatement.setInt(24, oamLinkInfo.getLinkEvent());
+			preparedStatement.setInt(25, oamLinkInfo.getOrganicId());
+			preparedStatement.setInt(26, oamLinkInfo.getFactoryInfo());
+			preparedStatement.setInt(27, oamLinkInfo.getSendCycle());
+			preparedStatement.setInt(28, oamLinkInfo.getLinkfailCycle());
+			preparedStatement.setInt(29, oamLinkInfo.getEquipExit());
+			preparedStatement.setInt(30, oamLinkInfo.getOamFarme());
+			result = preparedStatement.executeUpdate();
+			resultSet = preparedStatement.getGeneratedKeys();
+			if (resultSet.next()) {
+				result = resultSet.getInt(1);
+			}
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if(null!=resultSet){
+				try {
+					resultSet.close();
+				} catch (Exception e2) {
+					throw e2;
+				}
+				resultSet=null;
+			}
+			
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+
+			}
+			sql = null;
+		}
+		return result;
+	}
+
+	/**
+	 * 删除oamMepInfo
+	 * 
+	 * @param connection
+	 *            数据库链接
+	 * @return 删除记录数
+	 * @throws Exception
+	 * @throws Exception
+	 */
+	public int delete(OamMepInfo oamMepInfo, Connection conn) throws Exception {
+
+		if (null == oamMepInfo) {
+			throw new Exception("oamMepInfo is null");
+		}
+
+		if (null == conn) {
+			throw new Exception("connection is null");
+		}
+
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		int result = 0;
+		try {
+			sql = "delete from oamMepInfo where serviceid = ? and objType= ?";
+			preparedStatement = conn.prepareStatement(sql);
+			preparedStatement.setInt(1, oamMepInfo.getServiceId());
+			preparedStatement.setString(2, oamMepInfo.getObjType());
+			result = preparedStatement.executeUpdate();
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+		return result;
+	}
+
+	/**
+	 * 删除oamMipInfo
+	 * 
+	 * @param connection
+	 *            数据库链接
+	 * @return 删除记录数
+	 * @throws Exception
+	 * @throws Exception
+	 */
+	public int delete(OamMipInfo oamMipInfo, Connection conn) throws Exception {
+
+		if (null == oamMipInfo) {
+			throw new Exception("oamMipInfo is null");
+		}
+
+		if (null == conn) {
+			throw new Exception("connection is null");
+		}
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		int result = 0;
+		try {
+			sql = "delete from oamMipInfo where objType= ? and serviceId= ?";
+			preparedStatement = conn.prepareStatement(sql);
+			preparedStatement.setString(1, oamMipInfo.getObjType());
+			preparedStatement.setInt(2, oamMipInfo.getServiceId());
+			result = preparedStatement.executeUpdate();
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+		return result;
+	}
+
+	public int delete(OamLinkInfo oamLinkInfo, Connection conn) throws Exception {
+		if (oamLinkInfo == null) {
+			throw new Exception("oamLinkInfo is null");
+		}
+		if (conn == null) {
+			throw new Exception("conn is null");
+		}
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		int result = 0;
+		try {
+			sql = "delete from oamlinkinfo where objId= ? and siteId= ? ";
+			preparedStatement = conn.prepareStatement(sql);
+			preparedStatement.setInt(1, oamLinkInfo.getObjId());
+			preparedStatement.setInt(2, oamLinkInfo.getSiteId());
+			result = preparedStatement.executeUpdate();
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+		return result;
+	}
+
+	/**
+	 * 修改oamMepInfo
+	 * 
+	 * @param oamMepInfo
+	 * 
+	 * @param connection
+	 *            连接数据库
+	 * @return 修改的条数
+	 * @throws Exception
+	 * @throws Exception
+	 */
+	public int update(OamMepInfo oamMepInfo, Connection conn) throws Exception {
+
+		if (null == oamMepInfo) {
+			throw new Exception("oamMepInfo is null");
+		}
+
+		if (null == conn) {
+			throw new Exception("connection is null");
+		}
+
+		StringBuffer sql = new StringBuffer();
+		PreparedStatement preparedStatement = null;
+		int result = 0;
+
+		try {
+			sql.append("update oamMepInfo set megIcc = ? , megUmc = ? , localMepId = ?, remoteMepId = ? ,"
+					+ " mel = ? , reserve1 = ?,reserve2 = ?, lm = ? , lmCycle = ? , lmReserve1 = ?,"
+
+			+ " dm = ? , dmCycle = ? , dmReserve1 = ?, lck = ?,lpbOutTime = ?,"
+
+			+ " targetMacAdd = ?, reserve3 = ?, reserve4 = ?," + " reserve5 = ? , cv = ? , cvCycle = ? , cvReserve1 = ? , aps = ?," 
+			+ " ssm = ? ,sccTest = ? , fdi = ? , " + " ringEnable= ? , ringCycle = ? , " 
+			+ " ringTestWay = ? , offLineTestTLV = ? , ringTLVLength = ? , ringTLVInfo = ? ," 
+			+ " tstEnable = ? , tstCycle = ? , tstTLVType= ? , tstTLVLength = ? ," + " lspTc = ? , pwTc=? ,csfEnable=? ,megId=? ," +
+					"ltEXP=? ,ltTTL=? ,ltEnable=? ,lbTTL=?, vlanEnable=?, outVlanValue=?, tpId=?, sourceMac=?, endMac=? ,oamEnable=?");
+			if (oamMepInfo.getSiteId() == 0) {
+				sql.append("where objType = ? and objId = ? and serviceId = ?");
+			} else {
+				sql.append(" where objType = ? and objId = ? and serviceId = ? and siteId = ? ");
+			}
+			preparedStatement = conn.prepareStatement(sql.toString());
+			preparedStatement.setString(1, oamMepInfo.getMegIcc());
+			preparedStatement.setString(2, oamMepInfo.getMegUmc());
+			preparedStatement.setInt(3, oamMepInfo.getLocalMepId());
+			preparedStatement.setInt(4, oamMepInfo.getRemoteMepId());
+			preparedStatement.setInt(5, oamMepInfo.getMel());
+			preparedStatement.setInt(6, oamMepInfo.getReserve1());
+			preparedStatement.setInt(7, oamMepInfo.getReserve2());
+			preparedStatement.setBoolean(8, oamMepInfo.isLm());
+			preparedStatement.setInt(9, oamMepInfo.getLmCycle());
+			preparedStatement.setInt(10, oamMepInfo.getLmReserve1());
+
+			preparedStatement.setBoolean(11, oamMepInfo.isDm());
+			preparedStatement.setInt(12, oamMepInfo.getDmCycle());
+			preparedStatement.setInt(13, oamMepInfo.getDmReserve1());
+			preparedStatement.setInt(14, oamMepInfo.isLck()==true?1:0);
+			preparedStatement.setInt(15, oamMepInfo.getLpbOutTime());
+
+			preparedStatement.setString(16, oamMepInfo.getTargetMacAdd());
+			preparedStatement.setInt(17, oamMepInfo.getReserve3());
+			preparedStatement.setInt(18, oamMepInfo.getReserve4());
+			preparedStatement.setInt(19, oamMepInfo.getReserve5());
+			preparedStatement.setBoolean(20, oamMepInfo.isCv());
+			preparedStatement.setInt(21, oamMepInfo.getCvCycle());
+			preparedStatement.setInt(22, oamMepInfo.getCvReserve1());
+			preparedStatement.setBoolean(23, oamMepInfo.isAps());
+
+			preparedStatement.setBoolean(24, oamMepInfo.isSsm());
+			preparedStatement.setBoolean(25, oamMepInfo.isSccTest());
+			preparedStatement.setBoolean(26, oamMepInfo.isFdi());
+			// ---
+
+			// ----
+			preparedStatement.setInt(27, (oamMepInfo.isRingEnable() ? 1 : 0));
+			preparedStatement.setInt(28, oamMepInfo.getRingCycle());
+			preparedStatement.setInt(29, oamMepInfo.getRingTestWay());
+			preparedStatement.setInt(30, oamMepInfo.getOffLineTestTLV());
+			preparedStatement.setInt(31, oamMepInfo.getRingTLVLength());
+			preparedStatement.setInt(32, oamMepInfo.getRingTLVInfo());
+			preparedStatement.setInt(33, (oamMepInfo.isTstEnable() ? 1 : 0));
+			preparedStatement.setInt(34, oamMepInfo.getTstCycle());
+			preparedStatement.setInt(35, oamMepInfo.getTstTLVType());
+			preparedStatement.setInt(36, oamMepInfo.getTstTLVLength());
+			preparedStatement.setInt(37, oamMepInfo.getLspTc());
+			preparedStatement.setInt(38, oamMepInfo.getPwTc());
+			preparedStatement.setInt(39, oamMepInfo.isCsfEnable() ? 1 : 0);
+			preparedStatement.setInt(40, oamMepInfo.getMegId());
+			preparedStatement.setInt(41, oamMepInfo.getLtEXP());
+			preparedStatement.setInt(42, oamMepInfo.getLtTTL());
+			preparedStatement.setInt(43, oamMepInfo.getLtEnable());
+			preparedStatement.setInt(44, oamMepInfo.getLbTTL());
+			preparedStatement.setInt(45, oamMepInfo.getVlanEnable());
+			preparedStatement.setInt(46, oamMepInfo.getOutVlanValue());
+			preparedStatement.setInt(47, oamMepInfo.getTpId());
+			preparedStatement.setString(48, oamMepInfo.getSourceMac());
+			preparedStatement.setString(49, oamMepInfo.getEndMac());
+			preparedStatement.setInt(50, oamMepInfo.isOamEnable() ? 1 : 0);
+			preparedStatement.setString(51, oamMepInfo.getObjType());
+			preparedStatement.setInt(52, oamMepInfo.getObjId());
+			preparedStatement.setInt(53, oamMepInfo.getServiceId());
+
+			if (oamMepInfo.getSiteId() != 0) {
+				preparedStatement.setInt(54, oamMepInfo.getSiteId());
+			}
+			result = preparedStatement.executeUpdate();
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+		return result;
+	}
+
+	/**
+	 * 修改oamMipInfo
+	 * 
+	 * @param oamMipInfo
+	 * 
+	 * @param connection
+	 *            连接数据库
+	 * @return 修改的条数
+	 * @throws Exception
+	 * @throws Exception
+	 */
+	public int update(OamMipInfo oamMipInfo, Connection conn) throws Exception {
+
+		if (null == oamMipInfo) {
+			throw new Exception("oamMipInfo is null");
+		}
+
+		if (null == conn) {
+			throw new Exception("connection is null");
+		}
+
+		StringBuffer sql = new StringBuffer();
+		PreparedStatement preparedStatement = null;
+		int result = 0;
+
+		try {
+			sql.append("update oamMipInfo set megid = ? , megIcc = ? , megUmc = ? , mipId = ?," + "aMId = ?, zMId = ? ,tc = ? ");
+			if (oamMipInfo.getSiteId() == 0) {
+				sql.append(", siteId = ?").append("where objType = ? and serviceId = ? and objId = ? ");
+			} else {
+				sql.append("where objType = ? and serviceId = ? and objId = ? and siteId = ?");
+			}
+			preparedStatement = conn.prepareStatement(sql.toString());
+			preparedStatement.setInt(1, oamMipInfo.getMegId());
+			preparedStatement.setString(2, oamMipInfo.getMegIcc());
+			preparedStatement.setString(3, oamMipInfo.getMegUmc());
+			preparedStatement.setInt(4, oamMipInfo.getMipId());
+			preparedStatement.setInt(5, oamMipInfo.getAMId());
+			preparedStatement.setInt(6, oamMipInfo.getZMId());
+			preparedStatement.setInt(7, oamMipInfo.getTc());
+			preparedStatement.setString(8, oamMipInfo.getObjType());
+			preparedStatement.setInt(9, oamMipInfo.getServiceId());
+			preparedStatement.setInt(10, oamMipInfo.getObjId());
+			if (oamMipInfo.getSiteId() != 0) {
+				preparedStatement.setInt(11, oamMipInfo.getSiteId());
+			}
+			result = preparedStatement.executeUpdate();
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+		return result;
+	}
+
+	public int updata(OamLinkInfo oamLinkInfo, Connection conn) throws Exception {
+		if (oamLinkInfo == null) {
+			throw new Exception("oamLinkInfo is null");
+		}
+		if (conn == null) {
+			throw new Exception("conn is null");
+		}
+		StringBuffer sql = new StringBuffer();
+		PreparedStatement preparedStatement = null;
+		int result = 0;
+		try {
+			sql.append("update oamlinkinfo set oamEnable = ? , mode = ? , mib = ? , errorFrameEvent = ? ," + " lpb = ? ,  unDirection = ? , reserve1 = ? , reserve2 = ? , maxFrameLength = ? ," + " responseOutTimeThreshold = ? , errorSymboEventCycle = ? , errorSymboEventThreshold = ? ," + " errorFrameEventCycle = ? , errorFrameEventThreshold = ? , errorFrameCycleEventCycle = ? , errorFrameCycleEventThreshold= ? ," + "  errorFrameSecondEventCycle = ? , errorFrameSecondEventThreshold = ? , " + " reserve3 = ? , remoteLoop = ? , linkEvent = ? , organicId = ? , factoryInfo = ? ," + " sendCycle = ? , linkfailCycle = ? , equipExit=?, oamFrame=? ");
+			sql.append(" where objType = ? and objId = ? and siteId = ?");
+			preparedStatement = conn.prepareStatement(sql.toString());
+			preparedStatement.setInt(1, oamLinkInfo.isOamEnable() ? 1 : 0);
+			preparedStatement.setInt(2, oamLinkInfo.getMode());
+			preparedStatement.setInt(3, oamLinkInfo.getMib());
+			preparedStatement.setInt(4, oamLinkInfo.getErrorFrameEvent());
+			preparedStatement.setInt(5, oamLinkInfo.getLpb());
+			preparedStatement.setInt(6, oamLinkInfo.getUnDirection());
+			preparedStatement.setInt(7, oamLinkInfo.getReserve1());
+			preparedStatement.setInt(8, oamLinkInfo.getReserve2());
+			preparedStatement.setInt(9, oamLinkInfo.getMaxFrameLength());
+			preparedStatement.setInt(10, oamLinkInfo.getResponseOutTimeThreshold());
+			preparedStatement.setInt(11, oamLinkInfo.getErrorSymboEventCycle());
+			preparedStatement.setInt(12, oamLinkInfo.getErrorSymboEventThreshold());
+			preparedStatement.setInt(13, oamLinkInfo.getErrorFrameEventCycle());
+			preparedStatement.setInt(14, oamLinkInfo.getErrorFrameEventThreshold());
+			preparedStatement.setInt(15, oamLinkInfo.getErrorFrameCycleEventCycle());
+			preparedStatement.setInt(16, oamLinkInfo.getErrorFrameCycleEventThreshold());
+			preparedStatement.setInt(17, oamLinkInfo.getErrorFrameSecondEventCycle());
+			preparedStatement.setInt(18, oamLinkInfo.getErrorFrameSecondEventThreshold());
+			preparedStatement.setInt(19, oamLinkInfo.getReserve3());
+			preparedStatement.setInt(20, oamLinkInfo.getRemoteLoop());
+			preparedStatement.setInt(21, oamLinkInfo.getLinkEvent());
+			preparedStatement.setInt(22, oamLinkInfo.getOrganicId());
+			preparedStatement.setInt(23, oamLinkInfo.getFactoryInfo());
+			preparedStatement.setInt(24, oamLinkInfo.getSendCycle());
+			preparedStatement.setInt(25, oamLinkInfo.getLinkfailCycle());
+			preparedStatement.setInt(26, oamLinkInfo.getEquipExit());
+			preparedStatement.setInt(27, oamLinkInfo.getOamFarme());
+			preparedStatement.setString(28, oamLinkInfo.getObjType());
+			preparedStatement.setInt(29, oamLinkInfo.getObjId());
+			preparedStatement.setInt(30, oamLinkInfo.getSiteId());
+
+			result = preparedStatement.executeUpdate();
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+		return result;
+	}
+
+	public OamLinkInfo queryOamLinkInfoByCondition(OamLinkInfo oamLinkInfo, Connection conn) throws Exception {
+		if (oamLinkInfo == null) {
+			throw new Exception("oamLinkInfo is null");
+		}
+		if (conn == null) {
+			throw new Exception("conn is null");
+		}
+		StringBuffer sql = new StringBuffer();
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+		OamLinkInfo linkInfo = new OamLinkInfo();
+		List<Object> List = new ArrayList<Object>();
+		try {
+			sql.append("select * from  oamlinkinfo where 1=1 ");
+			if (oamLinkInfo.getObjId() != 0) {
+				sql.append(" and objId = ? ");
+				List.add(oamLinkInfo.getObjId());
+			}
+			if (null!=oamLinkInfo.getObjType()&&!"".equals(oamLinkInfo.getObjType())) {
+				sql.append(" and objType = ? ");
+				List.add(oamLinkInfo.getObjType());
+			}
+			if (oamLinkInfo.getSiteId() != 0) {
+				sql.append(" and siteId = ? ");
+				List.add(oamLinkInfo.getSiteId());
+			}
+			if (oamLinkInfo.getId() != 0) {
+				sql.append(" and Id = ? ");
+				List.add(oamLinkInfo.getId());
+			}
+			
+			preparedStatement = conn.prepareStatement(sql.toString());
+			for (int i = 0; i < List.size(); i++) {
+				preparedStatement.setObject(i+1, List.get(i));
+			}
+		
+			resultSet = preparedStatement.executeQuery();
+			while (resultSet.next()) {
+				linkInfo = new OamLinkInfo();
+				linkInfo.setId(resultSet.getInt("id"));
+				linkInfo.setSiteId(resultSet.getInt("siteId"));
+				linkInfo.setObjId(resultSet.getInt("objId"));
+				linkInfo.setObjType(resultSet.getString("objType"));
+				linkInfo.setOamEnable(resultSet.getInt("oamEnable") == 1 ? true : false);
+				linkInfo.setMode(resultSet.getInt("mode"));
+				linkInfo.setMib(resultSet.getInt("mib"));
+				linkInfo.setErrorFrameEvent(resultSet.getInt("errorFrameEvent"));
+				linkInfo.setLpb(resultSet.getInt("lpb"));
+				linkInfo.setUnDirection(resultSet.getInt("unDirection"));
+				linkInfo.setReserve1(resultSet.getInt("reserve1"));
+				linkInfo.setReserve2(resultSet.getInt("reserve2"));
+				linkInfo.setMaxFrameLength(resultSet.getInt("maxFrameLength"));
+				linkInfo.setResponseOutTimeThreshold(resultSet.getInt("responseOutTimeThreshold"));
+				linkInfo.setErrorSymboEventCycle(resultSet.getInt("errorSymboEventCycle"));
+				linkInfo.setErrorSymboEventThreshold(resultSet.getInt("errorSymboEventThreshold"));
+				linkInfo.setErrorFrameEventCycle(resultSet.getInt("errorFrameEventCycle"));
+				linkInfo.setErrorFrameEventThreshold(resultSet.getInt("errorFrameEventThreshold"));
+				linkInfo.setErrorFrameCycleEventCycle(resultSet.getInt("errorFrameCycleEventCycle"));
+				linkInfo.setErrorFrameCycleEventThreshold(resultSet.getInt("errorFrameCycleEventThreshold"));
+				linkInfo.setErrorFrameSecondEventCycle(resultSet.getInt("errorFrameSecondEventCycle"));
+				linkInfo.setErrorFrameSecondEventThreshold(resultSet.getInt("errorFrameSecondEventThreshold"));
+				linkInfo.setReserve3(resultSet.getInt("reserve3"));
+				linkInfo.setRemoteLoop(resultSet.getInt("remoteLoop"));
+				linkInfo.setLinkEvent(resultSet.getInt("linkEvent"));
+				linkInfo.setOrganicId(resultSet.getInt("organicId"));
+				linkInfo.setFactoryInfo(resultSet.getInt("factoryInfo"));
+				linkInfo.setSendCycle(resultSet.getInt("sendCycle"));
+				linkInfo.setLinkfailCycle(resultSet.getInt("linkfailCycle"));
+				linkInfo.setEquipExit(resultSet.getInt("EquipExit"));
+
+			}
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (resultSet != null) {
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				resultSet = null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+
+		return linkInfo;
+	}
+
+	/*
+	 * 根据对象类型和对象id查找oamMepInfo
+	 */
+	public OamMepInfo queryMepByCondition(OamMepInfo oamMep, Connection conn) throws Exception {
+		if (null == oamMep) {
+			throw new Exception("oamMep is null");
+		}
+		if (null == conn) {
+			throw new Exception("connection is null");
+		}
+		StringBuffer sql = new StringBuffer();
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+		OamMepInfo mepInfo = new OamMepInfo();
+		List<Object> preamList=new ArrayList<Object>();
+		try {
+			sql.append("select * from oamMepInfo where 1=1 ");
+			if (oamMep.getSiteId() != 0) {
+				sql.append(" and siteId = ? ");
+				preamList.add(oamMep.getSiteId());
+			}
+			if (oamMep.getObjId() != 0) {
+				sql.append(" and objId = ? ");
+				preamList.add(oamMep.getObjId());
+			}
+			// 当段上下发oam时，是绑定在端口上固没有serviceId
+			if (oamMep.getServiceId() != 0) {
+				sql.append(" and serviceId = ? ");
+				preamList.add(oamMep.getServiceId());
+			}
+			if (oamMep.getId() != 0) {
+				sql.append(" and Id = ? ");
+				preamList.add(oamMep.getId());
+			}
+			if (null!=oamMep.getObjType() &&!"".equals(oamMep.getObjType())) {
+				sql.append(" and ObjType = ? ");
+				preamList.add(oamMep.getObjType());
+			}
+			preparedStatement = conn.prepareStatement(sql.toString());
+			for (int i = 0; i < preamList.size(); i++) {
+				preparedStatement.setObject(i+1, preamList.get(i));
+			}
+		
+
+//			if (oamMep.getObjId() != 0) {
+//				preparedStatement.setInt(3, oamMep.getObjId());
+//			}
+//			if (oamMep.getServiceId() != 0) {
+//				preparedStatement.setInt(4, oamMep.getServiceId());
+//			}
+/*			for(int i = 0 ; i < preamList.size() ; i++){
+				preparedStatement.setObject(i+3, preamList.get(i));
+			}*/
+			resultSet = preparedStatement.executeQuery();
+			while (resultSet.next()) {
+				mepInfo = new OamMepInfo();
+				mepInfo.setId(resultSet.getInt("id"));
+				mepInfo.setSiteId(resultSet.getInt("siteId"));
+				mepInfo.setServiceId(resultSet.getInt("serviceId"));
+				mepInfo.setMegIcc(resultSet.getString("megIcc"));
+				mepInfo.setMegUmc(resultSet.getString("megUmc"));
+				mepInfo.setObjType(resultSet.getString("objType"));
+				mepInfo.setObjId(resultSet.getInt("objId"));
+				mepInfo.setLocalMepId(resultSet.getInt("localMepId"));
+				mepInfo.setRemoteMepId(resultSet.getInt("remoteMepId"));
+				mepInfo.setMel(resultSet.getInt("mel"));
+				mepInfo.setReserve1(resultSet.getInt("reserve1"));
+				mepInfo.setReserve2(resultSet.getInt("reserve2"));
+				mepInfo.setLm(resultSet.getBoolean("lm"));
+				mepInfo.setLmCycle(resultSet.getInt("lmCycle"));
+				mepInfo.setLmReserve1(resultSet.getInt("lmReserve1"));
+				mepInfo.setDm(resultSet.getBoolean("dm"));
+				mepInfo.setDmCycle(resultSet.getInt("dmCycle"));
+				mepInfo.setDmReserve1(resultSet.getInt("dmReserve1"));
+				mepInfo.setLck(resultSet.getBoolean("lck"));
+				mepInfo.setLpbOutTime(resultSet.getInt("lpbOutTime"));
+				mepInfo.setTargetMacAdd(resultSet.getString("targetMacAdd"));
+				mepInfo.setReserve3(resultSet.getInt("reserve3"));
+				mepInfo.setReserve4(resultSet.getInt("reserve4"));
+				mepInfo.setReserve5(resultSet.getInt("reserve5"));
+				mepInfo.setCv(resultSet.getBoolean("cv"));
+				mepInfo.setCvCycle(resultSet.getInt("cvCycle"));
+				mepInfo.setCvReserve1(resultSet.getInt("cvReserve1"));
+				mepInfo.setAps(resultSet.getBoolean("aps"));
+				mepInfo.setSsm(resultSet.getBoolean("ssm"));
+				mepInfo.setSccTest(resultSet.getBoolean("sccTest"));
+				mepInfo.setFdi(resultSet.getBoolean("fdi"));
+				mepInfo.setRingEnable(resultSet.getInt("ringEnable") == 1 ? true : false);
+				mepInfo.setRingCycle(resultSet.getInt("ringCycle"));
+				mepInfo.setRingTestWay(resultSet.getInt("ringTestWay"));
+				mepInfo.setOffLineTestTLV(resultSet.getInt("offLineTestTLV"));
+				mepInfo.setRingTLVLength(resultSet.getInt("ringTLVLength"));
+				mepInfo.setRingTLVInfo(resultSet.getInt("ringTLVInfo"));
+				mepInfo.setTstEnable(resultSet.getInt("tstEnable") == 1 ? true : false);
+				mepInfo.setTstCycle(resultSet.getInt("tstCycle"));
+				mepInfo.setTstTLVType(resultSet.getInt("tstTLVType"));
+				mepInfo.setTstTLVLength(resultSet.getInt("tstTLVLength"));
+				mepInfo.setCsfEnable(resultSet.getInt("csfEnable") == 1 ? true : false);
+				mepInfo.setLspTc(resultSet.getInt("lspTc"));
+				mepInfo.setPwTc(resultSet.getInt("pwTc"));
+				mepInfo.setMegId(resultSet.getInt("megId"));
+				mepInfo.setLtEXP(resultSet.getInt("ltEXP"));
+				mepInfo.setLtTTL(resultSet.getInt("ltTTL"));
+				mepInfo.setLtEnable(resultSet.getInt("ltEnable"));
+				mepInfo.setLbTTL(resultSet.getInt("lbTTL"));
+				mepInfo.setObjType(resultSet.getString("objType"));
+				mepInfo.setVlanEnable(resultSet.getInt("vlanEnable"));
+				mepInfo.setOutVlanValue(resultSet.getInt("outVlanValue"));
+				mepInfo.setTpId(resultSet.getInt("tpId"));
+				mepInfo.setSourceMac(resultSet.getString("sourceMac"));
+				mepInfo.setEndMac(resultSet.getString("endMac"));
+				mepInfo.setOamEnable(resultSet.getInt("oamEnable") == 1 ? true : false);
+			}
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if(null!=resultSet){
+				try {
+					resultSet.close();
+				} catch (Exception e2) {
+					throw e2;
+				}
+				resultSet=null;
+			}
+			
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+		return mepInfo;
+	}
+
+	/*
+	 * 根据对象类型和对象id查找oamMipInfo
+	 */
+	public OamMipInfo queryMipByCondition(OamMipInfo oamMip, Connection conn) throws Exception {
+		if (null == oamMip) {
+			throw new Exception("oamMip is null");
+		}
+		if (null == conn) {
+			throw new Exception("connection is null");
+		}
+		StringBuffer sql = new StringBuffer();
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+		OamMipInfo mipInfo = new OamMipInfo();
+		List<Object> preamList=new ArrayList<Object>();
+		try {
+			sql.append("select * from oamMipInfo where 1=1 ");
+			
+			if (null!=oamMip.getObjType()&&!"".equals(oamMip.getObjType())) {
+				sql.append(" and objType = ? ");
+				preamList.add(oamMip.getObjType());
+			}
+			if (oamMip.getSiteId() != 0) {
+				sql.append(" and siteId = ? ");
+				preamList.add(oamMip.getSiteId());
+			}
+			if (oamMip.getObjId() != 0) {
+				sql.append(" and objId = ? ");
+				preamList.add(oamMip.getObjId());
+			}
+			// 当段上下发oam时，是绑定在端口上固没有serviceId
+			if (oamMip.getServiceId() != 0) {
+				sql.append(" and serviceId = ? ");
+				preamList.add(oamMip.getServiceId());
+			}
+			
+			if (oamMip.getId() != 0) {
+				sql.append(" and Id = ? ");
+				preamList.add(oamMip.getId());
+			}
+			
+			preparedStatement = conn.prepareStatement(sql.toString());
+			for (int i = 0; i < preamList.size(); i++) {
+				preparedStatement.setObject(i+1, preamList.get(i));
+			}
+			resultSet = preparedStatement.executeQuery();
+			while (resultSet.next()) {
+				mipInfo = new OamMipInfo();
+				mipInfo.setId(resultSet.getInt("id"));
+				mipInfo.setSiteId(resultSet.getInt("siteId"));
+				mipInfo.setServiceId(resultSet.getInt("serviceId"));
+				mipInfo.setMegIcc(resultSet.getString("megIcc"));
+				mipInfo.setMegUmc(resultSet.getString("megUmc"));
+				mipInfo.setObjType(resultSet.getString("objType"));
+				mipInfo.setObjId(resultSet.getInt("objId"));
+				mipInfo.setMipId(resultSet.getInt("mipId"));
+				mipInfo.setAMId(resultSet.getInt("aMId"));
+				mipInfo.setZMId(resultSet.getInt("zMId"));
+				mipInfo.setMegId(resultSet.getInt("megid"));
+				mipInfo.setTc(resultSet.getInt("tc"));
+			}
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if(null!=resultSet){
+				try {
+					resultSet.close();
+				} catch (Exception e2) {
+					throw e2;
+				}
+				resultSet=null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+		return mipInfo;
+	}
+
+	public List<OamLinkInfo> queryOamLinkByType(OamLinkInfo oamLinkInfo, Connection conn) throws Exception {
+		if (oamLinkInfo == null) {
+			throw new Exception(" oamLinkInfo is null");
+		}
+		if (conn == null) {
+			throw new Exception(" conn is null");
+		}
+		List<OamLinkInfo> list = null;
+		StringBuffer sql = new StringBuffer();
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+		OamLinkInfo linkInfo = null;
+		try {
+			sql.append("select * from oamlinkinfo where objType = ? and siteId = ? ");
+			preparedStatement = conn.prepareStatement(sql.toString());
+			preparedStatement.setString(1, oamLinkInfo.getObjType());
+			preparedStatement.setInt(2, oamLinkInfo.getSiteId());
+			resultSet = preparedStatement.executeQuery();
+			list = new ArrayList<OamLinkInfo>();
+			while (resultSet.next()) {
+				linkInfo = new OamLinkInfo();
+				linkInfo.setId(resultSet.getInt("id"));
+				linkInfo.setSiteId(resultSet.getInt("siteId"));
+				linkInfo.setObjId(resultSet.getInt("objId"));
+				linkInfo.setObjType(resultSet.getString("objType"));
+				linkInfo.setOamEnable(resultSet.getInt("oamEnable") == 1 ? true : false);
+				linkInfo.setMode(resultSet.getInt("mode"));
+				linkInfo.setMib(resultSet.getInt("mib"));
+				linkInfo.setErrorFrameEvent(resultSet.getInt("errorFrameEvent"));
+				linkInfo.setLpb(resultSet.getInt("lpb"));
+				linkInfo.setUnDirection(resultSet.getInt("unDirection"));
+				linkInfo.setReserve1(resultSet.getInt("reserve1"));
+				linkInfo.setReserve2(resultSet.getInt("reserve2"));
+				linkInfo.setMaxFrameLength(resultSet.getInt("maxFrameLength"));
+				linkInfo.setResponseOutTimeThreshold(resultSet.getInt("responseOutTimeThreshold"));
+				linkInfo.setErrorSymboEventCycle(resultSet.getInt("errorSymboEventCycle"));
+				linkInfo.setErrorSymboEventThreshold(resultSet.getInt("errorSymboEventThreshold"));
+				linkInfo.setErrorFrameEventCycle(resultSet.getInt("errorFrameEventCycle"));
+				linkInfo.setErrorFrameEventThreshold(resultSet.getInt("errorFrameEventThreshold"));
+				linkInfo.setErrorFrameCycleEventCycle(resultSet.getInt("errorFrameCycleEventCycle"));
+				linkInfo.setErrorFrameCycleEventThreshold(resultSet.getInt("errorFrameCycleEventThreshold"));
+				linkInfo.setErrorFrameSecondEventCycle(resultSet.getInt("errorFrameSecondEventCycle"));
+				linkInfo.setErrorFrameSecondEventThreshold(resultSet.getInt("errorFrameSecondEventThreshold"));
+				linkInfo.setReserve3(resultSet.getInt("reserve3"));
+				linkInfo.setRemoteLoop(resultSet.getInt("remoteLoop"));
+				linkInfo.setLinkEvent(resultSet.getInt("linkEvent"));
+				linkInfo.setOrganicId(resultSet.getInt("organicId"));
+				linkInfo.setFactoryInfo(resultSet.getInt("factoryInfo"));
+				linkInfo.setSendCycle(resultSet.getInt("sendCycle"));
+				linkInfo.setLinkfailCycle(resultSet.getInt("linkfailCycle"));
+				linkInfo.setEquipExit(resultSet.getInt("EquipExit"));
+				linkInfo.setOamFarme(resultSet.getInt("oamFrame"));
+				list.add(linkInfo);
+
+			}
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (resultSet != null) {
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				resultSet = null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+		return list;
+	}
+
+	/*
+	 * 根据对象类型和业务id查找oamMepInfo
+	 */
+	public List<OamMepInfo> queryMepByType(OamMepInfo oamMep, Connection conn) throws Exception {
+		if (null == oamMep) {
+			throw new Exception("oamMep is null");
+		}
+		if (null == conn) {
+			throw new Exception("connection is null");
+		}
+		StringBuffer sql = new StringBuffer();
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+		OamMepInfo mepInfo = new OamMepInfo();
+		List<OamMepInfo> list = new ArrayList<OamMepInfo>();
+		try {
+			sql.append("select * from oamMepInfo where objType = ? and siteId = ?");
+			if (oamMep.getObjId() > 0) {
+				sql.append(" and  objId = ? ");
+			}
+			preparedStatement = conn.prepareStatement(sql.toString());
+			preparedStatement.setString(1, oamMep.getObjType());
+			preparedStatement.setInt(2, oamMep.getSiteId());
+			if (oamMep.getObjId() > 0) {
+				preparedStatement.setInt(3, oamMep.getObjId());
+			}
+			resultSet = preparedStatement.executeQuery();
+			while (resultSet.next()) {
+				mepInfo = new OamMepInfo();
+				mepInfo.setId(resultSet.getInt("id"));
+				mepInfo.setSiteId(resultSet.getInt("siteId"));
+				mepInfo.setServiceId(resultSet.getInt("serviceId"));
+				mepInfo.setMegIcc(resultSet.getString("megIcc"));
+				mepInfo.setMegUmc(resultSet.getString("megUmc"));
+				mepInfo.setObjType(resultSet.getString("objType"));
+				mepInfo.setObjId(resultSet.getInt("objId"));
+				mepInfo.setLocalMepId(resultSet.getInt("localMepId"));
+				mepInfo.setRemoteMepId(resultSet.getInt("remoteMepId"));
+				mepInfo.setMel(resultSet.getInt("mel"));
+				mepInfo.setReserve1(resultSet.getInt("reserve1"));
+				mepInfo.setReserve2(resultSet.getInt("reserve2"));
+				mepInfo.setLm(resultSet.getBoolean("lm"));
+				mepInfo.setLmCycle(resultSet.getInt("lmCycle"));
+				mepInfo.setLmReserve1(resultSet.getInt("lmReserve1"));
+				mepInfo.setDm(resultSet.getBoolean("dm"));
+				mepInfo.setDmCycle(resultSet.getInt("dmCycle"));
+				mepInfo.setDmReserve1(resultSet.getInt("dmReserve1"));
+				mepInfo.setLck(resultSet.getBoolean("lck"));
+				mepInfo.setLpbOutTime(resultSet.getInt("lpbOutTime"));
+				mepInfo.setTargetMacAdd(resultSet.getString("targetMacAdd"));
+				mepInfo.setReserve3(resultSet.getInt("reserve3"));
+				mepInfo.setReserve4(resultSet.getInt("reserve4"));
+				mepInfo.setReserve5(resultSet.getInt("reserve5"));
+				mepInfo.setCv(resultSet.getBoolean("cv"));
+				mepInfo.setCvCycle(resultSet.getInt("cvCycle"));
+				mepInfo.setCvReserve1(resultSet.getInt("cvReserve1"));
+				mepInfo.setAps(resultSet.getBoolean("aps"));
+				mepInfo.setSsm(resultSet.getBoolean("ssm"));
+				mepInfo.setSccTest(resultSet.getBoolean("sccTest"));
+				mepInfo.setFdi(resultSet.getBoolean("fdi"));
+				mepInfo.setRingEnable(resultSet.getInt("ringEnable") == 1 ? true : false);
+				mepInfo.setRingCycle(resultSet.getInt("ringCycle"));
+				mepInfo.setRingTestWay(resultSet.getInt("ringTestWay"));
+				mepInfo.setOffLineTestTLV(resultSet.getInt("offLineTestTLV"));
+				mepInfo.setRingTLVLength(resultSet.getInt("ringTLVLength"));
+				mepInfo.setRingTLVInfo(resultSet.getInt("ringTLVInfo"));
+				mepInfo.setTstEnable(resultSet.getInt("tstEnable") == 1 ? true : false);
+				mepInfo.setTstCycle(resultSet.getInt("tstCycle"));
+				mepInfo.setTstTLVType(resultSet.getInt("tstTLVType"));
+				mepInfo.setTstTLVLength(resultSet.getInt("tstTLVLength"));
+				mepInfo.setLspTc(resultSet.getInt("lspTc"));
+				mepInfo.setPwTc(resultSet.getInt("pwTc"));
+				mepInfo.setCsfEnable(resultSet.getInt("csfEnable") == 1 ? true : false);
+				mepInfo.setMegId(resultSet.getInt("megId"));
+				mepInfo.setLtEXP(resultSet.getInt("ltEXP"));
+				mepInfo.setLtTTL(resultSet.getInt("ltTTL"));
+				mepInfo.setLtEnable(resultSet.getInt("ltEnable"));
+				mepInfo.setLbTTL(resultSet.getInt("lbTTL"));
+				mepInfo.setVlanEnable(resultSet.getInt("vlanEnable"));
+				mepInfo.setOutVlanValue(resultSet.getInt("outVlanValue"));
+				mepInfo.setTpId(resultSet.getInt("tpId"));
+				mepInfo.setSourceMac(resultSet.getString("sourceMac"));
+				mepInfo.setEndMac(resultSet.getString("endMac"));
+				mepInfo.setOamEnable(resultSet.getInt("oamEnable") == 1 ? true : false);
+				list.add(mepInfo);
+			}
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if(null!=resultSet){
+				try {
+					resultSet.close();
+				} catch (Exception e2) {
+					throw e2;
+				}
+				resultSet=null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+		return list;
+	}
+
+	/*
+	 * 根据对象类型和业务id查找oamMepInfo
+	 */
+	public List<OamMepInfo> queryMepByTypeAndSiteId(OamMepInfo oamMep, Connection conn) throws Exception {
+		if (null == oamMep) {
+			throw new Exception("oamMep is null");
+		}
+		if (null == conn) {
+			throw new Exception("connection is null");
+		}
+		StringBuffer sql = new StringBuffer();
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+		OamMepInfo mepInfo = null;
+		List<OamMepInfo> list = null;
+		try {
+			sql.append("select * from oamMepInfo where objType = ? and siteId = ?");
+			preparedStatement = conn.prepareStatement(sql.toString());
+			preparedStatement.setString(1, oamMep.getObjType());
+			preparedStatement.setInt(2, oamMep.getSiteId());
+			resultSet = preparedStatement.executeQuery();
+			list = new ArrayList<OamMepInfo>();
+			while (resultSet.next()) {
+				mepInfo = new OamMepInfo();
+				mepInfo.setId(resultSet.getInt("id"));
+				mepInfo.setSiteId(resultSet.getInt("siteId"));
+				mepInfo.setServiceId(resultSet.getInt("serviceId"));
+				mepInfo.setMegIcc(resultSet.getString("megIcc"));
+				mepInfo.setMegUmc(resultSet.getString("megUmc"));
+				mepInfo.setObjType(resultSet.getString("objType"));
+				mepInfo.setObjId(resultSet.getInt("objId"));
+				mepInfo.setLocalMepId(resultSet.getInt("localMepId"));
+				mepInfo.setRemoteMepId(resultSet.getInt("remoteMepId"));
+				mepInfo.setMel(resultSet.getInt("mel"));
+				mepInfo.setReserve1(resultSet.getInt("reserve1"));
+				mepInfo.setReserve2(resultSet.getInt("reserve2"));
+				mepInfo.setLm(resultSet.getBoolean("lm"));
+				mepInfo.setLmCycle(resultSet.getInt("lmCycle"));
+				mepInfo.setLmReserve1(resultSet.getInt("lmReserve1"));
+				mepInfo.setDm(resultSet.getBoolean("dm"));
+				mepInfo.setDmCycle(resultSet.getInt("dmCycle"));
+				mepInfo.setDmReserve1(resultSet.getInt("dmReserve1"));
+				mepInfo.setLck(resultSet.getBoolean("lck"));
+				mepInfo.setLpbOutTime(resultSet.getInt("lpbOutTime"));
+				mepInfo.setTargetMacAdd(resultSet.getString("targetMacAdd"));
+				mepInfo.setReserve3(resultSet.getInt("reserve3"));
+				mepInfo.setReserve4(resultSet.getInt("reserve4"));
+				mepInfo.setReserve5(resultSet.getInt("reserve5"));
+				mepInfo.setCv(resultSet.getBoolean("cv"));
+				mepInfo.setCvCycle(resultSet.getInt("cvCycle"));
+				mepInfo.setCvReserve1(resultSet.getInt("cvReserve1"));
+				mepInfo.setAps(resultSet.getBoolean("aps"));
+				mepInfo.setSsm(resultSet.getBoolean("ssm"));
+				mepInfo.setSccTest(resultSet.getBoolean("sccTest"));
+				mepInfo.setFdi(resultSet.getBoolean("fdi"));
+				mepInfo.setRingEnable(resultSet.getInt("ringEnable") == 1 ? true : false);
+				mepInfo.setRingCycle(resultSet.getInt("ringCycle"));
+				mepInfo.setRingTestWay(resultSet.getInt("ringTestWay"));
+				mepInfo.setOffLineTestTLV(resultSet.getInt("offLineTestTLV"));
+				mepInfo.setRingTLVLength(resultSet.getInt("ringTLVLength"));
+				mepInfo.setRingTLVInfo(resultSet.getInt("ringTLVInfo"));
+				mepInfo.setTstEnable(resultSet.getInt("tstEnable") == 1 ? true : false);
+				mepInfo.setTstCycle(resultSet.getInt("tstCycle"));
+				mepInfo.setTstTLVType(resultSet.getInt("tstTLVType"));
+				mepInfo.setTstTLVLength(resultSet.getInt("tstTLVLength"));
+				mepInfo.setLspTc(resultSet.getInt("lspTc"));
+				mepInfo.setPwTc(resultSet.getInt("pwTc"));
+				mepInfo.setCsfEnable(resultSet.getInt("csfEnable") == 1 ? true : false);
+				mepInfo.setMegId(resultSet.getInt("megId"));
+				mepInfo.setLtEXP(resultSet.getInt("ltEXP"));
+				mepInfo.setLtTTL(resultSet.getInt("ltTTL"));
+				mepInfo.setLtEnable(resultSet.getInt("ltEnable"));
+				mepInfo.setLbTTL(resultSet.getInt("lbTTL"));
+				mepInfo.setVlanEnable(resultSet.getInt("vlanEnable"));
+				mepInfo.setOutVlanValue(resultSet.getInt("outVlanValue"));
+				mepInfo.setTpId(resultSet.getInt("tpId"));
+				mepInfo.setSourceMac(resultSet.getString("sourceMac"));
+				mepInfo.setEndMac(resultSet.getString("endMac"));
+				mepInfo.setOamEnable(resultSet.getInt("oamEnable") == 1 ? true : false);
+				list.add(mepInfo);
+			}
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if(null!=resultSet){
+				try {
+					resultSet.close();
+				} catch (Exception e2) {
+					throw e2;
+				}
+				resultSet=null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+		return list;
+	}
+
+	/*
+	 * 根据对象类型和业务id查找oamMepInfo
+	 */
+	public List<OamMepInfo> queryMepByServiceId(OamMepInfo oamMep, Connection conn) throws Exception {
+		if (null == oamMep) {
+			throw new Exception("oamMep is null");
+		}
+		if (null == conn) {
+			throw new Exception("connection is null");
+		}
+		String sql = new String();
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+		OamMepInfo mepInfo = null;
+		List<OamMepInfo> list = null;
+		try {
+			sql=("select * from oamMepInfo where objType = '"+(oamMep.getObjType()+"'")+" and serviceId = "+oamMep.getServiceId());
+			
+			if(oamMep.getSiteId()>0){
+				sql+=" and siteId= "+oamMep.getSiteId();
+			}
+			preparedStatement = conn.prepareStatement(sql);
+			resultSet = preparedStatement.executeQuery();
+			list = new ArrayList<OamMepInfo>();
+			while (resultSet.next()) {
+				mepInfo = new OamMepInfo();
+				mepInfo.setId(resultSet.getInt("id"));
+				mepInfo.setSiteId(resultSet.getInt("siteId"));
+				mepInfo.setServiceId(resultSet.getInt("serviceId"));
+				mepInfo.setMegIcc(resultSet.getString("megIcc"));
+				mepInfo.setMegUmc(resultSet.getString("megUmc"));
+				mepInfo.setObjType(resultSet.getString("objType"));
+				mepInfo.setObjId(resultSet.getInt("objId"));
+				mepInfo.setLocalMepId(resultSet.getInt("localMepId"));
+				mepInfo.setRemoteMepId(resultSet.getInt("remoteMepId"));
+				mepInfo.setMel(resultSet.getInt("mel"));
+				mepInfo.setReserve1(resultSet.getInt("reserve1"));
+				mepInfo.setReserve2(resultSet.getInt("reserve2"));
+				mepInfo.setLm(resultSet.getBoolean("lm"));
+				mepInfo.setLmCycle(resultSet.getInt("lmCycle"));
+				mepInfo.setLmReserve1(resultSet.getInt("lmReserve1"));
+				mepInfo.setDm(resultSet.getBoolean("dm"));
+				mepInfo.setDmCycle(resultSet.getInt("dmCycle"));
+				mepInfo.setDmReserve1(resultSet.getInt("dmReserve1"));
+				mepInfo.setLck(resultSet.getBoolean("lck"));
+				mepInfo.setLpbOutTime(resultSet.getInt("lpbOutTime"));
+				mepInfo.setTargetMacAdd(resultSet.getString("targetMacAdd"));
+				mepInfo.setReserve3(resultSet.getInt("reserve3"));
+				mepInfo.setReserve4(resultSet.getInt("reserve4"));
+				mepInfo.setReserve5(resultSet.getInt("reserve5"));
+				mepInfo.setCv(resultSet.getBoolean("cv"));
+				mepInfo.setCvCycle(resultSet.getInt("cvCycle"));
+				mepInfo.setCvReserve1(resultSet.getInt("cvReserve1"));
+				mepInfo.setAps(resultSet.getBoolean("aps"));
+				mepInfo.setSsm(resultSet.getBoolean("ssm"));
+				mepInfo.setSccTest(resultSet.getBoolean("sccTest"));
+				mepInfo.setFdi(resultSet.getBoolean("fdi"));
+				mepInfo.setRingEnable(resultSet.getInt("ringEnable") == 1 ? true : false);
+				mepInfo.setRingCycle(resultSet.getInt("ringCycle"));
+				mepInfo.setRingTestWay(resultSet.getInt("ringTestWay"));
+				mepInfo.setOffLineTestTLV(resultSet.getInt("offLineTestTLV"));
+				mepInfo.setRingTLVLength(resultSet.getInt("ringTLVLength"));
+				mepInfo.setRingTLVInfo(resultSet.getInt("ringTLVInfo"));
+				mepInfo.setTstEnable(resultSet.getInt("tstEnable") == 1 ? true : false);
+				mepInfo.setTstCycle(resultSet.getInt("tstCycle"));
+				mepInfo.setTstTLVType(resultSet.getInt("tstTLVType"));
+				mepInfo.setTstTLVLength(resultSet.getInt("tstTLVLength"));
+
+				mepInfo.setLspTc(resultSet.getInt("lspTc"));
+				mepInfo.setPwTc(resultSet.getInt("pwTc"));
+				mepInfo.setCsfEnable(resultSet.getInt("csfEnable") == 1 ? true : false);
+				mepInfo.setMegId(resultSet.getInt("megId"));
+				mepInfo.setLtEXP(resultSet.getInt("ltEXP"));
+				mepInfo.setLtTTL(resultSet.getInt("ltTTL"));
+				mepInfo.setLtEnable(resultSet.getInt("ltEnable"));
+				mepInfo.setLbTTL(resultSet.getInt("lbTTL"));
+				mepInfo.setVlanEnable(resultSet.getInt("vlanEnable"));
+				mepInfo.setOutVlanValue(resultSet.getInt("outVlanValue"));
+				mepInfo.setTpId(resultSet.getInt("tpId"));
+				mepInfo.setSourceMac(resultSet.getString("sourceMac"));
+				mepInfo.setEndMac(resultSet.getString("endMac"));
+				mepInfo.setOamEnable(resultSet.getInt("oamEnable") == 1 ? true : false);
+				list.add(mepInfo);
+			}
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if(null!=resultSet){
+				try {
+					resultSet.close();
+				} catch (Exception e2) {
+					throw e2;
+				}
+				resultSet=null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+		return list;
+	}
+
+	/*
+	 * 根据对象类型和业务id查找oamMipInfo
+	 */
+	public List<OamMipInfo> queryMipByServiceId(OamMipInfo oamMip, Connection conn) throws Exception {
+		if (null == oamMip) {
+			throw new Exception("oamMip is null");
+		}
+		if (null == conn) {
+			throw new Exception("connection is null");
+		}
+		StringBuffer sql = new StringBuffer();
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+		OamMipInfo mipInfo = new OamMipInfo();
+		List<OamMipInfo> list = new ArrayList<OamMipInfo>();
+		try {
+			sql.append("select * from oamMipInfo where objType = ? and siteId = ? ");
+			
+			if(oamMip.getObjId()!=0){
+				sql.append(" and objid=?");
+			}
+			
+			preparedStatement = conn.prepareStatement(sql.toString());
+			preparedStatement.setString(1, oamMip.getObjType());
+			preparedStatement.setInt(2, oamMip.getSiteId());
+			if(oamMip.getObjId()!=0){
+				preparedStatement.setInt(3, oamMip.getObjId());
+			}
+			resultSet = preparedStatement.executeQuery();
+			while (resultSet.next()) {
+				mipInfo = new OamMipInfo();
+				mipInfo.setId(resultSet.getInt("id"));
+				mipInfo.setSiteId(resultSet.getInt("siteId"));
+				mipInfo.setServiceId(resultSet.getInt("serviceId"));
+				mipInfo.setMegIcc(resultSet.getString("megIcc"));
+				mipInfo.setMegUmc(resultSet.getString("megUmc"));
+				mipInfo.setObjType(resultSet.getString("objType"));
+				mipInfo.setObjId(resultSet.getInt("objId"));
+				mipInfo.setMipId(resultSet.getInt("mipId"));
+				mipInfo.setAMId(resultSet.getInt("aMId"));
+				mipInfo.setZMId(resultSet.getInt("zMId"));
+				mipInfo.setMegId(resultSet.getInt("megid"));
+				mipInfo.setTc(resultSet.getInt("tc"));
+				list.add(mipInfo);
+			}
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if(null!=resultSet){
+				try {
+					resultSet.close();
+				} catch (Exception e2) {
+					throw e2;
+				}
+				resultSet=null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+		return list;
+	}
+
+	public List<OamMepInfo> queryMepByMegId(char megIcc, char megUmc, Connection conn) throws Exception {
+		List<OamMepInfo> oamList = null;
+		if (null == conn) {
+			throw new Exception("connection is null");
+		}
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+		OamMepInfo mepInfo = null;
+		try {
+			sql = "select * from oamMepInfo where megIcc = ? and megUmc = ?";
+			preparedStatement = conn.prepareStatement(sql);
+			preparedStatement.setInt(1, megIcc);
+			preparedStatement.setInt(2, megUmc);
+			resultSet = preparedStatement.executeQuery();
+			oamList = new ArrayList<OamMepInfo>();
+			while (resultSet.next()) {
+				mepInfo = new OamMepInfo();
+				mepInfo.setId(resultSet.getInt("id"));
+				mepInfo.setServiceId(resultSet.getInt("serviceId"));
+				mepInfo.setMegIcc(resultSet.getString("megIcc"));
+				mepInfo.setMegUmc(resultSet.getString("megUmc"));
+				mepInfo.setObjType(resultSet.getString("objType"));
+				mepInfo.setObjId(resultSet.getInt("objId"));
+				mepInfo.setLocalMepId(resultSet.getInt("localMepId"));
+				mepInfo.setRemoteMepId(resultSet.getInt("remoteMepId"));
+				mepInfo.setMel(resultSet.getInt("mel"));
+				mepInfo.setReserve1(resultSet.getInt("reserve1"));
+				mepInfo.setReserve2(resultSet.getInt("reserve2"));
+				mepInfo.setLm(resultSet.getBoolean("lm"));
+				mepInfo.setLmCycle(resultSet.getInt("lmCycle"));
+				mepInfo.setLmReserve1(resultSet.getInt("lmReserve1"));
+				mepInfo.setDm(resultSet.getBoolean("dm"));
+				mepInfo.setDmCycle(resultSet.getInt("dmCycle"));
+				mepInfo.setDmReserve1(resultSet.getInt("dmReserve1"));
+				mepInfo.setLck(resultSet.getBoolean("lck"));
+				mepInfo.setLpbOutTime(resultSet.getInt("lpbOutTime"));
+				mepInfo.setTargetMacAdd(resultSet.getString("targetMacAdd"));
+				mepInfo.setReserve3(resultSet.getInt("reserve3"));
+				mepInfo.setReserve4(resultSet.getInt("reserve4"));
+				mepInfo.setReserve5(resultSet.getInt("reserve5"));
+				mepInfo.setCv(resultSet.getBoolean("cv"));
+				mepInfo.setCvCycle(resultSet.getInt("cvCycle"));
+				mepInfo.setCvReserve1(resultSet.getInt("cvReserve1"));
+				mepInfo.setAps(resultSet.getBoolean("aps"));
+				mepInfo.setSsm(resultSet.getBoolean("ssm"));
+				mepInfo.setSccTest(resultSet.getBoolean("sccTest"));
+				mepInfo.setFdi(resultSet.getBoolean("fdi"));
+				mepInfo.setSiteId(resultSet.getInt("siteId"));
+				mepInfo.setRingEnable(resultSet.getInt("ringEnable") == 1 ? true : false);
+				mepInfo.setRingCycle(resultSet.getInt("ringCycle"));
+				mepInfo.setRingTestWay(resultSet.getInt("ringTestWay"));
+				mepInfo.setOffLineTestTLV(resultSet.getInt("offLineTestTLV"));
+				mepInfo.setRingTLVLength(resultSet.getInt("ringTLVLength"));
+				mepInfo.setRingTLVInfo(resultSet.getInt("ringTLVInfo"));
+				mepInfo.setTstEnable(resultSet.getInt("tstEnable") == 1 ? true : false);
+				mepInfo.setTstCycle(resultSet.getInt("tstCycle"));
+				mepInfo.setTstTLVType(resultSet.getInt("tstTLVType"));
+				mepInfo.setTstTLVLength(resultSet.getInt("tstTLVLength"));
+
+				mepInfo.setLspTc(resultSet.getInt("lspTc"));
+				mepInfo.setPwTc(resultSet.getInt("pwTc"));
+				mepInfo.setCsfEnable(resultSet.getInt("csfEnable") == 1 ? true : false);
+				mepInfo.setMegId(resultSet.getInt("megId"));
+				mepInfo.setLtEXP(resultSet.getInt("ltEXP"));
+				mepInfo.setLtTTL(resultSet.getInt("ltTTL"));
+				mepInfo.setLtEnable(resultSet.getInt("ltEnable"));
+				mepInfo.setLbTTL(resultSet.getInt("lbTTL"));
+				mepInfo.setVlanEnable(resultSet.getInt("vlanEnable"));
+				mepInfo.setOutVlanValue(resultSet.getInt("outVlanValue"));
+				mepInfo.setTpId(resultSet.getInt("tpId"));
+				mepInfo.setSourceMac(resultSet.getString("sourceMac"));
+				mepInfo.setEndMac(resultSet.getString("endMac"));
+				mepInfo.setOamEnable(resultSet.getInt("oamEnable") == 1 ? true : false);
+				oamList.add(mepInfo);
+			}
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if(null!=resultSet){
+				try {
+					resultSet.close();
+				} catch (Exception e2) {
+					throw e2;
+				}
+				resultSet=null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+		return oamList;
+	}
+	
+	/**
+	 *  根据网元ID、serviceId、objectType 修改objId  tunnel保护时用
+	
+	* @author kk
+	
+	* @param   
+	
+	* @return 
+	 * @throws Exception 
+	
+	* @Exception 异常对象
+	 */
+	public void update_mep_objid(int objid,int siteId,int serviceId,String objtype,Connection connection) throws Exception{
+		
+		PreparedStatement preparedStatement=null;
+		try {
+			
+			preparedStatement=connection.prepareStatement(this.SQL_UPDATE_OBJID);
+			preparedStatement.setInt(1, objid);
+			preparedStatement.setString(2, objtype);
+			preparedStatement.setInt(3, siteId);
+			preparedStatement.setInt(4, serviceId);
+			
+			preparedStatement.executeUpdate();
+			
+		} catch (Exception e) {
+			throw e;
+		} finally{
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+		}
+		
+	}
+	
+	/**
+	 * 删除oamMepInfo
+	 * 
+	 * @param connection
+	 *            数据库链接
+	 * @return 删除记录数
+	 * @throws Exception
+	 * @throws Exception
+	 */
+	public int deleteBySiteId(int siteId, Connection conn) throws Exception {
+
+		if (0 == siteId) {
+			throw new Exception("siteId is 0");
+		}
+
+		if (null == conn) {
+			throw new Exception("connection is null");
+		}
+
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		int result = 0;
+		try {
+			sql = "delete from oamMepInfo where siteId = ?";
+			preparedStatement = conn.prepareStatement(sql);
+			preparedStatement.setInt(1, siteId);
+			result = preparedStatement.executeUpdate();
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+		return result;
+	}
+	
+	/**
+	 * 删除oamMepInfo
+	 * 
+	 * @param connection
+	 *            数据库链接
+	 * @return 删除记录数
+	 * @throws Exception
+	 * @throws Exception
+	 */
+	public int deleteMepInfo(OamMepInfo oamMepInfo, Connection conn) throws Exception {
+
+		if (null == oamMepInfo) {
+			throw new Exception("oamMepInfo is null");
+		}
+
+		if (null == conn) {
+			throw new Exception("connection is null");
+		}
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		int result = 0;
+		try {
+			sql = "delete from oamMepInfo where id = ?";
+			preparedStatement = conn.prepareStatement(sql);
+			preparedStatement.setInt(1, oamMepInfo.getId());
+			result = preparedStatement.executeUpdate();
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+		return result;
+	}
+
+	public boolean queryMepByObjIdAndType(OamMepInfo mep,Connection conn) throws Exception {
+		if (null == mep) {
+			throw new Exception("oamMep is null");
+		}
+		if (null == conn) {
+			throw new Exception("connection is null");
+		}
+		String sql = "";
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+		boolean flag = false;
+		try {
+			sql = "select * from oamMepInfo where objType = ? and objId = ?";
+			preparedStatement = conn.prepareStatement(sql.toString());
+			preparedStatement.setString(1, mep.getObjType());
+			preparedStatement.setInt(2, mep.getObjId());
+			resultSet = preparedStatement.executeQuery();
+			while (resultSet.next()) {
+				flag = true;
+			}
+		}catch (Exception e) {
+			throw e;
+		}finally {
+			if(null!=resultSet){
+				try {
+					resultSet.close();
+				} catch (Exception e2) {
+					throw e2;
+				}
+				resultSet=null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+		return flag;
+	}
+	/**
+	 * 修改  EthLinkOam  EquipExit状态   区分设备上是否存在
+	 * @param siteId 网元id
+	 * @param status	状态
+	 * @param connection 
+	 * @return
+	 * @throws Exception
+	 */
+	public int updateEquipExitStatusForEthLinkOam(int siteId, int status,
+			Connection connection) throws Exception {
+		if (0 == siteId) {
+			throw new Exception("siteId is 0");
+		}
+		if (0 == status) {
+			throw new Exception("status is 0");
+		}
+		if (null == connection) {
+			throw new Exception("conection is null");
+		}
+
+		PreparedStatement preparedStatement = null;
+		int result = 0;
+		try {
+			preparedStatement = connection.prepareStatement(this.UPDATEEQUIPEXITSTATUS);
+			preparedStatement.setInt(1, status);
+			preparedStatement.setInt(2, siteId);
+			result = preparedStatement.executeUpdate();
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+		}
+		return result;
+		
+	}
+	
+	/*
+	 * 根据对象类型和对象id查找oamMipInfo
+	 */
+	public List<OamInfo> queryMipByConditionForList(OamMipInfo oamMip, Connection conn) throws Exception {
+		if (null == oamMip) {
+			throw new Exception("oamMip is null");
+		}
+		if (null == conn) {
+			throw new Exception("connection is null");
+		}
+		StringBuffer sql = new StringBuffer();
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+		OamMipInfo mipInfo = null;
+		List<Object> preamList=new ArrayList<Object>();
+		List<OamMipInfo> mipList =null;
+		List<OamInfo> oamInfoList =null;
+		OamInfo oamInfo;
+		try {
+			mipList = new ArrayList<OamMipInfo>();
+			oamInfoList = new ArrayList<OamInfo>();
+			sql.append("select * from oamMipInfo where 1=1 ");
+			
+			if (null!=oamMip.getObjType()&&!"".equals(oamMip.getObjType())) {
+				sql.append(" and objType = ? ");
+				preamList.add(oamMip.getObjType());
+			}
+			if (oamMip.getSiteId() != 0) {
+				sql.append(" and siteId = ? ");
+				preamList.add(oamMip.getSiteId());
+			}
+			if (oamMip.getObjId() != 0) {
+				sql.append(" and objId = ? ");
+				preamList.add(oamMip.getObjId());
+			}
+			// 当段上下发oam时，是绑定在端口上固没有serviceId
+			if (oamMip.getServiceId() != 0) {
+				sql.append(" and serviceId = ? ");
+				preamList.add(oamMip.getServiceId());
+			}
+			
+			if (oamMip.getId() != 0) {
+				sql.append(" and Id = ? ");
+				preamList.add(oamMip.getId());
+			}
+			
+			preparedStatement = conn.prepareStatement(sql.toString());
+			for (int i = 0; i < preamList.size(); i++) {
+				preparedStatement.setObject(i+1, preamList.get(i));
+			}
+			resultSet = preparedStatement.executeQuery();
+			while (resultSet.next()) {
+				oamInfo = new OamInfo();
+				mipInfo = new OamMipInfo();
+				mipInfo.setId(resultSet.getInt("id"));
+				mipInfo.setSiteId(resultSet.getInt("siteId"));
+				mipInfo.setServiceId(resultSet.getInt("serviceId"));
+				mipInfo.setMegIcc(resultSet.getString("megIcc"));
+				mipInfo.setMegUmc(resultSet.getString("megUmc"));
+				mipInfo.setObjType(resultSet.getString("objType"));
+				mipInfo.setObjId(resultSet.getInt("objId"));
+				mipInfo.setMipId(resultSet.getInt("mipId"));
+				mipInfo.setAMId(resultSet.getInt("aMId"));
+				mipInfo.setZMId(resultSet.getInt("zMId"));
+				mipInfo.setMegId(resultSet.getInt("megid"));
+				mipInfo.setTc(resultSet.getInt("tc"));
+				oamInfo.setOamMip(mipInfo);
+				oamInfoList.add(oamInfo);
+			}
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if(null!=resultSet){
+				try {
+					resultSet.close();
+				} catch (Exception e2) {
+					throw e2;
+				}
+				resultSet=null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+		return oamInfoList;
+	}
+	
+	public List<OamMepInfo> selectByOamMepInfo(OamMepInfo mep, Connection conn) throws Exception {
+		List<OamMepInfo> oamList = null;
+		if (null == conn) {
+			throw new Exception("connection is null");
+		}
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+		OamMepInfo mepInfo = null;
+		try {
+			sql = "select * from oamMepInfo where objType = ? and objId = ? and lck=?";
+			preparedStatement = conn.prepareStatement(sql);
+			preparedStatement.setString(1, mep.getObjType());
+			preparedStatement.setInt(2, mep.getObjId());
+			preparedStatement.setInt(3, mep.isLck()?1:0);
+			resultSet = preparedStatement.executeQuery();
+			oamList = new ArrayList<OamMepInfo>();
+			while (resultSet.next()) {
+				mepInfo = new OamMepInfo();
+				mepInfo.setId(resultSet.getInt("id"));
+				mepInfo.setServiceId(resultSet.getInt("serviceId"));
+				mepInfo.setMegIcc(resultSet.getString("megIcc"));
+				mepInfo.setMegUmc(resultSet.getString("megUmc"));
+				mepInfo.setObjType(resultSet.getString("objType"));
+				mepInfo.setObjId(resultSet.getInt("objId"));
+				mepInfo.setLocalMepId(resultSet.getInt("localMepId"));
+				mepInfo.setRemoteMepId(resultSet.getInt("remoteMepId"));
+				mepInfo.setMel(resultSet.getInt("mel"));
+				mepInfo.setReserve1(resultSet.getInt("reserve1"));
+				mepInfo.setReserve2(resultSet.getInt("reserve2"));
+				mepInfo.setLm(resultSet.getBoolean("lm"));
+				mepInfo.setLmCycle(resultSet.getInt("lmCycle"));
+				mepInfo.setLmReserve1(resultSet.getInt("lmReserve1"));
+				mepInfo.setDm(resultSet.getBoolean("dm"));
+				mepInfo.setDmCycle(resultSet.getInt("dmCycle"));
+				mepInfo.setDmReserve1(resultSet.getInt("dmReserve1"));
+				mepInfo.setLck(resultSet.getBoolean("lck"));
+				mepInfo.setLpbOutTime(resultSet.getInt("lpbOutTime"));
+				mepInfo.setTargetMacAdd(resultSet.getString("targetMacAdd"));
+				mepInfo.setReserve3(resultSet.getInt("reserve3"));
+				mepInfo.setReserve4(resultSet.getInt("reserve4"));
+				mepInfo.setReserve5(resultSet.getInt("reserve5"));
+				mepInfo.setCv(resultSet.getBoolean("cv"));
+				mepInfo.setCvCycle(resultSet.getInt("cvCycle"));
+				mepInfo.setCvReserve1(resultSet.getInt("cvReserve1"));
+				mepInfo.setAps(resultSet.getBoolean("aps"));
+				mepInfo.setSsm(resultSet.getBoolean("ssm"));
+				mepInfo.setSccTest(resultSet.getBoolean("sccTest"));
+				mepInfo.setFdi(resultSet.getBoolean("fdi"));
+				mepInfo.setSiteId(resultSet.getInt("siteId"));
+				mepInfo.setRingEnable(resultSet.getInt("ringEnable") == 1 ? true : false);
+				mepInfo.setRingCycle(resultSet.getInt("ringCycle"));
+				mepInfo.setRingTestWay(resultSet.getInt("ringTestWay"));
+				mepInfo.setOffLineTestTLV(resultSet.getInt("offLineTestTLV"));
+				mepInfo.setRingTLVLength(resultSet.getInt("ringTLVLength"));
+				mepInfo.setRingTLVInfo(resultSet.getInt("ringTLVInfo"));
+				mepInfo.setTstEnable(resultSet.getInt("tstEnable") == 1 ? true : false);
+				mepInfo.setTstCycle(resultSet.getInt("tstCycle"));
+				mepInfo.setTstTLVType(resultSet.getInt("tstTLVType"));
+				mepInfo.setTstTLVLength(resultSet.getInt("tstTLVLength"));
+
+				mepInfo.setLspTc(resultSet.getInt("lspTc"));
+				mepInfo.setPwTc(resultSet.getInt("pwTc"));
+				mepInfo.setCsfEnable(resultSet.getInt("csfEnable") == 1 ? true : false);
+				mepInfo.setMegId(resultSet.getInt("megId"));
+				mepInfo.setLtEXP(resultSet.getInt("ltEXP"));
+				mepInfo.setLtTTL(resultSet.getInt("ltTTL"));
+				mepInfo.setLtEnable(resultSet.getInt("ltEnable"));
+				mepInfo.setLbTTL(resultSet.getInt("lbTTL"));
+				mepInfo.setVlanEnable(resultSet.getInt("vlanEnable"));
+				mepInfo.setOutVlanValue(resultSet.getInt("outVlanValue"));
+				mepInfo.setTpId(resultSet.getInt("tpId"));
+				mepInfo.setSourceMac(resultSet.getString("sourceMac"));
+				mepInfo.setEndMac(resultSet.getString("endMac"));
+				mepInfo.setOamEnable(resultSet.getInt("oamEnable") == 1 ? true : false);
+				oamList.add(mepInfo);
+			}
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if(null!=resultSet){
+				try {
+					resultSet.close();
+				} catch (Exception e2) {
+					throw e2;
+				}
+				resultSet=null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+		return oamList;
+	}
+
+	public void updateMepById(OamMepInfo mep, Connection connection) throws Exception {
+		PreparedStatement preparedStatement=null;
+		try {
+			String sql = "update oammepinfo set objId=? where id=?";
+			preparedStatement=connection.prepareStatement(sql);
+			preparedStatement.setInt(1, mep.getObjId());
+			preparedStatement.setInt(2, mep.getId());
+			preparedStatement.executeUpdate();
+		} finally{
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e, this.getClass());
+				}
+				preparedStatement = null;
+			}
+		}
+	}
+	
+}

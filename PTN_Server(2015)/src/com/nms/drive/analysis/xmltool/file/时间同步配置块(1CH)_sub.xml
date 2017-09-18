@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<driveRoot  xmlns="http://drive.bean.com">
+	<attribute length="1" description="索引" value="1" mapping="(1)"/>
+	<attribute length="1" description="端口号" value="1" mapping="(1)/2/3/4/5/6/7/8/9/0A/0B/0C=(FE1)/FE2/FE3/FE4/FE5/FE6/FE7/FE8/GE1/GE2/GE3/GE4"/>
+	<attribute length="1" description="工作模式" value="0" mapping="(0)/1/2/3/4=(Disable)/Auto/Master/Slave/Passive"/>
+	<attribute length="2" description="端口ID" value="1" mapping="(1)"/>
+	<attribute length="1" description="线路不对称时延属性" value="0" mapping="(0)/1/2=Delay(M2S)=DelayS2M/DelayM2S/DelayS2M/DelayM2S/DelayS2M"/>
+	<attribute length="4" description="线路不对称时延补偿值" value="0" mapping="(0)-100000"/>
+	<attribute length="1" description="延时机制" value="1" mapping="(01)/02=(E2E)/P2P"/>
+	<attribute length="1" description="消息模式" value="1" mapping="0/(1)=one_step/(two_step)"/>
+	<attribute length="8" description="备用" value="0" mapping="(00)"/>		
+</driveRoot>

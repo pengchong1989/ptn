@@ -1,0 +1,326 @@
+package com.nms.db.dao.ptn.clock;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.nms.db.bean.ptn.clock.PortConfigInfo;
+import com.nms.ui.manager.ExceptionManage;
+
+public class PortDispositionInfoDao {
+	/**
+	 * @param portConfigInfo
+	 *            实体
+	 * @param conection
+	 *            数据库连接
+	 * @return 判断是否插入成功 返回的ID号 只要不是0就是插入成功
+	 * @throws Exception
+	 * 插入数据
+	 */
+	public int insert(PortConfigInfo portConfigInfo,Connection conection) throws Exception {
+		if (null == portConfigInfo) {
+			throw new Exception("portConfigInfo is null");
+		}
+		if (null == conection) {
+			throw new Exception("connection is null");
+		}
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+		int result = 0;
+		try {
+			sql = "insert into timePortDisposition(siteId,port,portEnable," +
+					"clockModel,delayMechanism,vlanID,operationMode," +
+					"portStatus,timeStampMode,AnncPacketsInterval," +
+					"AnncTimeoutSetting,SyncPacketsInterval," +
+					"Delay_ReqPacketsInterval,Pdel_ReqPacketsInterval," +
+					"lineDelayCompensation,delayCompensationMeasure,portMapping,interfaceType)" +
+					" value(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+
+			preparedStatement = conection.prepareStatement(sql,Statement.RETURN_GENERATED_KEYS);
+			preparedStatement.setInt(1, portConfigInfo.getSiteId());
+			preparedStatement.setInt(2, portConfigInfo.getPort());
+			preparedStatement.setInt(3, portConfigInfo.getPortEnable());
+			preparedStatement.setString(4, portConfigInfo.getClockModel());
+			preparedStatement.setInt(5, portConfigInfo.getDelayMechanism());
+			preparedStatement.setString(6, portConfigInfo.getVlanID());
+			preparedStatement.setInt(7, portConfigInfo.getOperationMode());
+			preparedStatement.setString(8, portConfigInfo.getPortStatus());
+			preparedStatement.setInt(9, portConfigInfo.getTimeStampMode());
+			preparedStatement.setInt(10, portConfigInfo.getAnncPacketsInterval());
+			preparedStatement.setString(11, portConfigInfo.getAnncTimeoutSetting());
+			preparedStatement.setInt(12, portConfigInfo.getSyncPacketsInterval());
+			preparedStatement.setInt(13, portConfigInfo.getDelay_ReqPacketsInterval());
+			preparedStatement.setInt(14, portConfigInfo.getPdel_ReqPacketsInterval());
+			preparedStatement.setString(15, portConfigInfo.getLineDelayCompensation());
+			preparedStatement.setString(16, portConfigInfo.getDelayCompensationMeasure());
+			preparedStatement.setString(17, portConfigInfo.getPortMapping());
+			preparedStatement.setInt(18, portConfigInfo.getInterfaceType());
+
+			preparedStatement.executeUpdate();
+			resultSet = preparedStatement.getGeneratedKeys();
+			if (resultSet.next()) {
+				result = resultSet.getInt(1);
+			}
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			sql = null;
+			if (resultSet != null) {
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				resultSet = null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+		}
+		return result;
+	}
+/**
+ * 
+ * @param portConfigInfo 实体
+ * @param connection 数据库连接
+ * @return 1删除成功，0不成功；
+ * @throws Exception
+ * function:通过关联网元表主键 来删除数据
+ */
+	public int delete(PortConfigInfo portConfigInfo,Connection connection) throws Exception {
+//		if (null == portDispositionInfo) {
+//			throw new Exception("portDispositionInfo is null");
+//		}
+		if (connection == null) {
+			throw new Exception("connection is null");
+		}
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		int result=0;
+		try {
+			sql = "delete from timeportdisposition where id=?";
+            
+			preparedStatement = connection.prepareStatement(sql,Statement.RETURN_GENERATED_KEYS);
+			preparedStatement.setInt(1, portConfigInfo.getId());
+			
+			result = preparedStatement.executeUpdate();
+		} catch (Exception e) {
+			throw e;
+		}finally{
+			sql=null;
+			if(preparedStatement!=null){
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement=null;
+			}
+		}
+		return result;
+	}
+	/**
+	 * function: 查找所有的所有网元时钟的状态和属性
+	 * @param conn 数据库连接
+	 * @return 所有网元时钟的状态和属性 集合
+	 * @throws Exception
+	 */
+public List<PortConfigInfo> select(Connection conn,int id) throws Exception{
+	if(conn==null){
+		throw new Exception("connection is null");
+	}
+	String sql=null;
+	PreparedStatement pre=null;
+	ResultSet ste=null;
+	List<PortConfigInfo> listPortDispositionInfo=null;
+	PortConfigInfo portConfigInfo=null;
+	try {
+		listPortDispositionInfo=new ArrayList<PortConfigInfo>();
+		sql="select * from timePortDisposition where siteId=?";
+		pre=conn.prepareStatement(sql);
+		pre.setInt(1, id);
+		ste=pre.executeQuery();
+		
+		while(ste.next()){
+			portConfigInfo=new PortConfigInfo();
+			portConfigInfo.setId(ste.getInt("id"));
+			portConfigInfo.setSiteId(ste.getInt("siteId"));
+			portConfigInfo.setPort(ste.getInt("port"));
+			portConfigInfo.setPortEnable(ste.getInt("portEnable"));
+			portConfigInfo.setClockModel(ste.getString("clockModel"));
+			portConfigInfo.setDelayMechanism(ste.getInt("delayMechanism"));
+			portConfigInfo.setVlanID(ste.getString("vlanID"));
+			portConfigInfo.setOperationMode(ste.getInt("operationMode"));
+			portConfigInfo.setPortStatus(ste.getString("portStatus"));
+			portConfigInfo.setTimeStampMode(ste.getInt("timeStampMode"));
+			portConfigInfo.setAnncPacketsInterval(ste.getInt("AnncPacketsInterval"));
+			portConfigInfo.setAnncTimeoutSetting(ste.getString("AnncTimeoutSetting"));
+			portConfigInfo.setSyncPacketsInterval(ste.getInt("SyncPacketsInterval"));
+			portConfigInfo.setDelay_ReqPacketsInterval(ste.getInt("Delay_ReqPacketsInterval"));
+			portConfigInfo.setPdel_ReqPacketsInterval(ste.getInt("Pdel_ReqPacketsInterval"));
+			portConfigInfo.setLineDelayCompensation(ste.getString("lineDelayCompensation"));
+			portConfigInfo.setDelayCompensationMeasure(ste.getString("delayCompensationMeasure"));
+			portConfigInfo.setPortMapping(ste.getString("portMapping"));
+			portConfigInfo.setInterfaceType(ste.getInt("interfaceType"));
+			listPortDispositionInfo.add(portConfigInfo);
+		}
+		
+	} catch (Exception e) {
+		throw e;
+	}finally{
+		sql=null;
+		if (ste != null) {
+			try {
+				ste.close();
+			} catch (Exception e) {
+				ExceptionManage.dispose(e,this.getClass());
+			}
+			ste = null;
+		}
+		if (pre != null) {
+			try {
+				pre.close();
+			} catch (Exception e) {
+				ExceptionManage.dispose(e,this.getClass());
+			}
+			pre = null;
+		}
+	}
+	return listPortDispositionInfo;
+	}
+	/**
+	 * 
+	 * @param portConfigInfo 实体
+	 * @param conn 数据库连接
+	 * @return 1成功，0不成功
+	 * @throws Exception
+	 * function:根新数据
+	 */
+public int update(PortConfigInfo portConfigInfo,Connection conn)throws Exception{
+	if(portConfigInfo==null){
+		throw new Exception("portConfigInfo is null");
+	}
+	if(conn==null){
+		throw new Exception("conn is null");
+	}
+	StringBuffer sql=null;;
+	PreparedStatement pre=null;
+	int result=0;
+	try {
+		sql=new StringBuffer();
+		sql.append("update timeportdisposition set port=?,portEnable=?,clockModel=?,delayMechanism=?,");
+	    sql.append("vlanID=?,operationMode=?,portStatus=?,timeStampMode=?,AnncPacketsInterval=?,AnncTimeoutSetting=?,");
+	    sql.append("SyncPacketsInterval=?,Delay_ReqPacketsInterval=?,Pdel_ReqPacketsInterval=?," +
+	    		" lineDelayCompensation=?,delayCompensationMeasure=?,portMapping=?,interfaceType=? where id=?");
+	    
+	    pre=conn.prepareStatement(sql.toString());
+	    pre.setInt(1, portConfigInfo.getPort());
+	    pre.setInt(2, portConfigInfo.getPortEnable());
+	    pre.setString(3, portConfigInfo.getClockModel());
+	    pre.setInt(4, portConfigInfo.getDelayMechanism());
+	    pre.setString(5, portConfigInfo.getVlanID());
+	    pre.setInt(6, portConfigInfo.getOperationMode());
+	    pre.setString(7, portConfigInfo.getPortStatus());
+	    pre.setInt(8, portConfigInfo.getTimeStampMode());
+	    pre.setInt(9, portConfigInfo.getAnncPacketsInterval());
+	    pre.setString(10, portConfigInfo.getAnncTimeoutSetting());
+	    pre.setInt(11, portConfigInfo.getSyncPacketsInterval());
+	    pre.setInt(12, portConfigInfo.getDelay_ReqPacketsInterval());
+	    pre.setInt(13, portConfigInfo.getPdel_ReqPacketsInterval());
+	    pre.setString(14, portConfigInfo.getLineDelayCompensation());
+	    pre.setString(15, portConfigInfo.getDelayCompensationMeasure());
+	    pre.setString(16, portConfigInfo.getPortMapping());
+	    pre.setInt(17, portConfigInfo.getInterfaceType());
+	    pre.setInt(18, portConfigInfo.getId());
+	    result=pre.executeUpdate();
+	    
+	} catch (Exception e) {
+		throw e;
+	}finally{
+		sql=null;
+		if (pre != null) {
+			try {
+				pre.close();
+			} catch (Exception e) {
+				ExceptionManage.dispose(e,this.getClass());
+			}
+			pre = null;
+		}
+	}
+	return result;
+}
+	public List<PortConfigInfo> select(Connection conn,PortConfigInfo condition) throws Exception{
+		if(conn==null){
+			throw new Exception("connection is null");
+		}
+		String sql=null;
+		PreparedStatement pre=null;
+		ResultSet ste=null;
+		List<PortConfigInfo> listPortDispositionInfo=null;
+		PortConfigInfo portConfigInfo=null;
+		try {
+			listPortDispositionInfo=new ArrayList<PortConfigInfo>();
+			sql="select * from timePortDisposition where 1=1";
+			if(0!=condition.getId()){
+				sql += " and id = "+condition.getId();
+			}
+			pre=conn.prepareStatement(sql);
+			ste=pre.executeQuery();
+			
+			while(ste.next()){
+				portConfigInfo=new PortConfigInfo();
+				portConfigInfo.setId(ste.getInt("id"));
+				portConfigInfo.setSiteId(ste.getInt("siteId"));
+				portConfigInfo.setPort(ste.getInt("port"));
+				portConfigInfo.setPortEnable(ste.getInt("portEnable"));
+				portConfigInfo.setClockModel(ste.getString("clockModel"));
+				portConfigInfo.setDelayMechanism(ste.getInt("delayMechanism"));
+				portConfigInfo.setVlanID(ste.getString("vlanID"));
+				portConfigInfo.setOperationMode(ste.getInt("operationMode"));
+				portConfigInfo.setPortStatus(ste.getString("portStatus"));
+				portConfigInfo.setTimeStampMode(ste.getInt("timeStampMode"));
+				portConfigInfo.setAnncPacketsInterval(ste.getInt("AnncPacketsInterval"));
+				portConfigInfo.setAnncTimeoutSetting(ste.getString("AnncTimeoutSetting"));
+				portConfigInfo.setSyncPacketsInterval(ste.getInt("SyncPacketsInterval"));
+				portConfigInfo.setDelay_ReqPacketsInterval(ste.getInt("Delay_ReqPacketsInterval"));
+				portConfigInfo.setPdel_ReqPacketsInterval(ste.getInt("Pdel_ReqPacketsInterval"));
+				portConfigInfo.setLineDelayCompensation(ste.getString("lineDelayCompensation"));
+				portConfigInfo.setDelayCompensationMeasure(ste.getString("delayCompensationMeasure"));
+				portConfigInfo.setPortMapping(ste.getString("portMapping"));
+				portConfigInfo.setInterfaceType(ste.getInt("interfaceType"));
+				listPortDispositionInfo.add(portConfigInfo);
+			}
+			
+		} catch (Exception e) {
+			throw e;
+		}finally{
+			sql=null;
+			if (ste != null) {
+				try {
+					ste.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				ste = null;
+			}
+			if (pre != null) {
+				try {
+					pre.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				pre = null;
+			}
+		}
+		return listPortDispositionInfo;
+		}
+}

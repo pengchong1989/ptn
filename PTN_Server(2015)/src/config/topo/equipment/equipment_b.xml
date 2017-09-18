@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 700B设备槽位对应的图片途径 -->
+<xml-body>
+<equipment imagePath="/com/nms/ui/images/topo/rack_b.png" x="50" y="50">
+	<slot imagePath="/com/nms/ui/images/topo/slot_s.png" x="72" y="56" type="700b_left" bestCardName="FAN" number="7"></slot>
+	<slot imagePath="/com/nms/ui/images/topo/slot_h.png" x="152" y="56" type="700b_1" bestCardName="SS8P32" number="1"></slot>
+	<slot imagePath="/com/nms/ui/images/topo/slot_h.png" x="152" y="116" type="700b_1" bestCardName="SX2G20" number="2"></slot>
+	<slot imagePath="/com/nms/ui/images/topo/slot_h.png" x="152" y="176" type="700b_2" bestCardName="XCTPS" number="3"></slot>
+	<slot imagePath="/com/nms/ui/images/topo/slot_h.png" x="152" y="237" type="700b_2" bestCardName="XCTPS" number="4"></slot>
+	<slot imagePath="/com/nms/ui/images/topo/slot_h.png" x="152" y="299" type="700b_1" bestCardName="SX2G20" number="5"></slot>
+	<slot imagePath="/com/nms/ui/images/topo/slot_h.png" x="152" y="360" type="700b_3" bestCardName="IP32" number="6"></slot>
+</equipment>
+</xml-body>

@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nms.db.dao.ptn.qos.QosMappingTemplateMapper" >
+  <resultMap id="BaseResultMap" type="QosMappingAttr" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="grade" property="grade" jdbcType="VARCHAR" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="mappingtype" property="mappingtype" jdbcType="INTEGER" />
+    <result column="direction" property="direction" jdbcType="INTEGER" />
+    <result column="model" property="model" jdbcType="INTEGER" />
+    <result column="value" property="value" jdbcType="VARCHAR" />
+    <result column="groupid" property="groupid" jdbcType="INTEGER" />
+    <result column="color" property="color" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, grade, name, mappingtype, direction, model, value, groupid, color
+  </sql>
+  <select id="selectByPrimaryKey" resultType="QosMappingAttr" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from mappingtemplate
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from mappingtemplate
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="QosMappingAttr" >
+    insert into mappingtemplate (id, grade, name, 
+      mappingtype, direction, model, 
+      value, groupid, color
+      )
+    values (#{id,jdbcType=INTEGER}, #{grade,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, 
+      #{mappingtype,jdbcType=INTEGER}, #{direction,jdbcType=INTEGER}, #{model,jdbcType=INTEGER}, 
+      #{value,jdbcType=VARCHAR}, #{groupid,jdbcType=INTEGER}, #{color,jdbcType=INTEGER}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="QosMappingAttr" >
+    insert into mappingtemplate
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="grade != null" >
+        grade,
+      </if>
+      <if test="name != null" >
+        name,
+      </if>
+      <if test="mappingtype != null" >
+        mappingtype,
+      </if>
+      <if test="direction != null" >
+        direction,
+      </if>
+      <if test="model != null" >
+        model,
+      </if>
+      <if test="value != null" >
+        value,
+      </if>
+      <if test="groupid != null" >
+        groupid,
+      </if>
+      <if test="color != null" >
+        color,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="grade != null" >
+        #{grade,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null" >
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="mappingtype != null" >
+        #{mappingtype,jdbcType=INTEGER},
+      </if>
+      <if test="direction != null" >
+        #{direction,jdbcType=INTEGER},
+      </if>
+      <if test="model != null" >
+        #{model,jdbcType=INTEGER},
+      </if>
+      <if test="value != null" >
+        #{value,jdbcType=VARCHAR},
+      </if>
+      <if test="groupid != null" >
+        #{groupid,jdbcType=INTEGER},
+      </if>
+      <if test="color != null" >
+        #{color,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="QosMappingAttr" >
+    update mappingtemplate
+    <set >
+      <if test="grade != null" >
+        grade = #{grade,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null" >
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="mappingtype != null" >
+        mappingtype = #{mappingtype,jdbcType=INTEGER},
+      </if>
+      <if test="direction != null" >
+        direction = #{direction,jdbcType=INTEGER},
+      </if>
+      <if test="model != null" >
+        model = #{model,jdbcType=INTEGER},
+      </if>
+      <if test="value != null" >
+        value = #{value,jdbcType=VARCHAR},
+      </if>
+      <if test="groupid != null" >
+        groupid = #{groupid,jdbcType=INTEGER},
+      </if>
+      <if test="color != null" >
+        color = #{color,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="QosMappingAttr" >
+    update mappingtemplate
+    set grade = #{grade,jdbcType=VARCHAR},
+      name = #{name,jdbcType=VARCHAR},
+      mappingtype = #{mappingtype,jdbcType=INTEGER},
+      direction = #{direction,jdbcType=INTEGER},
+      model = #{model,jdbcType=INTEGER},
+      value = #{value,jdbcType=VARCHAR},
+      groupid = #{groupid,jdbcType=INTEGER},
+      color = #{color,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  
+  <select id="queryByCondition" resultType="QosMappingAttr" parameterType="java.lang.Integer" >
+    select*from mappingtemplate where 1=1 
+    <if test="id >0">
+    	and Id=#{id}
+    </if>
+    <if test="model >0">
+    	and model=#{model}
+    </if>
+    <if test="groupid >0">
+    	and groupid=#{groupid}
+    </if>
+    <if test="value >0">
+    	and value=#{value}
+    </if>
+    <if test="color >0">
+    	and color=#{color}
+    </if>
+    <if test="mappingType >0">
+    	and mappingType=#{mappingType}
+    </if>
+    <if test="direction >0">
+    	and direction=#{direction}
+    </if>
+    <if test="name != null and name != '' ">
+    	and name=#{name}
+    </if>
+    <if test="grade != null and grade != '' ">
+    	and grade=#{grade}
+    </if>
+  </select>
+  
+</mapper>

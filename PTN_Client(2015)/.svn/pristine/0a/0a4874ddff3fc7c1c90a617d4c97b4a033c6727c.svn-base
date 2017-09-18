@@ -1,0 +1,468 @@
+package com.nms.db.dao.equipment.port;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.nms.db.bean.equipment.port.E1Info;
+import com.nms.db.bean.equipment.port.PortInst;
+import com.nms.ui.manager.ExceptionManage;
+
+
+public class E1Dao {
+	/**
+	 * 插入Sql
+	 */
+	private final String INSERTSQL = "insert into E1_inst(siteId ,outputClockSrc ,tdmClocksrc," + " rtpEnable,E1Id ,legShield ,legEnable, prestoreTimeEnable, prestoreTime,pinCount , pwLable " + ", legId,portName,modle,linecoding,impedance,portid,cardid,alarmReversalEnabled,fzType,frameFormat,complexFrame) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+	/**
+	 * 更新Sql
+	 */
+	private final String UPDATESQL = "update E1_inst set outputClockSrc = ? ,tdmClocksrc = ? ," + "rtpEnable = ? ,E1Id = ? ,legShield = ? ,legEnable = ? ,prestoreTimeEnable = ? ,prestoreTime = ? ,pinCount = ? ," + "pwLable = ? ,legId = ? ,modle = ? ,linecoding = ? ,impedance = ? ,portName=? ,portid = ? ,cardid = ? ,alarmReversalEnabled = ? ,fzType=? ,frameFormat=?,complexFrame=? where Id=?";
+
+	/**
+	 * 查询Sql
+	 */
+	private final String SELECTSQL = "SELECT * FROM E1_inst e1 , port_inst p WHERE e1.portId=p.portid ";
+	private final String DELETE_BY_SITE = "delete from e1_inst where siteid=?";
+
+	/**
+	 * 
+	 * @param e1Info
+	 * @param connection
+	 * @return
+	 * @throws Exception
+	 */
+	public int insert(E1Info e1Info, Connection connection) throws Exception {
+		if (null == e1Info) {
+			throw new Exception("e1Info is null");
+		}
+
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		int result = 0;
+		ResultSet resultSet = null;
+
+		try {
+			sql = INSERTSQL;
+			preparedStatement = connection.prepareStatement(sql, java.sql.Statement.RETURN_GENERATED_KEYS);
+			preparedStatement.setInt(1, e1Info.getSiteId());
+			preparedStatement.setInt(2, e1Info.getE1LegOutPutClockSource());
+			preparedStatement.setInt(3, e1Info.getTdmClockSource());
+			preparedStatement.setInt(4, e1Info.getRtpEnable());
+			preparedStatement.setInt(5, e1Info.getE1Id());
+			preparedStatement.setInt(6, e1Info.getLegShield());
+			preparedStatement.setInt(7, e1Info.getLegEnable());
+			preparedStatement.setInt(8, e1Info.getPrestoreTimeEnable());
+			preparedStatement.setInt(9, e1Info.getPrestoreTime());
+			preparedStatement.setInt(10, e1Info.getPinCount());
+			preparedStatement.setInt(11, e1Info.getPwLabel());
+			preparedStatement.setInt(12, e1Info.getLegId());
+			preparedStatement.setString(13, e1Info.getPortName());
+			preparedStatement.setString(14, e1Info.getModel());
+			preparedStatement.setString(15, e1Info.getLinecoding());
+			preparedStatement.setInt(16, e1Info.getImpedance());
+			preparedStatement.setInt(17, e1Info.getPortId());
+			preparedStatement.setInt(18, e1Info.getCardId());
+			preparedStatement.setInt(19, e1Info.getIsAlarmRevesal());
+			preparedStatement.setInt(20, e1Info.getFzType());
+			preparedStatement.setInt(21, e1Info.getFrameformat());
+			preparedStatement.setInt(22, e1Info.getComplexFrame());
+			preparedStatement.executeUpdate();
+			resultSet = preparedStatement.getGeneratedKeys();
+			while (resultSet.next()) {
+				result = resultSet.getInt(1);
+			}
+
+		} catch (Exception e) {
+			throw e;
+		} finally {			
+			if (resultSet != null) {
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				resultSet = null;
+			}			
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+
+			sql = null;
+		}
+
+		return result;
+	}
+
+	/**
+	 * 
+	 * @param e1Info
+	 * @param connection
+	 * @return
+	 * @throws Exception
+	 */
+	public int update(E1Info e1Info, Connection connection) throws Exception {
+		if (null == e1Info) {
+			throw new Exception("e1Info is null");
+		}
+
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		int result = 0;
+
+		try {
+			sql = UPDATESQL;
+
+			preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.setInt(1, e1Info.getE1LegOutPutClockSource());
+			preparedStatement.setInt(2, e1Info.getTdmClockSource());
+			preparedStatement.setInt(3, e1Info.getRtpEnable());
+			preparedStatement.setInt(4, e1Info.getE1Id());
+			preparedStatement.setInt(5, e1Info.getLegShield());
+			preparedStatement.setInt(6, e1Info.getLegEnable());
+			preparedStatement.setInt(7, e1Info.getPrestoreTimeEnable());
+			preparedStatement.setInt(8, e1Info.getPrestoreTime());
+			preparedStatement.setInt(9, e1Info.getPinCount());
+			preparedStatement.setInt(10, e1Info.getPwLabel());
+			preparedStatement.setInt(11, e1Info.getLegId());
+			preparedStatement.setString(12, e1Info.getModel());
+			preparedStatement.setString(13, e1Info.getLinecoding());
+			preparedStatement.setInt(14, e1Info.getImpedance());
+			preparedStatement.setString(15, e1Info.getPortName());
+			preparedStatement.setInt(16, e1Info.getPortId());
+			preparedStatement.setInt(17, e1Info.getCardId());
+			preparedStatement.setInt(18, e1Info.getIsAlarmRevesal());
+			preparedStatement.setInt(19, e1Info.getFzType());
+			preparedStatement.setInt(20, e1Info.getFrameformat());
+			preparedStatement.setInt(21, e1Info.getComplexFrame());
+			preparedStatement.setInt(22, e1Info.getId());
+			
+			result = preparedStatement.executeUpdate();
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+
+		return result;
+	}
+
+	/**
+	 * 
+	 * @param e1Info
+	 * @param connection
+	 * @return
+	 * @throws Exception
+	 */
+	public List<E1Info> queryByCondition(E1Info e1Info, Connection connection) throws Exception {
+		if (null == e1Info) {
+			throw new Exception("e1Info is null");
+		}
+
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		String sql = null;
+		List<E1Info> list = null;
+		try {
+
+			sql = SELECTSQL;
+			if (e1Info.getId() > 0) {
+				sql += " and e1.Id=" + e1Info.getId();
+			}
+			if (e1Info.getSiteId() > 0) {
+				sql += " and e1.siteId=" + e1Info.getSiteId();
+			}
+			if (e1Info.getPortName() != null) {
+				sql += " and e1.portName='" + e1Info.getPortName() + "'";
+			}
+			if (e1Info.getLegId() > 0) {
+				sql += " and e1.legId=" + e1Info.getLegId();
+			}
+			if( e1Info.getPortId() > 0) {
+				sql+= " and e1.portid=" + e1Info.getPortId();
+			}
+			if( e1Info.getPwLabel() > 0){
+				sql += " and e1.pwLable=" + e1Info.getPwLabel();
+			}
+			list = this.excuteQuery(connection, sql);
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			sql = null;
+		}
+		return list;
+	}
+
+	/**
+	 * 
+	 * @param e1Info
+	 * @param connection
+	 * @return
+	 * @throws Exception
+	 */
+	public List<E1Info> queryBySiteId(int siteId, Connection connection) throws Exception {
+
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		String sql = null;
+		List<E1Info> list = null;
+		try {
+
+			sql = "SELECT * FROM E1_inst e1 WHERE ";
+			if (siteId > 0) {
+				sql += " e1.siteId=" + siteId;
+				list = this.excuteQuery_nojoin(connection, sql);
+			}
+			
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			sql = null;
+		}
+		return list;
+	}
+
+	/**
+	 * 执行查询语句
+	 * 
+	 * @param connection
+	 *            数据库连接
+	 * @param sql
+	 *            sql语句
+	 * @return 查询集合
+	 * @throws Exception
+	 */
+	private List<E1Info> excuteQuery(Connection connection, String sql) throws Exception {
+		List<E1Info> e1InfoList = null;
+		ResultSet resultSet = null;
+		PreparedStatement preparedStatement = null;
+		E1Info e1Infoinfo = null;
+		try {
+			e1InfoList = new ArrayList<E1Info>();
+			preparedStatement = connection.prepareStatement(sql);
+			resultSet = preparedStatement.executeQuery();
+
+			while (resultSet.next()) {
+				e1Infoinfo = new E1Info();
+				e1Infoinfo.setId(resultSet.getInt("id"));
+				e1Infoinfo.setSiteId(resultSet.getInt("siteId"));
+				e1Infoinfo.setE1LegOutPutClockSource(resultSet.getInt("outputClockSrc"));
+				e1Infoinfo.setTdmClockSource(resultSet.getInt("tdmClocksrc"));
+				e1Infoinfo.setRtpEnable(resultSet.getInt("rtpEnable"));
+				e1Infoinfo.setE1Id(resultSet.getInt("E1Id"));
+				e1Infoinfo.setLegShield(resultSet.getInt("legShield"));
+				e1Infoinfo.setLegEnable(resultSet.getInt("legEnable"));
+				e1Infoinfo.setPrestoreTimeEnable(resultSet.getInt("prestoreTimeEnable"));
+				e1Infoinfo.setPrestoreTime(resultSet.getInt("prestoreTime"));
+				e1Infoinfo.setPinCount(resultSet.getInt("pinCount"));
+				e1Infoinfo.setPwLabel(resultSet.getInt("pwLable"));
+				e1Infoinfo.setLegId(resultSet.getInt("legId"));
+				e1Infoinfo.setPortName(resultSet.getString("portName"));
+				e1Infoinfo.setModel(resultSet.getString("modle"));
+				e1Infoinfo.setLinecoding(resultSet.getString("linecoding"));
+				e1Infoinfo.setImpedance(resultSet.getInt("impedance"));
+				e1Infoinfo.setPortId(resultSet.getInt("portId"));
+				e1Infoinfo.setCardId(resultSet.getInt("cardid"));
+				e1Infoinfo.setIsAlarmRevesal(resultSet.getInt("alarmReversalEnabled"));
+				e1Infoinfo.setFzType(resultSet.getInt("fzType"));
+				e1Infoinfo.setFrameformat(resultSet.getInt("frameFormat"));
+				e1Infoinfo.setComplexFrame(resultSet.getInt("complexFrame"));
+				PortInst portInst = new PortInst();
+				portInst.setIsEnabled_code(resultSet.getInt("isEnabled_code"));
+				portInst.setJobStatus(resultSet.getString("JobStatus"));
+				portInst.setIsOccupy(resultSet.getInt("IsOccupy"));
+				e1Infoinfo.setPortInst(portInst);
+				e1InfoList.add(e1Infoinfo);
+			}
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (resultSet != null) {
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				resultSet = null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+			e1Infoinfo = null;
+		}
+
+		return e1InfoList;
+	}
+
+	/**
+	 * 根据网元ID删除
+	 * 
+	 * @author kk
+	 * 
+	 * @param siteid
+	 *            网元id
+	 * @param connection
+	 *            数据库连接
+	 * 
+	 * @return
+	 * @throws Exception
+	 * 
+	 * @Exception 异常对象
+	 */
+	public void deleteBySite(int siteId, Connection connection) throws Exception {
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+		PreparedStatement preparedStatement = null;
+		try {
+			preparedStatement = connection.prepareStatement(this.DELETE_BY_SITE);
+			preparedStatement.setInt(1, siteId);
+			preparedStatement.executeUpdate();
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+		}
+	}
+	
+
+	/**
+	 * 执行查询语句
+	 * 
+	 * @param connection
+	 *            数据库连接
+	 * @param sql
+	 *            sql语句
+	 * @return 查询集合
+	 * @throws Exception
+	 */
+	private List<E1Info> excuteQuery_nojoin(Connection connection, String sql) throws Exception {
+		List<E1Info> e1InfoList = null;
+		ResultSet resultSet = null;
+		PreparedStatement preparedStatement = null;
+		E1Info e1Infoinfo = null;
+		try {
+			e1InfoList = new ArrayList<E1Info>();
+			preparedStatement = connection.prepareStatement(sql);
+			resultSet = preparedStatement.executeQuery();
+
+			while (resultSet.next()) {
+				e1Infoinfo = new E1Info();
+				e1Infoinfo.setId(resultSet.getInt("id"));
+				e1Infoinfo.setSiteId(resultSet.getInt("siteId"));
+				e1Infoinfo.setE1LegOutPutClockSource(resultSet.getInt("outputClockSrc"));
+				e1Infoinfo.setTdmClockSource(resultSet.getInt("tdmClocksrc"));
+				e1Infoinfo.setRtpEnable(resultSet.getInt("rtpEnable"));
+				e1Infoinfo.setE1Id(resultSet.getInt("E1Id"));
+				e1Infoinfo.setLegShield(resultSet.getInt("legShield"));
+				e1Infoinfo.setLegEnable(resultSet.getInt("legEnable"));
+				e1Infoinfo.setPrestoreTimeEnable(resultSet.getInt("prestoreTimeEnable"));
+				e1Infoinfo.setPrestoreTime(resultSet.getInt("prestoreTime"));
+				e1Infoinfo.setPinCount(resultSet.getInt("pinCount"));
+				e1Infoinfo.setPwLabel(resultSet.getInt("pwLable"));
+				e1Infoinfo.setLegId(resultSet.getInt("legId"));
+				e1Infoinfo.setPortName(resultSet.getString("portName"));
+				e1Infoinfo.setModel(resultSet.getString("modle"));
+				e1Infoinfo.setLinecoding(resultSet.getString("linecoding"));
+				e1Infoinfo.setImpedance(resultSet.getInt("impedance"));
+				e1Infoinfo.setPortId(resultSet.getInt("portId"));
+				e1Infoinfo.setCardId(resultSet.getInt("cardid"));
+				e1Infoinfo.setIsAlarmRevesal(resultSet.getInt("alarmReversalEnabled"));
+				e1Infoinfo.setFzType(resultSet.getInt("fzType"));
+				e1Infoinfo.setFrameformat(resultSet.getInt("frameFormat"));
+				e1Infoinfo.setComplexFrame(resultSet.getInt("complexFrame"));
+				e1InfoList.add(e1Infoinfo);
+			}
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (resultSet != null) {
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				resultSet = null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+			e1Infoinfo = null;
+		}
+
+		return e1InfoList;
+	}
+	
+	public void delete(E1Info e1Info, Connection connection) throws Exception {
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+		PreparedStatement preparedStatement = null;
+		try {
+			String sql = "delete from e1_inst where cardId=?";
+			preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.setInt(1, e1Info.getCardId());
+			preparedStatement.executeUpdate();
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+		}
+	}
+	
+}

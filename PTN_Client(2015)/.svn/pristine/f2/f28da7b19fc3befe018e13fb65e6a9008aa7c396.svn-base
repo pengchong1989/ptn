@@ -1,0 +1,425 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nms.db.dao.ptn.clock.TimeManageInfoMapper" >
+  <resultMap id="BaseResultMap" type="TimeManageInfo" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="siteId" property="siteid" jdbcType="INTEGER" />
+    <result column="model" property="model" jdbcType="INTEGER" />
+    <result column="ClockType" property="clocktype" jdbcType="INTEGER" />
+    <result column="clockPrecision" property="clockprecision" jdbcType="INTEGER" />
+    <result column="clockVariance" property="clockvariance" jdbcType="INTEGER" />
+    <result column="priorOne" property="priorone" jdbcType="INTEGER" />
+    <result column="priorTwo" property="priortwo" jdbcType="INTEGER" />
+    <result column="manufacturerOUI" property="manufactureroui" jdbcType="INTEGER" />
+    <result column="clockRegion" property="clockregion" jdbcType="INTEGER" />
+    <result column="clockRegionOne" property="clockregionone" jdbcType="INTEGER" />
+    <result column="clockRegionTwoJbox" property="clockregiontwojbox" jdbcType="INTEGER" />
+    <result column="clockRegionTwo" property="clockregiontwo" jdbcType="INTEGER" />
+    <result column="clockRegionThreeJbox" property="clockregionthreejbox" jdbcType="INTEGER" />
+    <result column="clockRegionThree" property="clockregionthree" jdbcType="INTEGER" />
+    <result column="clockRegionFourJbox" property="clockregionfourjbox" jdbcType="INTEGER" />
+    <result column="clockRegionFour" property="clockregionfour" jdbcType="INTEGER" />
+    <result column="clockRegionDelay" property="clockregiondelay" jdbcType="INTEGER" />
+    <result column="followModel" property="followmodel" jdbcType="INTEGER" />
+    <result column="todsendTime" property="todsendtime" jdbcType="INTEGER" />
+    <result column="timeID" property="timeid" jdbcType="VARCHAR" />
+    <result column="timeType" property="timetype" jdbcType="VARCHAR" />
+    <result column="ftimeID" property="ftimeid" jdbcType="VARCHAR" />
+    <result column="ftimePort" property="ftimeport" jdbcType="VARCHAR" />
+    <result column="leapNumber" property="leapnumber" jdbcType="VARCHAR" />
+    <result column="systemVarianceValue" property="systemvariancevalue" jdbcType="VARCHAR" />
+    <result column="todState" property="todstate" jdbcType="VARCHAR" />
+    <result column="zTimeID" property="ztimeid" jdbcType="VARCHAR" />
+    <result column="zTimeTpye" property="ztimetpye" jdbcType="VARCHAR" />
+    <result column="zTimePrecision" property="ztimeprecision" jdbcType="VARCHAR" />
+    <result column="zTimeVariance" property="ztimevariance" jdbcType="VARCHAR" />
+    <result column="zTimePriorOne" property="ztimepriorone" jdbcType="VARCHAR" />
+    <result column="zTimePriorTwo" property="ztimepriortwo" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, siteId, model, ClockType, clockPrecision, clockVariance, priorOne, priorTwo, 
+    manufacturerOUI, clockRegion, clockRegionOne, clockRegionTwoJbox, clockRegionTwo, 
+    clockRegionThreeJbox, clockRegionThree, clockRegionFourJbox, clockRegionFour, clockRegionDelay, 
+    followModel, todsendTime, timeID, timeType, ftimeID, ftimePort, leapNumber, systemVarianceValue, 
+    todState, zTimeID, zTimeTpye, zTimePrecision, zTimeVariance, zTimePriorOne, zTimePriorTwo
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from timeneptp
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from timeneptp
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="TimeManageInfo" >
+    insert into timeneptp (id, siteId, model, 
+      ClockType, clockPrecision, clockVariance, 
+      priorOne, priorTwo, manufacturerOUI, 
+      clockRegion, clockRegionOne, clockRegionTwoJbox, 
+      clockRegionTwo, clockRegionThreeJbox, clockRegionThree, 
+      clockRegionFourJbox, clockRegionFour, clockRegionDelay, 
+      followModel, todsendTime, timeID, 
+      timeType, ftimeID, ftimePort, 
+      leapNumber, systemVarianceValue, todState, 
+      zTimeID, zTimeTpye, zTimePrecision, 
+      zTimeVariance, zTimePriorOne, zTimePriorTwo
+      )
+    values (#{id,jdbcType=INTEGER}, #{siteid,jdbcType=INTEGER}, #{model,jdbcType=INTEGER}, 
+      #{clocktype,jdbcType=INTEGER}, #{clockprecision,jdbcType=INTEGER}, #{clockvariance,jdbcType=INTEGER}, 
+      #{priorone,jdbcType=INTEGER}, #{priortwo,jdbcType=INTEGER}, #{manufactureroui,jdbcType=INTEGER}, 
+      #{clockregion,jdbcType=INTEGER}, #{clockregionone,jdbcType=INTEGER}, #{clockregiontwojbox,jdbcType=INTEGER}, 
+      #{clockregiontwo,jdbcType=INTEGER}, #{clockregionthreejbox,jdbcType=INTEGER}, #{clockregionthree,jdbcType=INTEGER}, 
+      #{clockregionfourjbox,jdbcType=INTEGER}, #{clockregionfour,jdbcType=INTEGER}, #{clockregiondelay,jdbcType=INTEGER}, 
+      #{followmodel,jdbcType=INTEGER}, #{todsendtime,jdbcType=INTEGER}, #{timeid,jdbcType=VARCHAR}, 
+      #{timetype,jdbcType=VARCHAR}, #{ftimeid,jdbcType=VARCHAR}, #{ftimeport,jdbcType=VARCHAR}, 
+      #{leapnumber,jdbcType=VARCHAR}, #{systemvariancevalue,jdbcType=VARCHAR}, #{todstate,jdbcType=VARCHAR}, 
+      #{ztimeid,jdbcType=VARCHAR}, #{ztimetpye,jdbcType=VARCHAR}, #{ztimeprecision,jdbcType=VARCHAR}, 
+      #{ztimevariance,jdbcType=VARCHAR}, #{ztimepriorone,jdbcType=VARCHAR}, #{ztimepriortwo,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="TimeManageInfo" >
+    insert into timeneptp
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="siteid != null" >
+        siteId,
+      </if>
+      <if test="model != null" >
+        model,
+      </if>
+      <if test="clocktype != null" >
+        ClockType,
+      </if>
+      <if test="clockprecision != null" >
+        clockPrecision,
+      </if>
+      <if test="clockvariance != null" >
+        clockVariance,
+      </if>
+      <if test="priorone != null" >
+        priorOne,
+      </if>
+      <if test="priortwo != null" >
+        priorTwo,
+      </if>
+      <if test="manufactureroui != null" >
+        manufacturerOUI,
+      </if>
+      <if test="clockregion != null" >
+        clockRegion,
+      </if>
+      <if test="clockregionone != null" >
+        clockRegionOne,
+      </if>
+      <if test="clockregiontwojbox != null" >
+        clockRegionTwoJbox,
+      </if>
+      <if test="clockregiontwo != null" >
+        clockRegionTwo,
+      </if>
+      <if test="clockregionthreejbox != null" >
+        clockRegionThreeJbox,
+      </if>
+      <if test="clockregionthree != null" >
+        clockRegionThree,
+      </if>
+      <if test="clockregionfourjbox != null" >
+        clockRegionFourJbox,
+      </if>
+      <if test="clockregionfour != null" >
+        clockRegionFour,
+      </if>
+      <if test="clockregiondelay != null" >
+        clockRegionDelay,
+      </if>
+      <if test="followmodel != null" >
+        followModel,
+      </if>
+      <if test="todsendtime != null" >
+        todsendTime,
+      </if>
+      <if test="timeid != null" >
+        timeID,
+      </if>
+      <if test="timetype != null" >
+        timeType,
+      </if>
+      <if test="ftimeid != null" >
+        ftimeID,
+      </if>
+      <if test="ftimeport != null" >
+        ftimePort,
+      </if>
+      <if test="leapnumber != null" >
+        leapNumber,
+      </if>
+      <if test="systemvariancevalue != null" >
+        systemVarianceValue,
+      </if>
+      <if test="todstate != null" >
+        todState,
+      </if>
+      <if test="ztimeid != null" >
+        zTimeID,
+      </if>
+      <if test="ztimetpye != null" >
+        zTimeTpye,
+      </if>
+      <if test="ztimeprecision != null" >
+        zTimePrecision,
+      </if>
+      <if test="ztimevariance != null" >
+        zTimeVariance,
+      </if>
+      <if test="ztimepriorone != null" >
+        zTimePriorOne,
+      </if>
+      <if test="ztimepriortwo != null" >
+        zTimePriorTwo,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="siteid != null" >
+        #{siteid,jdbcType=INTEGER},
+      </if>
+      <if test="model != null" >
+        #{model,jdbcType=INTEGER},
+      </if>
+      <if test="clocktype != null" >
+        #{clocktype,jdbcType=INTEGER},
+      </if>
+      <if test="clockprecision != null" >
+        #{clockprecision,jdbcType=INTEGER},
+      </if>
+      <if test="clockvariance != null" >
+        #{clockvariance,jdbcType=INTEGER},
+      </if>
+      <if test="priorone != null" >
+        #{priorone,jdbcType=INTEGER},
+      </if>
+      <if test="priortwo != null" >
+        #{priortwo,jdbcType=INTEGER},
+      </if>
+      <if test="manufactureroui != null" >
+        #{manufactureroui,jdbcType=INTEGER},
+      </if>
+      <if test="clockregion != null" >
+        #{clockregion,jdbcType=INTEGER},
+      </if>
+      <if test="clockregionone != null" >
+        #{clockregionone,jdbcType=INTEGER},
+      </if>
+      <if test="clockregiontwojbox != null" >
+        #{clockregiontwojbox,jdbcType=INTEGER},
+      </if>
+      <if test="clockregiontwo != null" >
+        #{clockregiontwo,jdbcType=INTEGER},
+      </if>
+      <if test="clockregionthreejbox != null" >
+        #{clockregionthreejbox,jdbcType=INTEGER},
+      </if>
+      <if test="clockregionthree != null" >
+        #{clockregionthree,jdbcType=INTEGER},
+      </if>
+      <if test="clockregionfourjbox != null" >
+        #{clockregionfourjbox,jdbcType=INTEGER},
+      </if>
+      <if test="clockregionfour != null" >
+        #{clockregionfour,jdbcType=INTEGER},
+      </if>
+      <if test="clockregiondelay != null" >
+        #{clockregiondelay,jdbcType=INTEGER},
+      </if>
+      <if test="followmodel != null" >
+        #{followmodel,jdbcType=INTEGER},
+      </if>
+      <if test="todsendtime != null" >
+        #{todsendtime,jdbcType=INTEGER},
+      </if>
+      <if test="timeid != null" >
+        #{timeid,jdbcType=VARCHAR},
+      </if>
+      <if test="timetype != null" >
+        #{timetype,jdbcType=VARCHAR},
+      </if>
+      <if test="ftimeid != null" >
+        #{ftimeid,jdbcType=VARCHAR},
+      </if>
+      <if test="ftimeport != null" >
+        #{ftimeport,jdbcType=VARCHAR},
+      </if>
+      <if test="leapnumber != null" >
+        #{leapnumber,jdbcType=VARCHAR},
+      </if>
+      <if test="systemvariancevalue != null" >
+        #{systemvariancevalue,jdbcType=VARCHAR},
+      </if>
+      <if test="todstate != null" >
+        #{todstate,jdbcType=VARCHAR},
+      </if>
+      <if test="ztimeid != null" >
+        #{ztimeid,jdbcType=VARCHAR},
+      </if>
+      <if test="ztimetpye != null" >
+        #{ztimetpye,jdbcType=VARCHAR},
+      </if>
+      <if test="ztimeprecision != null" >
+        #{ztimeprecision,jdbcType=VARCHAR},
+      </if>
+      <if test="ztimevariance != null" >
+        #{ztimevariance,jdbcType=VARCHAR},
+      </if>
+      <if test="ztimepriorone != null" >
+        #{ztimepriorone,jdbcType=VARCHAR},
+      </if>
+      <if test="ztimepriortwo != null" >
+        #{ztimepriortwo,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="TimeManageInfo" >
+    update timeneptp
+    <set >
+      <if test="siteid != null" >
+        siteId = #{siteid,jdbcType=INTEGER},
+      </if>
+      <if test="model != null" >
+        model = #{model,jdbcType=INTEGER},
+      </if>
+      <if test="clocktype != null" >
+        ClockType = #{clocktype,jdbcType=INTEGER},
+      </if>
+      <if test="clockprecision != null" >
+        clockPrecision = #{clockprecision,jdbcType=INTEGER},
+      </if>
+      <if test="clockvariance != null" >
+        clockVariance = #{clockvariance,jdbcType=INTEGER},
+      </if>
+      <if test="priorone != null" >
+        priorOne = #{priorone,jdbcType=INTEGER},
+      </if>
+      <if test="priortwo != null" >
+        priorTwo = #{priortwo,jdbcType=INTEGER},
+      </if>
+      <if test="manufactureroui != null" >
+        manufacturerOUI = #{manufactureroui,jdbcType=INTEGER},
+      </if>
+      <if test="clockregion != null" >
+        clockRegion = #{clockregion,jdbcType=INTEGER},
+      </if>
+      <if test="clockregionone != null" >
+        clockRegionOne = #{clockregionone,jdbcType=INTEGER},
+      </if>
+      <if test="clockregiontwojbox != null" >
+        clockRegionTwoJbox = #{clockregiontwojbox,jdbcType=INTEGER},
+      </if>
+      <if test="clockregiontwo != null" >
+        clockRegionTwo = #{clockregiontwo,jdbcType=INTEGER},
+      </if>
+      <if test="clockregionthreejbox != null" >
+        clockRegionThreeJbox = #{clockregionthreejbox,jdbcType=INTEGER},
+      </if>
+      <if test="clockregionthree != null" >
+        clockRegionThree = #{clockregionthree,jdbcType=INTEGER},
+      </if>
+      <if test="clockregionfourjbox != null" >
+        clockRegionFourJbox = #{clockregionfourjbox,jdbcType=INTEGER},
+      </if>
+      <if test="clockregionfour != null" >
+        clockRegionFour = #{clockregionfour,jdbcType=INTEGER},
+      </if>
+      <if test="clockregiondelay != null" >
+        clockRegionDelay = #{clockregiondelay,jdbcType=INTEGER},
+      </if>
+      <if test="followmodel != null" >
+        followModel = #{followmodel,jdbcType=INTEGER},
+      </if>
+      <if test="todsendtime != null" >
+        todsendTime = #{todsendtime,jdbcType=INTEGER},
+      </if>
+      <if test="timeid != null" >
+        timeID = #{timeid,jdbcType=VARCHAR},
+      </if>
+      <if test="timetype != null" >
+        timeType = #{timetype,jdbcType=VARCHAR},
+      </if>
+      <if test="ftimeid != null" >
+        ftimeID = #{ftimeid,jdbcType=VARCHAR},
+      </if>
+      <if test="ftimeport != null" >
+        ftimePort = #{ftimeport,jdbcType=VARCHAR},
+      </if>
+      <if test="leapnumber != null" >
+        leapNumber = #{leapnumber,jdbcType=VARCHAR},
+      </if>
+      <if test="systemvariancevalue != null" >
+        systemVarianceValue = #{systemvariancevalue,jdbcType=VARCHAR},
+      </if>
+      <if test="todstate != null" >
+        todState = #{todstate,jdbcType=VARCHAR},
+      </if>
+      <if test="ztimeid != null" >
+        zTimeID = #{ztimeid,jdbcType=VARCHAR},
+      </if>
+      <if test="ztimetpye != null" >
+        zTimeTpye = #{ztimetpye,jdbcType=VARCHAR},
+      </if>
+      <if test="ztimeprecision != null" >
+        zTimePrecision = #{ztimeprecision,jdbcType=VARCHAR},
+      </if>
+      <if test="ztimevariance != null" >
+        zTimeVariance = #{ztimevariance,jdbcType=VARCHAR},
+      </if>
+      <if test="ztimepriorone != null" >
+        zTimePriorOne = #{ztimepriorone,jdbcType=VARCHAR},
+      </if>
+      <if test="ztimepriortwo != null" >
+        zTimePriorTwo = #{ztimepriortwo,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="TimeManageInfo" >
+    update timeneptp
+    set siteId = #{siteid,jdbcType=INTEGER},
+      model = #{model,jdbcType=INTEGER},
+      ClockType = #{clocktype,jdbcType=INTEGER},
+      clockPrecision = #{clockprecision,jdbcType=INTEGER},
+      clockVariance = #{clockvariance,jdbcType=INTEGER},
+      priorOne = #{priorone,jdbcType=INTEGER},
+      priorTwo = #{priortwo,jdbcType=INTEGER},
+      manufacturerOUI = #{manufactureroui,jdbcType=INTEGER},
+      clockRegion = #{clockregion,jdbcType=INTEGER},
+      clockRegionOne = #{clockregionone,jdbcType=INTEGER},
+      clockRegionTwoJbox = #{clockregiontwojbox,jdbcType=INTEGER},
+      clockRegionTwo = #{clockregiontwo,jdbcType=INTEGER},
+      clockRegionThreeJbox = #{clockregionthreejbox,jdbcType=INTEGER},
+      clockRegionThree = #{clockregionthree,jdbcType=INTEGER},
+      clockRegionFourJbox = #{clockregionfourjbox,jdbcType=INTEGER},
+      clockRegionFour = #{clockregionfour,jdbcType=INTEGER},
+      clockRegionDelay = #{clockregiondelay,jdbcType=INTEGER},
+      followModel = #{followmodel,jdbcType=INTEGER},
+      todsendTime = #{todsendtime,jdbcType=INTEGER},
+      timeID = #{timeid,jdbcType=VARCHAR},
+      timeType = #{timetype,jdbcType=VARCHAR},
+      ftimeID = #{ftimeid,jdbcType=VARCHAR},
+      ftimePort = #{ftimeport,jdbcType=VARCHAR},
+      leapNumber = #{leapnumber,jdbcType=VARCHAR},
+      systemVarianceValue = #{systemvariancevalue,jdbcType=VARCHAR},
+      todState = #{todstate,jdbcType=VARCHAR},
+      zTimeID = #{ztimeid,jdbcType=VARCHAR},
+      zTimeTpye = #{ztimetpye,jdbcType=VARCHAR},
+      zTimePrecision = #{ztimeprecision,jdbcType=VARCHAR},
+      zTimeVariance = #{ztimevariance,jdbcType=VARCHAR},
+      zTimePriorOne = #{ztimepriorone,jdbcType=VARCHAR},
+      zTimePriorTwo = #{ztimepriortwo,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

@@ -1,0 +1,11 @@
+<beaninfo>
+	<attribute 
+	    businessProperty="true"
+		name="role" 
+		displayName="role" 
+		/>
+	<attribute 
+		businessProperty="true"
+		name="speed" 
+		displayName="velocity"/>	
+</beaninfo>

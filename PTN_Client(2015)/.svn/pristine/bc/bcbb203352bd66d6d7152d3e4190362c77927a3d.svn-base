@@ -1,0 +1,71 @@
+package com.nms.model.system;
+
+
+
+import org.apache.ibatis.session.SqlSession;
+import com.nms.db.bean.system.OffLinesiteBusi;
+import com.nms.db.dao.system.OfflinesItebusiMapper;
+import com.nms.model.util.ObjectService_Mybatis;
+/**
+ * 离线网元业务下载Service
+ * @author Dzy
+ *
+ */
+public class OffLinesiteBusiService_MB extends ObjectService_Mybatis{
+    private OfflinesItebusiMapper mapper = null;
+	
+	public void setPtnuser(String ptnuser) {
+		super.ptnuser = ptnuser;
+	}
+
+	public void setSqlSession(SqlSession sqlSession) {
+		super.sqlSession = sqlSession;
+	}
+	
+	public OfflinesItebusiMapper getMapper() {
+		return mapper;
+	}
+
+	public void setMapper(OfflinesItebusiMapper mapper) {
+		this.mapper = mapper;
+	}
+
+//	/**
+//	 * 搜索条件网元下 离线网元业务数据
+//	 * @param siteInstList 网元集合
+//	 * @return
+//	 * @throws Exception
+//	 */
+//	public List<OffLinesiteBusi> selectBySiteIds(List<SiteInst> siteInstList) throws Exception {
+//		return offLinesiteBusiDao.selectBySiteIds(siteInstList,connection);
+//	}
+//	public List<OffLinesiteBusi> selectByCondition(OffLinesiteBusi offLinesiteBusi) throws Exception {
+//		return offLinesiteBusiDao.selectByCondition(offLinesiteBusi,connection);
+//	}
+//	public int delete(OffLinesiteBusi offLinesiteBusi) throws Exception{
+//		return offLinesiteBusiDao.delete(offLinesiteBusi, connection);
+//	}
+	
+	
+	public int dataDownLoadAction(OffLinesiteBusi condition) throws Exception{
+		int result = 0 ;
+//		List<OffLinesiteBusi> list = this.selectByCondition(condition);
+//		if(list.size()==0){
+//			result = offLinesiteBusiDao.insert(condition,connection);
+//		}else{
+//			OffLinesiteBusi offLinesiteBusi = list.get(0);
+//			if(EActionType.UPDATE.getValue() == condition.getAction()){
+//				/*condition.setAction(offLinesiteBusi.getAction());
+//				return result = offLinesiteBusiDao.update(condition,connection);*/
+//			}else if(EActionType.DELETE.getValue() == condition.getAction()){
+//				if(list.get(0).getAction()==EActionType.INSERT.getValue()){
+//					return result = offLinesiteBusiDao.delete(offLinesiteBusi, connection);
+//				}else{
+//					result = offLinesiteBusiDao.update(condition,connection);
+//				}
+//			}
+//		}
+		return result;
+		
+	}
+}

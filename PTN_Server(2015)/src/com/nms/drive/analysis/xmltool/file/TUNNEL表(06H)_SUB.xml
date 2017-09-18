@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<driveRoot xmlns="http://drive.bean.com">
+	<attribute length="1" description="前后向TUNNEL是否绑定成一个双向LSP" value="0" mapping="0/(1)=否/(是)"/>
+	<attribute length="2" description="LSP ID" value="1" mapping="(1)"/>
+	<attribute length="1" description="LSP类型" value="0" mapping="(0)/1=(E-LSP)/L-LSP"/>
+	<attribute length="1" description="LSP模型" value="1" mapping="0/(1)=统一模型/(管道模型)"/>
+	<attribute length="1" description="业务类型" value="0" mapping="(0)/1/2=(工作业务)/保护业务/额外业务"/>
+	<attribute length="2" description="所属SNCPid" value="0" mapping="(00)"/>
+	<attribute length="1" description="伪线类型" value="0" mapping="(00)"/>
+	<attribute length="1" description="角色" value="0" mapping="(00)"/>
+	<attribute length="5" description="备用" value="0" mapping="(00)"/>
+	<attribute length="4" description="(前向TUNNEL)TUNNEL ID" value="1" mapping="(1)"/>
+	<attribute length="1" description="(前向TUNNEL)TUNNEL节点类型" value="0" mapping="(0)/2/3=(源)/直通/SNC"/>
+	<attribute length="1" description="(前向TUNNEL)(入标记)槽位号" value="255" mapping="(255)/10/11/14/15/16/17/18/19H=(无)/Slot10/Slot11/Slot14/Slot15/Slot16/Slot17/Slot18/Slot19"/>
+	<attribute length="1" description="(前向TUNNEL)(入标记)端口号" value="0" mapping="(0)/1/2/3/4/5/6/7/8/9/10/11/12H=(无)/LAN1/LAN2/LAN3/LAN4/LAN5/LAN6/LAN7/LAN8/LAN9/LAN10/LAN11/LAN12/E1/WAN1/WAN2/WAN3/WAN4"/>
+	<attribute length="4" description="(前向TUNNEL)(入标记)标签" value="0" mapping="(16)"/>
+	<attribute length="1" description="(前向TUNNEL)(入标记)TTL" value="255" mapping="(255)"/>
+	<attribute length="1" description="(前向TUNNEL)(入标记)TC" value="0" mapping="(0)"/>
+	<attribute length="1" description="(前向TUNNEL)源IP1" value="0" mapping="(00)"/>
+	<attribute length="1" description="(前向TUNNEL)(出标记)槽位号" value="255" mapping="(255)/10/11/14/15/16/17/18/19H=(无)/Slot10/Slot11/Slot14/Slot15/Slot16/Slot17/Slot18/Slot19"/>
+	<attribute length="1" description="(前向TUNNEL)(出标记)端口号" value="0" mapping="(0)/1/2/3/4/5/6/7/8/9/10/11/12H=(无)/LAN1/LAN2/LAN3/LAN4/LAN5/LAN6/LAN7/LAN8/LAN9/LAN10/LAN11/LAN12/E1/WAN1/WAN2/WAN3/WAN4"/>
+	<attribute length="4" description="(前向TUNNEL)(出标记)标签" value="16" mapping="(16)"/>
+	<attribute length="1" description="(前向TUNNEL)(出标记)TTL" value="255" mapping="(255)"/>
+	<attribute length="1" description="(前向TUNNEL)(出标记)TC" value="0" mapping="(0)"/>
+	<attribute length="1" description="(前向TUNNEL)源IP2" value="0" mapping="(00)"/>
+	<attribute length="1" description="(前向TUNNEL)源IP3" value="0" mapping="(00)"/>
+	<attribute length="1" description="(前向TUNNEL)源IP4" value="0" mapping="(00)"/>
+	<attribute length="1" description="前向增加外层VLAN使能" value="0" mapping="(00)"/>
+	<attribute length="2" description="前向外层VLAN值" value="0" mapping="(00)"/>
+	<attribute length="1" description="前向外层TP_ID" value="0" mapping="(00)"/>
+	<attribute length="1" description="(前向TUNNEL)备用" value="0" mapping="(00)"/>
+	<attribute length="1" description="(前向TUNNEL)(宽带控制)带宽控制使能" value="0" mapping="(0)/1=(不使能)/使能"/>
+	<attribute length="2" description="(前向TUNNEL)(宽带控制)CIR" value="1000" mapping="(1000)"/>
+	<attribute length="2" description="(前向TUNNEL)(宽带控制)PIR" value="1000" mapping="(1000)"/>
+	<attribute length="3" description="(前向TUNNEL)(宽带控制)CBS" value="0" mapping="(0)"/>
+	<attribute length="3" description="(前向TUNNEL)(宽带控制)PBS" value="0" mapping="(0)"/>
+	<attribute length="1" description="(前向TUNNEL)目的IP1" value="0" mapping="(00)"/>
+	<attribute length="1" description="(前向TUNNEL)目的IP2" value="0" mapping="(00)"/>
+	<attribute length="1" description="(前向TUNNEL)目的IP3" value="0" mapping="(00)"/>
+	<attribute length="1" description="(前向TUNNEL)目的IP4" value="0" mapping="(00)"/>
+	<attribute length="1" description="(前向TUNNEL)COS" value="0" mapping="(0)/1/2/3/4/5/6/7=(BE)/AF1/AF2/AF3/AF4/EF/CS6/CS7"/>
+	<attribute length="1" description="(前向TUNNEL)目的节点ID" value="0" mapping="(0)/1/2/3/4/5/6/7/8/9/A/B/C/D/E/F/10/11/12/13/14/15/16/17/18/19/1A/1B/1C/1D/1E/1F/20/21/22/23/24/25/26/27/28/29/2A/2B/2C/2D/2E/2F/30/31/32/33/34/35/36/37/38/39/3A/3B/3C/3D/3E/3F/40/41/42/43/44/45/46/47/48/49/4A/4B/4C/4D/4E/4F/50/51/52/53/54/55/56/57/58/59/5A/5B/5C/5D/5E/5F/60/61/62/63/64/65/66/67/68/69/6A/6B/6C/6D/6E/6F/70/71/72/73/74/75/76/77/78/79/7A/7B/7C/7D/7E/7F/80/81/82/83/84/85/86/87/88/89/8A/8B/8C/8D/8E/8F/90/91/92/93/94/95/96/97/98/99/9A/9B/9C/9D/9E/9F/A0/A1/A2/A2/A4/A5/A6/A7/A8/A9/AA/AB/AC/AD/AE/AF/B0/B1/B2/B3/B4/B5/B6/B7/B8/B9/BA/BB/BC/BD/BE/BF/C0/C1/C2/C3/C4/C5/C6/C7/C8/C9/CA/CB/CD/CE/CF/D0/D1/D2/D3/D4/D5/D6/D7/D8/D9/DA/DB/DC/DD/DE/DF/E0/E1/E2/E3/E4/E5/E6/E7/E8/E9/EA/EB/EC/ED/EE/EF/F0/F1/F2/F3/F4/F5/F6/F7/F8/F9/FA/FB/FC/FD/FE/FF=(无)/节点1/节点2/节点3/节点4/节点5/节点6/节点7/节点8/节点9/节点10/节点11/节点12/节点13/节点14/节点15/节点16/节点17/节点18/节点19/节点20/节点21/节点22/节点23/节点24/节点25/节点26/节点27/节点28/节点29/节点30/节点31/节点32/节点33/节点34/节点35/节点36/节点37/节点38/节点39/节点40/节点41/节点42/节点43/节点44/节点45/节点46/节点47/节点48/节点49/节点50/节点51/节点52/节点53/节点54/节点55/节点56/节点57/节点58/节点59/节点60/节点61/节点62/节点63/节点64/节点65/节点66/节点67/节点68/节点69/节点70/节点71/节点72/节点73/节点74/节点75/节点76/节点77/节点78/节点79/节点80/节点81/节点82/节点83/节点84/节点85/节点86/节点87/节点88/节点89/节点90/节点91/节点92/节点93/节点94/节点95/节点96/节点97/节点98/节点99/节点100/节点101/节点102/节点103/节点104/节点105/节点106/节点107/节点108/节点109/节点110/节点111/节点112/节点113/节点114/节点115/节点116/节点117/节点118/节点119/节点120/节点121/节点122/节点123/节点124/节点125/节点126/节点127/节点128/节点129/节点130/节点131/节点132/节点133/节点134/节点135/节点136/节点137/节点138/节点139/节点140/节点141/节点142/节点143/节点144/节点145/节点146/节点147/节点148/节点149/节点150/节点151/节点152/节点153/节点154/节点155/节点156/节点157/节点158/节点159/节点160/节点161/节点162/节点163/节点164/节点165/节点166/节点167/节点168/节点169/节点170/节点171/节点172/节点173/节点174/节点175/节点176/节点177/节点178/节点179/节点180/节点181/节点182/节点183/节点184/节点185/节点186/节点187/节点188/节点189/节点190/节点191/节点192/节点193/节点194/节点195/节点196/节点197/节点198/节点199/节点200/节点201/节点202/节点203/节点204/节点205/节点206/节点207/节点208/节点209/节点210/节点211/节点212/节点213/节点214/节点215/节点216/节点217/节点218/节点219/节点220/节点221/节点222/节点223/节点224/节点225/节点226/节点227/节点228/节点229/节点230/节点231/节点232/节点233/节点234/节点235/节点236/节点237/节点238/节点239/节点240/节点241/节点242/节点243/节点244/节点245/节点246/节点247/节点248/节点249/节点250/节点251/节点252/节点253/节点254/节点255"/>
+	<attribute length="3" description="(前向TUNNEL)备用" value="0" mapping="(00)"/>
+	<attribute length="4" description="(后向TUNNEL)TUNNEL ID" value="1" mapping="(1)"/>
+	<attribute length="1" description="(后向TUNNEL)TUNNEL节点类型" value="1" mapping="(1)/2/3=(宿)/直通/SNC"/>
+	<attribute length="1" description="(后向TUNNEL)(入标记)槽位号" value="255" mapping="(255)/10/11/14/15/16/17/18/19H=(无)/Slot10/Slot11/Slot14/Slot15/Slot16/Slot17/Slot18/Slot19"/>
+	<attribute length="1" description="(后向TUNNEL)(入标记)端口号" value="0" mapping="(0)/1/2/3/4/5/6/7/8/9/10/11/12H=(无)/LAN1/LAN2/LAN3/LAN4/LAN5/LAN6/LAN7/LAN8/LAN9/LAN10/LAN11/LAN12/E1/WAN1/WAN2/WAN3/WAN4"/>
+	<attribute length="4" description="(后向TUNNEL)(入标记)标签" value="0" mapping="(16)"/>
+	<attribute length="1" description="(后向TUNNEL)(入标记)TTL" value="255" mapping="(255)"/>
+	<attribute length="1" description="(后向TUNNEL)(入标记)TC" value="0" mapping="(0)"/>
+	<attribute length="1" description="(后向TUNNEL)源IP1" value="0" mapping="(00)"/>
+	<attribute length="1" description="(后向TUNNEL)(出标记)槽位号" value="255" mapping="(255)/10/11/14/15/16/17/18/19H=(无)/Slot10/Slot11/Slot14/Slot15/Slot16/Slot17/Slot18/Slot19"/>
+	<attribute length="1" description="(后向TUNNEL)(出标记)端口号" value="0" mapping="(0)/1/2/3/4/5/6/7/8/9/10/11/12H=(无)/LAN1/LAN2/LAN3/LAN4/LAN5/LAN6/LAN7/LAN8/LAN9/LAN10/LAN11/LAN12/E1/WAN1/WAN2/WAN3/WAN4"/>
+	<attribute length="4" description="(后向TUNNEL)(出标记)标签" value="16" mapping="(16)"/>
+	<attribute length="1" description="(后向TUNNEL)(出标记)TTL" value="255" mapping="(255)"/>
+	<attribute length="1" description="(后向TUNNEL)(出标记)TC" value="0" mapping="(0)"/>
+	<attribute length="1" description="(后向TUNNEL)源IP2" value="0" mapping="(00)"/>
+	<attribute length="1" description="(后向TUNNEL)源IP3" value="0" mapping="(00)"/>
+	<attribute length="1" description="(后向TUNNEL)源IP4" value="0" mapping="(00)"/>
+	<attribute length="1" description="后向增加外层VLAN使能" value="0" mapping="(00)"/>
+	<attribute length="2" description="后向外层VLAN值" value="0" mapping="(00)"/>
+	<attribute length="1" description="后向外层TP_ID" value="0" mapping="(00)"/>
+	<attribute length="1" description="(后向TUNNEL)备用" value="00" mapping="(00)"/>
+	<attribute length="1" description="(后向TUNNEL)(宽带控制)带宽控制使能" value="0" mapping="(0)/1=(不使能)/使能"/>
+	<attribute length="2" description="(后向TUNNEL)(宽带控制)CIR" value="1000" mapping="(1000)"/>
+	<attribute length="2" description="(后向TUNNEL)(宽带控制)PIR" value="1000" mapping="(1000)"/>
+	<attribute length="3" description="(后向TUNNEL)(宽带控制)CBS" value="0" mapping="(0)"/>
+	<attribute length="3" description="(后向TUNNEL)(宽带控制)PBS" value="0" mapping="(0)"/>
+	<attribute length="1" description="(后向TUNNEL)目的IP1" value="0" mapping="(00)"/>
+	<attribute length="1" description="(后向TUNNEL)目的IP2" value="0" mapping="(00)"/>
+	<attribute length="1" description="(后向TUNNEL)目的IP3" value="0" mapping="(00)"/>
+	<attribute length="1" description="(后向TUNNEL)目的IP4" value="0" mapping="(00)"/>
+	<attribute length="1" description="(后向TUNNEL)COS" value="0" mapping="(0)/1/2/3/4/5/6/7=(B)E/AF1/AF2/AF3/AF4/EF/CS6/CS7"/>
+	<attribute length="1" description="(后向TUNNEL)目的节点ID" value="0" mapping="(0)/1/2/3/4/5/6/7/8/9/A/B/C/D/E/F/10/11/12/13/14/15/16/17/18/19/1A/1B/1C/1D/1E/1F/20/21/22/23/24/25/26/27/28/29/2A/2B/2C/2D/2E/2F/30/31/32/33/34/35/36/37/38/39/3A/3B/3C/3D/3E/3F/40/41/42/43/44/45/46/47/48/49/4A/4B/4C/4D/4E/4F/50/51/52/53/54/55/56/57/58/59/5A/5B/5C/5D/5E/5F/60/61/62/63/64/65/66/67/68/69/6A/6B/6C/6D/6E/6F/70/71/72/73/74/75/76/77/78/79/7A/7B/7C/7D/7E/7F/80/81/82/83/84/85/86/87/88/89/8A/8B/8C/8D/8E/8F/90/91/92/93/94/95/96/97/98/99/9A/9B/9C/9D/9E/9F/A0/A1/A2/A2/A4/A5/A6/A7/A8/A9/AA/AB/AC/AD/AE/AF/B0/B1/B2/B3/B4/B5/B6/B7/B8/B9/BA/BB/BC/BD/BE/BF/C0/C1/C2/C3/C4/C5/C6/C7/C8/C9/CA/CB/CD/CE/CF/D0/D1/D2/D3/D4/D5/D6/D7/D8/D9/DA/DB/DC/DD/DE/DF/E0/E1/E2/E3/E4/E5/E6/E7/E8/E9/EA/EB/EC/ED/EE/EF/F0/F1/F2/F3/F4/F5/F6/F7/F8/F9/FA/FB/FC/FD/FE/FF=(无)/节点1/节点2/节点3/节点4/节点5/节点6/节点7/节点8/节点9/节点10/节点11/节点12/节点13/节点14/节点15/节点16/节点17/节点18/节点19/节点20/节点21/节点22/节点23/节点24/节点25/节点26/节点27/节点28/节点29/节点30/节点31/节点32/节点33/节点34/节点35/节点36/节点37/节点38/节点39/节点40/节点41/节点42/节点43/节点44/节点45/节点46/节点47/节点48/节点49/节点50/节点51/节点52/节点53/节点54/节点55/节点56/节点57/节点58/节点59/节点60/节点61/节点62/节点63/节点64/节点65/节点66/节点67/节点68/节点69/节点70/节点71/节点72/节点73/节点74/节点75/节点76/节点77/节点78/节点79/节点80/节点81/节点82/节点83/节点84/节点85/节点86/节点87/节点88/节点89/节点90/节点91/节点92/节点93/节点94/节点95/节点96/节点97/节点98/节点99/节点100/节点101/节点102/节点103/节点104/节点105/节点106/节点107/节点108/节点109/节点110/节点111/节点112/节点113/节点114/节点115/节点116/节点117/节点118/节点119/节点120/节点121/节点122/节点123/节点124/节点125/节点126/节点127/节点128/节点129/节点130/节点131/节点132/节点133/节点134/节点135/节点136/节点137/节点138/节点139/节点140/节点141/节点142/节点143/节点144/节点145/节点146/节点147/节点148/节点149/节点150/节点151/节点152/节点153/节点154/节点155/节点156/节点157/节点158/节点159/节点160/节点161/节点162/节点163/节点164/节点165/节点166/节点167/节点168/节点169/节点170/节点171/节点172/节点173/节点174/节点175/节点176/节点177/节点178/节点179/节点180/节点181/节点182/节点183/节点184/节点185/节点186/节点187/节点188/节点189/节点190/节点191/节点192/节点193/节点194/节点195/节点196/节点197/节点198/节点199/节点200/节点201/节点202/节点203/节点204/节点205/节点206/节点207/节点208/节点209/节点210/节点211/节点212/节点213/节点214/节点215/节点216/节点217/节点218/节点219/节点220/节点221/节点222/节点223/节点224/节点225/节点226/节点227/节点228/节点229/节点230/节点231/节点232/节点233/节点234/节点235/节点236/节点237/节点238/节点239/节点240/节点241/节点242/节点243/节点244/节点245/节点246/节点247/节点248/节点249/节点250/节点251/节点252/节点253/节点254/节点255"/>
+	<attribute length="3" description="(后向TUNNEL)备用" value="0" mapping="(00)"/>
+	<attribute length="1" description="(OAM)字节116" value="0" mapping="位"/>
+	<attribute length="1" description="(OAM)MEG ICC1" value="1" mapping="(123456)"/>
+	<attribute length="1" description="(OAM)MEG ICC2" value="2" mapping="(123456)"/>
+	<attribute length="1" description="(OAM)MEG ICC3" value="3" mapping="(123456)"/>
+	<attribute length="1" description="(OAM)MEG ICC4" value="4" mapping="(123456)"/>
+	<attribute length="1" description="(OAM)MEG ICC5" value="5" mapping="(123456)"/>
+	<attribute length="1" description="(OAM)MEG ICC6" value="6" mapping="(123456)"/>
+	<attribute length="1" description="(OAM)MEG UMC1" value="7" mapping="(789ABC)"/>
+	<attribute length="1" description="(OAM)MEG UMC2" value="8" mapping="(789ABC)"/>
+	<attribute length="1" description="(OAM)MEG UMC3" value="9" mapping="(789ABC)"/>
+	<attribute length="1" description="(OAM)MEG UMC4" value="10" mapping="(789ABC)"/>
+	<attribute length="1" description="(OAM)MEG UMC5" value="11" mapping="(789ABC)"/>
+	<attribute length="1" description="(OAM)MEG UMC6" value="12" mapping="(789ABC)"/>
+	<attribute length="1" description="(OAM)备用" value="0" mapping="(00)"/>
+	<attribute length="2" description="(OAM)源MEP/MIP ID" value="1" mapping="(1)"/>
+	<attribute length="2" description="(OAM)宿MEP ID" value="1" mapping="(1)"/>
+	<attribute length="1" description="(OAM)APS使能" value="0" mapping="(0)/1=(不使能)/使能"/>
+	<attribute length="1" description="(OAM)CV帧配置" value="0" mapping="位"/>
+	<attribute length="1" description="(OAM)LM使能" value="0" mapping="(00)"/>
+	<attribute length="1" description="(OAM)OAM使能" value="0" mapping="(00)"/>
+	<attribute length="3" description="(OAM)备用" value="0" mapping="(00)"/>
+	<attribute length="1" description="前向目的MAC地址1" value="0" mapping="(00)"/>
+	<attribute length="1" description="前向目的MAC地址2" value="0" mapping="(00)"/>
+	<attribute length="1" description="前向目的MAC地址3" value="0" mapping="(00)"/>
+	<attribute length="1" description="前向目的MAC地址4" value="0" mapping="(00)"/>
+	<attribute length="1" description="前向目的MAC地址5" value="0" mapping="(00)"/>
+	<attribute length="1" description="前向目的MAC地址6" value="1" mapping="(01)"/>
+	<attribute length="1" description="前向源MAC地址1" value="0" mapping="(00)"/>
+	<attribute length="1" description="前向源MAC地址2" value="0" mapping="(00)"/>
+	<attribute length="1" description="前向源MAC地址3" value="0" mapping="(00)"/>
+	<attribute length="1" description="前向源MAC地址4" value="0" mapping="(00)"/>
+	<attribute length="1" description="前向源MAC地址5" value="0" mapping="(00)"/>
+	<attribute length="1" description="前向源MAC地址6" value="1" mapping="(01)"/>
+	<attribute length="1" description="后向目的MAC地址1" value="0" mapping="(00)"/>
+	<attribute length="1" description="后向目的MAC地址2" value="0" mapping="(00)"/>
+	<attribute length="1" description="后向目的MAC地址3" value="0" mapping="(00)"/>
+	<attribute length="1" description="后向目的MAC地址4" value="0" mapping="(00)"/>
+	<attribute length="1" description="后向目的MAC地址5" value="0" mapping="(00)"/>
+	<attribute length="1" description="后向目的MAC地址6" value="1" mapping="(01)"/>
+	<attribute length="1" description="后向源MAC地址1" value="0" mapping="(00)"/>
+	<attribute length="1" description="后向源MAC地址2" value="0" mapping="(00)"/>
+	<attribute length="1" description="后向源MAC地址3" value="0" mapping="(00)"/>
+	<attribute length="1" description="后向源MAC地址4" value="0" mapping="(00)"/>
+	<attribute length="1" description="后向源MAC地址5" value="0" mapping="(00)"/>
+	<attribute length="1" description="后向源MAC地址6" value="1" mapping="(01)"/>
+	<attribute length="6" description="备用" value="0" mapping="(00)"/>
+</driveRoot>

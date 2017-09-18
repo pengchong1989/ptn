@@ -1,0 +1,92 @@
+package com.nms.model.system;
+
+import java.sql.Connection;
+import java.util.List;
+
+import com.nms.db.bean.system.NetWork;
+import com.nms.db.dao.system.NetDao;
+import com.nms.model.util.ObjectService;
+import com.nms.ui.manager.ExceptionManage;
+
+public class NetService extends ObjectService{
+	public void setConnection(Connection connection) {
+		super.connection = connection;
+	}
+
+	public void setPtnuser(String ptnuser) {
+		super.ptnuser = ptnuser;
+	}
+	private NetDao netDao = new NetDao();
+	
+	/**
+	 * 新增
+	 * @param netWork
+	 * @return
+	 */
+	public int saveOrUpdate(NetWork netWork){
+		int result = 0;
+		try {
+			if(netWork.getNetWorkId()>0){
+				result = netDao.update(netWork, connection);
+			}else{
+				result = netDao.insert(netWork, connection);
+			}
+			
+		} catch (Exception e) {
+			ExceptionManage.dispose(e, this.getClass());
+		}
+		return result;
+	}
+	
+	/**
+	 * 查询所有
+	 * @return
+	 */
+	public List<NetWork> select(){
+		List<NetWork> netWorks = null;
+		try {
+			netWorks = netDao.select(connection);
+		} catch (Exception e) {
+			ExceptionManage.dispose(e, this.getClass());
+		}
+		return netWorks;
+	}
+	
+	/**
+	 * 根据id查询查询所有
+	 * @return
+	 */
+	public List<NetWork> select(NetWork netWork){
+		List<NetWork> netWorks = null;
+		try {
+			netWorks = netDao.select(netWork,connection);
+		} catch (Exception e) {
+			ExceptionManage.dispose(e, this.getClass());
+		}
+		return netWorks;
+	}
+	
+	/**
+	 * 根据id删除
+	 * @param netWork
+	 * @return
+	 */
+	public int delete(NetWork netWork){
+		int result = 0;
+		try {
+			result = netDao.delete(netWork, connection);
+		} catch (Exception e) {
+			ExceptionManage.dispose(e, this.getClass());
+		}
+		return result;
+	}
+	
+	/**
+	 * 批量更新
+	 * @param netWorks
+	 * @return
+	 */
+	public void updateBatch(List<NetWork> netWorks){
+		netDao.updateBatch(netWorks, connection);
+	}
+}

@@ -1,0 +1,218 @@
+package com.nms.db.dao.equipment.port;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.nms.db.bean.equipment.port.Port2LayerAttr;
+import com.nms.ui.manager.ExceptionManage;
+
+public class Port2LayerAttrDao {
+	/**
+	 * 新增sql语句
+	 */
+	private final String SQL_INSERT = "insert into port2LayerAttr (siteId, portId, portNumber, macEnable," +
+			" macCount, tpId,portType,pvid,qinqEnable,qinqModel,vlans,qinqs,vlanCount,qinqCount) value(?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+	/**
+	 * 修改sql语句
+	 */
+	private final String SQL_UPDATE = "update port2LayerAttr set siteId = ?, portId = ?, portNumber = ?, " +
+			"macEnable = ?, macCount = ?, tpId = ?,portType=?,pvid=?,qinqEnable=?,qinqModel=?,vlans=?,qinqs=? ,vlanCount=?,qinqCount=? where id = ?";
+
+	public List<Port2LayerAttr> selectByCondition(Port2LayerAttr condition,
+			Connection connection) throws Exception {
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+		List<Port2LayerAttr> portAttrList = new ArrayList<Port2LayerAttr>();
+		PreparedStatement preparedStatement = null;
+		try {
+			String sql = "select * from port2LayerAttr where 1=1";
+			if (condition.getId() > 0) {
+				sql += " and id=" + condition.getId();
+			}
+			if (condition.getSiteId() > 0) {
+				sql += " and siteId=" + condition.getSiteId();
+			}
+			if(condition.getPortId() > 0){
+				sql += " and portId=" + condition.getPortId();
+			}
+			preparedStatement = connection.prepareStatement(sql);
+			portAttrList = this.executeQuery(preparedStatement);
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+		}
+		return portAttrList;
+	}
+	
+	private List<Port2LayerAttr> executeQuery(PreparedStatement preparedStatement) throws Exception {
+		ResultSet resultSet = null;
+		Port2LayerAttr portAttr = null;
+		List<Port2LayerAttr> portAttrList = null;
+		try {
+			portAttrList = new ArrayList<Port2LayerAttr>();
+			resultSet = preparedStatement.executeQuery();
+			while (resultSet.next()) {
+				portAttr = new Port2LayerAttr();
+				portAttr.setId(resultSet.getInt("Id"));
+				portAttr.setSiteId(resultSet.getInt("siteId"));
+				portAttr.setPortId(resultSet.getInt("PortId"));
+				portAttr.setPortNumber(resultSet.getInt("portNumber"));
+				portAttr.setMacEnable(resultSet.getInt("macEnable"));
+				portAttr.setMacCount(resultSet.getInt("macCount"));
+				portAttr.setTpIdType(resultSet.getInt("tpId"));
+				portAttr.setPortType(resultSet.getInt("portType"));
+				portAttr.setPvid(resultSet.getInt("pvid"));
+				portAttr.setQinqEnable(resultSet.getInt("qinqEnable"));
+				portAttr.setQinqModel(resultSet.getInt("qinqModel"));
+				portAttr.setVlans(resultSet.getString("vlans"));
+				portAttr.setQinqs(resultSet.getString("qinqs"));
+				portAttr.setVlanCount(resultSet.getInt("vlanCount"));
+				portAttr.setQinqCount(resultSet.getInt("qinqCount"));
+				portAttrList.add(portAttr);
+			}
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (resultSet != null) {
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				resultSet = null;
+			}
+			portAttr = null;
+		}
+		return portAttrList;
+	}
+
+	public int saveOrUpdate(Port2LayerAttr port2LayerAttr, Connection connection) throws Exception {
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+		PreparedStatement preparedStatement = null;
+		int result = 0;
+		try {
+			if (port2LayerAttr.getId() == 0) {
+				preparedStatement = connection.prepareStatement(this.SQL_INSERT);
+			}else{
+				preparedStatement = connection.prepareStatement(this.SQL_UPDATE);
+			}
+			preparedStatement.setInt(1, port2LayerAttr.getSiteId());
+			preparedStatement.setInt(2, port2LayerAttr.getPortId());
+			preparedStatement.setInt(3, port2LayerAttr.getPortNumber());
+			preparedStatement.setInt(4, port2LayerAttr.getMacEnable());
+			preparedStatement.setInt(5, port2LayerAttr.getMacCount());
+			preparedStatement.setInt(6, port2LayerAttr.getTpIdType());
+			preparedStatement.setInt(7, port2LayerAttr.getPortType());
+			preparedStatement.setInt(8, port2LayerAttr.getPvid());
+			preparedStatement.setInt(9, port2LayerAttr.getQinqEnable());
+			preparedStatement.setInt(10, port2LayerAttr.getQinqModel());
+			preparedStatement.setString(11, port2LayerAttr.getVlans());
+			preparedStatement.setString(12, port2LayerAttr.getQinqs());
+			preparedStatement.setInt(13, port2LayerAttr.getVlanCount());
+			preparedStatement.setInt(14, port2LayerAttr.getQinqCount());
+			if(port2LayerAttr.getId() > 0){
+				preparedStatement.setInt(15, port2LayerAttr.getId());
+			}
+			result = preparedStatement.executeUpdate();
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+		}
+		return result;
+	}
+
+	public void delete(Port2LayerAttr port2LayerAttr, Connection connection) throws Exception {
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+		PreparedStatement preparedStatement = null;
+		try {
+			String sql = "delete from port2LayerAttr where portId = ?";
+			preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.setInt(1, port2LayerAttr.getPortId());
+			preparedStatement.executeUpdate();
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+		}
+	}
+
+	public void deleteByPortId(int portId, Connection connection) throws Exception {
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+		PreparedStatement preparedStatement = null;
+		try {
+			String sql = "delete from port2LayerAttr where portId = ?";
+			preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.setInt(1, portId);
+			preparedStatement.executeUpdate();
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+		}
+	}
+
+	public void deleteBySiteId(int sitetId, Connection connection) throws Exception {
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+		PreparedStatement preparedStatement = null;
+		try {
+			String sql = "delete from port2LayerAttr where siteId = ?";
+			preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.setInt(1, sitetId);
+			preparedStatement.executeUpdate();
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+		}
+	}
+}

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 700D设备槽位对应的图片途径 -->
+<xml-body>
+
+<equipment imagePath="/com/nms/ui/images/topo/rack_d.png" x="50" y="50">
+	<slot imagePath="/com/nms/ui/images/topo/slot_700d.png" x="72" y="55" type="700d"  bestCardName="CARD_700D" number="1"></slot>
+</equipment>
+
+</xml-body>

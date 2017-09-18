@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nms.db.dao.ptn.qos.QosMappingModeMapper" >
+  <sql id="Base_Column_List" >
+    id, name, type, siteId, typeName, businessId
+  </sql>
+  <select id="queryByCondition" resultType="QosMappingMode" parameterType="QosMappingMode" >
+    select 
+    <include refid="Base_Column_List" />
+	from qosmodel where 1=1
+    <if test="id > 0">
+    and Id=#{id}
+    </if>
+    <if test="siteId > 0">
+    and siteId=#{siteId}
+    </if>
+    <if test="typeName != null and typeName != ''">
+    and typeName=#{typeName}
+    </if>
+    <if test="name != null and name != ''">
+    and name=#{name}
+    </if>
+    <if test="type > 0">
+    and type=#{type}
+    </if>
+  </select>
+  
+   <insert id="insert" parameterType="QosMappingMode"  useGeneratedKeys="true" keyProperty="qos.id">
+    insert into qosmodel (name, type, 
+      siteId, typeName, businessId
+      )
+    values (#{qos.name,jdbcType=VARCHAR}, #{qos.type,jdbcType=INTEGER}, 
+      #{qos.siteId,jdbcType=INTEGER}, #{qos.typeName,jdbcType=VARCHAR}, #{qos.businessId,jdbcType=INTEGER}
+      )
+  </insert>
+  
+  <delete id="deleteBySiteId" parameterType="java.lang.Integer">
+  delete from qosmodel where siteId = #{0}
+  </delete>
+  
+  <delete id="delete" parameterType="java.lang.Integer">
+  delete from qosmodel where id = #{0}
+  </delete>
+  
+  <update id="update" parameterType="QosMappingMode">
+  update qosmodel set
+  <if test="name != null and name != ''">
+  name = #{name}
+  </if>
+  <if test="type > 0">
+  ,type = #{type}
+  </if>
+  <if test="siteId > 0">
+  ,siteId = #{siteId}
+  </if>
+  <if test="typeName != null and typeName != ''">
+  ,typeName = #{typeName}
+  </if>
+  <if test="id > 0">
+  where id = #{id}
+  </if>
+  </update>
+</mapper>

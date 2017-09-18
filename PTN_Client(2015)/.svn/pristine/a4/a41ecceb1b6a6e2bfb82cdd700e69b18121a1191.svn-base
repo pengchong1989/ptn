@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nms.db.dao.ptn.AllConfigInfoMapper" >
+  <resultMap id="BaseResultMap" type="AllConfigInfo" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="singleMACAddress" property="singleMACAddress" jdbcType="VARCHAR" />
+    <result column="addressAgeSwitch" property="addressAgeSwitch" jdbcType="INTEGER" />
+    <result column="macAddressAgeDate" property="macAddressAgeDate" jdbcType="INTEGER" />
+    <result column="throwWrapDateGap" property="throwWrapDateGap" jdbcType="INTEGER" />
+    <result column="fdiStatus" property="fdiBIT0" jdbcType="INTEGER" />
+    <result column="fidMel" property="fdiB1IT3" jdbcType="INTEGER" />
+    <result column="apsRecoverTime" property="apsRecoverTime" jdbcType="INTEGER" />
+    <result column="crcVerify" property="crcVerify" jdbcType="INTEGER" />
+    <result column="throwWrap" property="throwWrap" jdbcType="INTEGER" />
+    <result column="receiveBadWrap" property="receiveBadWrap" jdbcType="INTEGER" />
+    <result column="align" property="align" jdbcType="INTEGER" />
+    <result column="mirrorModel" property="mirrorModel" jdbcType="INTEGER" />
+    <result column="mirrorByPort" property="mirrorByPort" jdbcType="INTEGER" />
+    <result column="mirrorPort" property="mirrorPort" jdbcType="INTEGER" />
+    <result column="mplsTPControl" property="mplsTPControl" jdbcType="INTEGER" />
+    <result column="channelType" property="channelType" jdbcType="INTEGER" />
+    <result column="siteId" property="siteId" jdbcType="INTEGER" />
+    <result column="tmsWorsen" property="tmsWorsen" jdbcType="INTEGER" />
+    <result column="tmsLose" property="tmsLose" jdbcType="INTEGER" />
+    <result column="tmcfdi" property="tmcfdiBIT0" jdbcType="INTEGER" />
+    <result column="tmcmel" property="tmcfdiB1IT3" jdbcType="INTEGER" />
+    <result column="apsModel" property="apsModel" jdbcType="INTEGER" />
+    <result column="roundEnable" property="roundEnable" jdbcType="INTEGER" />
+    <result column="vlanMAC" property="vlanMAC" jdbcType="INTEGER" />
+    <result column="vlanValue" property="vlanValue" jdbcType="INTEGER" />
+    <result column="macNumber" property="macNumber" jdbcType="INTEGER" />
+    <result column="lacp" property="lacp" jdbcType="INTEGER" />
+    <result column="equipmentPriority" property="equipmentPriority" jdbcType="INTEGER" />
+    <result column="dhcpModel" property="dhcpModel" jdbcType="INTEGER" />
+    <result column="loopCheck" property="loopCheck" jdbcType="INTEGER" />
+    <result column="ssmModel" property="ssmModel" jdbcType="INTEGER" />
+    <result column="twoLayer" property="twoLayer" jdbcType="INTEGER" />
+    <result column="alarmModel" property="alarmModel" jdbcType="INTEGER" />
+    <result column="alarmPort" property="alarmPort" jdbcType="INTEGER" />
+    <result column="loopAvoid" property="loopAvoid" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, singleMACAddress, addressAgeSwitch, macAddressAgeDate, throwWrapDateGap, fdiStatus, 
+    fidMel, apsRecoverTime, crcVerify, throwWrap, receiveBadWrap, align, mirrorModel, 
+    mirrorByPort, mirrorPort, mplsTPControl, channelType, siteId, tmsWorsen, tmsLose, 
+    tmcfdi, tmcmel, apsModel, roundEnable, vlanMAC, vlanValue, macNumber, lacp, equipmentPriority, 
+    dhcpModel, loopCheck, ssmModel, twoLayer
+  </sql>
+  <select id="queryBySiteId" resultMap="BaseResultMap" parameterType="int">
+	select * from all_config where siteId=#{siteId}  
+  </select>
+  <insert id="insert" parameterType="AllConfigInfo" >
+    insert into all_config (id, singleMACAddress, addressAgeSwitch, 
+      macAddressAgeDate, throwWrapDateGap, fdiStatus, 
+      fidMel, apsRecoverTime, crcVerify, 
+      throwWrap, receiveBadWrap, align, 
+      mirrorModel, mirrorByPort, mirrorPort, 
+      mplsTPControl, channelType, siteId, 
+      tmsWorsen, tmsLose, tmcfdi, 
+      tmcmel, apsModel, roundEnable, 
+      vlanMAC, vlanValue, macNumber, 
+      lacp, equipmentPriority, dhcpModel, 
+      loopCheck, ssmModel, twoLayer
+      )
+    values (#{id,jdbcType=INTEGER}, #{singlemacaddress,jdbcType=VARCHAR}, #{addressageswitch,jdbcType=INTEGER}, 
+      #{macaddressagedate,jdbcType=INTEGER}, #{throwwrapdategap,jdbcType=INTEGER}, #{fdistatus,jdbcType=INTEGER}, 
+      #{fidmel,jdbcType=INTEGER}, #{apsrecovertime,jdbcType=INTEGER}, #{crcverify,jdbcType=INTEGER}, 
+      #{throwwrap,jdbcType=INTEGER}, #{receivebadwrap,jdbcType=INTEGER}, #{align,jdbcType=INTEGER}, 
+      #{mirrormodel,jdbcType=INTEGER}, #{mirrorbyport,jdbcType=INTEGER}, #{mirrorport,jdbcType=INTEGER}, 
+      #{mplstpcontrol,jdbcType=INTEGER}, #{channeltype,jdbcType=INTEGER}, #{siteid,jdbcType=INTEGER}, 
+      #{tmsworsen,jdbcType=INTEGER}, #{tmslose,jdbcType=INTEGER}, #{tmcfdi,jdbcType=INTEGER}, 
+      #{tmcmel,jdbcType=INTEGER}, #{apsmodel,jdbcType=INTEGER}, #{roundenable,jdbcType=INTEGER}, 
+      #{vlanmac,jdbcType=INTEGER}, #{vlanvalue,jdbcType=INTEGER}, #{macnumber,jdbcType=INTEGER}, 
+      #{lacp,jdbcType=INTEGER}, #{equipmentpriority,jdbcType=INTEGER}, #{dhcpmodel,jdbcType=INTEGER}, 
+      #{loopcheck,jdbcType=INTEGER}, #{ssmmodel,jdbcType=INTEGER}, #{twolayer,jdbcType=INTEGER}
+      )
+  </insert>
+  <update id="update" parameterType="AllConfigInfo" >
+    update all_config
+    set singleMACAddress = #{singleMACAddress,jdbcType=VARCHAR},
+      addressAgeSwitch = #{addressAgeSwitch,jdbcType=INTEGER},
+      macAddressAgeDate = #{macAddressAgeDate,jdbcType=INTEGER},
+      throwWrapDateGap = #{throwWrapDateGap,jdbcType=INTEGER},
+      fdiStatus = #{fdiBIT0,jdbcType=INTEGER},
+      fidMel = #{fdiB1IT3,jdbcType=INTEGER},
+      apsRecoverTime = #{apsRecoverTime,jdbcType=INTEGER},
+      crcVerify = #{crcVerify,jdbcType=INTEGER},
+      throwWrap = #{throwWrap,jdbcType=INTEGER},
+      receiveBadWrap = #{receiveBadWrap,jdbcType=INTEGER},
+      align = #{align,jdbcType=INTEGER},
+      mirrorModel = #{mirrorModel,jdbcType=INTEGER},
+      mirrorByPort = #{mirrorByPort,jdbcType=INTEGER},
+      mirrorPort = #{mirrorPort,jdbcType=INTEGER},
+      mplsTPControl = #{mplsTPControl,jdbcType=INTEGER},
+      channelType = #{channelType,jdbcType=INTEGER},
+      siteId = #{siteId,jdbcType=INTEGER},
+      tmsWorsen = #{tmsWorsen,jdbcType=INTEGER},
+      tmsLose = #{tmsLose,jdbcType=INTEGER},
+      tmcfdi = #{tmcfdiBIT0,jdbcType=INTEGER},
+      tmcmel = #{tmcfdiB1IT3,jdbcType=INTEGER},
+      apsModel = #{apsModel,jdbcType=INTEGER},
+      roundEnable = #{roundEnable,jdbcType=INTEGER},
+      vlanMAC = #{vlanMAC,jdbcType=INTEGER},
+      vlanValue = #{vlanValue,jdbcType=INTEGER},
+      macNumber = #{macNumber,jdbcType=INTEGER},
+      lacp = #{lacp,jdbcType=INTEGER},
+      equipmentPriority = #{equipmentPriority,jdbcType=INTEGER},
+      dhcpModel = #{dhcpModel,jdbcType=INTEGER},
+      loopCheck = #{loopCheck,jdbcType=INTEGER},
+      ssmModel = #{ssmModel,jdbcType=INTEGER},
+      twoLayer = #{twoLayer,jdbcType=INTEGER},
+      alarmModel = #{alarmModel,jdbcType=INTEGER},
+      alarmPort = #{alarmPort,jdbcType=INTEGER},
+      loopAvoid = #{loopAvoid,jdbcType=INTEGER}
+    where siteId = #{siteId,jdbcType=INTEGER}
+  </update>
+</mapper>

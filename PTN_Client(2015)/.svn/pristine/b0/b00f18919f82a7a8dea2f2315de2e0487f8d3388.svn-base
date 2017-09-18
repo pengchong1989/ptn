@@ -1,0 +1,951 @@
+﻿package com.nms.db.dao.system;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.nms.db.bean.system.Field;
+import com.nms.db.bean.system.user.UserInst;
+import com.nms.ui.manager.ExceptionManage;
+
+public class FieldDao {
+
+	/**
+	 * 查询所有，不区分域和子网
+	 */
+	private final String SELECT_ALL = "select * from field ";
+
+	/**
+	 * 新增field
+	 * 
+	 * @param field
+	 *            实体
+	 * @param connection
+	 *            数据库连接
+	 * @return 插入记录数
+	 * @throws Exception
+	 */
+	public int insert(Field field, Connection connection) throws Exception {
+
+		if (null == field) {
+			throw new Exception("field is null");
+		}
+
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet=null;
+		int result = 0;
+		try {
+			sql = "insert into `field`(fieldName,fieldX,fieldY,objectType,netWorkId,groupId) values(?,?,?,?,?,?)";
+			preparedStatement = connection.prepareStatement(sql,Statement.RETURN_GENERATED_KEYS);
+			preparedStatement.setString(1, field.getFieldName());
+			preparedStatement.setInt(2, field.getFieldX());
+			preparedStatement.setInt(3, field.getFieldY());
+			preparedStatement.setString(4, "field");
+			preparedStatement.setInt(5, field.getNetWorkId());
+			preparedStatement.setInt(6, field.getGroupId());
+			preparedStatement.executeUpdate();
+			resultSet = preparedStatement.getGeneratedKeys();
+			if (resultSet.next()) {
+				result = resultSet.getInt(1);
+			}
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (resultSet != null) {
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				resultSet = null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+
+			sql = null;
+		}
+
+		return result;
+	}
+
+	/**
+	 * 修改field
+	 * 
+	 * @param field
+	 *            实体
+	 * @param connection
+	 *            数据库连接
+	 * @return 记录数
+	 * @throws Exception
+	 */
+	public int update(Field field, Connection connection) throws Exception {
+		if (null == field) {
+			throw new Exception("field is null");
+		}
+
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		int result = 0;
+		try {
+			sql = "update `field` set fieldName=?,fieldX=?,fieldY=? ,mSiteId=? ,netWorkId=? ,groupId=?  where id=? and objectType=?";
+			preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.setString(1, field.getFieldName());
+			preparedStatement.setInt(2, field.getFieldX());
+			preparedStatement.setInt(3, field.getFieldY());
+			preparedStatement.setInt(4, field.getmSiteId());
+			preparedStatement.setInt(5, field.getNetWorkId());
+			preparedStatement.setInt(6, field.getGroupId());
+			preparedStatement.setInt(7, field.getId());
+			preparedStatement.setString(8, "field");
+			result = preparedStatement.executeUpdate();
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+
+		return result;
+	}
+
+	/**
+	 * 通过主键删除field
+	 * 
+	 * @param id
+	 *            主键
+	 * @param connection
+	 *            数据库连接
+	 * @return 删除记录数
+	 * @throws Exception
+	 */
+	public int delete(int id, Connection connection) throws Exception {
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		int result = 0;
+
+		try {
+			sql = "delete from `field` where id=?";
+			preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.setInt(1, id);
+
+			result = preparedStatement.executeUpdate();
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+
+		return result;
+	}
+
+	/**
+	 * 通过条件查询
+	 * 
+	 * @param fieldCondition
+	 *            查询条件
+	 * @param connection
+	 *            数据库连接
+	 * @return List<Field>集合
+	 * @throws Exception
+	 */
+	public List<Field> queryByCondition(Field fieldCondition, Connection connection) throws Exception {
+
+		if (null == fieldCondition) {
+			throw new Exception("fieldCondition is null");
+		}
+
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		List<Field> fieldList = null;
+		String sql = null;
+		ResultSet resultSet = null;
+		PreparedStatement preparedStatement = null;
+		Field field = null;
+
+		try {
+			fieldList = new ArrayList<Field>();
+			sql = "select*from field f,network n where 1=1 and f.objectType='field' ";
+
+			if (fieldCondition.getId() > 0) {
+				sql += " and f.id=" + fieldCondition.getId();
+			}
+
+			if (fieldCondition.getmSiteId() > 0) {
+				sql += " and f.mSiteId =" + fieldCondition.getmSiteId();
+			}
+			
+			if (fieldCondition.getGroupId() > 0) {
+				sql += " and f.groupId =" + fieldCondition.getGroupId();
+			}
+			
+			sql+=" and f.netWorkId = n.netWorkId ORDER BY 'f.groupId'  ";
+			preparedStatement = connection.prepareStatement(sql);
+			resultSet = preparedStatement.executeQuery();
+
+			while (resultSet.next()) {
+				field = new Field();
+				field.setId(resultSet.getInt("id"));
+				field.setFieldName(resultSet.getString("FieldName"));
+				field.setFieldX(resultSet.getInt("FieldX"));
+				field.setFieldY(resultSet.getInt("FieldY"));
+				field.setmSiteId(resultSet.getInt("mSiteId"));
+				field.setObjectType("field");
+				field.setNetWorkId(resultSet.getInt("netWorkId"));
+				field.setGroupId(resultSet.getInt("groupId"));
+				field.setParentName(resultSet.getString("netWorkName"));
+				fieldList.add(field);
+			}
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (resultSet != null) {
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				resultSet = null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+			field = null;
+		}
+
+		return fieldList;
+
+	}
+	
+	/**
+	 * 通过field.getid查询
+	 */
+	public List<Field> queryByidCondition(List<Integer> idList,Connection connection) throws Exception {
+
+		if (null == idList) {
+			throw new Exception("fieldid is null");
+		}
+
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		List<Field> fields = null;
+		ResultSet resultSet = null;
+		PreparedStatement preparedStatement = null;
+		Field field = null;
+		String sql = null;
+        String fileid = null;
+        String ids = null;
+		try {
+			fileid = idList.toString();
+			ids = fileid.substring(1, fileid.length()-1);
+			fields = new ArrayList<Field>();
+			sql = "SELECT * FROM field WHERE ID IN " + " ("+ids+")";
+			
+			preparedStatement = connection.prepareStatement(sql);
+			resultSet = preparedStatement.executeQuery();			
+			while (resultSet.next()) {
+				field = new Field();
+				field.setId(resultSet.getInt("id"));
+				field.setFieldName(resultSet.getString("FieldName"));
+				field.setFieldX(resultSet.getInt("FieldX"));
+				field.setFieldY(resultSet.getInt("FieldY"));
+				field.setmSiteId(resultSet.getInt("mSiteId"));
+				field.setObjectType(resultSet.getString("objectType"));
+				field.setParentId(resultSet.getInt("parentId"));
+				field.setNetWorkId(resultSet.getInt("netWorkId"));
+				field.setGroupId(resultSet.getInt("groupId"));
+				fields.add(field);
+			}
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (resultSet != null) {
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				resultSet = null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+			field = null;
+			fileid = null;
+	        ids = null;
+		}
+       return fields;
+	}
+	
+	/**
+	 * 批量修改
+	 * 
+	 * @param portattrList
+	 *            实体集合
+	 * @param connection
+	 *            数据库连接
+	 * @throws Exception
+	 */
+	public void updateBatch(List<Field> fieldList,Connection connection) throws Exception {
+		if(null==fieldList){
+			throw new Exception("fieldList is null");
+		}
+		
+		if(null==connection){
+			throw new Exception("connection is null");
+		}
+		
+		PreparedStatement preparedstatement = null;
+		ResultSet resultSet = null;
+		try {
+			String sql = "update field set fieldName=?,fieldX=?,fieldY=? ,mSiteId=? ,netWorkId=? ,groupId=? where id=?";
+			connection.setAutoCommit(false);
+			preparedstatement = connection.prepareStatement(sql);
+			for (int i = 0; i < fieldList.size(); i++) {
+				preparedstatement.setString(1, fieldList.get(i).getFieldName());
+				preparedstatement.setInt(2, fieldList.get(i).getFieldX());
+				preparedstatement.setInt(3, fieldList.get(i).getFieldY());
+				preparedstatement.setInt(4, fieldList.get(i).getmSiteId());
+				preparedstatement.setInt(5, fieldList.get(i).getNetWorkId());
+				preparedstatement.setInt(6, fieldList.get(i).getGroupId());
+				preparedstatement.setInt(7, fieldList.get(i).getId());
+				preparedstatement.addBatch();
+			}
+			preparedstatement.executeBatch();
+			if(!connection.getAutoCommit()){
+				connection.commit();
+			}
+		} catch (Exception e) {
+			connection.rollback();
+			throw e;
+		} finally {
+			connection.setAutoCommit(true);
+			if (resultSet != null) {
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				resultSet = null;
+			}
+			if (preparedstatement != null) {
+				try {
+					preparedstatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedstatement = null;
+			}
+		}
+	}
+
+	/**
+	 * 通过域名字查找域
+	 * 
+	 * @param name
+	 * @param connection
+	 * @return
+	 * @throws Exception
+	 */
+	public List<Field> queryByNameCondition(String name, Connection connection) throws Exception {
+		if (null == name) {
+			throw new Exception("name is null");
+		}
+
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		List<Field> fieldList = null;
+		String sql = null;
+		ResultSet resultSet = null;
+		PreparedStatement preparedStatement = null;
+		Field field = null;
+
+		try {
+			fieldList = new ArrayList<Field>();
+			sql = "select*from field where 1=1 and objectType = field";
+
+			if (name != null) {
+				sql += " and FieldName=" + name;
+			}
+
+			preparedStatement = connection.prepareStatement(sql);
+			resultSet = preparedStatement.executeQuery();
+
+			while (resultSet.next()) {
+				field = new Field();
+				field.setId(resultSet.getInt("id"));
+				field.setFieldName(name);
+				field.setFieldX(resultSet.getInt("FieldX"));
+				field.setFieldY(resultSet.getInt("FieldY"));
+				field.setmSiteId(resultSet.getInt("mSiteId"));
+				field.setNetWorkId(resultSet.getInt("netWorkId"));
+				field.setGroupId(resultSet.getInt("groupId"));
+				fieldList.add(field);
+			}
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (resultSet != null) {
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				resultSet = null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+			field = null;
+		}
+
+		return fieldList;
+	}
+
+	/**
+	 * 通过用户 ID 关联表 用户— 域 取得 用户 的 域的集合
+	 * 
+	 * @param userinst
+	 * @param connection
+	 * @return
+	 * @throws Exception
+	 */
+	public List<Field> queryByUserIdField(UserInst userinst,Connection connection) throws Exception {
+
+		if (null == userinst) {
+			throw new Exception("userinst is null");
+		}
+
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		List<Field> fields = null;
+		ResultSet resultSet = null;
+		PreparedStatement preparedStatement = null;
+		Field field = null;
+//        String fileid = null;
+		try {
+//			fileid = userinst.toString();
+//			fileid.substring(1, fileid.length()-1);
+			fields = new ArrayList<Field>();
+			
+			String sql="select * from field where objectType='field'";
+			if(userinst.getIsAll()==0){
+				sql+=" and ID in (select field_id from user_field where user_id=? )";
+				preparedStatement = connection.prepareStatement(sql);
+				preparedStatement.setInt(1, userinst.getUser_Id());
+			}else{
+				preparedStatement = connection.prepareStatement(sql);
+			}
+			
+			resultSet = preparedStatement.executeQuery();			
+			while (resultSet.next()) {
+				field = new Field();
+				field.setId(resultSet.getInt("ID"));
+				field.setFieldName(resultSet.getString("FieldName"));
+				field.setFieldX(resultSet.getInt("FieldX"));
+				field.setFieldY(resultSet.getInt("FieldY"));
+				field.setmSiteId(resultSet.getInt("mSiteId"));
+				field.setNetWorkId(resultSet.getInt("netWorkId"));
+				field.setGroupId(resultSet.getInt("groupId"));
+				fields.add(field);
+			}
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (resultSet != null) {
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				resultSet = null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+			field = null;
+//			fileid = null;
+
+		}
+       return fields;
+	}
+
+	/**
+	 * 查询所有，不区分域还是子网
+	 * 
+	 * @param connection
+	 *            数据库连接
+	 * @return
+	 * @throws Exception 
+	 */
+	public List<Field> queryAll(Connection connection) throws Exception {
+		PreparedStatement preparedStatement = null;
+		List<Field> fieldList=null;
+		try {
+			preparedStatement = connection.prepareStatement(this.SELECT_ALL);
+			fieldList=this.executeQuery(preparedStatement);
+			
+		} catch (Exception e) {
+			throw e;
+		} finally{
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+		}
+		return fieldList;
+	}
+
+	/**
+	 * 执行查询
+	 * 
+	 * @param preparedStatement
+	 * @return
+	 * @throws Exception 
+	 */
+	private List<Field> executeQuery(PreparedStatement preparedStatement) throws Exception {
+		List<Field> fields = null;
+		ResultSet resultSet = null;
+		Field field = null;
+		try {
+			fields = new ArrayList<Field>();
+			resultSet = preparedStatement.executeQuery();
+			while (resultSet.next()) {
+				field = new Field();
+				field.setId(resultSet.getInt("ID"));
+				field.setFieldName(resultSet.getString("FieldName"));
+				field.setFieldX(resultSet.getInt("FieldX"));
+				field.setFieldY(resultSet.getInt("FieldY"));
+				field.setmSiteId(resultSet.getInt("mSiteId"));
+				field.setObjectType(resultSet.getString("ObjectType"));
+				field.setParentId(resultSet.getInt("ParentId"));
+				field.setNetWorkId(resultSet.getInt("netWorkId"));
+				field.setGroupId(resultSet.getInt("groupId"));
+				fields.add(field);
+			}
+		} catch (Exception e) {
+			throw e;
+		} finally{
+			if (resultSet != null) {
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				resultSet = null;
+			}
+			field = null;
+		}
+		return fields;
+	}
+	/**
+	 *  用户权限  
+	 *  	查询 能查看的域或者子网
+	 * @param userInst
+	 * @param connection
+	 * @return
+	 * @throws Exception
+	 */
+	public List<Field> queryByUserId(UserInst userInst,Connection connection) throws Exception {
+
+		if (null == userInst) {
+			throw new Exception("userInst is null");
+		}
+
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		List<Field> fields = null;
+		ResultSet resultSet = null;
+		PreparedStatement preparedStatement = null;
+		Field field = null;
+		String sql = null;
+		try {
+
+			fields = new ArrayList<Field>();
+			sql = "select * from field where objectType='field'" ;
+			/**
+			 * 根据用户是否 有查看所有域权限
+			 * 	0 ，查看用户，域关联表
+			 *    1，查询所有域
+			 */
+			if(0==userInst.getIsAll()){
+				sql+=" and id  in (select field_id from user_field where user_id=? )";
+				preparedStatement = connection.prepareStatement(sql);
+				preparedStatement.setInt(1,userInst.getUser_Id());
+			}else{
+				preparedStatement = connection.prepareStatement(sql);
+			}
+			
+			resultSet = preparedStatement.executeQuery();			
+			while (resultSet.next()) {
+				field = new Field();
+				field.setId(resultSet.getInt("id"));
+				field.setFieldName(resultSet.getString("FieldName"));
+				field.setFieldX(resultSet.getInt("FieldX"));
+				field.setFieldY(resultSet.getInt("FieldY"));
+				field.setmSiteId(resultSet.getInt("mSiteId"));
+				field.setObjectType(resultSet.getString("objectType"));
+				field.setParentId(resultSet.getInt("parentId"));
+				field.setNetWorkId(resultSet.getInt("netWorkId"));
+				field.setGroupId(resultSet.getInt("groupId"));
+				fields.add(field);
+			}
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (resultSet != null) {
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				resultSet = null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+			field = null;
+		}
+       return fields;
+	}
+	
+	/**
+	 * 通过条件查询
+	 * 
+	 * @param fieldCondition
+	 *            查询条件
+	 * @param connection
+	 *            数据库连接
+	 * @return List<Field>集合
+	 * @throws Exception
+	 */
+	public List<Field> queryNoMsite(Connection connection) throws Exception {
+
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		List<Field> fieldList = null;
+		String sql = null;
+		ResultSet resultSet = null;
+		PreparedStatement preparedStatement = null;
+		Field field = null;
+
+		try {
+			fieldList = new ArrayList<Field>();
+			sql = "select*from field where 1=1 and objectType='field' and mSiteId = 0";
+			preparedStatement = connection.prepareStatement(sql);
+			resultSet = preparedStatement.executeQuery();
+
+			while (resultSet.next()) {
+				field = new Field();
+				field.setId(resultSet.getInt("id"));
+				field.setFieldName(resultSet.getString("FieldName"));
+				field.setFieldX(resultSet.getInt("FieldX"));
+				field.setFieldY(resultSet.getInt("FieldY"));
+				field.setmSiteId(resultSet.getInt("mSiteId"));
+				field.setObjectType("field");
+				field.setNetWorkId(resultSet.getInt("netWorkId"));
+				field.setGroupId(resultSet.getInt("groupId"));
+				fieldList.add(field);
+			}
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (resultSet != null) {
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				resultSet = null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+			field = null;
+		}
+
+		return fieldList;
+
+	}
+	
+	/**
+	 * 根据netWorkId查询该网下所有网元组
+	 * 
+	 * @param connection
+	 *            数据库连接
+	 * @return
+	 * @throws Exception 
+	 */
+	public List<Field> queryByNetWorkId(int netWorkId,Connection connection) throws Exception {
+		PreparedStatement preparedStatement = null;
+		List<Field> fieldList=null;
+		try {
+			String sql = "select*from field where netWorkId="+netWorkId+"";
+			preparedStatement = connection.prepareStatement(sql);
+			fieldList=this.executeQuery(preparedStatement);
+			
+		} catch (Exception e) {
+			throw e;
+		} finally{
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+		}
+		return fieldList;
+	}
+	
+	
+	/**
+	 * 验证名称是否可用
+	 * @param name
+	 * @param connection
+	 * @return
+	 */
+	public boolean checkNameExist(String name,Connection connection){
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+		try {
+			String sql = "select*from field where FieldName='"+name+"'";
+			preparedStatement = connection.prepareStatement(sql);
+			resultSet = preparedStatement.executeQuery();
+			while(resultSet.next()){
+				return true;
+			}
+		} catch (Exception e) {
+			ExceptionManage.dispose(e, this.getClass());
+		} finally{
+			if (resultSet != null) {
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				resultSet = null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+		}
+		return false;
+	}
+	
+	/**
+	 * 通过组id，或子网id查询Field
+	 * @return
+	 */
+	public List<Field> selectByNetOrGroup(int groupId,Connection connection){
+		List<Field> fields = null;
+
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+		Field field = null;
+		try {
+			fields = new ArrayList<Field>();
+			String sql = "select*from field where groupId=? or id=?";
+			preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.setInt(1, groupId);
+			preparedStatement.setInt(2, groupId);
+			resultSet = preparedStatement.executeQuery();
+			while(resultSet.next()){
+				field = new Field();
+				field.setId(resultSet.getInt("id"));
+				field.setFieldName(resultSet.getString("FieldName"));
+				field.setFieldX(resultSet.getInt("FieldX"));
+				field.setFieldY(resultSet.getInt("FieldY"));
+				field.setmSiteId(resultSet.getInt("mSiteId"));
+				field.setObjectType("field");
+				field.setNetWorkId(resultSet.getInt("netWorkId"));
+				field.setGroupId(resultSet.getInt("groupId"));
+				fields.add(field);
+			}
+		} catch (Exception e) {
+			ExceptionManage.dispose(e, this.getClass());
+		} finally{
+			if (resultSet != null) {
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				resultSet = null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+		}
+	
+		return fields;
+	}
+	
+	
+	/**
+	 * 通过组id，或子网id查询Field
+	 * @param label== 0 时 查询所有域  ==1 时查询域下的只网
+	 * @return
+	 */
+	public List<Field> selectByGroupOrParentId(int id,Connection connection,int label){
+		List<Field> fields = null;
+
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+		Field field = null;
+		String sql = "";
+		try {
+			fields = new ArrayList<Field>();
+			if(label == 0)
+			{
+				 sql = "select*from field where netWorkId=?";
+			}
+			else
+			{
+				 sql = "select*from field where parentId=?";	
+			}
+			preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.setInt(1, id);
+			resultSet = preparedStatement.executeQuery();
+			while(resultSet.next()){
+				field = new Field();
+				field.setId(resultSet.getInt("id"));
+				field.setFieldName(resultSet.getString("FieldName"));
+				field.setFieldX(resultSet.getInt("FieldX"));
+				field.setFieldY(resultSet.getInt("FieldY"));
+				field.setmSiteId(resultSet.getInt("mSiteId"));
+				field.setObjectType("field");
+				field.setNetWorkId(resultSet.getInt("netWorkId"));
+				field.setGroupId(resultSet.getInt("groupId"));
+				fields.add(field);
+			}
+		} catch (Exception e) {
+			ExceptionManage.dispose(e, this.getClass());
+		} finally{
+			if (resultSet != null) {
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				resultSet = null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+		}
+	
+		return fields;
+	}
+}

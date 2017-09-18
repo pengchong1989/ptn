@@ -1,0 +1,571 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nms.db.dao.ptn.path.pw.PwInfoMapper" >
+  <resultMap id="BaseResultMap" type="PwInfo" >
+    <id column="pwId" property="pwid" jdbcType="INTEGER" />
+    <result column="pwName" property="pwname" jdbcType="VARCHAR" />
+    <result column="pwStatus" property="pwstatus" jdbcType="INTEGER" />
+    <result column="tunnelId" property="tunnelid" jdbcType="INTEGER" />
+    <result column="inlabelValue" property="inlabelvalue" jdbcType="INTEGER" />
+    <result column="outlabelValue" property="outlabelvalue" jdbcType="INTEGER" />
+    <result column="aSiteId" property="asiteid" jdbcType="INTEGER" />
+    <result column="zSiteId" property="zsiteid" jdbcType="INTEGER" />
+    <result column="direction" property="direction" jdbcType="VARCHAR" />
+    <result column="createTime" property="createtime" jdbcType="TIMESTAMP" />
+    <result column="createUser" property="createuser" jdbcType="VARCHAR" />
+    <result column="apwServiceId" property="apwserviceid" jdbcType="INTEGER" />
+    <result column="zpwServiceId" property="zpwserviceid" jdbcType="INTEGER" />
+    <result column="rserviceId" property="rserviceid" jdbcType="INTEGER" />
+    <result column="rserviceType" property="rservicetype" jdbcType="INTEGER" />
+    <result column="aPortConfigId" property="aportconfigid" jdbcType="INTEGER" />
+    <result column="zPortConfigId" property="zportconfigid" jdbcType="INTEGER" />
+    <result column="type" property="type" jdbcType="INTEGER" />
+    <result column="isSingle" property="issingle" jdbcType="INTEGER" />
+    <result column="aoppositeId" property="aoppositeid" jdbcType="VARCHAR" />
+    <result column="zoppositeId" property="zoppositeid" jdbcType="VARCHAR" />
+    <result column="jobstatus" property="jobstatus" jdbcType="VARCHAR" />
+    <result column="expStrategy" property="expstrategy" jdbcType="INTEGER" />
+    <result column="expAssignment" property="expassignment" jdbcType="INTEGER" />
+    <result column="phbToExpId" property="phbtoexpid" jdbcType="INTEGER" />
+    <result column="phbStrategy" property="phbstrategy" jdbcType="INTEGER" />
+    <result column="phbAssignment" property="phbassignment" jdbcType="INTEGER" />
+    <result column="expTophbId" property="exptophbid" jdbcType="INTEGER" />
+    <result column="payload" property="payload" jdbcType="INTEGER" />
+    <result column="aVlanEnable" property="avlanenable" jdbcType="INTEGER" />
+    <result column="aOutVlanValue" property="aoutvlanvalue" jdbcType="INTEGER" />
+    <result column="aSourceMac" property="asourcemac" jdbcType="VARCHAR" />
+    <result column="atargetMac" property="atargetmac" jdbcType="VARCHAR" />
+    <result column="zVlanEnable" property="zvlanenable" jdbcType="INTEGER" />
+    <result column="zOutVlanValue" property="zoutvlanvalue" jdbcType="INTEGER" />
+    <result column="zSourceMac" property="zsourcemac" jdbcType="VARCHAR" />
+    <result column="ztargetMac" property="ztargetmac" jdbcType="VARCHAR" />
+    <result column="businessType" property="businesstype" jdbcType="VARCHAR" />
+    <result column="backInlabel" property="backinlabel" jdbcType="INTEGER" />
+    <result column="backOutlabel" property="backoutlabel" jdbcType="INTEGER" />
+    <result column="atp_id" property="atpId" jdbcType="INTEGER" />
+    <result column="ztp_id" property="ztpId" jdbcType="INTEGER" />
+    <result column="pri" property="pri" jdbcType="INTEGER" />
+    <result column="qosModel" property="qosmodel" jdbcType="INTEGER" />
+    <result column="snmpPwName" property="snmppwname" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    pwId, pwName, pwStatus, tunnelId, inlabelValue, outlabelValue, aSiteId, zSiteId, 
+    direction, createTime, createUser, apwServiceId, zpwServiceId, rserviceId, rserviceType, 
+    aPortConfigId, zPortConfigId, type, isSingle, aoppositeId, zoppositeId, jobstatus, 
+    expStrategy, expAssignment, phbToExpId, phbStrategy, phbAssignment, expTophbId, payload, 
+    aVlanEnable, aOutVlanValue, aSourceMac, atargetMac, zVlanEnable, zOutVlanValue, zSourceMac, 
+    ztargetMac, businessType, backInlabel, backOutlabel, atp_id, ztp_id, pri, qosModel, 
+    snmpPwName
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from pwinfo
+    where pwId = #{pwid,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from pwinfo
+    where pwId = #{pwid,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="PwInfo" >
+    insert into pwinfo (pwId, pwName, pwStatus, 
+      tunnelId, inlabelValue, outlabelValue, 
+      aSiteId, zSiteId, direction, 
+      createTime, createUser, apwServiceId, 
+      zpwServiceId, rserviceId, rserviceType, 
+      aPortConfigId, zPortConfigId, type, 
+      isSingle, aoppositeId, zoppositeId, 
+      jobstatus, expStrategy, expAssignment, 
+      phbToExpId, phbStrategy, phbAssignment, 
+      expTophbId, payload, aVlanEnable, 
+      aOutVlanValue, aSourceMac, atargetMac, 
+      zVlanEnable, zOutVlanValue, zSourceMac, 
+      ztargetMac, businessType, backInlabel, 
+      backOutlabel, atp_id, ztp_id, 
+      pri, qosModel, snmpPwName
+      )
+    values (#{pwid,jdbcType=INTEGER}, #{pwname,jdbcType=VARCHAR}, #{pwstatus,jdbcType=INTEGER}, 
+      #{tunnelid,jdbcType=INTEGER}, #{inlabelvalue,jdbcType=INTEGER}, #{outlabelvalue,jdbcType=INTEGER}, 
+      #{asiteid,jdbcType=INTEGER}, #{zsiteid,jdbcType=INTEGER}, #{direction,jdbcType=VARCHAR}, 
+      #{createtime,jdbcType=TIMESTAMP}, #{createuser,jdbcType=VARCHAR}, #{apwserviceid,jdbcType=INTEGER}, 
+      #{zpwserviceid,jdbcType=INTEGER}, #{rserviceid,jdbcType=INTEGER}, #{rservicetype,jdbcType=INTEGER}, 
+      #{aportconfigid,jdbcType=INTEGER}, #{zportconfigid,jdbcType=INTEGER}, #{type,jdbcType=INTEGER}, 
+      #{issingle,jdbcType=INTEGER}, #{aoppositeid,jdbcType=VARCHAR}, #{zoppositeid,jdbcType=VARCHAR}, 
+      #{jobstatus,jdbcType=VARCHAR}, #{expstrategy,jdbcType=INTEGER}, #{expassignment,jdbcType=INTEGER}, 
+      #{phbtoexpid,jdbcType=INTEGER}, #{phbstrategy,jdbcType=INTEGER}, #{phbassignment,jdbcType=INTEGER}, 
+      #{exptophbid,jdbcType=INTEGER}, #{payload,jdbcType=INTEGER}, #{avlanenable,jdbcType=INTEGER}, 
+      #{aoutvlanvalue,jdbcType=INTEGER}, #{asourcemac,jdbcType=VARCHAR}, #{atargetmac,jdbcType=VARCHAR}, 
+      #{zvlanenable,jdbcType=INTEGER}, #{zoutvlanvalue,jdbcType=INTEGER}, #{zsourcemac,jdbcType=VARCHAR}, 
+      #{ztargetmac,jdbcType=VARCHAR}, #{businesstype,jdbcType=VARCHAR}, #{backinlabel,jdbcType=INTEGER}, 
+      #{backoutlabel,jdbcType=INTEGER}, #{atpId,jdbcType=INTEGER}, #{ztpId,jdbcType=INTEGER}, 
+      #{pri,jdbcType=INTEGER}, #{qosmodel,jdbcType=INTEGER}, #{snmppwname,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="PwInfo" >
+    insert into pwinfo
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="pwid != null" >
+        pwId,
+      </if>
+      <if test="pwname != null" >
+        pwName,
+      </if>
+      <if test="pwstatus != null" >
+        pwStatus,
+      </if>
+      <if test="tunnelid != null" >
+        tunnelId,
+      </if>
+      <if test="inlabelvalue != null" >
+        inlabelValue,
+      </if>
+      <if test="outlabelvalue != null" >
+        outlabelValue,
+      </if>
+      <if test="asiteid != null" >
+        aSiteId,
+      </if>
+      <if test="zsiteid != null" >
+        zSiteId,
+      </if>
+      <if test="direction != null" >
+        direction,
+      </if>
+      <if test="createtime != null" >
+        createTime,
+      </if>
+      <if test="createuser != null" >
+        createUser,
+      </if>
+      <if test="apwserviceid != null" >
+        apwServiceId,
+      </if>
+      <if test="zpwserviceid != null" >
+        zpwServiceId,
+      </if>
+      <if test="rserviceid != null" >
+        rserviceId,
+      </if>
+      <if test="rservicetype != null" >
+        rserviceType,
+      </if>
+      <if test="aportconfigid != null" >
+        aPortConfigId,
+      </if>
+      <if test="zportconfigid != null" >
+        zPortConfigId,
+      </if>
+      <if test="type != null" >
+        type,
+      </if>
+      <if test="issingle != null" >
+        isSingle,
+      </if>
+      <if test="aoppositeid != null" >
+        aoppositeId,
+      </if>
+      <if test="zoppositeid != null" >
+        zoppositeId,
+      </if>
+      <if test="jobstatus != null" >
+        jobstatus,
+      </if>
+      <if test="expstrategy != null" >
+        expStrategy,
+      </if>
+      <if test="expassignment != null" >
+        expAssignment,
+      </if>
+      <if test="phbtoexpid != null" >
+        phbToExpId,
+      </if>
+      <if test="phbstrategy != null" >
+        phbStrategy,
+      </if>
+      <if test="phbassignment != null" >
+        phbAssignment,
+      </if>
+      <if test="exptophbid != null" >
+        expTophbId,
+      </if>
+      <if test="payload != null" >
+        payload,
+      </if>
+      <if test="avlanenable != null" >
+        aVlanEnable,
+      </if>
+      <if test="aoutvlanvalue != null" >
+        aOutVlanValue,
+      </if>
+      <if test="asourcemac != null" >
+        aSourceMac,
+      </if>
+      <if test="atargetmac != null" >
+        atargetMac,
+      </if>
+      <if test="zvlanenable != null" >
+        zVlanEnable,
+      </if>
+      <if test="zoutvlanvalue != null" >
+        zOutVlanValue,
+      </if>
+      <if test="zsourcemac != null" >
+        zSourceMac,
+      </if>
+      <if test="ztargetmac != null" >
+        ztargetMac,
+      </if>
+      <if test="businesstype != null" >
+        businessType,
+      </if>
+      <if test="backinlabel != null" >
+        backInlabel,
+      </if>
+      <if test="backoutlabel != null" >
+        backOutlabel,
+      </if>
+      <if test="atpId != null" >
+        atp_id,
+      </if>
+      <if test="ztpId != null" >
+        ztp_id,
+      </if>
+      <if test="pri != null" >
+        pri,
+      </if>
+      <if test="qosmodel != null" >
+        qosModel,
+      </if>
+      <if test="snmppwname != null" >
+        snmpPwName,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="pwid != null" >
+        #{pwid,jdbcType=INTEGER},
+      </if>
+      <if test="pwname != null" >
+        #{pwname,jdbcType=VARCHAR},
+      </if>
+      <if test="pwstatus != null" >
+        #{pwstatus,jdbcType=INTEGER},
+      </if>
+      <if test="tunnelid != null" >
+        #{tunnelid,jdbcType=INTEGER},
+      </if>
+      <if test="inlabelvalue != null" >
+        #{inlabelvalue,jdbcType=INTEGER},
+      </if>
+      <if test="outlabelvalue != null" >
+        #{outlabelvalue,jdbcType=INTEGER},
+      </if>
+      <if test="asiteid != null" >
+        #{asiteid,jdbcType=INTEGER},
+      </if>
+      <if test="zsiteid != null" >
+        #{zsiteid,jdbcType=INTEGER},
+      </if>
+      <if test="direction != null" >
+        #{direction,jdbcType=VARCHAR},
+      </if>
+      <if test="createtime != null" >
+        #{createtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createuser != null" >
+        #{createuser,jdbcType=VARCHAR},
+      </if>
+      <if test="apwserviceid != null" >
+        #{apwserviceid,jdbcType=INTEGER},
+      </if>
+      <if test="zpwserviceid != null" >
+        #{zpwserviceid,jdbcType=INTEGER},
+      </if>
+      <if test="rserviceid != null" >
+        #{rserviceid,jdbcType=INTEGER},
+      </if>
+      <if test="rservicetype != null" >
+        #{rservicetype,jdbcType=INTEGER},
+      </if>
+      <if test="aportconfigid != null" >
+        #{aportconfigid,jdbcType=INTEGER},
+      </if>
+      <if test="zportconfigid != null" >
+        #{zportconfigid,jdbcType=INTEGER},
+      </if>
+      <if test="type != null" >
+        #{type,jdbcType=INTEGER},
+      </if>
+      <if test="issingle != null" >
+        #{issingle,jdbcType=INTEGER},
+      </if>
+      <if test="aoppositeid != null" >
+        #{aoppositeid,jdbcType=VARCHAR},
+      </if>
+      <if test="zoppositeid != null" >
+        #{zoppositeid,jdbcType=VARCHAR},
+      </if>
+      <if test="jobstatus != null" >
+        #{jobstatus,jdbcType=VARCHAR},
+      </if>
+      <if test="expstrategy != null" >
+        #{expstrategy,jdbcType=INTEGER},
+      </if>
+      <if test="expassignment != null" >
+        #{expassignment,jdbcType=INTEGER},
+      </if>
+      <if test="phbtoexpid != null" >
+        #{phbtoexpid,jdbcType=INTEGER},
+      </if>
+      <if test="phbstrategy != null" >
+        #{phbstrategy,jdbcType=INTEGER},
+      </if>
+      <if test="phbassignment != null" >
+        #{phbassignment,jdbcType=INTEGER},
+      </if>
+      <if test="exptophbid != null" >
+        #{exptophbid,jdbcType=INTEGER},
+      </if>
+      <if test="payload != null" >
+        #{payload,jdbcType=INTEGER},
+      </if>
+      <if test="avlanenable != null" >
+        #{avlanenable,jdbcType=INTEGER},
+      </if>
+      <if test="aoutvlanvalue != null" >
+        #{aoutvlanvalue,jdbcType=INTEGER},
+      </if>
+      <if test="asourcemac != null" >
+        #{asourcemac,jdbcType=VARCHAR},
+      </if>
+      <if test="atargetmac != null" >
+        #{atargetmac,jdbcType=VARCHAR},
+      </if>
+      <if test="zvlanenable != null" >
+        #{zvlanenable,jdbcType=INTEGER},
+      </if>
+      <if test="zoutvlanvalue != null" >
+        #{zoutvlanvalue,jdbcType=INTEGER},
+      </if>
+      <if test="zsourcemac != null" >
+        #{zsourcemac,jdbcType=VARCHAR},
+      </if>
+      <if test="ztargetmac != null" >
+        #{ztargetmac,jdbcType=VARCHAR},
+      </if>
+      <if test="businesstype != null" >
+        #{businesstype,jdbcType=VARCHAR},
+      </if>
+      <if test="backinlabel != null" >
+        #{backinlabel,jdbcType=INTEGER},
+      </if>
+      <if test="backoutlabel != null" >
+        #{backoutlabel,jdbcType=INTEGER},
+      </if>
+      <if test="atpId != null" >
+        #{atpId,jdbcType=INTEGER},
+      </if>
+      <if test="ztpId != null" >
+        #{ztpId,jdbcType=INTEGER},
+      </if>
+      <if test="pri != null" >
+        #{pri,jdbcType=INTEGER},
+      </if>
+      <if test="qosmodel != null" >
+        #{qosmodel,jdbcType=INTEGER},
+      </if>
+      <if test="snmppwname != null" >
+        #{snmppwname,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="PwInfo" >
+    update pwinfo
+    <set >
+      <if test="pwname != null" >
+        pwName = #{pwname,jdbcType=VARCHAR},
+      </if>
+      <if test="pwstatus != null" >
+        pwStatus = #{pwstatus,jdbcType=INTEGER},
+      </if>
+      <if test="tunnelid != null" >
+        tunnelId = #{tunnelid,jdbcType=INTEGER},
+      </if>
+      <if test="inlabelvalue != null" >
+        inlabelValue = #{inlabelvalue,jdbcType=INTEGER},
+      </if>
+      <if test="outlabelvalue != null" >
+        outlabelValue = #{outlabelvalue,jdbcType=INTEGER},
+      </if>
+      <if test="asiteid != null" >
+        aSiteId = #{asiteid,jdbcType=INTEGER},
+      </if>
+      <if test="zsiteid != null" >
+        zSiteId = #{zsiteid,jdbcType=INTEGER},
+      </if>
+      <if test="direction != null" >
+        direction = #{direction,jdbcType=VARCHAR},
+      </if>
+      <if test="createtime != null" >
+        createTime = #{createtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createuser != null" >
+        createUser = #{createuser,jdbcType=VARCHAR},
+      </if>
+      <if test="apwserviceid != null" >
+        apwServiceId = #{apwserviceid,jdbcType=INTEGER},
+      </if>
+      <if test="zpwserviceid != null" >
+        zpwServiceId = #{zpwserviceid,jdbcType=INTEGER},
+      </if>
+      <if test="rserviceid != null" >
+        rserviceId = #{rserviceid,jdbcType=INTEGER},
+      </if>
+      <if test="rservicetype != null" >
+        rserviceType = #{rservicetype,jdbcType=INTEGER},
+      </if>
+      <if test="aportconfigid != null" >
+        aPortConfigId = #{aportconfigid,jdbcType=INTEGER},
+      </if>
+      <if test="zportconfigid != null" >
+        zPortConfigId = #{zportconfigid,jdbcType=INTEGER},
+      </if>
+      <if test="type != null" >
+        type = #{type,jdbcType=INTEGER},
+      </if>
+      <if test="issingle != null" >
+        isSingle = #{issingle,jdbcType=INTEGER},
+      </if>
+      <if test="aoppositeid != null" >
+        aoppositeId = #{aoppositeid,jdbcType=VARCHAR},
+      </if>
+      <if test="zoppositeid != null" >
+        zoppositeId = #{zoppositeid,jdbcType=VARCHAR},
+      </if>
+      <if test="jobstatus != null" >
+        jobstatus = #{jobstatus,jdbcType=VARCHAR},
+      </if>
+      <if test="expstrategy != null" >
+        expStrategy = #{expstrategy,jdbcType=INTEGER},
+      </if>
+      <if test="expassignment != null" >
+        expAssignment = #{expassignment,jdbcType=INTEGER},
+      </if>
+      <if test="phbtoexpid != null" >
+        phbToExpId = #{phbtoexpid,jdbcType=INTEGER},
+      </if>
+      <if test="phbstrategy != null" >
+        phbStrategy = #{phbstrategy,jdbcType=INTEGER},
+      </if>
+      <if test="phbassignment != null" >
+        phbAssignment = #{phbassignment,jdbcType=INTEGER},
+      </if>
+      <if test="exptophbid != null" >
+        expTophbId = #{exptophbid,jdbcType=INTEGER},
+      </if>
+      <if test="payload != null" >
+        payload = #{payload,jdbcType=INTEGER},
+      </if>
+      <if test="avlanenable != null" >
+        aVlanEnable = #{avlanenable,jdbcType=INTEGER},
+      </if>
+      <if test="aoutvlanvalue != null" >
+        aOutVlanValue = #{aoutvlanvalue,jdbcType=INTEGER},
+      </if>
+      <if test="asourcemac != null" >
+        aSourceMac = #{asourcemac,jdbcType=VARCHAR},
+      </if>
+      <if test="atargetmac != null" >
+        atargetMac = #{atargetmac,jdbcType=VARCHAR},
+      </if>
+      <if test="zvlanenable != null" >
+        zVlanEnable = #{zvlanenable,jdbcType=INTEGER},
+      </if>
+      <if test="zoutvlanvalue != null" >
+        zOutVlanValue = #{zoutvlanvalue,jdbcType=INTEGER},
+      </if>
+      <if test="zsourcemac != null" >
+        zSourceMac = #{zsourcemac,jdbcType=VARCHAR},
+      </if>
+      <if test="ztargetmac != null" >
+        ztargetMac = #{ztargetmac,jdbcType=VARCHAR},
+      </if>
+      <if test="businesstype != null" >
+        businessType = #{businesstype,jdbcType=VARCHAR},
+      </if>
+      <if test="backinlabel != null" >
+        backInlabel = #{backinlabel,jdbcType=INTEGER},
+      </if>
+      <if test="backoutlabel != null" >
+        backOutlabel = #{backoutlabel,jdbcType=INTEGER},
+      </if>
+      <if test="atpId != null" >
+        atp_id = #{atpId,jdbcType=INTEGER},
+      </if>
+      <if test="ztpId != null" >
+        ztp_id = #{ztpId,jdbcType=INTEGER},
+      </if>
+      <if test="pri != null" >
+        pri = #{pri,jdbcType=INTEGER},
+      </if>
+      <if test="qosmodel != null" >
+        qosModel = #{qosmodel,jdbcType=INTEGER},
+      </if>
+      <if test="snmppwname != null" >
+        snmpPwName = #{snmppwname,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where pwId = #{pwid,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="PwInfo" >
+    update pwinfo
+    set pwName = #{pwname,jdbcType=VARCHAR},
+      pwStatus = #{pwstatus,jdbcType=INTEGER},
+      tunnelId = #{tunnelid,jdbcType=INTEGER},
+      inlabelValue = #{inlabelvalue,jdbcType=INTEGER},
+      outlabelValue = #{outlabelvalue,jdbcType=INTEGER},
+      aSiteId = #{asiteid,jdbcType=INTEGER},
+      zSiteId = #{zsiteid,jdbcType=INTEGER},
+      direction = #{direction,jdbcType=VARCHAR},
+      createTime = #{createtime,jdbcType=TIMESTAMP},
+      createUser = #{createuser,jdbcType=VARCHAR},
+      apwServiceId = #{apwserviceid,jdbcType=INTEGER},
+      zpwServiceId = #{zpwserviceid,jdbcType=INTEGER},
+      rserviceId = #{rserviceid,jdbcType=INTEGER},
+      rserviceType = #{rservicetype,jdbcType=INTEGER},
+      aPortConfigId = #{aportconfigid,jdbcType=INTEGER},
+      zPortConfigId = #{zportconfigid,jdbcType=INTEGER},
+      type = #{type,jdbcType=INTEGER},
+      isSingle = #{issingle,jdbcType=INTEGER},
+      aoppositeId = #{aoppositeid,jdbcType=VARCHAR},
+      zoppositeId = #{zoppositeid,jdbcType=VARCHAR},
+      jobstatus = #{jobstatus,jdbcType=VARCHAR},
+      expStrategy = #{expstrategy,jdbcType=INTEGER},
+      expAssignment = #{expassignment,jdbcType=INTEGER},
+      phbToExpId = #{phbtoexpid,jdbcType=INTEGER},
+      phbStrategy = #{phbstrategy,jdbcType=INTEGER},
+      phbAssignment = #{phbassignment,jdbcType=INTEGER},
+      expTophbId = #{exptophbid,jdbcType=INTEGER},
+      payload = #{payload,jdbcType=INTEGER},
+      aVlanEnable = #{avlanenable,jdbcType=INTEGER},
+      aOutVlanValue = #{aoutvlanvalue,jdbcType=INTEGER},
+      aSourceMac = #{asourcemac,jdbcType=VARCHAR},
+      atargetMac = #{atargetmac,jdbcType=VARCHAR},
+      zVlanEnable = #{zvlanenable,jdbcType=INTEGER},
+      zOutVlanValue = #{zoutvlanvalue,jdbcType=INTEGER},
+      zSourceMac = #{zsourcemac,jdbcType=VARCHAR},
+      ztargetMac = #{ztargetmac,jdbcType=VARCHAR},
+      businessType = #{businesstype,jdbcType=VARCHAR},
+      backInlabel = #{backinlabel,jdbcType=INTEGER},
+      backOutlabel = #{backoutlabel,jdbcType=INTEGER},
+      atp_id = #{atpId,jdbcType=INTEGER},
+      ztp_id = #{ztpId,jdbcType=INTEGER},
+      pri = #{pri,jdbcType=INTEGER},
+      qosModel = #{qosmodel,jdbcType=INTEGER},
+      snmpPwName = #{snmppwname,jdbcType=VARCHAR}
+    where pwId = #{pwid,jdbcType=INTEGER}
+  </update>
+  
+  <update id="updateTunnelID" >
+  	update pwinfo set tunnelId=#{0} where tunnelId in #{1}
+  </update>
+</mapper>

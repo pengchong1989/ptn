@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nms.db.dao.ptn.qos.QosMappingAttrMapper" >
+  <resultMap id="BaseResultMap" type="QosMappingAttr" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="qosModelId" property="qosmodelid" jdbcType="INTEGER" />
+    <result column="grade" property="grade" jdbcType="VARCHAR" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="value" property="value" jdbcType="INTEGER" />
+    <result column="siteId" property="siteid" jdbcType="INTEGER" />
+    <result column="model" property="model" jdbcType="INTEGER" />
+    <result column="direction" property="direction" jdbcType="INTEGER" />
+    <result column="color" property="color" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, qosModelId, grade, name, value, siteId, model, direction, color
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from qostable
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from qostable
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+ 
+  <insert id="insertSelective" parameterType="QosMappingAttr" >
+    insert into qostable
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="qosmodelid != null" >
+        qosModelId,
+      </if>
+      <if test="grade != null" >
+        grade,
+      </if>
+      <if test="name != null" >
+        name,
+      </if>
+      <if test="value != null" >
+        value,
+      </if>
+      <if test="siteid != null" >
+        siteId,
+      </if>
+      <if test="model != null" >
+        model,
+      </if>
+      <if test="direction != null" >
+        direction,
+      </if>
+      <if test="color != null" >
+        color,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="qosmodelid != null" >
+        #{qosmodelid,jdbcType=INTEGER},
+      </if>
+      <if test="grade != null" >
+        #{grade,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null" >
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="value != null" >
+        #{value,jdbcType=INTEGER},
+      </if>
+      <if test="siteid != null" >
+        #{siteid,jdbcType=INTEGER},
+      </if>
+      <if test="model != null" >
+        #{model,jdbcType=INTEGER},
+      </if>
+      <if test="direction != null" >
+        #{direction,jdbcType=INTEGER},
+      </if>
+      <if test="color != null" >
+        #{color,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="QosMappingAttr" >
+    update qostable
+    <set >
+      <if test="qosmodelid != null" >
+        qosModelId = #{qosmodelid,jdbcType=INTEGER},
+      </if>
+      <if test="grade != null" >
+        grade = #{grade,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null" >
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="value != null" >
+        value = #{value,jdbcType=INTEGER},
+      </if>
+      <if test="siteid != null" >
+        siteId = #{siteid,jdbcType=INTEGER},
+      </if>
+      <if test="model != null" >
+        model = #{model,jdbcType=INTEGER},
+      </if>
+      <if test="direction != null" >
+        direction = #{direction,jdbcType=INTEGER},
+      </if>
+      <if test="color != null" >
+        color = #{color,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="QosMappingAttr" >
+    update qostable
+    set qosModelId = #{qosmodelid,jdbcType=INTEGER},
+      grade = #{grade,jdbcType=VARCHAR},
+      name = #{name,jdbcType=VARCHAR},
+      value = #{value,jdbcType=INTEGER},
+      siteId = #{siteid,jdbcType=INTEGER},
+      model = #{model,jdbcType=INTEGER},
+      direction = #{direction,jdbcType=INTEGER},
+      color = #{color,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  
+   <insert id="insert" parameterType="QosMappingAttr" useGeneratedKeys="true" keyProperty="id">
+    insert into qostable (qosModelId, grade, 
+      name, value, siteId, 
+      model, direction, color
+      )
+    values ( #{qos.phbId,jdbcType=INTEGER}, #{qos.grade,jdbcType=VARCHAR}, 
+      #{qos.name,jdbcType=VARCHAR}, #{qos.value,jdbcType=INTEGER}, #{qos.siteId,jdbcType=INTEGER}, 
+      #{qos.model,jdbcType=INTEGER}, #{qos.direction,jdbcType=INTEGER}, #{qos.color,jdbcType=INTEGER}
+      )
+  </insert>
+  
+   <update id="update" parameterType="QosMappingAttr" >
+    update qostable
+    <set>
+       <if test="qos.phbId>0 ">qosModelId =#{qos.phbId} </if>
+       <if test="qos.grade!=null and qos.grade!='' ">grade= =#{qos.grade} </if>
+       <if test="qos.name!=null and qos.name!='' ">name= =#{qos.name} </if>
+       <if test="qos.value>=0 ">value =#{qos.value} </if>
+       <if test="qos.siteId>0 ">siteId =#{qos.siteId} </if>
+       <if test="qos.model>0 ">model =#{qos.model} </if>
+       <if test="qos.direction>0 ">direction =#{qos.direction} </if>
+    </set>         
+    where id = #{qos.id,jdbcType=INTEGER}
+  </update>
+
+</mapper>

@@ -1,0 +1,256 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nms.db.dao.alarm.HisAlarmInfoMapper" >
+  <resultMap id="BaseResultMap" type="HisAlarmInfo" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="siteid" property="siteId" jdbcType="INTEGER" />
+    <result column="slotId" property="slotId" jdbcType="INTEGER" />
+    <result column="objectid" property="objectId" jdbcType="INTEGER" />
+    <result column="objecttype" property="objectType" jdbcType="INTEGER" typeHandler="com.nms.db.enums.IntEnumTypeHandler"/>
+    <result column="objectname" property="objectName" jdbcType="VARCHAR" />
+    <result column="alarmcode" property="alarmCode" jdbcType="INTEGER" />
+    <result column="alarmlevel" property="alarmLevel" jdbcType="INTEGER" />
+    <result column="happenedtime" property="happenedtime" jdbcType="VARCHAR" />
+    <result column="confirmtime" property="confirmtime" jdbcType="VARCHAR" />
+    <result column="clearedtime" property="cleanTime" jdbcType="VARCHAR" />
+    <result column="ackuser" property="ackUser" jdbcType="VARCHAR" />
+    <result column="comments" property="commonts" jdbcType="VARCHAR" />
+    <result column="alarmlevel_temp" property="warningLevel_temp" jdbcType="INTEGER" />
+    <result column="isCleared" property="isClear" jdbcType="INTEGER" />
+    <result column="alarmID" property="alarmId" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, siteid, slotId, objectid, objecttype, objectname, alarmcode, alarmlevel, happenedtime, 
+    confirmtime, clearedtime, ackuser, comments, alarmlevel_temp, isCleared, alarmID
+  </sql>
+  <insert id="insert" parameterType="HisAlarmInfo" useGeneratedKeys="true" keyProperty="id" > 
+    insert into 
+    history_alarm
+    (siteid,slotId,objectid,objecttype,objectname ,alarmcode,alarmlevel,happenedtime,
+    confirmtime,clearedtime,ackuser,comments,alarmlevel_temp,isCleared,alarmId)
+    values(#{siteId},#{slotId},#{objectId},#{objectType,typeHandler=com.nms.db.enums.IntEnumTypeHandler},
+    #{objectName},#{alarmCode},
+    #{alarmLevel},#{happenedtime},#{confirmtime},#{cleanTime},#{ackUser},#{commonts},
+    #{warningLevel_temp},#{isClear},#{alarmId})
+  </insert>
+  <update id="update" parameterType="HisAlarmInfo" >
+  update  history_alarm as p set p.confirmtime=#{confirmtime},p.happenedtime=#{happenedtime},
+  p.clearedtime=#{cleanTime},p.ackuser=#{ackUser}, p.comments=#{commonts},p.alarmlevel=#{alarmLevel},
+  p.alarmlevel_temp=#{warningLevel_temp},p.isCleared=#{isCleared},p.alarmId = #{alarmId} where p.id=#{id}
+  </update>
+  <update id="updateObjectid" >
+   update history_alarm set objectid = #{newTunnelId} where objecttype =#{type} and objectid in 
+		<foreach item="item" index="index" collection="ids" open="(" separator="," close=")">  
+ 		 #{item}  
+ 		</foreach>
+  </update>
+  <select id="queryMaxId" resultType="java.lang.Integer">
+   select max(id) as maxid from history_alarm
+   </select>
+   <select id="selectAllIdList" resultType="java.lang.Integer" parameterType="map" >
+   select id from history_alarm where 1=1 
+   <if test="siteIdList != null and siteIdList.size() > 0">
+   and siteid in
+   	<foreach item="item" index="index" collection="siteIdList" open="(" separator="," close=",0)">  
+ 	 #{item}  
+ 	</foreach>
+   </if>
+   <if test="filter != null">
+    <if test="type == 2">
+    and slotId in
+    <foreach item="item" index="index" collection="filter.slotInsts" open="(" separator="," close=",0)">  
+ 	 #{item}  
+ 	</foreach>
+    </if>
+    and alarmcode in
+    <foreach item="item" index="index" collection="filter.alarmCodeList" open="(" separator="," close=",0)">  
+ 	 #{item}  
+ 	</foreach>
+ 	and alarmlevel_temp in
+ 	<foreach item="item" index="index" collection="filter.alarmLevel" open="(" separator="," close=",0)">  
+ 	 #{item}  
+ 	</foreach>
+    <if test="filter.alarmState == 1">
+ 	and ackuser is not null
+    </if>
+    <if test="filter.alarmState != 1">
+ 	and ackuser is null
+    </if>
+    <if test="filter.happenTime != null">
+    and (happenedtime between #{filter.happenTime} and #{filter.happenEndTime})
+    </if>
+    <if test="filter.ClearTime != null">
+    and (clearedtime between #{filter.ClearTime} and #{filter.ClearEndTime})
+    </if>
+    <if test="filter.ensureTime != null">
+    and (confirmtime between #{filter.ensureTime} and #{filter.ensureEndTime})
+    </if>
+    <if test="filter.ensureUser != null">
+    and ackuser =#{filter.ensureUser}
+    </if>
+   </if>
+   order by id desc
+   </select>
+   <resultMap id="HisAlarm" type="HisAlarmInfo" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="siteid" property="siteId" jdbcType="INTEGER" />
+    <result column="slotId" property="slotId" jdbcType="INTEGER" />
+    <result column="objectid" property="objectId" jdbcType="INTEGER" />
+    <result column="objecttype" property="objectType" jdbcType="INTEGER" typeHandler="com.nms.db.enums.IntEnumTypeHandler"/>
+    <result column="objectname" property="objectName" jdbcType="VARCHAR" />
+    <result column="alarmcode" property="alarmCode" jdbcType="INTEGER" />
+    <result column="alarmlevel" property="alarmLevel" jdbcType="INTEGER" />
+    <result column="happenedtime" property="happenedtime" jdbcType="VARCHAR" />
+    <result column="confirmtime" property="confirmtime" jdbcType="VARCHAR" />
+    <result column="clearedtime" property="cleanTime" jdbcType="VARCHAR" />
+    <result column="ackuser" property="ackUser" jdbcType="VARCHAR" />
+    <result column="comments" property="commonts" jdbcType="VARCHAR" />
+    <result column="alarmlevel_temp" property="warningLevel_temp" jdbcType="INTEGER" />
+    <result column="isCleared" property="isClear" jdbcType="INTEGER" />
+    <result column="alarmID" property="alarmId" jdbcType="INTEGER" />
+    <collection property="warningLevel" ofType="WarningLevel" >
+        <id property="warningcode" column="w.WarningCode"/>
+        <result column="id" property="id" jdbcType="INTEGER" />
+        <result column="warningname" property="warningname" jdbcType="VARCHAR" />
+        <result column="warningnote" property="warningnote" jdbcType="INTEGER" />
+        <result column="warninglevel" property="warninglevel" jdbcType="INTEGER" />
+        <result column="warninglevel_temp" property="warninglevel_temp" jdbcType="INTEGER" />
+        <result column="warningcode" property="warningcode" jdbcType="INTEGER" />
+        <result column="warningobject" property="warningobject" jdbcType="VARCHAR" />
+        <result column="warningtype" property="warningtype" jdbcType="INTEGER" />
+        <result column="manufacturer" property="manufacturer" jdbcType="INTEGER" />
+        <result column="warningdescribe" property="warningdescribe" jdbcType="INTEGER" />
+        <result column="waringeffect" property="waringeffect" jdbcType="VARCHAR" />
+        <result column="waringremark" property="waringremark" jdbcType="INTEGER" />
+        <result column="warningadvice" property="warningadvice" jdbcType="INTEGER" />
+        <result column="warningmayreason" property="warningmayreason" jdbcType="INTEGER" />
+    </collection>
+  </resultMap>
+   <select id="selectByPage" resultMap="BaseResultMap" parameterType="map" >
+    <if test="direction == 0">
+    SELECT * FROM history_alarm WHERE id > #{id}
+    </if>
+    <if test="direction != 0">
+    SELECT * FROM history_alarm WHERE id &lt; #{id}
+    </if>
+   <if test="siteIdList != null and siteIdList.size() > 0">
+   and siteid in
+   	<foreach item="item" index="index" collection="siteIdList" open="(" separator="," close=",0)">  
+ 	 #{item}  
+ 	</foreach>
+   </if>
+   <if test="filter != null">
+    <if test="type == 2">
+    and slotId in
+    <foreach item="item" index="index" collection="filter.slotInsts" open="(" separator="," close=",0)">  
+ 	 #{item}  
+ 	</foreach>
+    </if>
+    and alarmcode in
+    <foreach item="item" index="index" collection="filter.alarmCodeList" open="(" separator="," close=",0)">  
+ 	 #{item}  
+ 	</foreach>
+ 	and alarmlevel_temp in
+ 	<foreach item="item" index="index" collection="filter.alarmLevel" open="(" separator="," close=",0)">  
+ 	 #{item}  
+ 	</foreach>
+    <if test="filter.alarmState == 1">
+ 	and ackuser is not null
+    </if>
+    <if test="filter.alarmState != 1">
+ 	and ackuser is null
+    </if>
+    <if test="filter.happenTime != null">
+    and (happenedtime between #{filter.happenTime} and #{filter.happenEndTime})
+    </if>
+    <if test="filter.ClearTime != null">
+    and (clearedtime between #{filter.ClearTime} and #{filter.ClearEndTime})
+    </if>
+    <if test="filter.ensureTime != null">
+    and (confirmtime between #{filter.ensureTime} and #{filter.ensureEndTime})
+    </if>
+    <if test="filter.ensureUser != null">
+    and ackuser =#{filter.ensureUser}
+    </if>
+   </if>
+    <if test="direction == 0">
+    ORDER BY id ASC LIMIT #{pageCount}
+    </if>
+    <if test="direction != 0">
+    ORDER BY id DESC LIMIT #{pageCount}
+    </if>
+   </select>
+   <select id="queryHisBySites" resultMap="HisAlarm" parameterType="java.util.List" >
+   SELECT * from history_alarm  where 1=1 
+   <if test="siteIdList != null and siteIdList.size() > 0">
+   and siteid in
+   <foreach item="item" index="index" collection="siteIdList" open="(" separator="," close=")">  
+ 	 #{item}  
+ 	</foreach>
+   </if>
+   </select>
+   <select id="queryHisBySlots" resultMap="HisAlarm" parameterType="map" >
+   SELECT * from history_alarm  where 1=1
+   <if test="siteId > 0">
+   	and siteId = #{siteId}
+   </if>
+   <if test="slotIdList != null and slotIdList.size() > 0">
+    and slotId in
+   <foreach item="item" index="index" collection="slotIdList" open="(" separator="," close=")">  
+ 	 #{item}  
+ 	</foreach>
+   </if>
+   </select>
+   <select id="queryByCondition" resultMap="HisAlarm" >
+    SELECT * from history_alarm c where 1=1
+	  <if test="alarm.id>0"> and c.id=#{alarm.id}</if>
+	  <if test="alarm.siteId!=0"> and c.siteid=#{alarm.siteId}</if>
+	  <if test="alarm.slotId!=0"> and c.slotId=#{alarm.slotId}</if>
+	  <if test="alarm.objectId!=0"> and c.objectid=#{alarm.objectId}</if>
+	  <if test="type != 0"> and c.objecttype=#{type}</if>
+	  <if test="alarm.alarmCode!=0"> and c.alarmcode=#{alarm.alarmCode}</if>
+	  <if test="alarm.alarmLevel!=0"> and c.alarmlevel=#{alarm.alarmLevel}</if> 
+	  <if test="alarm.warningLevel_temp !=0"> and c.alarmlevel_temp=#{alarm.warningLevel_temp}</if>
+	  <if test="alarm.alarmTime!=null and alarm.alarmTime!='' "> and c.happenedtime=#{alarm.alarmTime}</if> 
+   </select>
+   <select id="selectAlarmCount" resultType="java.lang.Integer" parameterType="map">
+       select count(*) from history_alarm where 1=1
+       <if test="siteIdList != null and siteIdList.size() > 0">
+        and siteid in
+         <foreach item="item" index="index" collection="siteIdList" open="(" separator= ", " close=" )">
+           #{item}
+         </foreach>  
+       </if>
+        <if test="filter != null" >
+    	<if test="type == 2">
+    		and slotId in
+    		<foreach item="item" index="index" collection="filter.slotInsts"
+				open="(" separator="," close=")">
+				#{item}
+			</foreach>
+			and alarmcode in 
+			<foreach item="item" index="index" collection="filter.alarmCodeList"
+				open="(" separator="," close=")">
+				#{item}
+			</foreach>
+			and alarmlevel_temp in
+			<foreach item="item" index="index" collection="filter.alarmLevel"
+				open="(" separator="," close=")">
+				#{item}
+			</foreach>
+    	</if >
+    	<if test="filter.alarmState=='1'"> and ackuser is not null </if>
+    	<if test="filter.alarmState!='1'"> and ackuser is null </if>
+        <if test="filter.happenTime!=null"> and (happenedtime between #{filter.happenTime} and #{filter.happenEndTime}</if>
+		<if test="filter.ClearTime!=null"> and (clearedtime between #{filter.ClearTime} and #{filter.ClearEndTime}</if>	
+		<if test="filter.ensureTime !=null"> and (confirmtime between #{filter.ensureTime} and #{ensureEndTime}</if>	
+		<if test="filter.ensureUser!=null">and ackuser = #{filter.ensureUser}</if>
+    </if> 
+   </select>
+   <delete id="deleteByIds" parameterType="java.util.List" >
+     delete from history_alarm where id in 
+     <foreach item="item" index="index" collection="idList" open="(" separator= ", " close=" )">
+        #{item}
+     </foreach>     
+   </delete>
+</mapper>

@@ -1,0 +1,67 @@
+package com.nms.model.system;
+
+import java.sql.Connection;
+
+import com.nms.db.bean.system.UserDesginInfo;
+import com.nms.db.dao.system.UserDesginDao;
+import com.nms.model.util.ObjectService;
+import com.nms.ui.manager.ExceptionManage;
+
+public class UserDesginService extends ObjectService{
+
+	public void setConnection(Connection connection) {
+		super.connection = connection;
+	}
+
+	public void setPtnuser(String ptnuser) {
+		super.ptnuser = ptnuser;
+	}
+	
+	private UserDesginDao userDesginDao=new UserDesginDao();
+	
+	/**
+	 * 批量插入
+	 * @param userDesginfo
+	 * @throws Exception 
+	 */
+	public void save(UserDesginInfo userDesginfo) throws Exception{
+		try {
+			if(userDesginfo.getId()>0){
+				update(userDesginfo);
+			}else{
+				userDesginDao.insert(userDesginfo, connection);
+			}
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		}finally{
+		}
+	}
+	/**
+	 * 修改
+	 * @param userDesginfo
+	 * @throws Exception 
+	 */
+	public void update(UserDesginInfo userDesginfo) throws Exception{
+		try {
+			userDesginDao.update(userDesginfo, connection);
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		}finally{
+		}
+	}
+	/**
+	 * 查詢
+	 * @param userDesginfo
+	 * @throws Exception 
+	 */
+	public UserDesginInfo select(String userName) throws Exception{
+		UserDesginInfo userDesginfo=null;
+		try {
+			userDesginfo=userDesginDao.queryByCondition(userName,connection);
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		}finally{
+		}
+		return userDesginfo;
+	}
+}

@@ -1,0 +1,18 @@
+package com.nms.db.dao.equipment.port;
+
+import com.nms.db.bean.equipment.port.Port2LayerAttr;
+
+
+public interface Port2LayerAttrMapper {
+    int deleteByPrimaryKey(Integer id);
+
+    int insert(Port2LayerAttr record);
+
+    int insertSelective(Port2LayerAttr record);
+
+    Port2LayerAttr selectByPrimaryKey(Integer id);
+
+    int updateByPrimaryKeySelective(Port2LayerAttr record);
+
+    int updateByPrimaryKey(Port2LayerAttr record);
+}

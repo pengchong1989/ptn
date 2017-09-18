@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<driveRoot  xmlns="http://drive.bean.com">
+	<attribute length="1" description="端口号" value="0" mapping="(0)/1=(不关联)/关联"/>
+	<attribute length="6" description="备用" value="0" mapping="(5)"/>
+	<attribute length="1" description="端口LACP协议" value="0" mapping="(0)/1=(不关联)/关联"/>
+	<attribute length="1" description="端口状态" value="0" mapping="((0)/1=(不关联)/关联"/>
+	<attribute length="2" description="本地端口优先级" value="1" mapping="0/(1)=关/(开)"/>
+	<attribute length="10" description="备用" value="0" mapping="(5)"/>
+</driveRoot>

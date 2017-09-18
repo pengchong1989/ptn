@@ -1,0 +1,132 @@
+package com.nms.model.alarm;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
+import org.apache.ibatis.session.SqlSession;
+import com.nms.db.bean.alarm.CurrentAlarmInfo;
+import com.nms.db.dao.alarm.CurrentAlarmInfoMapper;
+import com.nms.model.util.ObjectService_Mybatis;
+import com.nms.ui.manager.ListingFilter;
+import com.nms.ui.manager.ResourceUtil;
+import com.nms.ui.manager.keys.StringKeysTip;
+import com.nms.ui.ptn.alarm.AlarmTools;
+import com.nms.db.enums.EObjectType;
+public class CurAlarmService_MB extends ObjectService_Mybatis {
+	private CurrentAlarmInfoMapper mapper = null;
+
+	public void setPtnuser(String ptnuser) {
+		super.ptnuser = ptnuser;
+	}
+
+	public void setSqlSession(SqlSession sqlSession) {
+		super.sqlSession = sqlSession;
+	}
+
+	public void setMapper(CurrentAlarmInfoMapper mapper) {
+		this.mapper = mapper;
+	}
+
+	public List<CurrentAlarmInfo> select(CurrentAlarmInfo currentAlarmInfo) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
+	
+	/**
+	 * 根据告警级别查询告警的相应数目
+	 * 
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	public int queryCurByAlarmlevel(int alarmlevel) throws Exception {
+		int count = 0;
+		CurrentAlarmInfo currentAlarmInfo = null;
+		List<CurrentAlarmInfo> currentAlarmInfoList = null;
+		ListingFilter listingFilter = null;
+		List<Object> objectList = null;
+		
+		List<CurrentAlarmInfo> currentAlarm =null;
+		List<CurrentAlarmInfo> currentAlarm1 =null;
+		
+		try {
+			
+			currentAlarmInfoList = new ArrayList<CurrentAlarmInfo>();
+			// 根据网元等级查询
+			currentAlarmInfo = new CurrentAlarmInfo();
+			currentAlarmInfo.setWarningLevel_temp(alarmlevel);
+			currentAlarm = new ArrayList<CurrentAlarmInfo>();
+			currentAlarm=this.mapper.query_join(currentAlarmInfo);
+			CurrentAlarmList(currentAlarm);
+			currentAlarmInfoList.addAll(currentAlarm);
+			
+			
+			//等级为2时 才去查询登录而产生的告警
+			if(alarmlevel ==2){
+				currentAlarm1 = new ArrayList<CurrentAlarmInfo>();
+				currentAlarm1=this.mapper.queryByClent();
+				CurrentAlarmList(currentAlarm1);
+				for(int i=0;i<currentAlarm1.size();i++){
+					currentAlarm1.get(i).setSiteName("EMS服务器");
+				}
+				currentAlarmInfoList.addAll(currentAlarm1);
+			}
+			// 查询后过滤没有权限的网元
+			listingFilter = new ListingFilter();
+			objectList = (List<Object>) listingFilter.filterList(currentAlarmInfoList);
+			count = objectList.size();
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			currentAlarmInfo = null;
+			currentAlarmInfoList = null;
+			listingFilter = null;
+			objectList = null;
+		}
+		return count;
+	}
+	
+	private void CurrentAlarmList(List<CurrentAlarmInfo> currentAlarm){
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		AlarmTools alarmTools = new AlarmTools();		
+		try {
+			if(currentAlarm!=null && currentAlarm.size()>0){
+			for(int i=0;i<currentAlarm.size();i++){
+				if(currentAlarm.get(i).getHappenedtime() !=null && !"".equals(currentAlarm.get(i).getHappenedtime())){
+			        currentAlarm.get(i).setRaisedTime(sdf.parse(currentAlarm.get(i).getHappenedtime()));
+				if(currentAlarm.get(i).getConfirmtime() !=null && !"".equals(currentAlarm.get(i).getConfirmtime())){
+					currentAlarm.get(i).setAckTime(sdf.parse(currentAlarm.get(i).getConfirmtime()));
+					currentAlarm.get(i).setAcked(true);
+				}else{
+					currentAlarm.get(i).setAcked(false);
+				}
+				if(currentAlarm.get(i).getCleanTime() !=null && !"".equals(currentAlarm.get(i).getCleanTime())){
+					currentAlarm.get(i).setClearedTime(sdf.parse(currentAlarm.get(i).getCleanTime()));
+					currentAlarm.get(i).setCleared(true);
+				}else{
+					currentAlarm.get(i).setCleared(false);
+				}
+		
+				if( currentAlarm.get(i).getIsClear() == 1){
+					currentAlarm.get(i).setIsCleared(ResourceUtil.srcStr(StringKeysTip.TIP_CLEARED));
+				}else{
+					currentAlarm.get(i).setIsCleared(ResourceUtil.srcStr(StringKeysTip.TIP_UNCLEARED));
+				}
+			
+				if("zh_CN".equals(ResourceUtil.language)){
+					currentAlarm.get(i).setAlarmDesc(currentAlarm.get(i).getWarningLevel().getWarningdescribe());
+				}else{
+					currentAlarm.get(i).setAlarmDesc(currentAlarm.get(i).getWarningLevel().getWarningname());
+				}	
+			   currentAlarm.get(i).setObjectType(EObjectType.forms(currentAlarm.get(i).getObjectType_db()));
+			   currentAlarm.get(i).setAlarmSeverity(alarmTools.getAlarmSeverity(currentAlarm.get(i).getWarningLevel().getWarninglevel_temp()));
+		    }				
+	      }
+			}
+		} catch (ParseException e) {
+			
+		}
+     }
+			
+}

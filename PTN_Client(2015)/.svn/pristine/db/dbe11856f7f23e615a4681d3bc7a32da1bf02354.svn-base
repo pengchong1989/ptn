@@ -1,0 +1,221 @@
+package com.nms.ui.ptn.safety;
+
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.swing.JButton;
+import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
+import javax.swing.JTabbedPane;
+import javax.swing.JTable;
+import javax.swing.ScrollPaneConstants;
+
+import com.nms.db.bean.equipment.shelf.SiteInst;
+import com.nms.db.bean.system.SiteLock;
+import com.nms.db.enums.EOperationLogType;
+import com.nms.model.system.SiteLockService_MB;
+import com.nms.model.util.Services;
+import com.nms.ui.frame.ContentView;
+import com.nms.ui.frame.ViewDataTable;
+import com.nms.ui.manager.AddOperateLog;
+import com.nms.ui.manager.ConstantUtil;
+import com.nms.ui.manager.DialogBoxUtil;
+import com.nms.ui.manager.ExceptionManage;
+import com.nms.ui.manager.ResourceUtil;
+import com.nms.ui.manager.UiUtil;
+import com.nms.ui.manager.control.PtnButton;
+import com.nms.ui.manager.keys.StringKeysTip;
+import com.nms.ui.ptn.safety.controller.SiteLockPanelController;
+import com.nms.ui.ptn.safety.roleManage.RootFactory;
+/**
+ * 网元 锁定
+ * @author Administrator
+ *
+ */
+public class SiteLockInfoPanel extends ContentView<SiteInst>{
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 7244399063021284941L;
+
+	public SiteLockInfoPanel() {
+		super("siteTable",RootFactory.DEPLOY_MANAGE);
+		try {
+			init();
+			addListeners();
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		}
+	}
+	
+	/**
+	 * 添加监听
+	 */
+	private void addListeners()  throws Exception{
+		getTable().addElementClickedActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				if(getSelect() == null){
+					//清除详细面板数据
+					siteLockTable.clear();
+				}else{
+					getController().initDetailInfo();
+				}
+				
+			}
+		});
+		
+	}
+
+	private void init()  throws Exception{
+		this.initComponents();
+		this.setLayout();
+		try {
+			getController().refresh();
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		}
+	}
+	
+	/**
+	 * 初始化组件
+	 */
+	private void initComponents() throws Exception {
+		tablePane = new JTabbedPane();
+		splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
+		splitPane.setOrientation(JSplitPane.VERTICAL_SPLIT);
+		splitPane.setOneTouchExpandable(true);
+		int high = Double.valueOf(Toolkit.getDefaultToolkit().getScreenSize().getHeight()).intValue() / 2;
+		splitPane.setDividerLocation(high - 65);
+		splitPane.setTopComponent(this.getContentPanel());
+		splitPane.setBottomComponent(tablePane);
+		siteLockTable = new ViewDataTable<SiteLock>("siteLockTable");
+		siteLockTable.getTableHeader().setResizingAllowed(true);
+		siteLockTable.setAutoResizeMode(JTable.AUTO_RESIZE_NEXT_COLUMN);
+		siteLockTable.setTableHeaderPopupMenuFactory(null);
+		siteLockTable.setTableBodyPopupMenuFactory(null);
+		siteLockJScrollPane = new JScrollPane();
+		siteLockJScrollPane.setViewportView(siteLockTable);
+		siteLockJScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		siteLockJScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+	}
+
+	/**
+	 * 设置布局
+	 */
+	private void setLayout()  throws Exception{
+		setTabbedPaneLayout();
+		GridBagConstraints gridBagConstraints = new GridBagConstraints();
+		GridBagLayout siteGridBagLayout = new GridBagLayout();
+		siteGridBagLayout.columnWeights = new double[] { 0.5, 0.5 };
+		this.setLayout(siteGridBagLayout);
+		addComponent(this, splitPane, 0, 1, 1.0, 1.0, 1, 1, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), GridBagConstraints.NORTHWEST, gridBagConstraints);
+	}
+
+	private void setTabbedPaneLayout() throws Exception {
+		tablePane.add(ResourceUtil.srcStr(StringKeysTip.TIP_SITELOCK_INFO), siteLockJScrollPane);
+		
+	}
+
+	@Override
+	public void setController() {
+		controller = new SiteLockPanelController(this);
+	}
+	
+	@Override
+	public List<JButton> setNeedRemoveButtons() {
+		List<JButton> needRemoveButtons = new ArrayList<JButton>();
+		needRemoveButtons.add(getAddButton());
+		needRemoveButtons.add(getUpdateButton());
+		needRemoveButtons.add(getDeleteButton());
+		needRemoveButtons.add(getSynchroButton());
+		needRemoveButtons.add(getSearchButton());
+		return needRemoveButtons;
+	}
+	
+	@Override
+	public List<JButton> setAddButtons(){
+		List<JButton> needRemoveButtons = new ArrayList<JButton>();
+		try {
+			needRemoveButtons.add(this.getClearLockButton());
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		}
+		return needRemoveButtons;
+	}
+
+	/**
+	 * 
+	 * @return
+	 */
+	private JButton getClearLockButton()  throws Exception{
+		JButton clearLockButton = new PtnButton(ResourceUtil.srcStr(StringKeysTip.TIP_CLEAR_SITELOCK),RootFactory.SATY_MANAGE);
+		//新建按钮事件
+		clearLockButton.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				try {
+					clearSiteLock();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				
+			}
+		});
+		return clearLockButton;
+	}
+
+	/**
+	 * 强制解锁
+	 */
+	private void clearSiteLock()  throws Exception{
+		SiteLockService_MB lockService = null;
+		List<SiteLock> locks = null;
+		try {
+			if(getAllSelect() != null && getAllSelect().size()>0){
+				List<SiteInst> siteInsts = this.getTable().getAllSelect();
+				List<Integer> siteIds = new ArrayList<Integer>();
+				for(SiteInst site : siteInsts){
+					siteIds.add(site.getSite_Inst_Id());
+				}
+				lockService = (SiteLockService_MB) ConstantUtil.serviceFactory.newService_MB(Services.SITELOCK);
+				locks = lockService.selectAllSiteLock(siteIds);
+				if(siteIds.size()==locks.size()){
+					lockService.updateClear(siteIds);//批量解锁
+					DialogBoxUtil.succeedDialog(this, ResourceUtil.srcStr(StringKeysTip.TIP_SITELOCK_ENABLED));
+					UiUtil.insertOperationLog(EOperationLogType.INSERTROLEVLAUE.getValue(),ResourceUtil.srcStr(StringKeysTip.TIP_CONFIG_SUCCESS));
+					//刷新数据
+					getController().refresh();
+				}else if(locks.size()<siteIds.size()){
+					//弹出对话框，告诉用户被选中的网元没有锁
+					DialogBoxUtil.errorDialog(this, ResourceUtil.srcStr(StringKeysTip.TIP_SELECT_LOCKED_SITE));
+					UiUtil.insertOperationLog(EOperationLogType.FORCECLEARLOCK.getValue());
+				}
+			}else{
+				DialogBoxUtil.errorDialog(this, ResourceUtil.srcStr(StringKeysTip.TIP_SELECT_DATA_ONE));
+				UiUtil.insertOperationLog(EOperationLogType.FORCECLEARLOCKERROR.getValue());
+			}
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		} finally {
+			UiUtil.closeService_MB(lockService);
+		}
+	}
+
+	public ViewDataTable<SiteLock> getSiteLockTable()  throws Exception{
+		return siteLockTable;
+	}
+
+	private JSplitPane splitPane;
+	private JTabbedPane tablePane;
+	private JScrollPane siteLockJScrollPane;
+	private ViewDataTable<SiteLock> siteLockTable;
+}

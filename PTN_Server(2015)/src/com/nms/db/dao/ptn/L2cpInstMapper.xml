@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nms.db.dao.ptn.L2cpInstMapper" >
+  <resultMap id="BaseResultMap" type="L2cpInfo" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="siteid" property="siteId" jdbcType="INTEGER" />
+    <result column="l2cpEnable" property="l2cpEnable" jdbcType="INTEGER" />
+    <result column="bpduTreaty" property="bpduTreaty" jdbcType="INTEGER" />
+    <result column="lldpTreaty" property="lldpTreaty" jdbcType="INTEGER" />
+    <result column="lacpTreaty" property="lacpTreaty" jdbcType="INTEGER" />
+    <result column="ieeeTreaty" property="ieeeTreaty" jdbcType="INTEGER" />
+    <result column="macAddress" property="macAddress" jdbcType="VARCHAR" />
+    <result column="treatyNumber" property="treatyNumber" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  <sql id="Base_Column_List" >
+    id, siteid, l2cpEnable, bpduTreaty, lldpTreaty, lacpTreaty, ieeeTreaty, macAddress, 
+    treatyNumber
+  </sql>
+ 
+  <delete id="delete" parameterType="java.lang.Integer" >
+    delete from l2cp_inst where siteId =#{siteId}
+  </delete>
+  
+  <insert id="insert" parameterType="L2cpInfo"  useGeneratedKeys="true" keyProperty="id">
+    insert into l2cp_inst 
+    (siteid,l2cpEnable,bpduTreaty,lldpTreaty,lacpTreaty,ieeeTreaty,macAddress,treatyNumber)
+    values (#{siteId,jdbcType=INTEGER}, #{l2cpEnable,jdbcType=INTEGER}, #{bpduTreaty,jdbcType=INTEGER},
+     #{lldpTreaty,jdbcType=INTEGER}, #{lacpTreaty,jdbcType=INTEGER}, #{ieeeTreaty,jdbcType=INTEGER}, 
+     #{macAddress,jdbcType=VARCHAR}, #{treatyNumber,jdbcType=VARCHAR})
+  </insert>
+ 
+  
+  <update id="update" parameterType="L2cpInfo" >
+    update l2cp_inst set 
+      l2cpEnable = #{l2cpEnable,jdbcType=INTEGER},
+      bpduTreaty = #{bpduTreaty,jdbcType=INTEGER},
+      lldpTreaty = #{lldpTreaty,jdbcType=INTEGER},
+      lacpTreaty = #{lacpTreaty,jdbcType=INTEGER},
+      ieeeTreaty = #{ieeeTreaty,jdbcType=INTEGER},
+      macAddress = #{macAddress,jdbcType=VARCHAR},
+      treatyNumber = #{treatyNumber,jdbcType=VARCHAR}
+    where siteid = #{siteId,jdbcType=INTEGER}
+  </update>
+  
+
+</mapper>

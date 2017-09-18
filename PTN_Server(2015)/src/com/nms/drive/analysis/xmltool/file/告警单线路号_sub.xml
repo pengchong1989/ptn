@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<driveRoot  xmlns="http://drive.bean.com">
+	<attribute length="4" description="单线路号" value="01" mapping=""/>
+</driveRoot>
+

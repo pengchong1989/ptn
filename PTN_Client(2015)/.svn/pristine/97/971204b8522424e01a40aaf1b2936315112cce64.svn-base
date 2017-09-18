@@ -1,0 +1,233 @@
+package com.nms.db.dao.ptn.clock;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.Statement;
+
+import com.nms.db.bean.ptn.clock.TodConfigInfo;
+import com.nms.ui.manager.ExceptionManage;
+
+public class TodDispositionInfoDao {
+	/**
+	 * @param todConfigInfo
+	 *            实体
+	 * @param conection
+	 *            数据库连接
+	 * @return 判断是否插入成功 返回的ID号 只要不是0就是插入成功
+	 * @throws Exception
+	 * 插入数据
+	 */
+	public int insert(TodConfigInfo todConfigInfo,Connection conection) throws Exception {
+		if (null == todConfigInfo) {
+			throw new Exception("todConfigInfo is null");
+		}
+		if (null == conection) {
+			throw new Exception("connection is null");
+		}
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+		int result = 0;
+		try {
+			sql = "insert into timePortDispositionTOD(siteId,port,interfaceType," +
+					"physicalStatus,logicalStatus," +
+					"priority1,clockType," +
+					"clockAccuracy,clockVariance," +
+					"priority2) " +
+					"value(?,?,?,?,?,?,?,?,?,?)";
+			
+			preparedStatement = conection.prepareStatement(sql,Statement.RETURN_GENERATED_KEYS);
+			
+			preparedStatement.setInt(1, todConfigInfo.getSiteId());
+			preparedStatement.setString(2, todConfigInfo.getPort());
+			preparedStatement.setInt(3, todConfigInfo.getInterfaceType());
+			preparedStatement.setString(4, todConfigInfo.getPhysicalStatus());
+			preparedStatement.setString(5, todConfigInfo.getLogicalStatus());
+			preparedStatement.setString(6, todConfigInfo.getPriority1());
+			preparedStatement.setString(7, todConfigInfo.getClockType());
+			preparedStatement.setString(8, todConfigInfo.getClockAccuracy());
+			preparedStatement.setString(9, todConfigInfo.getClockVariance());
+			preparedStatement.setString(10, todConfigInfo.getPriority2());
+			
+			preparedStatement.executeUpdate();
+			resultSet = preparedStatement.getGeneratedKeys();
+			if (resultSet.next()) {
+				result = resultSet.getInt(1);
+			}
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			sql = null;
+			if (resultSet != null) {
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				resultSet = null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+		}
+		return result;
+	}
+/**
+ * 
+ * @param todConfigInfo 实体
+ * @param connection 数据库连接
+ * @return 1删除成功，0不成功；
+ * @throws Exception
+ * function:通过关联网元表主键 来删除数据
+ */
+	public int delete(TodConfigInfo todConfigInfo,Connection connection) throws Exception {
+		if (null == todConfigInfo) {
+			throw new Exception("todConfigInfo is null");
+		}
+		if (connection == null) {
+			throw new Exception("connection is null");
+		}
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		int result=0;
+		try {
+			sql = "delete from timePortDispositionTOD where siteId=?";
+            
+			preparedStatement = connection.prepareStatement(sql,Statement.RETURN_GENERATED_KEYS);
+			preparedStatement.setInt(1, todConfigInfo.getSiteId());
+			
+			result = preparedStatement.executeUpdate();
+		} catch (Exception e) {
+			throw e;
+		}finally{
+			sql=null;
+			if(preparedStatement!=null){
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement=null;
+			}
+		}
+		return result;
+	}
+	/**
+	 * function: 查找单个的网元时钟的状态和属性
+	 * @param conn 数据库连接
+	 * @return 所有网元时钟的状态和属性 集合
+	 * @throws Exception
+	 */
+public TodConfigInfo select(Connection conn,int id) throws Exception{
+	if(conn==null){
+		throw new Exception("connection is null");
+	}
+	String sql=null;
+	PreparedStatement pre=null;
+	ResultSet ste=null;
+	TodConfigInfo todConfigInfo=null;
+	try {
+		sql="select * from timePortDispositionTOD where siteId=?";
+		pre=conn.prepareStatement(sql);
+		pre.setInt(1, id);
+		ste=pre.executeQuery();
+		
+		while(ste.next()){
+			todConfigInfo=new TodConfigInfo();
+			todConfigInfo.setId(ste.getInt("id"));
+			todConfigInfo.setSiteId(ste.getInt("siteId"));
+			todConfigInfo.setPort(ste.getString("port"));
+			todConfigInfo.setInterfaceType(ste.getInt("interfaceType"));
+			todConfigInfo.setPhysicalStatus(ste.getString("physicalStatus"));
+			todConfigInfo.setLogicalStatus(ste.getString("logicalStatus"));
+			todConfigInfo.setPriority1(ste.getString("priority1"));
+			todConfigInfo.setClockType(ste.getString("clockType"));
+			todConfigInfo.setClockAccuracy(ste.getString("clockAccuracy"));
+			todConfigInfo.setClockVariance(ste.getString("clockVariance"));
+			todConfigInfo.setPriority2(ste.getString("priority2"));
+			
+		}
+	} catch (Exception e) {
+		throw e;
+	}finally{
+		sql=null;
+		if (ste != null) {
+			try {
+				ste.close();
+			} catch (Exception e) {
+				ExceptionManage.dispose(e,this.getClass());
+			}
+			ste = null;
+		}
+		if (pre != null) {
+			try {
+				pre.close();
+			} catch (Exception e) {
+				ExceptionManage.dispose(e,this.getClass());
+			}
+			pre = null;
+		}
+	}
+	return todConfigInfo;
+	}
+	/**
+	 * 
+	 * @param todConfigInfo 实体
+	 * @param conn 数据库连接
+	 * @return 1成功，0不成功
+	 * @throws Exception
+	 * function:根新数据
+	 */
+public int update(TodConfigInfo todConfigInfo,Connection conn)throws Exception{
+	if(todConfigInfo==null){
+		throw new Exception("todConfigInfo is null");
+	}
+	if(conn==null){
+		throw new Exception("conn is null");
+	}
+	StringBuffer sql=null;;
+	PreparedStatement pre=null;
+	int result=0;
+	try {
+		sql=new StringBuffer();
+
+		sql.append("update timePortDispositionTOD set port=?, interfaceType=?,");
+	    sql.append("physicalStatus=?,logicalStatus=?,priority1=?,clockType=?," +
+	    		    "clockAccuracy=?,clockVariance=?,priority2=? where siteId=?");
+	    
+	    pre=conn.prepareStatement(sql.toString());
+	    pre.setString(1, todConfigInfo.getPort());
+	    pre.setInt(2, todConfigInfo.getInterfaceType());
+	    pre.setString(3, todConfigInfo.getPhysicalStatus());
+	    pre.setString(4,todConfigInfo.getLogicalStatus());
+	    pre.setString(5, todConfigInfo.getPriority1());
+	    pre.setString(6, todConfigInfo.getClockType());
+	    pre.setString(7, todConfigInfo.getClockAccuracy());
+	    pre.setString(8, todConfigInfo.getClockVariance());
+	    pre.setString(9, todConfigInfo.getPriority2());
+	    pre.setInt(10,  todConfigInfo.getSiteId());
+	    
+	    result=pre.executeUpdate();
+	    
+	} catch (Exception e) {
+		throw e;
+	}finally{
+		sql=null;
+		if (pre != null) {
+			try {
+				pre.close();
+			} catch (Exception e) {
+				ExceptionManage.dispose(e,this.getClass());
+			}
+			pre = null;
+		}
+	}
+	return result;
+}
+}

@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nms.db.dao.system.loginlog.UserLockMapper" >
+  <resultMap id="BaseResultMap" type="UserLock" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="user_id" property="user_id" jdbcType="INTEGER" />
+    <result column="lockTime" property="lockTime" jdbcType="VARCHAR" />
+    <result column="clearTime" property="clearTime" jdbcType="VARCHAR" />
+    <result column="lockType" property="lockType" jdbcType="INTEGER" />
+    <result column="clearType" property="clearType" jdbcType="INTEGER" />
+    <result column="lockUsername" property="lockUsername" jdbcType="VARCHAR" />
+    <result column="clearUsername" property="clearUsername" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  <sql id="Base_Column_List" >
+    id, user_id, lockTime, clearTime, lockType, clearType, lockUsername, clearUsername
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from user_lock
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from user_lock
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="UserLock" >
+    insert into user_lock (id, user_id, lockTime, 
+      clearTime, lockType, clearType, 
+      lockUsername, clearUsername)
+    values (#{id,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER}, #{locktime,jdbcType=VARCHAR}, 
+      #{cleartime,jdbcType=VARCHAR}, #{locktype,jdbcType=INTEGER}, #{cleartype,jdbcType=INTEGER}, 
+      #{lockusername,jdbcType=VARCHAR}, #{clearusername,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="UserLock" >
+    insert into user_lock
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="userId != null" >
+        user_id,
+      </if>
+      <if test="locktime != null" >
+        lockTime,
+      </if>
+      <if test="cleartime != null" >
+        clearTime,
+      </if>
+      <if test="locktype != null" >
+        lockType,
+      </if>
+      <if test="cleartype != null" >
+        clearType,
+      </if>
+      <if test="lockusername != null" >
+        lockUsername,
+      </if>
+      <if test="clearusername != null" >
+        clearUsername,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="userId != null" >
+        #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="locktime != null" >
+        #{locktime,jdbcType=VARCHAR},
+      </if>
+      <if test="cleartime != null" >
+        #{cleartime,jdbcType=VARCHAR},
+      </if>
+      <if test="locktype != null" >
+        #{locktype,jdbcType=INTEGER},
+      </if>
+      <if test="cleartype != null" >
+        #{cleartype,jdbcType=INTEGER},
+      </if>
+      <if test="lockusername != null" >
+        #{lockusername,jdbcType=VARCHAR},
+      </if>
+      <if test="clearusername != null" >
+        #{clearusername,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="UserLock" >
+    update user_lock
+    <set >
+      <if test="userId != null" >
+        user_id = #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="locktime != null" >
+        lockTime = #{locktime,jdbcType=VARCHAR},
+      </if>
+      <if test="cleartime != null" >
+        clearTime = #{cleartime,jdbcType=VARCHAR},
+      </if>
+      <if test="locktype != null" >
+        lockType = #{locktype,jdbcType=INTEGER},
+      </if>
+      <if test="cleartype != null" >
+        clearType = #{cleartype,jdbcType=INTEGER},
+      </if>
+      <if test="lockusername != null" >
+        lockUsername = #{lockusername,jdbcType=VARCHAR},
+      </if>
+      <if test="clearusername != null" >
+        clearUsername = #{clearusername,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="UserLock" >
+    update user_lock
+    set user_id = #{userId,jdbcType=INTEGER},
+      lockTime = #{locktime,jdbcType=VARCHAR},
+      clearTime = #{cleartime,jdbcType=VARCHAR},
+      lockType = #{locktype,jdbcType=INTEGER},
+      clearType = #{cleartype,jdbcType=INTEGER},
+      lockUsername = #{lockusername,jdbcType=VARCHAR},
+      clearUsername = #{clearusername,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  
+   <select id="selectLockType" resultMap="BaseResultMap" parameterType="map" >
+    select 
+    <include refid="Base_Column_List" />
+    from user_lock 
+    where 1=1
+    <if test="userLock.user_id>0 and max==1"> and user_id=#{userLock.user_id} order by lockTime DESC limit 0,#{max}</if>
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+
+  <update id="updateUserLock" parameterType="UserLock" >
+    update user_lock 
+    set 
+    clearTime=#{userLock.clearTime},
+    clearType=#{userLock.clearType},
+    clearUsername=#{userLock.clearUsername} 
+    where id=#{userLock.id}
+  </update>
+</mapper>

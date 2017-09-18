@@ -1,0 +1,612 @@
+﻿package com.nms.model.ptn.path.protect;
+
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import com.nms.db.bean.equipment.shelf.SiteInst;
+import com.nms.db.bean.path.Segment;
+import com.nms.db.bean.ptn.Businessid;
+import com.nms.db.bean.ptn.path.protect.LoopProtectInfo;
+import com.nms.db.dao.ptn.BusinessidDao;
+import com.nms.db.dao.ptn.path.protect.WrappingDao;
+import com.nms.db.enums.EActionType;
+import com.nms.db.enums.EManufacturer;
+import com.nms.db.enums.EServiceType;
+import com.nms.model.equipment.shlef.SiteService;
+import com.nms.model.path.SegmentService;
+import com.nms.model.ptn.BusinessidService;
+import com.nms.model.util.ObjectService;
+import com.nms.model.util.Services;
+import com.nms.service.impl.util.SiteUtil;
+import com.nms.ui.manager.ConstantUtil;
+import com.nms.ui.manager.ExceptionManage;
+import com.nms.ui.manager.ResourceUtil;
+import com.nms.ui.manager.UiUtil;
+import com.nms.ui.manager.keys.StringKeysTip;
+
+public class WrappingProtectService extends ObjectService {
+
+	public void setConnection(Connection connection) {
+		super.connection = connection;
+	}
+
+	public void setPtnuser(String ptnuser) {
+		super.ptnuser = ptnuser;
+	}
+
+	private WrappingDao wrappingDao = new WrappingDao();
+	private BusinessidDao businessidDao = new BusinessidDao();
+	private final static int ISUSEDSTATUS = 1;
+
+	/**
+	 * 新增
+	 * 
+	 * @param loopProtectList
+	 * @return
+	 * @throws SQLException 
+	 */
+	public int insert(List<LoopProtectInfo> loopProtectList) throws SQLException {
+
+		int result = 0;
+		Businessid wrappingSerBusinessId = null;
+		List<Integer> siteList = null;
+		int loopId;
+		int businessid = 0;
+		List<LoopProtectInfo> loopProtectInfo1 = null;
+		BusinessidService businessidService = null;
+		SiteService siteService = null;
+		try {
+			connection.setAutoCommit(false);
+			siteService=(SiteService) ConstantUtil.serviceFactory.newService(Services.SITE, this.connection);
+			businessidService = (BusinessidService) ConstantUtil.serviceFactory.newService(Services.BUSINESSID, this.connection);
+			siteList = new ArrayList<Integer>();
+			SiteUtil siteUtil=new SiteUtil();
+			if (loopProtectList.size() > 1) {
+				addNodeId(loopProtectList);
+			}
+			for (LoopProtectInfo loopProtectInfo : loopProtectList) {
+				siteList.add(loopProtectInfo.getSiteId());
+			}
+			businessid = businessidService.select_site(siteList, "ring");// 获取可用的环id
+			result = businessid;
+			if (businessid == 0) {
+				throw new Exception("businessid is full");
+			}
+			
+			loopProtectInfo1 = wrappingDao.queryForLoop(connection);
+			if (loopProtectInfo1.size() > 0) {
+				loopId = loopProtectInfo1.get(0).getLoopId() + 1;
+			} else {
+				loopId = 1;
+			}
+			
+			// 更新bussinessid和添加环保护数据
+			for (LoopProtectInfo loopProtectInfo : loopProtectList) {
+				wrappingSerBusinessId = businessidDao.query(businessid, loopProtectInfo.getSiteId(), "ring", connection);
+				businessidDao.update(wrappingSerBusinessId.getId(), 1, connection);// 将环id设置为不可用
+				if (1 == loopProtectInfo.getIsSingle()) {
+					loopProtectInfo.setName("Ring/"+wrappingSerBusinessId.getIdValue());
+				}
+				if (EManufacturer.CHENXIAO.getValue() == siteService.getManufacturer(loopProtectInfo.getSiteId()) && 0 == siteUtil.SiteTypeUtil(loopProtectInfo.getSiteId())) {
+					loopProtectInfo.setLoopId(loopId);
+					loopProtectInfo.setLoopBusinessId(wrappingSerBusinessId.getIdValue());
+					if (EManufacturer.CHENXIAO.getValue() == siteService.getManufacturer(loopProtectInfo.getSiteId())) {
+
+						if (0 != loopProtectInfo.getNodeId()) {
+							wrappingSerBusinessId = businessidDao.query(loopProtectInfo.getNodeId(), loopProtectInfo.getSiteId(), "ringNode", connection);
+							businessidDao.update(wrappingSerBusinessId.getId(), 1, connection);// 将环id设置为不可用
+						}
+						if (0 != loopProtectInfo.getEastNodeId()) {
+							wrappingSerBusinessId = businessidDao.query(loopProtectInfo.getEastNodeId(), loopProtectInfo.getSiteId(), "ringNode", connection);
+							businessidDao.update(wrappingSerBusinessId.getId(), 1, connection);// 将环id设置为不可用
+						}
+						if (0 != loopProtectInfo.getWestNodeId()) {
+							wrappingSerBusinessId = businessidDao.query(loopProtectInfo.getWestNodeId(), loopProtectInfo.getSiteId(), "ringNode", connection);
+							businessidDao.update(wrappingSerBusinessId.getId(), 1, connection);// 将环id设置为不可用
+						}
+					}
+					
+				} else {
+					loopProtectInfo.setLoopId(wrappingSerBusinessId.getIdValue());
+					if (1 == loopProtectInfo.getIsSingle()) {
+						loopProtectInfo.setName(wrappingSerBusinessId.getIdValue() + "");
+					}
+				}
+				int id = wrappingDao.insert(loopProtectInfo, connection);
+				super.dateDownLoad(loopProtectInfo.getSiteId(),id, EServiceType.LOOPPROTECT.getValue(), EActionType.INSERT.getValue());
+				
+				if(!connection.getAutoCommit()){
+					connection.commit();
+				}
+			}
+		} catch (Exception e) {
+			try {
+				connection.rollback();
+			} catch (SQLException e1) {
+				ExceptionManage.dispose(e1,this.getClass());
+			}
+			ExceptionManage.dispose(e,this.getClass());
+		} finally {
+			connection.setAutoCommit(true);
+			wrappingSerBusinessId = null;
+			siteList = null;
+			loopProtectInfo1 = null;
+			
+		}
+		return result;
+	}
+
+	/**
+	 * 添加节点ID
+	 * @param loopProtectList
+	 * 			环对象
+	 * @throws Exception
+	 */
+	private void addNodeId(List<LoopProtectInfo> loopProtectList) throws Exception {
+		BusinessidService businessidService = null;
+		SegmentService segmentService = (SegmentService) ConstantUtil.serviceFactory.newService(Services.SEGMENT, this.connection);
+		List<Segment> segmentWestList = new ArrayList<Segment>();
+		List<Segment> segmentEastList = new ArrayList<Segment>();
+		Map<Integer, Integer> map = new HashMap<Integer, Integer>();
+		SiteService siteService=(SiteService) ConstantUtil.serviceFactory.newService(Services.SITE, this.connection);
+		for (LoopProtectInfo loopProtectInfo : loopProtectList) {
+			if (EManufacturer.CHENXIAO.getValue() == siteService.getManufacturer(loopProtectInfo.getSiteId())) {
+				List<Businessid> ring = new ArrayList<Businessid>();
+				businessidService = (BusinessidService) ConstantUtil.serviceFactory.newService(Services.BUSINESSID, this.connection);
+				List<Integer> ExitNodeId = new ArrayList<Integer>();
+				if (loopProtectList.size() > 0) {
+					for (LoopProtectInfo loopProtectInfo1 : loopProtectList) {
+						ExitNodeId.add(loopProtectInfo1.getNodeId());
+					}
+				}
+				ring = businessidService.selectAllByTypeForCondition(loopProtectInfo.getSiteId(), "ringnode", ExitNodeId);
+				loopProtectInfo.setNodeId(ring.get(0).getIdValue());
+			}
+			map.put(loopProtectInfo.getSiteId(), loopProtectInfo.getNodeId());
+		}
+		for (LoopProtectInfo loopProtectInfo : loopProtectList) {
+			segmentEastList = segmentService.selectBySegmentPortId(loopProtectInfo.getEastPort());
+			int siteIdEast = 0;
+			if (segmentEastList.get(0).getASITEID() == loopProtectInfo.getSiteId()) {
+				siteIdEast = segmentEastList.get(0).getZSITEID();
+			} else {
+				siteIdEast = segmentEastList.get(0).getASITEID();
+			}
+			loopProtectInfo.setEastNodeId((Integer) map.get(siteIdEast));
+
+			int siteIdWest = 0;
+			segmentWestList = segmentService.selectBySegmentPortId(loopProtectInfo.getWestPort());
+			if (segmentWestList.get(0).getASITEID() == loopProtectInfo.getSiteId()) {
+				siteIdWest = segmentWestList.get(0).getZSITEID();
+			} else {
+				siteIdWest = segmentWestList.get(0).getASITEID();
+			}
+			loopProtectInfo.setWestNodeId((Integer) map.get(siteIdWest));
+		}
+//		UiUtil.closeService(segmentService);
+//		UiUtil.closeService(businessidService);
+//		UiUtil.closeService(siteService);
+	}
+
+	/**
+	 * 更新
+	 * 
+	 * @param loopProtectList
+	 * @return
+	 * @throws SQLException
+	 */
+	public int update(List<LoopProtectInfo> loopProtectList) throws SQLException {
+		int result = 0;
+		Businessid wrappingSerBusinessId = null;
+		WrappingProtectService service = null;
+		LoopProtectInfo loopProtectSelect = null;
+		LoopProtectInfo loopProtectResult = null;
+		try {
+			connection.setAutoCommit(false);
+			loopProtectSelect = new LoopProtectInfo();
+			service = (WrappingProtectService) ConstantUtil.serviceFactory.newService(Services.WRAPPINGPROTECT, this.connection);
+			// 更新bussinessid和修改环保护数据
+			for (LoopProtectInfo loopProtectInfo : loopProtectList) {
+				result = wrappingDao.update(loopProtectInfo, connection);
+				loopProtectSelect.setSiteId(loopProtectInfo.getSiteId());
+				loopProtectSelect.setEastPort(loopProtectInfo.getEastPort());
+				loopProtectSelect.setWestPort(loopProtectInfo.getWestPort());
+				loopProtectResult = service.select(loopProtectSelect).get(0);
+				if (loopProtectResult.getNodeId() != loopProtectInfo.getNodeId()) {
+					wrappingSerBusinessId = businessidDao.query(loopProtectResult.getNodeId(), loopProtectInfo.getSiteId(), "ringNode", connection);
+					businessidDao.update(wrappingSerBusinessId.getId(), 0, connection);// 将环id设置为可用
+					wrappingSerBusinessId = businessidDao.query(loopProtectInfo.getNodeId(), loopProtectInfo.getSiteId(), "ringNode", connection);
+					businessidDao.update(wrappingSerBusinessId.getId(), 1, connection);// 将环id设置不为可用
+				}
+				if (loopProtectResult.getWestNodeId() != loopProtectInfo.getWestNodeId()) {
+					wrappingSerBusinessId = businessidDao.query(loopProtectResult.getWestNodeId(), loopProtectInfo.getSiteId(), "ringNode", connection);
+					businessidDao.update(wrappingSerBusinessId.getId(), 0, connection);// 将环id设置为可用
+					wrappingSerBusinessId = businessidDao.query(loopProtectInfo.getWestNodeId(), loopProtectInfo.getSiteId(), "ringNode", connection);
+					businessidDao.update(wrappingSerBusinessId.getId(), 1, connection);// 将环id设置不为可用
+				}
+				if (loopProtectResult.getEastNodeId() != loopProtectInfo.getEastNodeId()) {
+					wrappingSerBusinessId = businessidDao.query(loopProtectResult.getEastNodeId(), loopProtectInfo.getSiteId(), "ringNode", connection);
+					businessidDao.update(wrappingSerBusinessId.getId(), 0, connection);// 将环id设置为可用
+					wrappingSerBusinessId = businessidDao.query(loopProtectInfo.getEastNodeId(), loopProtectInfo.getSiteId(), "ringNode", connection);
+					businessidDao.update(wrappingSerBusinessId.getId(), 1, connection);// 将环id设置不为可用
+				}
+				//离线网元数据下载
+				super.dateDownLoad(loopProtectInfo.getSiteId(),loopProtectInfo.getId(), EServiceType.LOOPPROTECT.getValue(), EActionType.UPDATE.getValue());
+			}
+			if(!connection.getAutoCommit()){
+				connection.commit();
+			}
+			
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		} finally {
+			connection.setAutoCommit(true);
+			loopProtectSelect = null;
+			loopProtectResult = null;
+			wrappingSerBusinessId = null;
+		}
+		return result;
+	}
+
+	/**
+	 * 删除
+	 * @param loopProtectList
+	 * 				环保护对象
+	 * @return
+	 * @throws Exception
+	 */
+	public int delete(List<LoopProtectInfo> loopProtectList) throws Exception {
+		int result = 0;
+		for (LoopProtectInfo loopProtectInfo : loopProtectList) {
+			if (0 != loopProtectInfo.getLoopBusinessId()) {
+				Businessid businessId = new Businessid();
+				businessId.setIdStatus(0);
+				businessId.setIdValue(loopProtectInfo.getLoopBusinessId());
+				businessId.setType("ring");
+				businessId.setSiteId(loopProtectInfo.getSiteId());
+				businessidDao.updateBusinessid(businessId, connection);// 将环id设置为不可用
+			}
+			if (0 != loopProtectInfo.getEastLspId()) {
+				businessidDao.update(loopProtectInfo.getEastLspId(), 0, connection);// 将环id设置为不可用
+			}
+			if (0 != loopProtectInfo.getWestLspId()) {
+				businessidDao.update(loopProtectInfo.getWestLspId(), 0, connection);// 将环id设置为不可用
+			}
+		}
+		return result;
+	}
+
+	/**
+	 * 条件查询
+	 * 
+	 * @param loopProtectInfo
+	 * @return
+	 */
+	public List<LoopProtectInfo> select(LoopProtectInfo loopProtectInfo) {
+		List<LoopProtectInfo> loopProtectInfos = null;
+		SegmentService segmentService = null;
+		Segment segment = null;
+		List<Segment> list;
+		try {
+			list = new ArrayList<Segment>();
+			loopProtectInfos = wrappingDao.queryByCondition(loopProtectInfo, connection);
+			segmentService = (SegmentService) ConstantUtil.serviceFactory.newService(Services.SEGMENT, this.connection);
+
+			if (loopProtectInfos != null && loopProtectInfos.size() > 1) {// 带上对应的西向段
+				for (int i = 0; i < loopProtectInfos.size(); i++) {
+					list = segmentService.selectBySideAndPort(loopProtectInfos.get(i).getSiteId(), loopProtectInfos.get(i).getWestPort());
+					if (list.size() > 0) {
+						segment = list.get(0);
+						loopProtectInfos.get(i).setWestSegment(segment);
+					}
+				}
+			}
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		}finally{
+//			UiUtil.closeService(segmentService);
+			segment = null;
+			list = null;
+		}
+		return loopProtectInfos;
+	}
+
+	/**
+	 * 查询所有，主面板显示用
+	 */
+	public List<LoopProtectInfo> select() {
+		List<LoopProtectInfo> loopProtectInfos = new ArrayList<LoopProtectInfo>();
+		SegmentService segmentService = null;
+		Segment segment = null;
+		try {
+			loopProtectInfos = wrappingDao.selectAll(connection);
+			segmentService = (SegmentService) ConstantUtil.serviceFactory.newService(Services.SEGMENT, this.connection);
+
+			if (loopProtectInfos != null && loopProtectInfos.size() > 1) {// 带上对应的西向段
+				for (int i = 0; i < loopProtectInfos.size(); i++) {
+					segment = segmentService.selectBySideAndPort(loopProtectInfos.get(i).getSiteId(), loopProtectInfos.get(i).getWestPort()).get(0);
+					loopProtectInfos.get(i).setWestSegment(segment);
+				}
+			}
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		}finally{
+//			UiUtil.closeService(segmentService);
+			segment = null;
+		}
+		return loopProtectInfos;
+	}
+
+	/**
+	 * 根据环网id批量删除
+	 * 
+	 * @param loopProtectInfoList
+	 * @throws SQLException
+	 */
+	public void deleteByLoopId(List<LoopProtectInfo> loopProtectInfoList) throws SQLException {
+		Businessid wrappingSerBusinessId = null;
+		SiteService siteService = null;
+		try {
+			connection.setAutoCommit(false);
+			siteService=(SiteService) ConstantUtil.serviceFactory.newService(Services.SITE, this.connection);
+			// 更新bussinessid 和删除环保护数据
+			if (EManufacturer.CHENXIAO.getValue() == siteService.getManufacturer(loopProtectInfoList.get(0).getSiteId())) {
+				LoopProtectInfo loopProtectSelect = new LoopProtectInfo();
+				loopProtectSelect.setName(loopProtectInfoList.get(0).getName());
+				loopProtectInfoList = this.select(loopProtectSelect);
+			}
+			for (LoopProtectInfo loopProtectInfo : loopProtectInfoList) {
+				if (0 != loopProtectInfo.getLoopId()) {
+					wrappingSerBusinessId = businessidDao.query(loopProtectInfo.getLoopId(), loopProtectInfo.getSiteId(), "ring", connection);
+					businessidDao.update(wrappingSerBusinessId.getId(), 0, connection);// 将环id设置为可用
+				}
+				if (siteService.getManufacturer(loopProtectInfo.getSiteId()) == EManufacturer.CHENXIAO.getValue()) {
+					if (0 != loopProtectInfo.getNodeId()) {
+						wrappingSerBusinessId = businessidDao.query(loopProtectInfo.getNodeId(), loopProtectInfo.getSiteId(), "ringNode", connection);
+						businessidDao.update(wrappingSerBusinessId.getId(), 0, connection);// 将环id设置为可用
+					}
+					if (0 != loopProtectInfo.getEastNodeId()) {
+						wrappingSerBusinessId = businessidDao.query(loopProtectInfo.getEastNodeId(), loopProtectInfo.getSiteId(), "ringNode", connection);
+						businessidDao.update(wrappingSerBusinessId.getId(), 0, connection);// 将环id设置为可用
+					}
+					if (0 != loopProtectInfo.getWestNodeId()) {
+						wrappingSerBusinessId = businessidDao.query(loopProtectInfo.getWestNodeId(), loopProtectInfo.getSiteId(), "ringNode", connection);
+						businessidDao.update(wrappingSerBusinessId.getId(), 0, connection);// 将环id设置不可用
+					}
+				}
+				wrappingDao.deleteByLoopId(loopProtectInfo.getLoopId(), connection);
+				//离线网元数据下载
+				super.dateDownLoad(loopProtectInfo.getSiteId(),loopProtectInfo.getId(), EServiceType.LOOPPROTECT.getValue(), EActionType.INSERT.getValue(),loopProtectInfo.getName()+"",null,0,0,null);
+			}
+			if(!connection.getAutoCommit()){
+				connection.commit();
+			}
+		} catch (Exception e) {
+			connection.rollback();
+			ExceptionManage.dispose(e,this.getClass());
+		} finally {
+			connection.setAutoCommit(true);
+		}
+	}
+
+	/**
+	 * 根据某网元id，初始化相关环保护
+	 * 
+	 * @param siteId
+	 * @throws SQLException
+	 */
+	public void initializtionSite(int siteId) throws SQLException {
+		LoopProtectInfo loopProtectInfo = null;
+		List<LoopProtectInfo> loopProtectInfos = null;
+		try {
+			loopProtectInfo = new LoopProtectInfo();
+			loopProtectInfo.setSiteId(siteId);
+			loopProtectInfos = this.select(loopProtectInfo);
+			if (loopProtectInfos != null && loopProtectInfos.size() > 0) {
+				for (LoopProtectInfo info : loopProtectInfos) {
+					this.deleteByLoopId(info.getLoopId());
+				}
+			}
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		}finally{
+			loopProtectInfos = null;
+			loopProtectInfo = null;
+		}
+
+	}
+
+	/**
+	 * 根据环网id删除,初始化某网元时用到
+	 * 
+	 * @param loopProtectInfoList
+	 * @throws SQLException
+	 */
+	public void deleteByLoopId(int loopId) throws SQLException {
+		try {
+			wrappingDao.deleteByLoopId(loopId, connection);
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		} 
+	}
+
+	/**
+	 * 更新状态
+	 * @param siteId
+	 * 			网元ID
+	 * @param status
+	 * 			状态
+	 * @throws SQLException
+	 */
+	public void updateActiveStatus(int siteId, int status) throws SQLException {
+		try {
+			connection.setAutoCommit(false);
+			wrappingDao.updateStatus(siteId, status, connection);
+			if(!connection.getAutoCommit()){
+				connection.commit();
+			}
+		} catch (Exception e) {
+			connection.rollback();
+			ExceptionManage.dispose(e,this.getClass());
+		} finally {
+			connection.setAutoCommit(true);
+		}
+	}
+
+	/**
+	 * 环搜索
+	 * @param siteInstList
+	 *            网元集合
+	 * @return
+	 * @throws Exception
+	 */
+	public String searchLoopProtect(List<SiteInst> siteInstList) throws Exception {
+		List<LoopProtectInfo> loopProtectListAll = new ArrayList<LoopProtectInfo>();
+		List<LoopProtectInfo> loopProtectExitList = new ArrayList<LoopProtectInfo>();
+		List<LoopProtectInfo> loopProtectActionList = null;
+		LoopProtectInfo loopProtectInfoWest = new LoopProtectInfo();
+		List<Segment> segmentList;
+		Segment segment = null;
+		int loopId;
+		int count = 0;
+		SegmentService segmentService = (SegmentService) ConstantUtil.serviceFactory.newService(Services.SEGMENT, this.connection);
+		for (SiteInst siteInst : siteInstList) { // 查找所选网元下的所有但网元环
+			LoopProtectInfo LoopProtectInfoForSearch = new LoopProtectInfo();
+			LoopProtectInfoForSearch.setIsSingle(1);
+			LoopProtectInfoForSearch.setSiteId(siteInst.getSite_Inst_Id());
+			for (LoopProtectInfo loopProtectInfo : this.select(LoopProtectInfoForSearch)) {
+				segmentList = segmentService.selectBySideAndPort(loopProtectInfo.getSiteId(), loopProtectInfo.getWestPort());
+				if (segmentList.size() != 0) {
+					segment = segmentList.get(0);
+				}
+				loopProtectInfo.setWestSegment(segment);
+				loopProtectListAll.add(loopProtectInfo);
+			}
+		}
+
+		// 生产loopid
+		List<LoopProtectInfo> loopProtectInfoLoop = wrappingDao.queryForLoop(connection);
+		loopId = loopProtectInfoLoop.get(0).getLoopId() + 1;
+		// 循环每一个环
+		for (LoopProtectInfo loopProtectInfo : loopProtectListAll) {
+			count = 0;
+			if (0 != loopProtectExitList.size()) { // 判断是否存在
+				for (LoopProtectInfo loopProtectInfoExit : loopProtectExitList) {
+					if (loopProtectInfoExit.getId() == loopProtectInfo.getId()) {
+						count = 1;
+					}
+				}
+			}
+			if (1 != count) {
+				// 不存在 搜索 环
+				loopProtectActionList = new ArrayList<LoopProtectInfo>();
+				loopProtectInfoWest = loopProtectInfo;
+				loopProtectActionList = findBeLoopList(loopProtectInfo, loopProtectInfoWest, loopProtectListAll, loopProtectActionList);
+				if (loopProtectActionList.size() > 0) {
+					for (LoopProtectInfo loopProtectInfoAction : loopProtectActionList) {
+						loopProtectInfoAction.setIsSingle(0);
+						loopProtectInfoAction.setLoopId(loopId);
+						wrappingDao.update(loopProtectInfoAction, connection);
+						loopProtectExitList.add(loopProtectInfoAction);
+					}
+				}
+			}
+		}
+		loopProtectListAll = null;
+		loopProtectExitList = null;
+		loopProtectActionList = null;
+		loopProtectInfoWest = null;
+		segmentList = null;
+//		UiUtil.closeService(segmentService);
+		loopProtectInfoLoop = null;
+		return ResourceUtil.srcStr(StringKeysTip.TIP_CONFIG_SUCCESS);
+	
+	}
+
+	/**
+	 * 查询环
+	 * 
+	 * @param loopProtectInfo
+	 *            本单站环
+	 * @param loopProtectListAll
+	 *            所有环
+	 * @return
+	 */
+	public List<LoopProtectInfo> findBeLoopList(LoopProtectInfo loopProtectInfo, LoopProtectInfo loopProtectInfoWest, List<LoopProtectInfo> loopProtectListAll, List<LoopProtectInfo> loopProtectActionList) {
+		loopProtectInfoWest = this.findWestLoopProtect(loopProtectInfoWest, loopProtectListAll);
+		if (null != loopProtectInfoWest) {
+			if (loopProtectInfoWest.getId() == loopProtectInfo.getId()) {
+				loopProtectActionList.add(loopProtectInfo);
+				return loopProtectActionList;
+			} else {
+				loopProtectActionList.add(loopProtectInfoWest);
+				findBeLoopList(loopProtectInfo, loopProtectInfoWest, loopProtectListAll, loopProtectActionList);
+			}
+		}
+		return loopProtectActionList;
+	}
+
+	/**
+	 * 查询西向环
+	 * 
+	 * @param loopProtectInfo
+	 *            本单站环
+	 * @param loopProtectListAll
+	 *            网元下所有环
+	 * @return
+	 */
+	public LoopProtectInfo findWestLoopProtect(LoopProtectInfo loopProtectInfo, List<LoopProtectInfo> loopProtectListAll) {
+		int siteIdWest;
+		int portIdWest;
+		LoopProtectInfo loopProtectInfoWest  = null;
+		List<LoopProtectInfo> loopProtectInfoWestList = new ArrayList<LoopProtectInfo>();
+		if (null != loopProtectInfo.getWestSegment()) {
+			if (loopProtectInfo.getWestSegment().getASITEID() == loopProtectInfo.getSiteId() && loopProtectInfo.getWestSegment().getAPORTID() == loopProtectInfo.getWestPort()) {
+				siteIdWest = loopProtectInfo.getWestSegment().getZSITEID();
+				portIdWest = loopProtectInfo.getWestSegment().getZPORTID();
+			} else if (loopProtectInfo.getWestSegment().getZSITEID() == loopProtectInfo.getSiteId() && loopProtectInfo.getWestSegment().getZPORTID() == loopProtectInfo.getWestPort()) {
+				siteIdWest = loopProtectInfo.getWestSegment().getASITEID();
+				portIdWest = loopProtectInfo.getWestSegment().getAPORTID();
+			} else {
+				return null;
+			}
+			loopProtectInfoWest = new LoopProtectInfo();
+			loopProtectInfoWest.setSiteId(siteIdWest);
+			loopProtectInfoWest.setEastPort(portIdWest);
+			loopProtectInfoWestList = this.select(loopProtectInfoWest);
+			if (loopProtectInfoWestList.size() > 0) {
+				for (LoopProtectInfo loopProtectInfoAll : loopProtectListAll) {
+					if (loopProtectInfoWestList.get(0).getId() == loopProtectInfoAll.getId()) {
+						return loopProtectInfoAll;
+					}
+				}
+			}
+		}
+		loopProtectInfoWestList = null;
+		loopProtectInfoWest = null;
+		return null;
+	}
+	/**
+	 * 名字是否重复
+	 * @param afterName
+	 * @param beforeName
+	 * @return
+	 */
+	public boolean nameRepetition(String afterName, String beforeName) {
+		int result = 0;
+		try {
+			result = this.wrappingDao.query_name(afterName, beforeName, connection);
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		}
+		if(0== result){
+			return false;
+		}else{
+			return true;
+		}
+	}
+}

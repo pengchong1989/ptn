@@ -1,0 +1,1172 @@
+﻿package com.nms.db.dao.report;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.List;
+import com.nms.db.bean.equipment.port.PortInst;
+import com.nms.db.bean.report.SSAlarm;
+import com.nms.db.bean.report.SSCard;
+import com.nms.db.bean.report.SSLabel;
+import com.nms.db.bean.report.SSPath;
+import com.nms.db.bean.report.SSPort;
+import com.nms.db.bean.report.SSProfess;
+import com.nms.ui.manager.ExceptionManage;
+import com.nms.ui.manager.ResourceUtil;
+import com.nms.ui.manager.keys.StringKeysObj;
+
+/**
+ *  for Staticstics CardDao
+ * **/
+public class SSDao {
+	//得到报表所需要数据格式的数据.
+	public List<SSCard> querySSCard(Connection connection) throws Exception {
+		
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+		
+		List<SSCard> sscardlist = null;
+		String sql = null;
+		ResultSet rs = null;
+		PreparedStatement preparedStatement = null;
+		SSCard sc = null;
+		
+		try {
+			sscardlist = new ArrayList<SSCard>();
+			sql = " select count(*) count,c.id,c.siteId,s.CellId SiteName,c.cardName CardId,c.cardType CardType,s.versions Version,s.CellType CellType from card_inst c,site_inst s  where c.siteId=s.site_inst_id ";
+
+			preparedStatement = connection.prepareStatement(sql);
+			rs = preparedStatement.executeQuery();
+
+			while (rs.next()) {
+				sc = new SSCard();
+				sc.setId(rs.getInt("id"));
+				sc.setSiteId(rs.getInt("c.siteId"));
+				sc.setSiteName(rs.getString("SiteName"));
+				sc.setCardId(rs.getString("CardId"));
+				sc.setCardType(rs.getString("CellType"));
+				sc.setVersion(rs.getString("Version"));
+				sscardlist.add(sc);
+			}
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (rs != null) {
+				try {
+					rs.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e, this.getClass());
+				}
+				rs = null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+			sc = null;
+		}
+		
+		return sscardlist;
+	}
+	
+	//得到报表所需要数据格式的数据.
+//	public List<SSCard> queryCard(Connection connection) throws Exception {
+//		if (null == connection) {
+//			throw new Exception("connection is null");
+//		}
+//		
+//		List<SSCard> sscardlist = null;
+//		String sql = null;
+//		ResultSet rs = null;
+//		PreparedStatement preparedStatement = null;
+//		SSCard sc = null;
+//		
+//		try {
+//			sscardlist = new ArrayList<SSCard>();
+//			sql = "select count(c.cardName) count,c.cardName as CardId,s.CellType from card_inst c,site_inst s where c.siteId = s.site_inst_id group by c.cardName";
+//
+//			preparedStatement = connection.prepareStatement(sql);
+//			rs = preparedStatement.executeQuery();
+//			while (rs.next()) {
+//				sc = new SSCard();
+//				String cardId = rs.getString("CardId");
+//				sc.setCardId(cardId);
+//				sc.setCardType(rs.getString("CellType"));
+//				if(cardId.contains("703"))
+//				{
+//					sc.setVersion("V1.1.4");
+//					sc.setHardversion("DX7.822.010V4");
+//				}
+//				else if(cardId.contains("E1")){
+//					sc.setVersion("V1.0.9");
+//					sc.setHardversion("DX7.03.0003V12");
+//				}else{
+//					sc.setVersion("V1.0.9");
+//					sc.setHardversion("DX7.03.0125V11");
+//				}
+//				sc.setCount(rs.getInt("count"));
+//				sscardlist.add(sc);
+//			}
+//		} catch (Exception e) {
+//			throw e;
+//		} finally {
+//			if (rs != null) {
+//				try {
+//					rs.close();
+//				} catch (Exception e) {
+//					ExceptionManage.dispose(e, this.getClass());
+//				}
+//				rs = null;
+//			}
+//			if (preparedStatement != null) {
+//				try {
+//					preparedStatement.close();
+//				} catch (Exception e) {
+//					ExceptionManage.dispose(e,this.getClass());
+//				}
+//				preparedStatement = null;
+//			}
+//			sql = null;
+//			sc = null;
+//		}
+//		
+//		return sscardlist;
+//	}
+	
+	/**
+	 * 单板信息统计
+	 */
+	public List<SSCard> queryCard(Connection connection) throws Exception {
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+		
+		List<SSCard> sscardlist = null;
+		String sql = null;
+		ResultSet rs = null;
+		PreparedStatement preparedStatement = null;
+		SSCard sc = null;
+		
+		try {
+			sscardlist = new ArrayList<SSCard>();
+			sql = "select c.cardName as CardId,s.CellType,c.installedSerialNumber,s.cellId,s.versions ,s.hardversion from card_inst c,site_inst s where c.siteId = s.site_inst_id";
+
+			preparedStatement = connection.prepareStatement(sql);
+			rs = preparedStatement.executeQuery();
+			while (rs.next()) {
+				sc = new SSCard();
+				sc.setSiteName(rs.getString("cellId"));
+				sc.setInstalledSerialNumber(rs.getString("installedSerialNumber"));
+				String cardId = rs.getString("CardId");
+				sc.setCardId(cardId);
+				sc.setCardType(rs.getString("CellType"));
+				if(cardId.contains("703"))
+				{
+					sc.setVersion(rs.getString("versions"));
+					sc.setHardversion(rs.getString("hardversion"));
+					//sc.setHardversion("DX7.822.010V4"+cardId.subSequence(4, 5));
+				}else{
+					if(cardId.contains("PWR") || cardId.contains("FAN")){
+						sc.setVersion("");
+						sc.setHardversion("");
+					}else{
+						sc.setVersion(rs.getString("versions"));
+						sc.setHardversion(rs.getString("hardversion"));
+					}					
+//					if(cardId.contains("SP16")){
+//						sc.setVersion("V1.0.9");
+//						sc.setHardversion("DX7.03.0003V12");
+//					}else{
+//						sc.setVersion("V1.0.9");
+//						sc.setHardversion("DX7.03.0125V11");
+//					}
+				}
+				sc.setInstalledSerialNumber(rs.getString("installedSerialNumber"));
+				sc.setProtectWay(ResourceUtil.srcStr(StringKeysObj.LSP_TYPE_NO));
+				sscardlist.add(sc);
+			}
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (rs != null) {
+				try {
+					rs.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e, this.getClass());
+				}
+				rs = null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+			sc = null;
+		}
+		
+		return sscardlist;
+	}
+	
+	
+	
+	
+	/**
+	 * 查询  当前告警与历史告警  表
+	 * 				
+	 * @param connection
+	 * @return
+	 * @throws Exception
+	 */
+	public List<SSAlarm> querySSAlarm(Connection connection) throws Exception {		
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}		
+		List<SSAlarm> sslist = null;
+		String sql = null;
+		ResultSet rs = null;
+		PreparedStatement preparedStatement = null;
+		SSAlarm ss = null;		
+		try {
+			sslist = new ArrayList<SSAlarm>();
+			sql = "";
+			preparedStatement = connection.prepareStatement(sql);
+			rs = preparedStatement.executeQuery();
+			while (rs.next()) {
+				ss = new SSAlarm();
+//				ss.setId(rs.getInt("id"));
+
+				sslist.add(ss);
+			}
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (rs != null) {
+				try {
+					rs.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				rs = null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+			ss = null;
+		}
+		return sslist;
+	}
+	
+	/**
+	 * 查询还可用的标签数
+	 */
+	public List<SSLabel> queryCanUsedLabel(Connection connection) throws Exception {		
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}		
+		List<SSLabel> sslist = new ArrayList<SSLabel>();
+		ResultSet rs = null;
+		PreparedStatement preparedStatement = null;
+		try {
+			String sql = "select s.CellId as sitename, s.site_inst_id AS siteid, COUNT(*) AS LspCanUsed," +
+					" l.type AS type from labelinfo l, site_inst s " +
+					"WHERE l.siteid=s.site_inst_id AND labelstatus=1 GROUP BY siteid, l.type";
+			preparedStatement = connection.prepareStatement(sql);
+			//preparedStatement.setInt(1, ConstantUtil.LABEL_MAXVALUE);
+			//preparedStatement.setInt(2, ConstantUtil.LABEL_MAXVALUE);
+			rs = preparedStatement.executeQuery();
+			while (rs.next()) {
+				SSLabel ss = new SSLabel();
+	//			ss.setId(rs.getInt("id"));
+				ss.setSiteName(rs.getString("sitename"));
+				ss.setSiteId(rs.getInt("siteid"));
+//				ss.setLspCount(rs.getString("LspCount"));
+				ss.setLspCanUsed(rs.getString("LspCanUsed"));
+//				ss.setLspUsed(rs.getString("LspUsed"));
+				ss.setLabelType(rs.getString("type"));
+				sslist.add(ss);
+			}
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (rs != null) {
+				try {
+					rs.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				rs = null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+		}
+		return sslist;
+	}
+	
+	/**
+	 * 查询标签总数
+	 */
+	public List<SSLabel> queryCountLabel(Connection connection) throws Exception {		
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}		
+		List<SSLabel> sslist = new ArrayList<SSLabel>();
+		ResultSet rs = null;
+		PreparedStatement preparedStatement = null;
+		try {
+			String sql = "SELECT count(*) as labelCount, siteid, type from labelinfo GROUP BY siteid, type";
+			preparedStatement = connection.prepareStatement(sql);
+//			preparedStatement.setInt(1, ConstantUtil.LABEL_MAXVALUE);
+//			preparedStatement.setInt(2, ConstantUtil.LABEL_MAXVALUE);
+			rs = preparedStatement.executeQuery();
+			while (rs.next()) {
+				SSLabel ss = new SSLabel();
+	//			ss.setId(rs.getInt("id"));
+				ss.setSiteId(rs.getInt("siteid"));
+				ss.setLspCount(rs.getString("labelCount"));
+//				ss.setLspCanUsed(rs.getString("LspCanUsed"));
+//				ss.setLspUsed(rs.getString("LspUsed"));
+				ss.setLabelType(rs.getString("type"));
+				sslist.add(ss);
+			}
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (rs != null) {
+				try {
+					rs.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				rs = null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+		}
+		return sslist;
+	}
+	
+	public List<SSPort> querySSPort(Connection connection) throws Exception {		
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}		
+		List<SSPort> sslist = null;
+		String sql = null;
+		ResultSet rs = null;
+		PreparedStatement preparedStatement = null;
+		SSPort ss = null;		
+		try {
+			sslist = new ArrayList<SSPort>();
+			sql = new StringBuffer().append("SELECT s.CellId SiteName, s.CellType SiteType, s.site_inst_id, PortType, PortCount, PortUsed, PortUnUsed, UsedRate FROM ( SELECT siteId, PortType, sum(PortCount) PortCount, sum(PortUsed) PortUsed, sum(PortUnUsed) PortUnUsed, round( sum(PortUsed) * 100 / sum(PortCount), 2 ) UsedRate FROM ( SELECT siteId, 'ETH' PortType, count(1) PortCount, 0 PortUsed, 0 PortUnUsed FROM port_inst p WHERE p.portType IN ('UNI', 'NONE', 'NNI') GROUP BY siteId UNION ALL SELECT siteId, 'ETH' PortType, 0 PortCount, count(1) PortUsed, 0 PortUnUsed FROM port_inst p WHERE p.portType IN ('UNI', 'NONE', 'NNI') AND (( SELECT COUNT(*) FROM lspinfo l WHERE l.aportId = p.portId OR l.zportid = p.portId ) > 0 OR ( SELECT COUNT(*) FROM acinfo a WHERE a.portid = p.portid ) > 0 ) GROUP BY siteId UNION ALL SELECT siteId, 'ETH' PortType, 0 PortCount, 0 PortUsed, count(1) PortUnUsed FROM port_inst p WHERE p.portType IN ('UNI', 'NONE', 'NNI') AND ( SELECT COUNT(*) FROM lspinfo l WHERE l.aportId = p.portId OR l.zportid = p.portId ) = 0 AND ( SELECT COUNT(*) FROM acinfo a WHERE a.portid = p.portid ) = 0 GROUP BY siteId ) p GROUP BY siteId, PortType UNION ALL SELECT siteId, PortType, sum(PortCount) PortCount, sum(PortUsed) PortUsed, sum(PortUnUsed) PortUnUsed, round( sum(PortUsed) * 100 / sum(PortCount), 2 ) UsedRate FROM ( SELECT siteId, 'PDH' PortType, count(1) PortCount, 0 PortUsed, 0 PortUnUsed FROM port_inst p WHERE p.portType IN ('E1') GROUP BY siteId UNION ALL SELECT siteId, 'PDH' PortType, 0 PortCount, count(1) PortUsed, 0 PortUnUsed FROM port_inst p WHERE p.portType IN ('E1') AND ( SELECT COUNT(*) FROM serviceinfo s WHERE s.servicetype = 0 AND ( CASE s.cestype WHEN 2 THEN s.aacid = p.portid OR s.zacid = p.portid WHEN 5 THEN s.zacid = p.portid WHEN 4 THEN s.aacid = p.portid END )) > 0 GROUP BY siteId UNION ALL SELECT siteId, 'PDH' PortType, 0 PortCount, 0 PortUsed, count(1) PortUnUsed FROM port_inst p WHERE p.portType IN ('E1') AND ( SELECT COUNT(*) FROM serviceinfo s WHERE s.servicetype = 0 AND ( CASE s.cestype WHEN 2 THEN s.aacid = p.portid OR s.zacid = p.portid WHEN 5 THEN s.zacid = p.portid WHEN 4 THEN s.aacid = p.portid END )) = 0 GROUP BY siteId ) p GROUP BY siteId, PortType UNION ALL SELECT siteId, PortType, sum(PortCount) PortCount, sum(PortUsed) PortUsed, sum(PortUnUsed) PortUnUsed, round( sum(PortUsed) * 100 / sum(PortCount), 2 ) UsedRate FROM ( SELECT siteId, 'SDH' PortType, count(1) PortCount, 0 PortUsed, 0 PortUnUsed FROM port_stm_timeslot p GROUP BY siteId UNION ALL SELECT siteId, 'SDH' PortType, 0 PortCount, count(1) PortUsed, 0 PortUnUsed FROM port_stm_timeslot p WHERE ( SELECT COUNT(*) FROM serviceinfo s WHERE s.servicetype = 0 AND ( CASE s.cestype WHEN 3 THEN s.aacid = p.id OR s.zacid = p.id WHEN 4 THEN s.zacid = p.id WHEN 5 THEN s.aacid = p.id END )) > 0 GROUP BY siteId UNION ALL SELECT siteId, 'SDH' PortType, 0 PortCount, 0 PortUsed, count(1) PortUnUsed FROM port_stm_timeslot p WHERE ( SELECT COUNT(*) FROM serviceinfo s WHERE s.servicetype = 0 AND ( CASE s.cestype WHEN 3 THEN s.aacid = p.id OR s.zacid = p.id WHEN 4 THEN s.zacid = p.id WHEN 5 THEN s.aacid = p.id END )) = 0 GROUP BY siteId ) p GROUP BY siteId, PortType ) pp, site_inst s WHERE pp.siteId = s.site_inst_id ORDER BY siteId, PortType")
+			.toString();
+			preparedStatement = connection.prepareStatement(sql);
+			rs = preparedStatement.executeQuery();
+			while (rs.next()) {
+				ss = new SSPort();
+	//			ss.setId(rs.getInt("id"));
+				ss.setSiteName(rs.getString("SiteName"));
+				ss.setNeType(rs.getString("SiteType"));
+				ss.setSiteId(rs.getInt("s.site_inst_id"));
+				ss.setPortType(rs.getString("PortType"));
+				ss.setPortCount(rs.getString("PortCount"));
+				ss.setPortUsed(rs.getString("PortUsed"));
+				ss.setPortUnUsed(rs.getString("PortUnUsed"));
+				ss.setUsedRate(rs.getString("UsedRate"));
+				sslist.add(ss);
+			}
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (rs != null) {
+				try {
+					rs.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				rs = null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+			ss = null;
+		}
+		return sslist;
+	}
+	/**
+	 * 统计查询全网的隧道、伪线数量。
+	 * @param connection
+	 * @throws Exception 
+	 */
+	public List<SSPath> queryPathCount(Connection connection) throws Exception{
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+		List<SSPath> sslist = null;
+		ResultSet rs = null;
+		PreparedStatement preparedStatement = null;
+		SSPath paths = null;
+		StringBuffer stringBuffer=new StringBuffer();
+		
+		try {
+			sslist = new ArrayList<SSPath>();
+			stringBuffer.append("SELECT 'Tunnel' as type,tunnelCount.amount , tunnelCount.used,(tunnelCount.amount-tunnelCount.used) as usable FROM (SELECT ");
+			stringBuffer.append("(SELECT COUNT(t.tunnelId) FROM tunnel t WHERE t.isSingle=0) as amount,");
+			stringBuffer.append("(SELECT COUNT(t.tunnelId) FROM tunnel t WHERE t.isSingle=0 AND t.tunnelId IN (SELECT p.tunnelId FROM pwinfo p)) as used) ");
+			stringBuffer.append("tunnelCount ");
+			stringBuffer.append("UNION ALL ");
+			stringBuffer.append("SELECT 'PW' as type,pwCount.amount , pwCount.used,(pwCount.amount-pwCount.used) as usable FROM (SELECT ");
+			stringBuffer.append("(SELECT COUNT(p.pwId) FROM pwinfo p WHERE p.isSingle=0) as amount,");
+			stringBuffer.append("(SELECT COUNT(p.pwId) FROM pwinfo p WHERE p.isSingle=0 AND p.rserviceId>0) AS used) ");
+			stringBuffer.append("pwCount");
+			
+			preparedStatement = connection.prepareStatement(stringBuffer.toString());
+			rs = preparedStatement.executeQuery();
+			while (rs.next()) {
+				paths = new SSPath();
+				paths.setPathType(rs.getString("type"));
+				paths.setPathCount(rs.getString("amount"));
+				paths.setPathUsed(rs.getString("used"));
+				paths.setPathUnUsed(rs.getString("usable"));
+				sslist.add(paths);
+			}
+		} catch (Exception e) {
+			throw e;
+		}finally {
+			if (rs != null) {
+				try {
+					rs.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e, this.getClass());
+				}
+				rs = null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e, this.getClass());
+				}
+				preparedStatement = null;
+			}
+		}
+		return sslist;
+	}
+	
+	/**
+	 * 统计查询单网元的隧道、伪线数量
+	 * @param connection
+	 * @throws Exception 
+	 */
+	public List<SSPath> queryPathCount_site(Connection connection) throws Exception{
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+		List<SSPath> sslist = null;
+		ResultSet rs = null;
+		PreparedStatement preparedStatement = null;
+		SSPath paths = null;
+		StringBuffer stringBuffer=new StringBuffer();
+		
+		try {
+			sslist = new ArrayList<SSPath>();
+			stringBuffer.append("SELECT * FROM (");
+			stringBuffer.append(" SELECT tunnelCount.neName,'Tunnel' AS type,tunnelCount.amount,tunnelCount.used,tunnelCount.amount-tunnelCount.used AS usable FROM");
+			stringBuffer.append(" (select s.cellid AS neName, ");
+			stringBuffer.append(" (SELECT COUNT(t.tunnelid) from tunnel t WHERE t.tunnelid in (select l.tunnelid FROM lspinfo l WHERE l.asiteid=s.site_inst_id OR l.zsiteId=s.site_inst_id)) AS amount,");
+			stringBuffer.append(" (SELECT COUNT(t.tunnelid) from tunnel t WHERE t.tunnelid in (select l.tunnelid FROM lspinfo l WHERE l.asiteid=s.site_inst_id OR l.zsiteId=s.site_inst_id) AND t.tunnelid IN (SELECT p.tunnelId FROM pwinfo p)) AS used");
+			stringBuffer.append(" from site_inst s) tunnelCount");
+			stringBuffer.append(" UNION ALL");
+			stringBuffer.append(" SELECT pwCount.neName,'PW' AS type,pwCount.amount,pwCount.used,pwCount.amount-pwCount.used AS usable FROM");
+			stringBuffer.append(" (select s.cellid AS neName,");
+			stringBuffer.append(" (SELECT COUNT(p.pwid) FROM pwinfo p where p.asiteid=s.site_inst_id OR p.zsiteid=s.site_inst_id) AS amount,");
+			stringBuffer.append(" (SELECT COUNT(p.pwid) FROM pwinfo p where (p.asiteid=s.site_inst_id OR p.zsiteid=s.site_inst_id) AND p.rserviceId>0) AS used");
+			stringBuffer.append(" from site_inst s) pwCount) AS countTable ORDER BY countTable.neName");
+		
+			preparedStatement = connection.prepareStatement(stringBuffer.toString());
+			rs = preparedStatement.executeQuery();
+			while (rs.next()) {
+				paths = new SSPath();
+				paths.setSiteName(rs.getString("neName"));
+				paths.setPathType(rs.getString("type"));
+				paths.setPathCount(rs.getString("amount"));
+				paths.setPathUsed(rs.getString("used"));
+				paths.setPathUnUsed(rs.getString("usable"));
+				sslist.add(paths);
+			}
+		} catch (Exception e) {
+			throw e;
+		}finally {
+			if (rs != null) {
+				try {
+					rs.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e, this.getClass());
+				}
+				rs = null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e, this.getClass());
+				}
+				preparedStatement = null;
+			}
+		}
+		return sslist;
+	}
+	
+	/**
+	 * 统计业务列表
+	 * @param connection
+	 * @throws Exception 
+	 */
+	public List<SSProfess> queryBusinessList(Connection connection) throws Exception{
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+		
+
+		StringBuffer tunnelBuffer = new StringBuffer();
+		StringBuffer pwBuffer = new StringBuffer();
+		StringBuffer pwBuffer1 = new StringBuffer();
+		StringBuffer cesBuffer = new StringBuffer();
+		StringBuffer etreeBuffer = new StringBuffer();		
+		List<SSProfess> ssList = null;
+		SSProfess ss = null;		
+		String sql = null;
+		ResultSet rs = null;
+		PreparedStatement preparedStatement = null;		
+		ResultSet rs1 = null;
+		PreparedStatement preparedStatement1 = null;	
+		ResultSet rs2 = null;
+		PreparedStatement preparedStatement2 = null;	
+		ResultSet rs3 = null;
+		PreparedStatement preparedStatement3 = null;	
+		ResultSet rs4 = null;
+		PreparedStatement preparedStatement4 = null;	
+		
+		tunnelBuffer.append("SELECT list.`name` ,'1' AS direction , list.aneName,list.aportname,list.znename,list.zportname,list.atunnelbusinessid,list.ztunnelbusinessid,list.type,list.aSiteId,list.zSiteId,");
+		tunnelBuffer.append("(SELECT COUNT(id) FROM current_alarm alarm WHERE (alarm.objecttype=3 and list.type = 185 and ( (alarm.objectid=list.atunnelbusinessid and alarm.siteid=list.aSiteId ) or( alarm.objectid=list.ztunnelbusinessid and alarm.siteid=list.zSiteId))) or(alarm.objecttype=6 and list.type = 185 and ( (alarm.objectid=list.atunnelbusinessid and alarm.siteid=list.aSiteId) or (alarm.objectid=list.ztunnelbusinessid and alarm.siteid=list.zSiteId))) ) AS alarmCount,list.activeStatus,list.createTime,list.clientName");		
+		tunnelBuffer.append(" FROM (");
+		tunnelBuffer.append("SELECT  t.tunnelName as name , t.tunnelType as type, t.tunnelStatus as activeStatus,t.createTime as createTime, t.createUser as clientName, sa.CellId AS aneName, sz.CellId AS znename, pa.portName AS aPortName, pz.portName AS zPortName ,l.atunnelbusinessid as atunnelbusinessid,l.ztunnelbusinessid as ztunnelbusinessid,sa.site_inst_id as aSiteId,sz.site_inst_id as zSiteId");
+		tunnelBuffer.append(" FROM site_inst sa, site_inst sz, port_inst pa, port_inst pz, tunnel t,lspinfo l");
+		tunnelBuffer.append(" WHERE t.aSiteId = sa.site_inst_id AND t.zSiteId = sz.site_inst_id AND t.aPortId = pa.portId  AND t.zPortId = pz.portId  AND t.tunnelId = l.tunnelId  and t.tunnelType!='0' and t.isSingle=0 group by t.tunnelId)as list");	
+		
+		try {
+			ssList = new ArrayList<SSProfess>();
+			sql = tunnelBuffer.toString();			
+			preparedStatement = connection.prepareStatement(sql);
+			rs = preparedStatement.executeQuery();
+			while (rs.next()) {			
+				ss=new SSProfess();
+				ss.setName(rs.getString("name"));
+				ss.setDirection(rs.getInt("direction"));
+				ss.setRate("隧道");
+				 if(rs.getInt("type")==185){
+					   ss.setServiceType(185);					   
+				    }else{
+					   ss.setServiceType(186);
+				    }				
+
+			    ss.setaSiteName(rs.getString("list.aneName"));
+				ss.setaPortName(rs.getString("list.aportname"));
+				ss.setzSiteName(rs.getString("list.zneName"));
+			    ss.setzPortName(rs.getString("list.zportname"));				   			
+				ss.setAlarmCount(rs.getInt("alarmCount"));
+				ss.setActiveStatus(rs.getInt("list.activeStatus"));
+				ss.setCreateTime(rs.getString("list.createTime"));
+				ss.setClientName(rs.getString("clientName"));				
+				ssList.add(ss);
+			}
+		
+		
+		//普通
+		pwBuffer.append("SELECT list.`name` ,'1' AS direction ,'7' as rate, list.aneName,list.aportname,list.znename,list.zportname,list.apwServiceId,list.zpwServiceId,list.aSiteId,list.zSiteId,");
+		pwBuffer.append("(SELECT COUNT(id) FROM current_alarm alarm WHERE (alarm.objecttype=4 and  ( (alarm.objectid=list.apwServiceId and alarm.siteid=list.aSiteId)or (alarm.objectid=list.zpwServiceId and alarm.siteid=list.zSiteId))) ) AS alarmCount,list.activeStatus,list.createTime,list.clientName");		
+		pwBuffer.append(" FROM (");
+		pwBuffer.append("SELECT p.pwId , p.pwName as name, p.pwStatus as activeStatus,p.apwServiceId as apwServiceId ,p.zpwServiceId as zpwServiceId,sa.CellId AS aneName, sz.CellId AS zneName,   p.createTime as createTime, pa.portName AS aPortName,pz.portName AS zPortName,p.createUser as clientName,sa.site_inst_id as aSiteId,sz.site_inst_id as zSiteId");
+		pwBuffer.append(" FROM pwinfo p, site_inst sa, port_inst pa, port_inst pz, site_inst sz ,tunnel t");
+		pwBuffer.append(" WHERE t.tunnelId=p.tunnelId and p.aSiteId = sa.site_inst_id AND p.zSiteId = sz.site_inst_id and ((p.aSiteId =t.aSiteId and p.zSiteId =t.zSiteId and t.aPortId = pa.portId AND t.zPortId = pz.portId) or(p.aSiteId =t.zSiteId and p.zSiteId =t.aSiteId and t.zPortId = pa.portId AND t.aPortId = pz.portId)) and p.isSingle=0 group by p.pwName order by p.pwId) as list");	
+	
+		    String sql1 = null;	
+			sql1 = pwBuffer.toString();
+			preparedStatement1 = connection.prepareStatement(sql1);
+			rs1 = preparedStatement1.executeQuery();
+			while (rs1.next()) {			
+				ss=new SSProfess();			
+				ss.setName(rs1.getString("name"));
+				ss.setDirection(rs1.getInt("direction"));
+				ss.setRate("伪线");				
+				ss.setServiceType(5);				
+			    ss.setaSiteName(rs1.getString("list.aneName"));
+				ss.setaPortName(rs1.getString("list.aportname"));
+				ss.setzSiteName(rs1.getString("list.zneName"));
+			    ss.setzPortName(rs1.getString("list.zportname"));				   			
+				ss.setAlarmCount(rs1.getInt("alarmCount"));
+				ss.setActiveStatus(rs1.getInt("list.activeStatus"));
+				ss.setCreateTime(rs1.getString("list.createTime"));
+				ss.setClientName(rs1.getString("clientName"));				
+				ssList.add(ss);
+			}
+		
+
+		//多段
+		pwBuffer1.append("SELECT list.`name` ,list.id,'1' AS direction ,'7' as rate, list.aneName,list.znename,list.apwServiceId,list.zpwServiceId,list.aSiteId,list.zSiteId,");
+		pwBuffer1.append("(SELECT COUNT(id) FROM current_alarm alarm WHERE (alarm.objecttype=17 and  ( (alarm.objectid=list.apwServiceId and alarm.siteid=list.aSiteId) or (alarm.objectid=list.zpwServiceId and alarm.siteid=list.zSiteId))) ) AS alarmCount,list.activeStatus,list.createTime,list.clientName");		
+		pwBuffer1.append(" FROM (");
+		pwBuffer1.append("SELECT p.pwId as id, p.pwName as name, p.pwStatus as activeStatus,p.apwServiceId as apwServiceId ,p.zpwServiceId as zpwServiceId,sa.CellId AS aneName, sz.CellId AS zneName,   p.createTime as createTime, p.createUser as clientName,sa.site_inst_id as aSiteId,sz.site_inst_id as zSiteId");
+		pwBuffer1.append(" FROM pwinfo p, site_inst sa,  site_inst sz ,tunnel t");
+		pwBuffer1.append(" WHERE p.tunnelId=0 and p.aSiteId = sa.site_inst_id AND p.zSiteId = sz.site_inst_id and p.isSingle=0 group by p.pwName order by p.pwId) as list");	
+		
+			String sql4 = null;	
+			sql4 = pwBuffer1.toString();
+			preparedStatement4 = connection.prepareStatement(sql4);
+			rs4 = preparedStatement4.executeQuery();
+			while (rs4.next()) {			
+				ss=new SSProfess();
+				ss.setId(rs4.getInt("id"));
+				ss.setName(rs4.getString("name"));
+				ss.setDirection(rs4.getInt("direction"));
+				ss.setRate("伪线");				
+				ss.setServiceType(5);				
+				ss.setaSiteName(rs4.getString("list.aneName"));				
+				ss.setzSiteName(rs4.getString("list.zneName"));				   			
+				ss.setAlarmCount(rs4.getInt("alarmCount"));
+				ss.setActiveStatus(rs4.getInt("list.activeStatus"));
+				ss.setCreateTime(rs4.getString("list.createTime"));
+				ss.setClientName(rs4.getString("clientName"));				
+				ssList.add(ss);
+				}
+		
+		//eline ces		
+		cesBuffer.append("SELECT list.`name` ,'1' AS direction , (CASE WHEN list.serviceType=0  THEN '1' ELSE '2' END) AS rate , list.aneName,list.aportname,list.znename,list.zportname,");
+		cesBuffer.append("list.serviceType,(SELECT COUNT(id) FROM current_alarm alarm WHERE alarm.objecttype=9 AND alarm.objectid=list.id) AS alarmCount,");
+		cesBuffer.append("	list.activeStatus,list.createTime,(SELECT `name` FROM client WHERE id=list.clientid) AS clientName ");
+		cesBuffer.append("from (");	
+		cesBuffer.append(" SELECT s.*,a.CellId AS aNeName,z.CellId AS zNeName,aport.`portName` AS aPortname , zport.`portName` AS zportname FROM serviceinfo s,site_inst a,site_inst z ,acinfo aac,acinfo zac,port_inst aport,port_inst zport ");				
+		cesBuffer.append(" WHERE s.asiteid=a.site_inst_id  AND s.zsiteid=z.site_inst_id AND s.aacid=aac.id AND s.zacid=zac.id and aac.portId=aport.portId and zac.portId=zport.portId AND s.isSingle= 0 AND s.serviceType=1  group by s.id ,s.serviceType ");
+		cesBuffer.append(" UNION ALL ");
+		cesBuffer.append("SELECT s.*,a.CellId AS aNeName,z.CellId AS zNeName,CASE WHEN (s.cestype=2 OR s.cestype=4) THEN (SELECT p.portName FROM port_inst p WHERE s.aAcId=p.portid)");				
+		cesBuffer.append(" WHEN (s.cestype=3 OR s.cestype=5) THEN (SELECT ps.timeslotnumber FROM port_stm_timeslot ps WHERE s.aAcId=ps.id)END AS aportName,");
+		cesBuffer.append(" CASE WHEN (s.cestype=2 OR s.cestype=5) THEN (SELECT p.portName FROM port_inst p WHERE s.zAcId=p.portid)WHEN (s.cestype=3 OR s.cestype=4) THEN (SELECT ps.timeslotnumber FROM port_stm_timeslot ps WHERE s.zAcId=ps.id) END AS zportName");	
+		cesBuffer.append(" FROM serviceinfo s,site_inst a,site_inst z WHERE s.asiteid=a.site_inst_id  AND s.zsiteid=z.site_inst_id AND s.isSingle= 0 AND s.serviceType=0  group by s.id ,s.serviceType)as list");		
+        //
+		String sql2 = null;							
+		sql2 = cesBuffer.toString();
+		preparedStatement2 = connection.prepareStatement(sql2);
+		rs2 = preparedStatement2.executeQuery();
+		while (rs2.next()) {			
+			ss=new SSProfess();
+			ss.setName(rs2.getString("name"));
+			ss.setDirection(rs2.getInt("direction"));				
+			ss.setServiceType(rs2.getInt("serviceType"));
+			if(ss.getServiceType()==0){
+				   ss.setRate("CES");				
+			  }else{
+			 	ss.setRate("以太网");		
+			  }				
+			ss.setaSiteName(rs2.getString("list.aneName"));
+			ss.setaPortName(rs2.getString("list.aportname"));
+			ss.setzSiteName(rs2.getString("list.zneName"));
+			ss.setzPortName(rs2.getString("list.zportname"));				   			
+			ss.setAlarmCount(rs2.getInt("alarmCount"));
+			ss.setActiveStatus(rs2.getInt("list.activeStatus"));
+			ss.setCreateTime(rs2.getString("list.createTime"));
+			ss.setClientName(rs2.getString("clientName"));				
+			ssList.add(ss);
+			}
+		    //ETREE	
+			etreeBuffer.append("SELECT list.`name` ,'1' AS direction , (CASE WHEN list.serviceType=0  THEN '1' ELSE '2' END) AS rate , ");
+			etreeBuffer.append("list.serviceType,(SELECT COUNT(id) FROM current_alarm alarm WHERE alarm.objecttype=10 AND alarm.objectid=list.id) AS alarmCount,");
+			etreeBuffer.append("	list.activeStatus,list.createTime,(SELECT `name` FROM client WHERE id=list.clientid) AS clientName ");
+			etreeBuffer.append("from (");	
+			etreeBuffer.append(" SELECT s.*  FROM serviceinfo s");				
+			etreeBuffer.append(" WHERE   s.isSingle= 0 AND (s.serviceType=2  or s.serviceType=3 or s.serviceType =40) group by s.serviceId ,s.serviceType)as list ");
+		
+	        //
+			String sql3 = null;								
+			sql3 = etreeBuffer.toString();
+			preparedStatement3 = connection.prepareStatement(sql3);
+			rs3 = preparedStatement3.executeQuery();
+			while (rs3.next()) {			
+				ss=new SSProfess();
+				ss.setName(rs3.getString("name"));
+				ss.setDirection(rs3.getInt("direction"));				
+				ss.setServiceType(rs3.getInt("serviceType"));				
+				ss.setRate("以太网");	
+				ss.setAlarmCount(rs3.getInt("alarmCount"));
+				ss.setActiveStatus(rs3.getInt("list.activeStatus"));
+				ss.setCreateTime(rs3.getString("list.createTime"));
+				ss.setClientName(rs3.getString("clientName"));								
+				ssList.add(ss);
+				}	
+			
+			
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (rs != null) {
+				try {
+					rs.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e, this.getClass());
+				}
+				rs = null;
+			}
+			if (rs1 != null) {
+				try {
+					rs1.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e, this.getClass());
+				}
+				rs1 = null;
+			}
+			if (rs2 != null) {
+				try {
+					rs2.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e, this.getClass());
+				}
+				rs2 = null;
+			}
+			if (rs3 != null) {
+				try {
+					rs3.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e, this.getClass());
+				}
+				rs3 = null;
+			}
+			if (rs4 != null) {
+				try {
+					rs4.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e, this.getClass());
+				}
+				rs4 = null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e, this.getClass());
+				}
+				preparedStatement = null;
+			}
+			if (preparedStatement1 != null) {
+				try {
+					preparedStatement1.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e, this.getClass());
+				}
+				preparedStatement1 = null;
+			}
+			if (preparedStatement2 != null) {
+				try {
+					preparedStatement2.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e, this.getClass());
+				}
+				preparedStatement2 = null;
+			}
+			if (preparedStatement3 != null) {
+				try {
+					preparedStatement3.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e, this.getClass());
+				}
+				preparedStatement3 = null;
+			}
+			if (preparedStatement4 != null) {
+				try {
+					preparedStatement4.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e, this.getClass());
+				}
+				preparedStatement4 = null;
+			}
+			ss = null;
+		}
+		return ssList;
+	}
+
+	
+	
+	
+	/**
+	 * 统计业务列表
+	 * @param connection
+	 * @throws Exception 
+	 */
+	public List<SSProfess> SSBusinessByPortId(String type ,List<Integer> portIdList,Connection connection) throws Exception{
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+		SSProfess ss = null;					
+		String sql = null;
+		ResultSet rs = null;
+		List<SSProfess> list =new ArrayList<SSProfess>();
+		PreparedStatement preparedStatement = null;					
+		StringBuffer stringBuffer = new StringBuffer();
+		StringBuffer pwBuffer = new StringBuffer();
+		try {
+		if("TUNNEL".equals(type)){
+			
+			stringBuffer.append("SELECT list.`name` ,'1' AS direction , list.aneName,list.aportname,list.znename,list.zportname,list.atunnelbusinessid,list.ztunnelbusinessid,list.type,list.aSiteId,list.zSiteId,");
+			stringBuffer.append("(SELECT COUNT(id) FROM current_alarm alarm WHERE (alarm.objecttype=3 and list.type = 185 and ( (alarm.objectid=list.atunnelbusinessid and alarm.siteid = list.aSiteId )or (alarm.objectid=list.ztunnelbusinessid and alarm.siteid = list.zSiteId ))) or(alarm.objecttype=6 and list.type = 185 and ((alarm.objectid=list.atunnelbusinessid and alarm.siteid = list.aSiteId )or (alarm.objectid=list.ztunnelbusinessid and alarm.siteid = list.zSiteId))) ) AS alarmCount,list.activeStatus,list.createTime,list.clientName");		
+			stringBuffer.append(" FROM (");
+			stringBuffer.append("SELECT  t.tunnelName as name , t.tunnelType as type, t.tunnelStatus as activeStatus,t.createTime as createTime, t.createUser as clientName, sa.CellId AS aneName, sz.CellId AS znename, pa.portName AS aPortName, pz.portName AS zPortName ,l.atunnelbusinessid as atunnelbusinessid,l.ztunnelbusinessid as ztunnelbusinessid,sa.site_inst_id as aSiteId,sz.site_inst_id as zSiteId");
+			stringBuffer.append(" FROM site_inst sa, site_inst sz, port_inst pa, port_inst pz, tunnel t,lspinfo l");
+			stringBuffer.append(" WHERE t.aSiteId = sa.site_inst_id AND t.zSiteId = sz.site_inst_id AND t.aPortId = pa.portId AND t.zPortId = pz.portId  AND t.tunnelId in (SELECT tunnelId FROM lspinfo WHERE  lspinfo.aPortId=? OR lspinfo.zPortId=?)  and tunneltype!='0' and t.isSingle=0 group by t.tunnelId)as list");	
+			sql = stringBuffer.toString();
+		    for(int i=0;i<portIdList.size();i++){
+			    preparedStatement = connection.prepareStatement(sql);
+			    preparedStatement.setInt(1, portIdList.get(i));
+			    preparedStatement.setInt(2, portIdList.get(i));
+			    rs = preparedStatement.executeQuery();
+			    while (rs.next()) {	
+				    ss = new SSProfess();
+				    ss.setName(rs.getString("name"));
+				    ss.setDirection(rs.getInt("direction"));
+				    ss.setRate("隧道");
+				    if(rs.getInt("type")==185){
+					   ss.setServiceType(185);				    
+				    }else{
+					   ss.setServiceType(186);
+				    }				
+
+			    ss.setaSiteName(rs.getString("list.aneName"));
+				ss.setaPortName(rs.getString("list.aportname"));
+				ss.setzSiteName(rs.getString("list.zneName"));
+			    ss.setzPortName(rs.getString("list.zportname"));				   			
+				ss.setAlarmCount(rs.getInt("alarmCount"));
+				ss.setActiveStatus(rs.getInt("list.activeStatus"));
+				ss.setCreateTime(rs.getString("list.createTime"));
+				ss.setClientName(rs.getString("clientName"));	
+				list.add(ss);				
+			 }
+		    }			 		 
+		}
+
+
+		if("PW".equals(type)){
+			stringBuffer.append("SELECT list.`name` ,'1' AS direction ,'7' as rate, list.aneName,list.aportname,list.znename,list.zportname,list.apwServiceId,list.zpwServiceId,list.aSiteId,list.zSiteId,");
+			stringBuffer.append("(SELECT COUNT(id) FROM current_alarm alarm WHERE (alarm.objecttype=4 and  ( (alarm.objectid=list.apwServiceId and alarm.siteid=list.aSiteId )or (alarm.objectid=list.zpwServiceId and alarm.siteid=list.aSiteId ))) ) AS alarmCount,list.activeStatus,list.createTime,list.clientName,list.aSiteId,list.zSiteId");		
+			stringBuffer.append(" FROM (");
+			stringBuffer.append("SELECT p.pwId, p.pwName as name, p.pwStatus as activeStatus,p.apwServiceId as apwServiceId ,p.zpwServiceId as zpwServiceId,sa.CellId AS aneName, sz.CellId AS zneName,   p.createTime as createTime, pa.portName AS aPortName,pz.portName AS zPortName,p.createUser as clientName, sa.site_inst_id as aSiteId,sz.site_inst_id as zSiteId ");
+			stringBuffer.append(" FROM pwinfo p, site_inst sa, port_inst pa, port_inst pz, site_inst sz ,tunnel t");
+			stringBuffer.append(" WHERE 1=1 and t.tunnelId=p.tunnelId  and p.aSiteId = sa.site_inst_id AND p.zSiteId = sz.site_inst_id  and ((p.aSiteId =t.aSiteId and p.zSiteId =t.zSiteId and t.aPortId = pa.portId AND t.zPortId = pz.portId and (t.aPortId=? or t.zPortId=?)) or(p.aSiteId =t.zSiteId and p.zSiteId =t.aSiteId and t.zPortId = pa.portId AND t.aPortId = pz.portId and (t.aPortId=? or t.zPortId=?))) and p.isSingle=0 group by p.pwId order by p.pwId) as list");	     	
+			sql = stringBuffer.toString();	
+			for(int i=0;i<portIdList.size();i++){ 						
+				sql = stringBuffer.toString();
+				preparedStatement = connection.prepareStatement(sql);
+				preparedStatement.setInt(1, portIdList.get(i));
+				preparedStatement.setInt(2, portIdList.get(i));
+				preparedStatement.setInt(3, portIdList.get(i));
+				preparedStatement.setInt(4, portIdList.get(i));
+				rs = preparedStatement.executeQuery();
+				while (rs.next()) {			
+					ss=new SSProfess();
+					ss.setName(rs.getString("name"));
+					ss.setDirection(rs.getInt("direction"));
+					ss.setRate("伪线");				
+					ss.setServiceType(5);				
+				    ss.setaSiteName(rs.getString("list.aneName"));
+					ss.setaPortName(rs.getString("list.aportname"));
+					ss.setzSiteName(rs.getString("list.zneName"));
+				    ss.setzPortName(rs.getString("list.zportname"));				   			
+					ss.setAlarmCount(rs.getInt("alarmCount"));
+					ss.setActiveStatus(rs.getInt("list.activeStatus"));
+					ss.setCreateTime(rs.getString("list.createTime"));
+					ss.setClientName(rs.getString("clientName"));				
+					list.add(ss);
+				}
+			}		
+		}
+		
+		
+
+		//多段
+		if("PW".equals(type)){
+		pwBuffer.append("SELECT list.`name` ,list.id,'1' AS direction ,'7' as rate, list.aneName,list.znename,list.apwServiceId,list.zpwServiceId,list.aSiteId,list.zSiteId,");
+		pwBuffer.append("(SELECT COUNT(id) FROM current_alarm alarm WHERE (alarm.objecttype=17 and  ((alarm.objectid=list.apwServiceId and alarm.siteid=list.aSiteId )or (alarm.objectid=list.zpwServiceId and alarm.siteid=list.zSiteId))) ) AS alarmCount,list.activeStatus,list.createTime,list.clientName,list.aSiteId,list.zSiteId ");		
+		pwBuffer.append(" FROM (");
+		pwBuffer.append("SELECT p.pwId as id, p.pwName as name, p.pwStatus as activeStatus,p.apwServiceId as apwServiceId ,p.zpwServiceId as zpwServiceId,sa.CellId AS aneName, sz.CellId AS zneName,   p.createTime as createTime, p.createUser as clientName,sa.site_inst_id as aSiteId,sz.site_inst_id as zSiteId");
+		pwBuffer.append(" FROM pwinfo p, site_inst sa,  site_inst sz ,tunnel t");
+		pwBuffer.append(" WHERE p.tunnelId=0 and p.aSiteId = sa.site_inst_id AND p.zSiteId = sz.site_inst_id and p.isSingle=0 group by p.pwName order by p.pwId) as list");	
+	
+		    String sql1 = null;	
+		    ResultSet rs1 = null;
+			PreparedStatement preparedStatement1 = null;	
+			sql1 = pwBuffer.toString();	
+			preparedStatement1 = connection.prepareStatement(sql1);
+			rs1 = preparedStatement1.executeQuery();
+			while (rs1.next()) {			
+				ss=new SSProfess();
+				ss.setId(rs1.getInt("id"));
+				ss.setName(rs1.getString("name"));
+				ss.setDirection(rs1.getInt("direction"));
+				ss.setRate("伪线");				
+				ss.setServiceType(5);				
+			    ss.setaSiteName(rs1.getString("list.aneName"));				
+				ss.setzSiteName(rs1.getString("list.zneName"));				   			
+				ss.setAlarmCount(rs1.getInt("alarmCount"));
+				ss.setActiveStatus(rs1.getInt("list.activeStatus"));
+				ss.setCreateTime(rs1.getString("list.createTime"));
+				ss.setClientName(rs1.getString("clientName"));	
+				list.add(ss);			
+			}
+		}
+		
+		
+		if("CES".equals(type)){
+
+			stringBuffer.append("SELECT list.`name` ,'1' AS direction , (CASE WHEN list.serviceType=0  THEN '1' ELSE '2' END) AS rate , list.aneName,list.aportname,list.znename,list.zportname,");
+			stringBuffer.append("list.serviceType,(SELECT COUNT(id) FROM current_alarm alarm WHERE alarm.objecttype=9 AND alarm.objectid=list.id) AS alarmCount,");
+			stringBuffer.append("	list.activeStatus,list.createTime,(SELECT `name` FROM client WHERE id=list.clientid) AS clientName ");
+			stringBuffer.append("from (");	
+			stringBuffer.append("SELECT s.*,a.CellId AS aNeName,z.CellId AS zNeName,CASE WHEN (s.cestype=2 OR s.cestype=4) THEN (SELECT p.portName FROM port_inst p WHERE s.aAcId=p.portid and (s.aAcId=? or s.zAcId=?))");				
+			stringBuffer.append(" WHEN (s.cestype=3 OR s.cestype=5) THEN (SELECT ps.timeslotnumber FROM port_stm_timeslot ps WHERE s.aAcId=ps.id and (s.aAcId=? or s.zAcId=?))END AS aportName,");
+			stringBuffer.append(" CASE WHEN (s.cestype=2 OR s.cestype=5) THEN (SELECT p.portName FROM port_inst p WHERE s.zAcId=p.portid and (s.aAcId=? or s.zAcId=?))WHEN (s.cestype=3 OR s.cestype=4) THEN (SELECT ps.timeslotnumber FROM port_stm_timeslot ps WHERE s.zAcId=ps.id and (s.aAcId=? or s.zAcId=?)) END AS zportName");	
+			stringBuffer.append(" FROM serviceinfo s,site_inst a,site_inst z WHERE s.asiteid=a.site_inst_id  AND s.zsiteid=z.site_inst_id AND s.isSingle= 0 AND s.serviceType=0  group by s.id ,s.serviceType)as list");		
+			for(int i=0;i<portIdList.size();i++){ 
+			    sql = stringBuffer.toString();
+				preparedStatement = connection.prepareStatement(sql);
+				preparedStatement.setInt(1, portIdList.get(i));
+				preparedStatement.setInt(2, portIdList.get(i));
+				preparedStatement.setInt(3, portIdList.get(i));
+				preparedStatement.setInt(4, portIdList.get(i));
+				preparedStatement.setInt(5, portIdList.get(i));
+				preparedStatement.setInt(6, portIdList.get(i));
+				preparedStatement.setInt(7, portIdList.get(i));
+				preparedStatement.setInt(8, portIdList.get(i));
+				rs = preparedStatement.executeQuery();
+				while (rs.next()) {			
+				ss=new SSProfess();
+				ss.setName(rs.getString("name"));
+				ss.setDirection(rs.getInt("direction"));				
+				ss.setServiceType(rs.getInt("serviceType"));
+				if(ss.getServiceType()==0){
+					   ss.setRate("CES");				
+				  }else{
+				 	ss.setRate("以太网");		
+				  }				
+				ss.setaSiteName(rs.getString("list.aneName"));
+				ss.setaPortName(rs.getString("list.aportname"));
+				ss.setzSiteName(rs.getString("list.zneName"));
+				ss.setzPortName(rs.getString("list.zportname"));				   			
+				ss.setAlarmCount(rs.getInt("alarmCount"));
+				ss.setActiveStatus(rs.getInt("list.activeStatus"));
+				ss.setCreateTime(rs.getString("list.createTime"));
+				ss.setClientName(rs.getString("clientName"));	
+				if(ss.getaPortName()!=null && ss.getzPortName()!=null){
+					list.add(ss);	
+				}				
+			}
+		 }
+		}
+		
+		if("ETH".equals(type)){
+
+			stringBuffer.append("SELECT list.`name` ,'1' AS direction , (CASE WHEN list.serviceType=0  THEN '1' ELSE '2' END) AS rate , ");
+			stringBuffer.append("list.serviceType,(SELECT COUNT(id) FROM current_alarm alarm WHERE (alarm.objecttype=9 and (list.serviceType=1 or list.serviceType=0) AND alarm.objectid=list.id) or(alarm.objecttype=10 and (list.serviceType=2 or list.serviceType=3) AND alarm.objectid=list.id)) AS alarmCount,");
+			stringBuffer.append("	list.activeStatus,list.createTime,list.aPortname,list.zPortname,list.aNeName,list.zNeName,list.aAcId,list.zAcId,(SELECT `name` FROM client WHERE id=list.clientid) AS clientName ");
+			stringBuffer.append("from (");	
+			stringBuffer.append(" SELECT s.*,s.aSiteId as aNeName,s.zSiteId as zNeName, s.amostAcIds as aPortname,s.zmostAcIds as zPortname  FROM serviceinfo s");				
+			stringBuffer.append(" WHERE   s.isSingle= 0 AND (s.serviceType=2  or s.serviceType=3 ) group by s.serviceId ,s.serviceType");		
+			stringBuffer.append(" UNION ALL ");	
+			stringBuffer.append(" SELECT s.*,s.aSiteId as aNeName,s.zSiteId as zNeName,s.aAcId as aPortname,s.zAcId as zPortname  FROM serviceinfo s");				
+			stringBuffer.append(" WHERE   s.isSingle= 0 AND  s.serviceType =40  group by s.serviceId ,s.serviceType");		
+			stringBuffer.append(" UNION ALL ");	
+			stringBuffer.append(" SELECT s.*,a.CellId AS aNeName,z.CellId AS zNeName,aport.`portName` AS aPortname , zport.`portName` AS zportname FROM serviceinfo s,site_inst a,site_inst z ,acinfo aac,acinfo zac,port_inst aport,port_inst zport ");				
+			stringBuffer.append(" WHERE s.asiteid=a.site_inst_id  AND s.zsiteid=z.site_inst_id AND s.aacid=aac.id AND s.zacid=zac.id and aac.portId=aport.portId and zac.portId=zport.portId  AND s.isSingle= 0 AND s.serviceType=1  group by s.id ,s.serviceType ) as list");
+										
+			sql = stringBuffer.toString();
+			preparedStatement = connection.prepareStatement(sql);				
+			rs = preparedStatement.executeQuery();
+			while (rs.next()) {	
+					ss=new SSProfess();
+					ss.setName(rs.getString("name"));
+					ss.setDirection(rs.getInt("direction"));				
+					ss.setServiceType(rs.getInt("serviceType"));						
+					ss.setRate("以太网");													
+					ss.setaSiteName(rs.getString("list.aneName"));
+					ss.setaPortName(rs.getString("list.aportname"));
+					ss.setzSiteName(rs.getString("list.zneName"));
+					ss.setzPortName(rs.getString("list.zportname"));				   			
+					ss.setAlarmCount(rs.getInt("alarmCount"));
+					ss.setActiveStatus(rs.getInt("list.activeStatus"));
+					ss.setCreateTime(rs.getString("list.createTime"));
+					ss.setClientName(rs.getString("clientName"));
+					ss.setaACId(rs.getInt("list.aAcId"));
+					ss.setzACId(rs.getInt("list.zAcId"));
+					if(ss.getaPortName()!=null && ss.getzPortName()!=null){
+						list.add(ss);	
+					}
+					
+				}
+		}
+		
+		
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (rs != null) {
+				try {
+					rs.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e, this.getClass());
+				}
+				rs = null;
+			}
+			
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e, this.getClass());
+				}
+				preparedStatement = null;
+			}
+			
+			
+		}
+		return list;
+	}	
+		
+	public PortInst queryPortName(int acId, Connection connection) throws Exception {
+
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+		String sql = null;	
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+        PortInst portInst = new PortInst();
+		try {
+
+			sql = "select p.portName as portName  from acinfo a ,port_inst p WHERE a.portId=p.portId and a.id="+acId;			
+			preparedStatement = connection.prepareStatement(sql);
+			resultSet = preparedStatement.executeQuery();
+			while(resultSet.next())
+			{
+				portInst.setPortName(resultSet.getString("portName"));
+			}
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			sql = null;
+			if(resultSet != null)
+			{
+				try {
+					resultSet.close();
+				} catch (Exception e2) {
+					ExceptionManage.dispose(e2, getClass());
+				}finally
+				{
+					resultSet = null;
+				}
+			}
+			if(preparedStatement != null)
+			{
+				try {
+					preparedStatement.close();
+				} catch (Exception e2) {
+					ExceptionManage.dispose(e2, getClass());
+				}finally
+				{
+					preparedStatement = null;
+				}
+			}
+		}
+		return portInst;
+	}
+	
+	
+	public PortInst queryPwPortName(int tunnelId, String siteName,Connection connection) throws Exception {
+
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+		String sql = null;	
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+        PortInst portInst = new PortInst();
+		try {
+			sql = "select p.portName as portName ,p.portId as portId from tunnel t ,port_inst p ,site_inst s WHERE t.tunnelId="+tunnelId+" and p.siteId=s.site_inst_id and s.cellId="+"'"+siteName+"'"+"and (s.site_inst_id=t.aSiteId or s.site_inst_id=t.zSiteId  ) and(p.portId=t.aPortId or p.portId=t.zPortId) and (t.aSiteId = s.site_inst_id or t.zSiteId = s.site_inst_id) ";	
+			
+			
+			preparedStatement = connection.prepareStatement(sql);
+			resultSet = preparedStatement.executeQuery();
+			while(resultSet.next())
+			{
+				portInst.setPortName(resultSet.getString("portName"));
+				portInst.setPortId(resultSet.getInt("portId"));
+			}
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			sql = null;
+			if(resultSet != null)
+			{
+				try {
+					resultSet.close();
+				} catch (Exception e2) {
+					ExceptionManage.dispose(e2, getClass());
+				}finally
+				{
+					resultSet = null;
+				}
+			}
+			if(preparedStatement != null)
+			{
+				try {
+					preparedStatement.close();
+				} catch (Exception e2) {
+					ExceptionManage.dispose(e2, getClass());
+				}finally
+				{
+					preparedStatement = null;
+				}
+			}
+		}
+		return portInst;
+	}	
+}

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<driveRoot  xmlns="http://drive.bean.com">
+	<attribute length="1" description="环ID" value="0" mapping="(0)/1=(不关联)/关联"/>
+	<attribute length="1" description="西向端口" value="0" mapping="(0)/1=(不关联)/关联"/>
+	<attribute length="5" description="备用" value="0" mapping="(0)/1=(不关联)/关联"/>
+	<attribute length="1" description="东向端口" value="0" mapping="(0)/1=(不关联)/关联"/>
+	<attribute length="5" description="备用" value="0" mapping="(0)/1=(不关联)/关联"/>
+	<attribute length="1" description="保护类型" value="0" mapping="(0)/1=(不关联)/关联"/>
+	<attribute length="1" description="倒换状态" value="0" mapping="(0)/1=(不关联)/关联"/>
+	<attribute length="1" description="环网节点总数" value="0" mapping="(0)/1=(不关联)/关联"/>
+	<attribute length="1" description="本站节点id" value="0" mapping="(0)/1=(不关联)/关联"/>
+	<attribute length="1" description="西向线路告警" value="0" mapping="(0)/1=(不关联)/关联"/>
+	<attribute length="1" description="东向线路告警" value="0" mapping="(0)/1=(不关联)/关联"/>
+	<attribute length="4" description="西向收APS信息" value="0" mapping="(0)/1=(不关联)/关联"/>
+	<attribute length="4" description="东向收APS信息" value="0" mapping="(0)/1=(不关联)/关联"/>
+	<attribute length="4" description="西向发APS信息" value="0" mapping="(0)/1=(不关联)/关联"/>
+	<attribute length="4" description="东向发APS信息" value="0" mapping="(0)/1=(不关联)/关联"/>
+	<attribute length="1" description="拖延时间" value="0" mapping="(0)/1=(不关联)/关联"/>
+	<attribute length="1" description="返回类型" value="0" mapping="(0)/1=(不关联)/关联"/>
+	<attribute length="10" description="备用" value="0" mapping="(0)/1=(不关联)/关联"/>
+</driveRoot>

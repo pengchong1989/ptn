@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nms.db.dao.ptn.MacLearningLimitMapper" >
+  <resultMap id="BaseResultMap" type="MacLearningInfo" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="siteId" property="siteId" jdbcType="INTEGER" />
+    <result column="portId" property="portId" jdbcType="INTEGER" />
+    <result column="model" property="macModel" jdbcType="INTEGER" />
+    <result column="vlanId" property="vlanId" jdbcType="INTEGER" />
+    <result column="count" property="macCount" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, siteId, portId, model, vlanId, count
+  </sql>
+   
+  <delete id="delete" parameterType="java.lang.Integer" >
+    delete from maclearninglimit where id = #{id,jdbcType=INTEGER}
+  </delete>
+  
+  <insert id="insert" parameterType="MacLearningInfo"  useGeneratedKeys="true" keyProperty="id">
+    insert into maclearninglimit (siteId, portId, model, vlanId, count)
+    values (#{siteId,jdbcType=INTEGER}, #{portId,jdbcType=INTEGER}, 
+      #{macModel,jdbcType=INTEGER}, #{vlanId,jdbcType=INTEGER}, #{macCount,jdbcType=INTEGER})
+  </insert>
+ 
+  <update id="update" parameterType="MacLearningInfo" >
+    update maclearninglimit set       
+      model = #{macModel,jdbcType=INTEGER},
+      vlanId = #{vlanId,jdbcType=INTEGER},
+      count = #{macCount,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+    
+  </update>
+    
+  <select id="selectBySiteId" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+	select * from (select * from maclearninglimit m where m.siteId = #{siteId} order by m.id desc) b group by b.portId
+  </select>
+  
+  <select id="selectById" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select * from maclearninglimit m where m.id =#{id}
+  </select>
+ 
+  <delete id="deleteByPortId" parameterType="java.lang.Integer" >
+    delete from maclearninglimit where portId=#{portId}
+  </delete>
+  
+  <delete id="deleteBySiteId" parameterType="java.lang.Integer" >
+    delete from maclearninglimit where siteId = #{siteId,jdbcType=INTEGER}
+  </delete>
+</mapper>

@@ -1,0 +1,246 @@
+package com.nms.model.ptn.path.eth;
+
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.ibatis.session.SqlSession;
+
+import com.nms.db.bean.ptn.oam.OamInfo;
+import com.nms.db.bean.ptn.oam.OamMepInfo;
+import com.nms.db.bean.ptn.oam.OamMipInfo;
+import com.nms.db.bean.ptn.path.eth.ElineInfo;
+import com.nms.db.dao.ptn.path.eth.ElineInfoMapper;
+import com.nms.db.enums.EServiceType;
+import com.nms.model.ptn.oam.OamInfoService_MB;
+import com.nms.model.util.ObjectService_Mybatis;
+import com.nms.model.util.Services;
+import com.nms.ui.manager.ConstantUtil;
+import com.nms.ui.manager.DateUtil;
+import com.nms.ui.manager.ExceptionManage;
+
+public class ElineInfoService_MB extends ObjectService_Mybatis {
+	public void setPtnuser(String ptnuser) {
+		super.ptnuser = ptnuser;
+	}
+
+	public void setSqlSession(SqlSession sqlSession) {
+		super.sqlSession = sqlSession;
+	}
+
+	private ElineInfoMapper mapper;
+
+	public ElineInfoMapper getElineInfoMapper() {
+		return mapper;
+	}
+
+	public void setElineInfoMapper(ElineInfoMapper ElineInfoMapper) {
+		this.mapper = ElineInfoMapper;
+	}
+
+	public List<ElineInfo> selectByCondition(ElineInfo eline) {
+		List<ElineInfo> elineinfoList = null;
+		try {
+			elineinfoList = this.mapper.queryByCondition(eline);
+			if (elineinfoList != null && !elineinfoList.isEmpty()) {
+				for (ElineInfo elineInfo : elineinfoList) {
+					elineInfo.setCreateTime(DateUtil.strDate(elineInfo.getCreateTime(), DateUtil.FULLTIME));
+				}
+			}
+		} catch (Exception e) {
+			ExceptionManage.dispose(e, this.getClass());
+		}
+		return elineinfoList;
+	}
+
+	public List<ElineInfo> selectBySiteId(int siteId) {
+		List<ElineInfo> elineinfoList = null;
+		try {
+			elineinfoList = this.mapper.selectBySiteId(siteId);
+			if (elineinfoList != null && !elineinfoList.isEmpty()) {
+				for (ElineInfo elineInfo : elineinfoList) {
+					elineInfo.setCreateTime(DateUtil.strDate(elineInfo.getCreateTime(), DateUtil.FULLTIME));
+				}
+			}
+		} catch (Exception e) {
+			ExceptionManage.dispose(e, this.getClass());
+		}
+		return elineinfoList;
+	}
+
+	public Object selectElineByCondition(ElineInfo elineInfo) {
+		List<ElineInfo> elineinfoList = null;
+		try {
+			elineinfoList = mapper.querySingleByCondition(elineInfo);
+		} catch (Exception e) {
+			ExceptionManage.dispose(e, this.getClass());
+		} finally {
+		}
+		return elineinfoList;
+	}
+
+	/**
+	 * 根据网元查询此网元下所有单网元eline业务
+	 * @param siteId 网元主键
+	 * @return 
+	 * @throws Exception
+	 */
+	public List<ElineInfo> selectBySite_node(int siteId) throws Exception{
+		return this.mapper.selectBySiteAndisSingle(siteId, 1);
+	}
+	
+	/**
+	 * 根据网元查询此网元下所有网络eline业务
+	 * @param siteId 网元主键
+	 * @return 
+	 * @throws Exception
+	 */
+	public List<ElineInfo> selectBySite_network(int siteId) throws Exception{
+		return this.mapper.selectBySiteAndisSingle(siteId, 0);
+	}
+	
+	/**
+	 * 通过acId,siteId查询line
+	 * @param acId
+	 * @return
+	 * @throws SQLException 
+	 */
+	public List<ElineInfo> selectByAcIdAndSiteId(int acId,int siteId) throws Exception{
+		List<ElineInfo> elineInfos = null;
+		elineInfos = this.mapper.queryByAcIdAndSiteIdCondition(acId,siteId);
+		return elineInfos;
+	}
+	
+	/**
+	 * 查询单网元下的所有eline
+	 * 
+	 * @param siteId
+	 *            网元id
+	 * @return
+	 * @throws Exception
+	 */
+	public List<ElineInfo> selectNodeBySiteAndServiceId(int siteId, int serviceId) throws Exception {
+
+		List<ElineInfo> elineInfoList = null;
+		try {
+			elineInfoList = new ArrayList<ElineInfo>();
+			elineInfoList = this.mapper.queryNodeBySiteAndServiceId(siteId, serviceId);
+			for (ElineInfo elineInfo : elineInfoList) {
+				elineInfo.setNode(true);
+			}
+
+		} catch (Exception e) {
+			throw e;
+		}
+		return elineInfoList;
+	}
+	
+	public List<ElineInfo> selectByCondition_nojoin(ElineInfo elineinfo) throws Exception {
+		List<ElineInfo> elineinfoList = null;
+		try {
+			elineinfoList = mapper.queryByCondition_notjoin(elineinfo);
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		} finally {
+		}
+		return elineinfoList;
+	}
+	
+	/**
+	 * 查询单网元下的所有eline
+	 * 
+	 * @param siteId
+	 *            网元id
+	 * @return
+	 * @throws Exception
+	 */
+	public List<ElineInfo> selectNodeBySite(int siteId) throws Exception {
+
+		List<ElineInfo> elineInfoList = null;
+		OamInfoService_MB oamInfoService=null;
+		OamInfo oamInfo=null;
+		OamMepInfo oamMepInfo=null;
+		OamMipInfo oamMipInfo=null;
+		try {
+			oamInfoService=(OamInfoService_MB) ConstantUtil.serviceFactory.newService_MB(Services.OamInfo, this.sqlSession);
+			elineInfoList = this.mapper.queryNodeBySite(siteId);
+			for (ElineInfo elineInfo : elineInfoList) {
+				elineInfo.setNode(true);
+				
+				oamInfo = new OamInfo();
+				oamMepInfo = new OamMepInfo();
+				oamMepInfo.setServiceId(elineInfo.getId());
+				oamMepInfo.setObjType(EServiceType.ELINE.toString());
+				oamInfo.setOamMep(oamMepInfo);
+
+				oamMipInfo = new OamMipInfo();
+				oamMipInfo.setServiceId(elineInfo.getId());
+				oamMipInfo.setObjType(EServiceType.ELINE.toString());
+				oamInfo.setOamMip(oamMipInfo);
+				elineInfo.setOamList(oamInfoService.queryByServiceId(oamInfo));
+			}
+
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		} finally {
+//			UiUtil.closeService(oamInfoService);
+		}
+		return elineInfoList;
+	}
+	
+	/**
+	 * 搜索eline
+	 * @param elineInfos
+	 */
+	public void doSearch(List<ElineInfo> elineInfos){
+		String ids = new String("(");
+		for (ElineInfo elineInfo : elineInfos) {
+			ids = ids + elineInfo.getId() + ",";
+		}
+		ids = ids.substring(0, ids.length() - 1) + ")";
+		String name = elineInfos.get(0).getaAcId()+"_"+System.currentTimeMillis();
+		int s1Id = elineInfos.get(0).getId();
+		int s2Id = elineInfos.get(1).getId();
+		try {
+			mapper.doSearche_insert(name,s1Id,s2Id);
+			mapper.deleteByIds(ids);
+		} catch (Exception e) {
+			ExceptionManage.dispose(e, this.getClass());
+		}
+	}
+	
+	
+	public List<ElineInfo> select() throws Exception {
+		List<ElineInfo> elineinfoList = null;
+		OamInfo oamInfo;
+		OamMepInfo oamMepInfo;
+		OamMipInfo oamMipInfo;
+		OamInfoService_MB oamInfoService = null;
+		try {
+			ElineInfo elineinfo = new ElineInfo();
+			elineinfoList= new ArrayList<ElineInfo>();
+			elineinfoList = this.mapper.queryByCondition(elineinfo);
+			oamInfoService=(OamInfoService_MB) ConstantUtil.serviceFactory.newService_MB(Services.OamInfo, this.sqlSession);
+			if(elineinfoList!=null && elineinfoList.size()>0){
+				for (ElineInfo elineInfo : elineinfoList) {
+					oamInfo = new OamInfo();
+					oamMepInfo = new OamMepInfo();
+					oamMepInfo.setServiceId(elineInfo.getId());
+					oamMepInfo.setObjType("ELINE");
+					oamInfo.setOamMep(oamMepInfo);	
+					oamMipInfo = new OamMipInfo();
+					oamMipInfo.setServiceId(elineInfo.getId());
+					oamMipInfo.setObjType("ELINE");
+					oamInfo.setOamMip(oamMipInfo);		
+					elineInfo.setOamList(oamInfoService.queryByServiceId(oamInfo));
+				}
+			}
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		} finally {
+//			UiUtil.closeService(oamInfoService);
+		}
+		return elineinfoList;
+	}
+	
+}

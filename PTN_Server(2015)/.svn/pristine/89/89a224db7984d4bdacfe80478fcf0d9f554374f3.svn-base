@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<driveRoot  xmlns="http://drive.bean.com">
+	<attribute length="1" description="标识码" value="" mapping="配置数据块的标识码"/> 
+	<attribute length="1" description="CRC校验和1" value="" mapping="配置数据块的CRC校验和1,…, 配置数据块的CRC校验和4"/>
+	<attribute length="1" description="CRC校验和2" value="" mapping="配置数据块的CRC校验和1,…, 配置数据块的CRC校验和4"/>
+	<attribute length="1" description="CRC校验和3" value="" mapping="配置数据块的CRC校验和1,…, 配置数据块的CRC校验和4"/>
+	<attribute length="1" description="CRC校验和4" value="" mapping="配置数据块的CRC校验和1,…, 配置数据块的CRC校验和4"/>
+	<attribute length="1" description="生产时间1" value="" mapping="配置数据块的生产时间1,…,配置数据块的生成时间7"/>
+	<attribute length="1" description="生产时间2" value="" mapping="配置数据块的生产时间1,…,配置数据块的生成时间7"/>
+	<attribute length="1" description="生产时间3" value="" mapping="配置数据块的生产时间1,…,配置数据块的生成时间7"/>
+	<attribute length="1" description="生产时间4" value="" mapping="配置数据块的生产时间1,…,配置数据块的生成时间7"/>
+	<attribute length="1" description="生产时间5" value="" mapping="配置数据块的生产时间1,…,配置数据块的生成时间7"/>
+	<attribute length="1" description="生产时间6" value="" mapping="配置数据块的生产时间1,…,配置数据块的生成时间7"/>
+	<attribute length="1" description="生产时间7" value="" mapping="配置数据块的生产时间1,…,配置数据块的生成时间7"/>
+</driveRoot>

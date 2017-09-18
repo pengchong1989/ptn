@@ -1,0 +1,312 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nms.db.dao.perform.PerformanceTaskInfoMapper" >
+  <resultMap id="BaseResultMap" type="PerformanceTaskInfo" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="objectid" property="objectId" jdbcType="INTEGER" />
+    <result column="objecttype" property="objectType" jdbcType="VARCHAR" typeHandler="com.nms.db.enums.IntEnumTypeHandler"/>
+    <result column="threadname" property="threadName" jdbcType="VARCHAR" />
+    <result column="taskname" property="taskName" jdbcType="VARCHAR" />
+    <result column="perfortype" property="perforType" jdbcType="VARCHAR" />
+    <result column="monitorcycle" property="monitorCycle" jdbcType="INTEGER" typeHandler="com.nms.db.enums.IntEnumTypeHandler"/>
+    <result column="createtime" property="createTime" jdbcType="VARCHAR" />
+    <result column="endtime" property="endTime" jdbcType="VARCHAR" />
+    <result column="runstates" property="runstates" jdbcType="INTEGER" typeHandler="com.nms.db.enums.IntEnumTypeHandler"/>
+    <result column="creater" property="creater" jdbcType="VARCHAR" />
+    <result column="taskDescribe" property="taskDescribe" jdbcType="VARCHAR" />
+    <result column="slotCard" property="slotCard" jdbcType="VARCHAR" />
+    <result column="performanceCount" property="performanceCount" jdbcType="INTEGER" />
+    <result column="performanceBeginCount" property="performanceBeginCount" jdbcType="INTEGER" />
+    <result column="performanceType" property="performanceType" jdbcType="INTEGER" />
+    <collection property="siteInst" ofType="SiteInst" >
+    	<result column="siteId" property="Site_Inst_Id" jdbcType="INTEGER" />
+	</collection>
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, siteId, objectid, objecttype, threadname, taskname, perfortype, monitorcycle, 
+    createtime, endtime, runstates, creater, taskDescribe, slotCard, performanceCount, 
+    performanceBeginCount, performanceType
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from performance_task
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from performance_task
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="PerformanceTaskInfo" >
+    insert into performance_task (id, siteId, objectid, 
+      objecttype, threadname, taskname, 
+      perfortype, monitorcycle, createtime, 
+      endtime, runstates, creater, 
+      taskDescribe, slotCard, performanceCount, 
+      performanceBeginCount, performanceType)
+    values (#{id,jdbcType=INTEGER}, #{siteid,jdbcType=INTEGER}, #{objectid,jdbcType=INTEGER}, 
+      #{objecttype,jdbcType=VARCHAR}, #{threadname,jdbcType=VARCHAR}, #{taskname,jdbcType=VARCHAR}, 
+      #{perfortype,jdbcType=VARCHAR}, #{monitorcycle,jdbcType=INTEGER}, #{createtime,jdbcType=VARCHAR}, 
+      #{endtime,jdbcType=VARCHAR}, #{runstates,jdbcType=INTEGER}, #{creater,jdbcType=VARCHAR}, 
+      #{taskdescribe,jdbcType=VARCHAR}, #{slotcard,jdbcType=VARCHAR}, #{performancecount,jdbcType=INTEGER}, 
+      #{performancebegincount,jdbcType=INTEGER}, #{performancetype,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="PerformanceTaskInfo" >
+    insert into performance_task
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="siteid != null" >
+        siteId,
+      </if>
+      <if test="objectid != null" >
+        objectid,
+      </if>
+      <if test="objecttype != null" >
+        objecttype,
+      </if>
+      <if test="threadname != null" >
+        threadname,
+      </if>
+      <if test="taskname != null" >
+        taskname,
+      </if>
+      <if test="perfortype != null" >
+        perfortype,
+      </if>
+      <if test="monitorcycle != null" >
+        monitorcycle,
+      </if>
+      <if test="createtime != null" >
+        createtime,
+      </if>
+      <if test="endtime != null" >
+        endtime,
+      </if>
+      <if test="runstates != null" >
+        runstates,
+      </if>
+      <if test="creater != null" >
+        creater,
+      </if>
+      <if test="taskdescribe != null" >
+        taskDescribe,
+      </if>
+      <if test="slotcard != null" >
+        slotCard,
+      </if>
+      <if test="performancecount != null" >
+        performanceCount,
+      </if>
+      <if test="performancebegincount != null" >
+        performanceBeginCount,
+      </if>
+      <if test="performancetype != null" >
+        performanceType,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="siteid != null" >
+        #{siteid,jdbcType=INTEGER},
+      </if>
+      <if test="objectid != null" >
+        #{objectid,jdbcType=INTEGER},
+      </if>
+      <if test="objecttype != null" >
+        #{objecttype,jdbcType=VARCHAR},
+      </if>
+      <if test="threadname != null" >
+        #{threadname,jdbcType=VARCHAR},
+      </if>
+      <if test="taskname != null" >
+        #{taskname,jdbcType=VARCHAR},
+      </if>
+      <if test="perfortype != null" >
+        #{perfortype,jdbcType=VARCHAR},
+      </if>
+      <if test="monitorcycle != null" >
+        #{monitorcycle,jdbcType=INTEGER},
+      </if>
+      <if test="createtime != null" >
+        #{createtime,jdbcType=VARCHAR},
+      </if>
+      <if test="endtime != null" >
+        #{endtime,jdbcType=VARCHAR},
+      </if>
+      <if test="runstates != null" >
+        #{runstates,jdbcType=INTEGER},
+      </if>
+      <if test="creater != null" >
+        #{creater,jdbcType=VARCHAR},
+      </if>
+      <if test="taskdescribe != null" >
+        #{taskdescribe,jdbcType=VARCHAR},
+      </if>
+      <if test="slotcard != null" >
+        #{slotcard,jdbcType=VARCHAR},
+      </if>
+      <if test="performancecount != null" >
+        #{performancecount,jdbcType=INTEGER},
+      </if>
+      <if test="performancebegincount != null" >
+        #{performancebegincount,jdbcType=INTEGER},
+      </if>
+      <if test="performancetype != null" >
+        #{performancetype,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="PerformanceTaskInfo" >
+    update performance_task
+    <set >
+      <if test="siteid != null" >
+        siteId = #{siteid,jdbcType=INTEGER},
+      </if>
+      <if test="objectid != null" >
+        objectid = #{objectid,jdbcType=INTEGER},
+      </if>
+      <if test="objecttype != null" >
+        objecttype = #{objecttype,jdbcType=VARCHAR},
+      </if>
+      <if test="threadname != null" >
+        threadname = #{threadname,jdbcType=VARCHAR},
+      </if>
+      <if test="taskname != null" >
+        taskname = #{taskname,jdbcType=VARCHAR},
+      </if>
+      <if test="perfortype != null" >
+        perfortype = #{perfortype,jdbcType=VARCHAR},
+      </if>
+      <if test="monitorcycle != null" >
+        monitorcycle = #{monitorcycle,jdbcType=INTEGER},
+      </if>
+      <if test="createtime != null" >
+        createtime = #{createtime,jdbcType=VARCHAR},
+      </if>
+      <if test="endtime != null" >
+        endtime = #{endtime,jdbcType=VARCHAR},
+      </if>
+      <if test="runstates != null" >
+        runstates = #{runstates,jdbcType=INTEGER},
+      </if>
+      <if test="creater != null" >
+        creater = #{creater,jdbcType=VARCHAR},
+      </if>
+      <if test="taskdescribe != null" >
+        taskDescribe = #{taskdescribe,jdbcType=VARCHAR},
+      </if>
+      <if test="slotcard != null" >
+        slotCard = #{slotcard,jdbcType=VARCHAR},
+      </if>
+      <if test="performancecount != null" >
+        performanceCount = #{performancecount,jdbcType=INTEGER},
+      </if>
+      <if test="performancebegincount != null" >
+        performanceBeginCount = #{performancebegincount,jdbcType=INTEGER},
+      </if>
+      <if test="performancetype != null" >
+        performanceType = #{performancetype,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="PerformanceTaskInfo" >
+    update performance_task
+    set siteId = #{siteid,jdbcType=INTEGER},
+      objectid = #{objectid,jdbcType=INTEGER},
+      objecttype = #{objecttype,jdbcType=VARCHAR},
+      threadname = #{threadname,jdbcType=VARCHAR},
+      taskname = #{taskname,jdbcType=VARCHAR},
+      perfortype = #{perfortype,jdbcType=VARCHAR},
+      monitorcycle = #{monitorcycle,jdbcType=INTEGER},
+      createtime = #{createtime,jdbcType=VARCHAR},
+      endtime = #{endtime,jdbcType=VARCHAR},
+      runstates = #{runstates,jdbcType=INTEGER},
+      creater = #{creater,jdbcType=VARCHAR},
+      taskDescribe = #{taskdescribe,jdbcType=VARCHAR},
+      slotCard = #{slotcard,jdbcType=VARCHAR},
+      performanceCount = #{performancecount,jdbcType=INTEGER},
+      performanceBeginCount = #{performancebegincount,jdbcType=INTEGER},
+      performanceType = #{performancetype,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+  <select id="queryByFilter" resultMap="BaseResultMap"  parameterType="map" >
+    SELECT * from performance_task  where 1=1 
+    <if test="objectType == 1">
+    	and objecttype = #{objectType}
+    	<if test="siteIds != null">
+    		and objectid in
+    		<foreach item="item" index="index" collection="siteIds"
+				open="(" separator="," close=")">
+				#{item}
+			</foreach>
+    	</if>
+    </if>
+   <if test="objectType == 2">
+    	and objecttype = #{objectType}
+    	<if test="slotIds != null">
+    		and objectid in
+    		<foreach item="item" index="index" collection="slotIds"
+				open="(" separator="," close=")">
+				#{item}
+			</foreach>
+    	</if>
+    </if>
+    <if test="monitorcycle != null">
+    	and monitorcycle = #{monitorcycle}
+    </if>
+  </select>
+  
+  <select id="queryByCondition" resultMap="BaseResultMap"  >
+    SELECT * from performance_task where 1=1 
+    <if test="condition.id >0">
+    	and id= #{condition.id}
+    </if>
+    <if test="condition.taskName != null">
+    	and taskName= #{condition.taskName}
+    </if>
+    <if test="condition.createTime != null">
+    	and createTime= #{condition.createTime}
+    </if>
+    <if test="condition.endTime != null ">
+    	and endTime= #{condition.endTime}
+    </if>
+    <if test="condition.objectId >0">
+    	and objectId= #{condition.objectId}
+    </if>
+    <if test="condition.creater != null ">
+    	and creater= #{condition.creater}
+    </if>
+    <if test="condition.threadName != null ">
+    	and threadName= #{condition.threadName}
+    </if>
+    <if test="condition.perforType != null ">
+    	and perforType in (#{condition.perforType})
+    </if>
+    <if test="monitorCycle != null ">
+    	and monitorCycle = #{monitorCycle}
+    </if>
+    <if test="runstates != null ">
+    	and runstates = #{runstates}
+    </if>
+    <if test="objectType != null ">
+    	and objectType = #{objectType}
+    </if>
+    <if test="siteId != null ">
+    	and siteId = #{siteId}
+    </if>
+  </select>
+  
+  <select id="query_name" resultType="java.lang.Integer" >
+    select count(*) as selectcount from performance_task where name=#{afterName}
+     <if test="beforeName != null and beforeName != '' ">
+     	and name !=#{beforeName}
+     </if>
+  </select>
+  
+</mapper>

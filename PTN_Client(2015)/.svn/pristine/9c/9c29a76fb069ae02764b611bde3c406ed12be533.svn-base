@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.yihaomen.inter.offlinesitebusiMapper" >
+  <resultMap id="BaseResultMap" type="OffLinesiteBusi" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="operId" property="operId" jdbcType="INTEGER" />
+    <result column="operType" property="operType" jdbcType="INTEGER" />
+    <result column="Action" property="action" jdbcType="INTEGER" />
+    <result column="SiteId" property="siteId" jdbcType="INTEGER" />
+    <result column="actionIdentify" property="actionIdentify" jdbcType="VARCHAR" />
+    <result column="parentBusiId" property="parentBusiId" jdbcType="VARCHAR" />
+    <result column="portId" property="portId" jdbcType="INTEGER" />
+    <result column="acId" property="acId" jdbcType="INTEGER" />
+    <result column="type" property="type" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, operId, operType, Action, SiteId, actionIdentify, parentBusiId, portId, acId, 
+    type
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from offlinesitebusi
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from offlinesitebusi
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="OffLinesiteBusi" >
+    insert into offlinesitebusi (id, operId, operType, 
+      Action, SiteId, actionIdentify, 
+      parentBusiId, portId, acId, 
+      type)
+    values (#{id,jdbcType=INTEGER}, #{operid,jdbcType=INTEGER}, #{opertype,jdbcType=INTEGER}, 
+      #{action,jdbcType=INTEGER}, #{siteid,jdbcType=INTEGER}, #{actionidentify,jdbcType=VARCHAR}, 
+      #{parentbusiid,jdbcType=VARCHAR}, #{portid,jdbcType=INTEGER}, #{acid,jdbcType=INTEGER}, 
+      #{type,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="OffLinesiteBusi" >
+    insert into offlinesitebusi
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="operid != null" >
+        operId,
+      </if>
+      <if test="opertype != null" >
+        operType,
+      </if>
+      <if test="action != null" >
+        Action,
+      </if>
+      <if test="siteid != null" >
+        SiteId,
+      </if>
+      <if test="actionidentify != null" >
+        actionIdentify,
+      </if>
+      <if test="parentbusiid != null" >
+        parentBusiId,
+      </if>
+      <if test="portid != null" >
+        portId,
+      </if>
+      <if test="acid != null" >
+        acId,
+      </if>
+      <if test="type != null" >
+        type,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="operid != null" >
+        #{operid,jdbcType=INTEGER},
+      </if>
+      <if test="opertype != null" >
+        #{opertype,jdbcType=INTEGER},
+      </if>
+      <if test="action != null" >
+        #{action,jdbcType=INTEGER},
+      </if>
+      <if test="siteid != null" >
+        #{siteid,jdbcType=INTEGER},
+      </if>
+      <if test="actionidentify != null" >
+        #{actionidentify,jdbcType=VARCHAR},
+      </if>
+      <if test="parentbusiid != null" >
+        #{parentbusiid,jdbcType=VARCHAR},
+      </if>
+      <if test="portid != null" >
+        #{portid,jdbcType=INTEGER},
+      </if>
+      <if test="acid != null" >
+        #{acid,jdbcType=INTEGER},
+      </if>
+      <if test="type != null" >
+        #{type,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="OffLinesiteBusi" >
+    update offlinesitebusi
+    <set >
+      <if test="operid != null" >
+        operId = #{operid,jdbcType=INTEGER},
+      </if>
+      <if test="opertype != null" >
+        operType = #{opertype,jdbcType=INTEGER},
+      </if>
+      <if test="action != null" >
+        Action = #{action,jdbcType=INTEGER},
+      </if>
+      <if test="siteid != null" >
+        SiteId = #{siteid,jdbcType=INTEGER},
+      </if>
+      <if test="actionidentify != null" >
+        actionIdentify = #{actionidentify,jdbcType=VARCHAR},
+      </if>
+      <if test="parentbusiid != null" >
+        parentBusiId = #{parentbusiid,jdbcType=VARCHAR},
+      </if>
+      <if test="portid != null" >
+        portId = #{portid,jdbcType=INTEGER},
+      </if>
+      <if test="acid != null" >
+        acId = #{acid,jdbcType=INTEGER},
+      </if>
+      <if test="type != null" >
+        type = #{type,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="OffLinesiteBusi" >
+    update offlinesitebusi
+    set operId = #{operid,jdbcType=INTEGER},
+      operType = #{opertype,jdbcType=INTEGER},
+      Action = #{action,jdbcType=INTEGER},
+      SiteId = #{siteid,jdbcType=INTEGER},
+      actionIdentify = #{actionidentify,jdbcType=VARCHAR},
+      parentBusiId = #{parentbusiid,jdbcType=VARCHAR},
+      portId = #{portid,jdbcType=INTEGER},
+      acId = #{acid,jdbcType=INTEGER},
+      type = #{type,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

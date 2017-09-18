@@ -1,0 +1,57 @@
+package com.nms.ui.ptn.ne.tdmloopbock.controller;
+
+import java.util.List;
+
+import com.nms.db.bean.equipment.port.E1Info;
+import com.nms.db.enums.EManufacturer;
+import com.nms.model.equipment.port.E1InfoService;
+import com.nms.model.equipment.shlef.SiteService;
+import com.nms.model.util.Services;
+import com.nms.ui.frame.AbstractController;
+import com.nms.ui.manager.ConstantUtil;
+import com.nms.ui.manager.ExceptionManage;
+import com.nms.ui.manager.UiUtil;
+import com.nms.ui.ptn.ne.tdmloopbock.view.TdmLoopBackPanel;
+
+public class TdmLoopBackController extends AbstractController{
+	
+	private TdmLoopBackPanel view;
+	public TdmLoopBackController (TdmLoopBackPanel tdmLoopBackPanel){
+		this.setView(tdmLoopBackPanel);
+	}
+
+	@Override
+	public void refresh() throws Exception {
+		searchAndrefreshdata();
+	}
+
+	private void searchAndrefreshdata(){
+		E1InfoService e1Service = null;
+		SiteService siteService = null;
+		try{
+			siteService=(SiteService) ConstantUtil.serviceFactory.newService(Services.SITE);
+			if(siteService.getManufacturer(ConstantUtil.siteId) == EManufacturer.WUHAN.getValue()){
+				e1Service = (E1InfoService) ConstantUtil.serviceFactory.newService(Services.E1Info);
+				E1Info e1 = new E1Info();
+				e1.setSiteId(ConstantUtil.siteId);
+				List<E1Info> tdmList = e1Service.selectByCondition(e1);
+				view.clear();
+				view.initData(tdmList);
+				view.updateUI();
+			}
+		}catch(Exception e){
+			ExceptionManage.dispose(e,this.getClass());
+		}finally{
+			UiUtil.closeService(e1Service);
+			UiUtil.closeService(siteService);
+		}
+	}
+	public TdmLoopBackPanel getView() {
+		return view;
+	}
+
+	public void setView(TdmLoopBackPanel view) {
+		this.view = view;
+	}
+	
+}

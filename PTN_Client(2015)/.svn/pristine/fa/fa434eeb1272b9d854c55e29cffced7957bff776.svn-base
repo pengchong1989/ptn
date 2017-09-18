@@ -1,0 +1,28 @@
+package com.nms.model.ptn.path.eth;
+
+import org.apache.ibatis.session.SqlSession;
+
+import com.nms.db.dao.ptn.path.eth.EtreeInfoMapper;
+import com.nms.model.util.ObjectService_Mybatis;
+
+public class EtreeInfoService_MB extends ObjectService_Mybatis{
+	public void setPtnuser(String ptnuser) {
+		super.ptnuser = ptnuser;
+	}
+
+	public void setSqlSession(SqlSession sqlSession) {
+		super.sqlSession = sqlSession;
+	}
+	
+	private EtreeInfoMapper EtreeInfoMapper;
+
+	public EtreeInfoMapper getEtreeInfoMapper() {
+		return EtreeInfoMapper;
+	}
+
+	public void setEtreeInfoMapper(EtreeInfoMapper EtreeInfoMapper) {
+		this.EtreeInfoMapper = EtreeInfoMapper;
+	}
+	
+	
+}

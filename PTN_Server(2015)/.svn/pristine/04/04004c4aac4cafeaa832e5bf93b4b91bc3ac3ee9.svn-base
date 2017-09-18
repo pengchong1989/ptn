@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="GBK"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:amq="http://activemq.apache.org/schema/core"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+                        http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+                        http://www.springframework.org/schema/context
+                        http://www.springframework.org/schema/context/spring-context-2.5.xsd
+                        http://activemq.apache.org/schema/core
+                        http://activemq.apache.org/schema/core/activemq-core.xsd">
+
+    <bean id="jmsTemplate" class="org.springframework.jms.core.JmsTemplate">  
+        <property name="connectionFactory" ref="connectionFactory"></property>  
+    </bean>  
+       
+    <bean id="targetConnectionFactory" class="org.apache.activemq.ActiveMQConnectionFactory">  
+        <property name="brokerURL" value="tcp://127.0.0.1:61616?wireFormat.maxInactivityDuration=0"/>  
+    </bean>  
+       
+    <bean id="connectionFactory" class="org.springframework.jms.connection.SingleConnectionFactory">  
+        <!-- 目标ConnectionFactory对应真实的可以产生JMS Connection的ConnectionFactory -->  
+        <property name="targetConnectionFactory" ref="targetConnectionFactory"/>  
+    </bean> 
+
+	<bean id="serverOtherNotify"
+		class="org.apache.activemq.command.ActiveMQQueue">
+		<constructor-arg value="queue.server.other.notify" />
+	</bean>
+	
+	<!-- 
+	class="实现MessageListener接口的类路径"
+	 -->
+	 <bean id="alarmCourseMessageListener" class="com.nms.jms.serviceCourse.CopyOfServiceCourseMessageListener">  
+	</bean> 
+	
+	<bean id="responseQueueMessageListenerContainer" class="org.springframework.jms.listener.DefaultMessageListenerContainer">  
+    <property name="connectionFactory" ref="connectionFactory"/>  
+    <property name="destination" ref="serverOtherNotify"/>  
+    <property name="messageListener" ref="alarmCourseMessageListener"/>  
+	</bean> 
+</beans>

@@ -1,0 +1,18 @@
+package com.nms.db.dao.equipment.port;
+
+import com.nms.db.bean.equipment.port.PortStm;
+
+
+public interface PortStmMapper {
+    int deleteByPrimaryKey(Integer id);
+
+    int insert(PortStm record);
+
+    int insertSelective(PortStm record);
+
+    PortStm selectByPrimaryKey(Integer id);
+
+    int updateByPrimaryKeySelective(PortStm record);
+
+    int updateByPrimaryKey(PortStm record);
+}

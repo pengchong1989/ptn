@@ -1,0 +1,236 @@
+package com.nms.model.ptn.oam;
+
+import java.sql.Connection;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.nms.db.bean.ptn.oam.OamEthernetInfo;
+import com.nms.db.dao.ptn.oam.OamEthernetDao;
+import com.nms.model.util.ObjectService;
+import com.nms.ui.manager.ExceptionManage;
+
+public class OamEthreNetService extends ObjectService {
+	public void setConnection(Connection connection) {
+		super.connection = connection;
+	}
+
+	public void setPtnuser(String ptnuser) {
+		super.ptnuser = ptnuser;
+	}
+
+	private OamEthernetDao oamEthernetDao = new OamEthernetDao();
+
+
+	
+	
+	
+	public void saveOrUpdate(OamEthernetInfo oamInfo) throws Exception{
+		
+		if (oamInfo == null) {
+			throw new Exception("oamEthernetInfo is null");
+		}
+		try {
+			
+			if(!checkOamMepIsExist(oamInfo)){
+				 this.oamEthernetDao.insert(oamInfo, connection);
+			}else{
+				this.oamEthernetDao.update(oamInfo, connection);
+			}
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		} finally {
+		}
+	}
+	
+	
+     public List<Integer>  count(OamEthernetInfo oamInfo) throws Exception{
+    	 
+		if (oamInfo == null) {
+			throw new Exception("oamEthernetInfo is null");
+		}
+		List<Integer> countresult=null;
+		try {
+			    countresult=new ArrayList<Integer>();
+				countresult= oamEthernetDao.count(oamInfo, connection);
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		} finally {
+		}
+		return countresult;
+	}
+	
+	
+	/*
+	 * 判断该ethOam是否存在
+	 */
+	public boolean checkOamMepIsExist(OamEthernetInfo oamInfo) {
+		List<OamEthernetInfo> list=null;
+		try {
+			list = this.queryByNeID(oamInfo);
+			if (list!=null&&list.size()>0) {
+				return true;
+			}
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		} finally {
+		}
+		return false;
+	}
+	
+	/**
+	 * 增加
+	 * 
+	 * @param oamEthernetInfo
+	 * @return
+	 * @throws Exception
+	 */
+	public int insert(OamEthernetInfo oamEthernetInfo) throws Exception {
+		if (oamEthernetInfo == null) {
+			throw new Exception("oamEthernetInfo is null");
+		}
+		int ccnId = 1;
+		List<Integer> allItemNumber=null;
+		List<Integer> itemNumberFromDB=null; 
+		try {
+			itemNumberFromDB=new ArrayList<Integer>();
+			allItemNumber=new ArrayList<Integer>();
+			for(int i=0;i<6;i++){
+				allItemNumber.add(i+1);
+			}
+			connection.setAutoCommit(false);
+			itemNumberFromDB=count(oamEthernetInfo);
+			allItemNumber.removeAll(itemNumberFromDB);
+			if(allItemNumber!=null&&allItemNumber.size()>0){
+				oamEthernetInfo.setItemNumber(allItemNumber.get(0));
+			}
+			ccnId = this.oamEthernetDao.insert(oamEthernetInfo, connection);
+			oamEthernetInfo.setId(ccnId);
+			if(!connection.getAutoCommit()){
+				connection.commit();
+			}
+		} catch (Exception e) {
+			connection.rollback();
+			ExceptionManage.dispose(e,this.getClass());
+		} finally {
+			connection.setAutoCommit(true);
+		}
+		return ccnId;
+	}
+
+	/**
+	 * 删除
+	 * 
+	 * @param oamEthernetInfo
+	 * @return
+	 * @throws Exception
+	 */
+	public int delete(OamEthernetInfo oamEthernetInfo) throws Exception {
+		if (oamEthernetInfo == null) {
+			throw new Exception("oamEthernetInfo is null");
+		}
+		int ccnId = 1;
+		try {
+			connection.setAutoCommit(false);
+			ccnId = this.oamEthernetDao.delete(oamEthernetInfo, connection);
+			if(!connection.getAutoCommit()){
+				connection.commit();
+			}
+		} catch (Exception e) {
+			connection.rollback();
+			ExceptionManage.dispose(e,this.getClass());
+		} finally {
+			connection.setAutoCommit(true);
+		}
+		return ccnId;
+	}
+
+	/**
+	 * 删除 单站测所有的以太网OAM
+	 * 
+	 * @param oamEthernetInfo
+	 * @return
+	 * @throws Exception
+	 */
+	public int delete(int siteId) throws Exception {
+		int ccnId = 1;
+		try {
+			connection.setAutoCommit(false);
+			ccnId = this.oamEthernetDao.delete(siteId, connection);
+			if(!connection.getAutoCommit()){
+				connection.commit();
+			}
+		} catch (Exception e) {
+			connection.rollback();
+			ExceptionManage.dispose(e,this.getClass());
+		} finally {
+			connection.setAutoCommit(true);
+		}
+		return ccnId;
+	}
+	/**
+	 * 更新
+	 * 
+	 * @param oamEthernetInfo
+	 * @return
+	 * @throws Exception
+	 */
+	public int update(OamEthernetInfo oamEthernetInfo) throws Exception {
+		if (oamEthernetInfo == null) {
+			throw new Exception("oamEthernetInfo is null");
+		}
+		int id = 0;
+		try {
+			connection.setAutoCommit(false);
+			id = this.oamEthernetDao.update(oamEthernetInfo, connection);
+			if(!connection.getAutoCommit()){
+				connection.commit();
+			}
+		} catch (Exception e) {
+			connection.rollback();
+			ExceptionManage.dispose(e,this.getClass());
+		} finally {
+			connection.setAutoCommit(true);
+		}
+		return id;
+	}
+
+	/**
+	 * 查询
+	 * 
+	 * @param oamEthernetInfo
+	 * @return
+	 * @throws Exception
+	 */
+	public List<OamEthernetInfo> queryByNeID(OamEthernetInfo oamEthernetInfo) throws Exception {
+		if (oamEthernetInfo == null) {
+			throw new Exception("oamEthernetInfo is null");
+		}
+		List<OamEthernetInfo> ccnList = null;
+		try {
+			ccnList = this.oamEthernetDao.queryOamLinkInfoByCondition(oamEthernetInfo, connection);
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		}
+		return ccnList;
+	}                     
+	
+	/**
+	 * 查询
+	 * 
+	 * @param oamEthernetInfo 单查询
+	 * @return 
+	 * @throws Exception
+	 */
+	public List<OamEthernetInfo> queryByNeIDSide(OamEthernetInfo oamEthernetInfo) throws Exception {
+		if (oamEthernetInfo == null) {
+			throw new Exception("oamEthernetInfo is null");
+		}
+		List<OamEthernetInfo> ccnList = null;
+		try {
+			ccnList = this.oamEthernetDao.queryOamLinkInfoByConditionSide(oamEthernetInfo, connection);
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		}
+		return ccnList;
+	}  
+}

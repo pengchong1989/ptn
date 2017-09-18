@@ -1,0 +1,90 @@
+package com.nms.ui.ptn.ne.ethernetLoop.controller;
+
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.List;
+
+import com.nms.db.bean.ptn.EthLoopInfo;
+import com.nms.db.enums.EOperationLogType;
+import com.nms.model.ptn.EthLoopServcie;
+import com.nms.model.util.Services;
+import com.nms.rmi.ui.util.RmiKeys;
+import com.nms.ui.manager.ConstantUtil;
+import com.nms.ui.manager.DialogBoxUtil;
+import com.nms.ui.manager.DispatchUtil;
+import com.nms.ui.manager.ExceptionManage;
+import com.nms.ui.manager.UiUtil;
+import com.nms.ui.ptn.ne.ethernetLoop.view.EthernetLoopPanel;
+
+ public class EthLoopController {
+	 
+ private EthernetLoopPanel ethernetLoopPanel ;
+ 
+ public EthLoopController(EthernetLoopPanel ethernetLoopPanel){
+	 this.ethernetLoopPanel =  ethernetLoopPanel;
+	 addListention();
+	 try {
+			init();
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		}
+ }
+
+ 
+	/**
+	 * 初始化界面值
+	 */
+	private void init() {
+		EthLoopServcie ethLoopServcie = null;
+		List<EthLoopInfo> EthLoopInfoList = null;
+		EthLoopInfo thLoopInfo = null;
+		try {
+			ethLoopServcie = (EthLoopServcie) ConstantUtil.serviceFactory.newService(Services.ETHLOOPSERVICE);
+			EthLoopInfoList = ethLoopServcie.select(ConstantUtil.siteId);
+			if(EthLoopInfoList != null && EthLoopInfoList.size()>0){
+				thLoopInfo = EthLoopInfoList.get(0);	
+				this.ethernetLoopPanel.refresh(thLoopInfo);
+			}
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		}finally{
+			UiUtil.closeService(ethLoopServcie);
+		}
+	}
+	private void addListention() {
+		
+		this.ethernetLoopPanel.getConfirm().addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				EthLoopServcie ethLoopServcie = null;
+				String result = "";
+				EthLoopInfo thLoopInfo = null;
+				DispatchUtil ethLoopDispatch = null;
+				try {
+					thLoopInfo = new EthLoopInfo();
+					thLoopInfo = EthLoopController.this.ethernetLoopPanel.get(thLoopInfo);
+					ethLoopDispatch = new DispatchUtil(RmiKeys.RMI_EHTLOOP);
+					ethLoopServcie = (EthLoopServcie) ConstantUtil.serviceFactory.newService(Services.ETHLOOPSERVICE);
+					
+					if(!ethLoopServcie.select(thLoopInfo.getSiteId()).isEmpty()){
+						result = ethLoopDispatch.excuteUpdate(thLoopInfo);
+						UiUtil.insertOperationLog(EOperationLogType.ETHLOOPSERVICEUPDATE.getValue(),result); 
+					}else{
+						result = ethLoopDispatch.excuteInsert(thLoopInfo);
+						UiUtil.insertOperationLog(EOperationLogType.ETHLOOPSERVICEINSERT.getValue(),result);
+					}
+					ethernetLoopPanel.refresh(thLoopInfo);
+					DialogBoxUtil.succeedDialog(ethernetLoopPanel, result);
+					
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}finally{
+					UiUtil.closeService(ethLoopServcie);
+					result = null;
+					thLoopInfo = null;
+					ethLoopDispatch = null;
+				}
+			}
+		});
+	}
+}

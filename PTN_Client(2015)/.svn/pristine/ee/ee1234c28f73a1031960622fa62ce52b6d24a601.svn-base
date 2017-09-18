@@ -1,0 +1,97 @@
+package com.nms.ui.ptn.safety;
+
+import java.awt.BorderLayout;
+import java.util.List;
+
+import javax.swing.JScrollPane;
+
+import twaver.Node;
+import twaver.TDataBox;
+import twaver.table.TTreeTable;
+
+import com.nms.db.bean.system.OperationDataLog;
+import com.nms.db.bean.system.OperationLog;
+import com.nms.model.equipment.shlef.SiteService_MB;
+import com.nms.model.util.Services;
+import com.nms.ui.manager.ConstantUtil;
+import com.nms.ui.manager.ExceptionManage;
+import com.nms.ui.manager.ResourceUtil;
+import com.nms.ui.manager.UiUtil;
+import com.nms.ui.manager.control.PtnDialog;
+import com.nms.ui.manager.keys.StringKeysObj;
+
+public class ShowDataLogDialog extends PtnDialog {
+	private static final long serialVersionUID = -6528988602080443352L;
+	private OperationLog operationLog = null;
+	private List<OperationDataLog> logList = null;
+	private TDataBox box = new TDataBox();
+	private TTreeTable table = new LogDataTable(box);
+	
+	public ShowDataLogDialog(OperationLog log) {
+		this.operationLog = log;
+		this.logList = log.getDataLogList();
+		this.initComponent();
+		this.setLayout();
+		this.initData();
+		UiUtil.showWindow(this, 500, 600);
+	}
+
+	private void initComponent() {
+		table.getTree().setLazyLoader(null);
+		table.getTree().setRootVisible(false);
+		table.setElementClass(Node.class);
+		if(ResourceUtil.language.equals("zh_CN")){
+			table.registerElementClassXML(Node.class, "/config/compareLogData/compareLog.xml");
+		}else{
+			table.registerElementClassXML(Node.class, "/config/compareLogData/compareLog_en.xml");
+		}
+		table.setRowHeight(18);
+		table.setShowGrid(false);
+		table.setEditable(false);
+		table.getColumnModel().getColumn(0).setPreferredWidth(190);
+		table.getColumnModel().getColumn(1).setPreferredWidth(150);
+		table.getColumnModel().getColumn(2).setPreferredWidth(150);
+	}
+	
+	private void setLayout() {
+		this.add(new JScrollPane(table), BorderLayout.CENTER);
+	}
+	
+	private void initData() {
+		Node element = new Node();
+		element.setName(this.operationLog.getOperationObjName());
+		element.setUserObject(this.operationLog);
+		OperationDataLog parentLog = new OperationDataLog();
+		parentLog.setValue_before(ResourceUtil.srcStr(StringKeysObj.STRING_SITE_NAME)+":"+this.getsiteName(this.operationLog.getSiteId()));
+		parentLog.setValue_after(parentLog.getValue_before());
+		element.setBusinessObject(parentLog);
+		this.box.addElement(element);
+		for (int i = 0; i < this.logList.size(); i++) {
+			OperationDataLog log = new OperationDataLog();
+			log.setFieldNameId(this.logList.get(i).getFieldNameId());
+			log.setValue_before(this.logList.get(i).getValue_before());
+			log.setValue_after(this.logList.get(i).getValue_after());
+			UiUtil.convertOperationLog(log);
+			Node nodeEnable = new Node();
+			nodeEnable.setName(log.getFieldNameId());
+			nodeEnable.setParent(element);
+			nodeEnable.setBusinessObject(log);
+			if(log.getFieldNameId() != null){
+				this.box.addElement(nodeEnable);
+			}
+		}
+	}
+	
+	private String getsiteName(int siteId) {
+		SiteService_MB service = null;
+		try {
+			service = (SiteService_MB) ConstantUtil.serviceFactory.newService_MB(Services.SITE);
+			return service.getSiteName(siteId);
+		} catch (Exception e) {
+			ExceptionManage.dispose(e, this.getClass());
+		} finally {
+			UiUtil.closeService_MB(service);
+		}
+		return "";
+	}
+}

@@ -1,0 +1,336 @@
+package com.nms.db.dao.system;
+
+import java.net.InetAddress;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.nms.db.bean.system.OperationLog;
+import com.nms.db.fac.f.DButil;
+import com.nms.ui.manager.DateUtil;
+import com.nms.ui.manager.ExceptionManage;
+/**
+ * 操作日志
+ * @author Administrator
+ *
+ */
+public class OperationLogDao {
+	
+	
+	/**
+	 * 新增 （operation_log(操作日志表)）
+	 * 
+	 * @param state
+	 *            int型数据（0登陆失败，1 登陆成功）
+	 * @param loginlog
+	 *            实体
+	 * @param connection
+	 *            数据库连接
+	 * @return 执行成功插入的记录数
+	 * @throws Exception
+	 */
+	public int insert(OperationLog operationLog,Connection connection) throws Exception  {
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+		if(null==operationLog){
+			throw new Exception("operationLog is null");
+		}
+		int result = 0;
+		OperationLog log=new OperationLog();
+		PreparedStatement preparedStatement = null;
+		log.setUser_id(operationLog.getUser_id());
+		String date=DateUtil.getDate(DateUtil.FULLTIME);
+		log.setStartTime(date);
+		log.setIP(InetAddress.getLocalHost().getHostAddress());
+		String sql="insert into operation_log(user_id,startTime,overTime,operationType,operationResult,IP) values (?,?,?,?,?,?)";
+		try {
+			preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.setInt(1, operationLog.getUser_id());
+			preparedStatement.setString(2, date);
+			preparedStatement.setString(3, operationLog.getOverTime());
+			preparedStatement.setInt(4, operationLog.getOperationType());
+			preparedStatement.setInt(5, operationLog.getOperationResult());
+			preparedStatement.setString(6, InetAddress.getLocalHost().getHostAddress());
+			
+			result = preparedStatement.executeUpdate();
+		}catch(Exception e){ 
+			throw e;
+		}
+		finally {
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+		}
+		return result;
+	}
+	/**
+	 * operation_log表 更新表中信息
+	 * @param operationLog
+	 * @param connection
+	 * @return
+	 * @throws Exception
+	 */
+	public int updateOperationLog(OperationLog operationLog, Connection connection)
+			throws Exception {
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+		if (null == operationLog) {
+			throw new Exception("operationLog is null");
+		}
+		int result = 0;
+		PreparedStatement preparedStatement = null;
+		String sql="update operation_log set overTime=? where 1=1";
+		try {
+			if(operationLog.getId()>0){
+				sql +=" and id="+ operationLog.getId();
+			}
+
+			preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.setString(1, DateUtil.getDate(DateUtil.FULLTIME));
+			result = preparedStatement.executeUpdate();
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+		}
+		return result;
+	}
+	/**
+	 * 根据不同条件
+	 * 查询 操作日志记录
+	 * @param operationLog
+	 * @param connection
+	 * @return
+	 * @throws Exception
+	 */
+	public List<OperationLog> select(OperationLog operationLog,Connection connection) throws Exception {
+		if(operationLog==null){
+			throw new Exception("operationLog is null");
+		}
+		List<OperationLog> operationLogList = null;
+		ResultSet resultSet = null;
+		PreparedStatement preparedStatement = null;
+		OperationLog operation = null;
+		String sql = null;
+		try {
+			operationLogList = new ArrayList<OperationLog>();
+			sql="select o.id,o.user_id,u.user_name,o.startTime,o.overTime,o.operationType,o.operationResult,o.IP from operation_log o,user_inst u where 1=1 and o.user_id=u.user_id";
+			/**
+			 * 查询条件
+			 */
+			if(null!=operationLog){
+				if(operationLog.getUser_id()>0){
+					sql +=" and u.user_id= "+operationLog.getUser_id()+" and o.user_id=u.user_id ";
+				}
+				//如果用户名不为空，
+				if(null!=operationLog.getUserName()&&!"".equals(operationLog.getUserName())){
+					//是否为模糊查询
+					if(operationLog.isSelect()){
+						sql +=" and u.user_name like ? ";
+					}else{
+						sql +=" and u.user_name =  "+DButil.toSingleMark(operationLog.getUserName());
+					}
+					
+				}
+				if(operationLog.getOperationType()>0){
+					sql +=" and o.operationType= "+operationLog.getOperationType();
+				}
+				if(operationLog.getOperationResult()>0){
+					sql +=" and o.operationResult=" +operationLog.getOperationResult();
+				}
+				//判断 ：选择开始时间的  2个时间点都选中时
+				if((!("".equals(operationLog.getStartTime())||operationLog.getStartTime()==null))&&(!"".equals(operationLog.getOverTime())||operationLog.getOverTime()!=null)){					
+					sql +=" and o.startTime between '"+operationLog.getStartTime()+"' and '"+ operationLog.getOverTime()+" ' ";				
+				}
+				// 判断 ：选择开始时间的  2个时间点 不  都选中时
+				if(("".equals(operationLog.getStartTime())||operationLog.getStartTime()==null)||("".equals(operationLog.getOverTime())||operationLog.getOverTime()==null)){
+					//    第2个时间点不为空，-且有 选中时
+					if(!("".equals(operationLog.getOverTime())||operationLog.getOverTime()==null)){
+						sql +=" and o.startTime < '"+operationLog.getOverTime()+"'";				
+					}else if(!("".equals(operationLog.getStartTime())||operationLog.getStartTime()==null)){
+//					    第1个时间点不为空，-且有 选中时
+						sql +=" and o.startTime > '"+operationLog.getStartTime()+" '";				
+					}
+				}
+			}
+			
+			sql +=" order by startTime desc";
+			preparedStatement = connection.prepareStatement(sql);
+			/**
+			 * 如果  用户不为空，模糊查询时：   传人   参数
+			 */
+			if(operationLog!=null&&operationLog.getUserName()!=null&&!"".equals(operationLog.getUserName())){
+				if(operationLog.isSelect()){
+					preparedStatement.setString(1, "%"+operationLog.getUserName()+"%");
+				}
+				
+			}
+			resultSet = preparedStatement.executeQuery();			
+			while (resultSet.next()) {
+				operation = new OperationLog();
+				operation.setId(resultSet.getInt("o.id"));
+				operation.setUserName(resultSet.getString("u.user_name"));
+				operation.setStartTime(resultSet.getString("o.startTime").trim());
+				operation.setIP(resultSet.getString("o.IP"));
+				operation.setOperationType(resultSet.getInt("o.operationType"));
+				operation.setOperationResult(resultSet.getInt("o.operationResult"));
+				operation.setOverTime(resultSet.getString("o.overTime").trim());
+				operationLogList.add(operation);
+			}
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (resultSet != null) {
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				resultSet = null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+			operation = null;
+			
+		}
+       return operationLogList;
+	}
+	
+	/**
+	 * 数据库中有多少条记录
+	 * @param connection
+	 * @return
+	 * @throws Exception
+	 */
+	public int selectOperationLogCount(Connection connection)throws Exception{
+		PreparedStatement preparedStatement=null;
+		ResultSet resultSet=null;
+		int result=0;
+		try {
+			String sql="select count(*) from operation_log";
+			preparedStatement = connection.prepareStatement(sql);
+			resultSet = preparedStatement.executeQuery();
+			
+			while(resultSet.next()){
+				result=resultSet.getInt("count(*)");
+			}
+		} catch (Exception e) {
+			throw e;
+		}finally{
+			if (resultSet != null) {
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				resultSet = null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+		}
+		
+		return result;
+	}
+	//导入数据 引用  HisAlarmDao 中insertInport方法
+	/**
+	 * 根据主键集合，批量删除历史性能数据
+	 * 
+	 * @param idList
+	 * @param connection
+	 * @return
+	 * @throws Exception
+	 */
+	public int delete(List<Integer> idList, Connection connection) throws Exception {
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		int result = 0;
+		String ids = null;
+		try {
+			ids = idList.toString().substring(1, idList.toString().length() - 1);
+			sql = "delete from operation_log where id in (" + ids + " )";
+			preparedStatement = connection.prepareStatement(sql);
+			result = preparedStatement.executeUpdate();
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+		}
+
+		return result;
+	}
+	/**
+	 * 根据某一时间，删除此时间点以前的数据
+	 * @param removeTime
+	 * @param connection
+	 * @return
+	 * @throws Exception
+	 */
+	public int delete(String removeTime, Connection connection) throws Exception {
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+		if(removeTime == null || removeTime.equals("")){
+			throw new Exception("removeTime is null");
+		}
+		String sql = "delete from operation_log where startTime < '"+removeTime+"'";
+		PreparedStatement preparedStatement = null;
+		int result = 0;
+		try {
+			
+		//	sql +=" and startTime < '"+removeTime+"'";
+			preparedStatement = connection.prepareStatement(sql);
+			result = preparedStatement.executeUpdate();
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+		}
+
+		return result;
+	}
+}

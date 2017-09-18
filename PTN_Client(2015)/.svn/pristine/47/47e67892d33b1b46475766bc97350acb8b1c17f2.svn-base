@@ -1,0 +1,292 @@
+package com.nms.ui.ptn.basicinfo.dialog.field;
+
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JLabel;
+
+import com.nms.db.bean.equipment.shelf.SiteInst;
+import com.nms.db.bean.system.Field;
+import com.nms.model.equipment.shlef.SiteService;
+import com.nms.model.system.SubnetService;
+import com.nms.model.util.Services;
+import com.nms.ui.manager.ConstantUtil;
+import com.nms.ui.manager.ControlKeyValue;
+import com.nms.ui.manager.DialogBoxUtil;
+import com.nms.ui.manager.ExceptionManage;
+import com.nms.ui.manager.ResourceUtil;
+import com.nms.ui.manager.UiUtil;
+import com.nms.ui.manager.control.PtnDialog;
+import com.nms.ui.manager.keys.StringKeysBtn;
+import com.nms.ui.manager.keys.StringKeysLbl;
+import com.nms.ui.manager.keys.StringKeysTip;
+import com.nms.ui.manager.keys.StringKeysTitle;
+import com.nms.ui.topology.NetworkElementPanel;
+/**
+ * 网元移动
+ * @author dzy
+ *
+ */
+public class MoveSiteDialog extends PtnDialog {
+				
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -3441383475655949740L;
+	private JLabel comboLabel;
+	private JLabel subnetComboLabel;
+	private JComboBox comboBox; //域下拉列表
+	private JComboBox subnetComboBox; //子网下拉列表
+	private JButton cancelButton;
+	private JButton saveButton;
+	private SiteInst siteInst;
+	/**
+	 * 构造方法
+	 * @param siteInst
+	 * 			网元
+	 */
+	public MoveSiteDialog(SiteInst siteInst) {
+		try {
+			this.siteInst = siteInst;
+			this.setTitle(ResourceUtil.srcStr(StringKeysTitle.TIT_MOVE_SITE_FIELD));
+			super.setModal(true);
+			initComponents();
+			setLayout();
+			initData();
+			setActionListention();
+			UiUtil.showWindow(this, 380, 240);
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		}
+		
+	}
+	/**
+	 * 初始化数据
+	 */
+	public void initData() {
+		initFieldCombo(this.comboBox);
+		initSubnetCombo(this.subnetComboBox);
+		
+	}
+	
+	/**
+	 * 初始化组件
+	 */
+	private void initComponents() {
+		this.comboLabel=new JLabel(ResourceUtil.srcStr(StringKeysLbl.LBL_GROUP_BELONG));
+		this.comboBox = new JComboBox();
+		this.subnetComboBox = new JComboBox();
+		this.cancelButton = new JButton (ResourceUtil.srcStr(StringKeysBtn.BTN_CANEL));;
+		this.saveButton = new JButton (ResourceUtil.srcStr(StringKeysBtn.BTN_SAVE));
+		this.subnetComboLabel=new JLabel(ResourceUtil.srcStr(StringKeysLbl.LBL_SUBNET));
+	}
+	/**
+	 * 布局
+	 */
+	private void setLayout(){
+		GridBagLayout componentLayout = new GridBagLayout();
+		componentLayout.columnWidths = new int[] { 50, 200, 50 };
+		componentLayout.columnWeights = new double[] { 0, 0, 0 };
+		componentLayout.rowHeights = new int[] { 25, 40, 40, 40, 15, 40, 15 };
+		componentLayout.rowWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 0, 0, 0.2 };
+		this.setLayout(componentLayout);
+
+		GridBagConstraints c = new GridBagConstraints();
+		c.fill = GridBagConstraints.BOTH;
+		
+		c.gridx = 0;
+		c.gridy = 1;
+		c.gridheight = 1;
+		c.insets = new Insets(15, 5, 5, 5);
+		componentLayout.setConstraints(this.comboLabel, c);
+		this.add(this.comboLabel);
+		c.gridx = 1;
+		c.gridwidth = 2;
+		componentLayout.setConstraints(this.comboBox, c);
+		this.add(this.comboBox);
+		
+		c.gridx = 0;
+		c.gridy = 2;
+		c.gridwidth = 1;
+		componentLayout.setConstraints(this.subnetComboLabel, c);
+		this.add(this.subnetComboLabel);
+		c.gridx = 1;
+		c.gridwidth = 2;
+		componentLayout.setConstraints(this.subnetComboBox, c);
+		this.add(this.subnetComboBox);
+
+		
+		c.anchor = GridBagConstraints.EAST;
+		c.fill = GridBagConstraints.NONE;
+		c.gridx = 1;
+		c.gridy = 5;
+		c.gridwidth = 1;
+		componentLayout.setConstraints(this.saveButton, c);
+		this.add(this.saveButton);
+		c.gridx = 2;
+		componentLayout.setConstraints(this.cancelButton, c);
+		this.add(this.cancelButton);
+
+	}
+	/**
+	 * 初始化域下拉列表
+	 * @param comboBox  下拉列表控件
+	 */
+	public void initFieldCombo(JComboBox comboBox){
+		SubnetService service = null;
+		List<Field> fieldList = null ;
+		DefaultComboBoxModel defaultComboBoxModel = (DefaultComboBoxModel) comboBox.getModel();
+		try {
+			service = (SubnetService) ConstantUtil.serviceFactory.newService(Services.SUBNETSERVICE);
+			fieldList = service.comboboxList();
+			for (Field field : fieldList) {
+					defaultComboBoxModel.addElement(new ControlKeyValue(field.getId() + "", field.getFieldName(), field));
+			}
+			comboBox.setModel(defaultComboBoxModel);
+			
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		} finally {
+			UiUtil.closeService(service);
+		}
+	}
+	/**
+	 * 子网下拉列表
+	 */
+	private void initSubnetCombo(JComboBox subnetComboBox)  {
+		DefaultComboBoxModel subnetComboBoxModel = null;
+		Field fieldCombo;
+		SubnetService service = null;
+		List<Field> subnetList = new ArrayList<Field>();
+		Field siteParent = this.getSiteParent(siteInst);
+		try {
+			fieldCombo = (Field) ((ControlKeyValue) this.comboBox.getSelectedItem()).getObject();
+			subnetComboBoxModel = new DefaultComboBoxModel();
+			service = (SubnetService) ConstantUtil.serviceFactory.newService(Services.SUBNETSERVICE);
+			subnetList = (service.searchAndrefreshdata(fieldCombo));
+//			if(fieldCombo.getId()!= siteParent.getId()){
+			subnetComboBoxModel.addElement(new ControlKeyValue(fieldCombo.getId() + "", ResourceUtil.srcStr(StringKeysLbl.LBL_FIELD), fieldCombo));
+//			}
+			for (Field subnet : subnetList) {
+				if(subnet.getId()!=siteParent.getId()){
+					subnetComboBoxModel.addElement(new ControlKeyValue(subnet.getId() + "", subnet.getFieldName(), subnet));
+				}
+			}
+			subnetComboBox.setModel(subnetComboBoxModel);
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		} finally {
+			UiUtil.closeService(service);
+		}
+	}
+	/**
+	 * 拿到网元的父类
+	 * @param siteInst 网元
+	 * @return
+	 */
+	private Field getSiteParent(SiteInst siteInst){
+		Field field = null;
+		SubnetService service = null;
+		try {
+			service = (SubnetService) ConstantUtil.serviceFactory.newService(Services.SUBNETSERVICE);
+			field = service.siteParentType(siteInst);
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		} finally {
+			UiUtil.closeService(service);
+		}
+		return field;
+	}
+	/**
+	 * 监听事件
+	 */
+	private void setActionListention() {
+		//与下拉列表监听
+		comboBox.addItemListener(new java.awt.event.ItemListener() {
+			@Override
+			public void itemStateChanged(java.awt.event.ItemEvent e) {
+				jButton1ActionPerformed(e);
+			}
+		});
+	
+		saveButton.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				jButton2ActionPerformed(e);
+				
+			}
+		});
+		
+		cancelButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				jButton3ActionPerformed(e);
+			}		
+		});
+		
+	}
+	/**
+	 * 与下拉列表事件
+	 * @param e2
+	 */
+	private void jButton1ActionPerformed(ItemEvent e2) {
+		try {
+			initSubnetCombo(this.subnetComboBox);
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		}
+		
+	}	
+	/**
+	 * 保存
+	 * @param e
+	 */
+	private void jButton2ActionPerformed(ActionEvent e) {
+		SiteService service = null;
+		String result = null;
+		int fieldComboId = siteInst.getFieldID();
+		try {
+			if((ControlKeyValue) this.subnetComboBox.getSelectedItem()!= null){
+				Field fieldCombo = (Field) ((ControlKeyValue) this.subnetComboBox.getSelectedItem()).getObject();
+				siteInst.setFieldID(fieldCombo.getId());
+				service = (SiteService) ConstantUtil.serviceFactory.newService(Services.SITE);
+				result = service.saveOrUpdate(siteInst);
+			}
+		} catch (Exception e1) {
+			ExceptionManage.dispose(e1,this.getClass());
+		} finally {
+			UiUtil.closeService(service);
+		}
+		this.dispose();
+		if(null!=result&&!"".equals(result)){
+			siteInst.setFieldID(fieldComboId);
+			DialogBoxUtil.succeedDialog(this, result);
+		}else{
+			DialogBoxUtil.succeedDialog(this, ResourceUtil.srcStr(StringKeysTip.TIP_CONFIG_SUCCESS));
+		}
+		try {
+			NetworkElementPanel.getNetworkElementPanel().showTopo(true);
+		} catch (Exception e1) {
+			ExceptionManage.dispose(e1,this.getClass());
+		}
+	}
+	/**
+	 * 取消
+	 * @param e
+	 */
+	protected void jButton3ActionPerformed(ActionEvent e) {
+		this.dispose();
+	}
+
+	
+}

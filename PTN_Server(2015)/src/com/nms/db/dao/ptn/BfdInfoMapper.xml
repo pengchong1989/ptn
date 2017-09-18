@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nms.db.dao.ptn.BfdInfoMapper" >
+ 
+
+ 
+ <select id="selectByCondtion" resultType="BfdInfo" parameterType="BfdInfo" >
+   select * from bfd_ipv4 where siteId=#{siteId}
+   <if test="id>0"> and id=#{id}</if>
+ </select>
+ 
+ <update id="update" parameterType="BfdInfo">
+    update bfd_ipv4 set 
+    siteId=#{siteId},bfdId=#{bfdId},bfdEnabel=#{bfdEnabel},testMode=#{testMode},bfdMessageSendType=#{bfdMessageSendType},
+    vlanPriority=#{vlanPriority},vlanId=#{vlanId},serviceType=#{serviceType},localIp=#{localIp},
+    peerIp=#{peerIp},udpPort=#{udpPort},mySid=#{mySid},peerStudyEnabel=#{peerStudyEnabel},peerSid=#{peerSid},
+    dmti=#{dmti},rmri=#{rmri},dectMul=#{dectMul},pwBfdStyle=#{pwBfdStyle},pwTtl=#{pwTtl},tLayelPortMark=#{tLayelPortMark},
+    lspId=#{lspId},pwId=#{pwId} where id=#{id}
+ </update>
+ 
+  <insert id="insert" parameterType="BfdInfo"  useGeneratedKeys="true" keyProperty="id">
+    insert into bfd_ipv4
+    (siteId,bfdId,bfdEnabel,testMode,bfdMessageSendType,
+    vlanPriority,vlanId,serviceType,localIp
+	,peerIp,udpPort,mySid,peerStudyEnabel,
+	peerSid,dmti,rmri,dectMul,pwBfdStyle,
+	pwTtl,tLayelPortMark,lspId,pwId)
+	values(#{siteId},#{bfdId},#{bfdEnabel},#{testMode},#{bfdMessageSendType} ,
+	#{vlanPriority},#{vlanId},#{serviceType},#{localIp},#{peerIp}, #{udpPort},
+	#{mySid},#{peerStudyEnabel},#{peerSid},#{dmti}, #{rmri},
+	#{dectMul},#{pwBfdStyle},#{pwTtl},#{tLayelPortMark}, #{lspId},#{pwId} ) 
+  </insert>
+  
+  <delete id="delete" parameterType="java.lang.Integer">
+    delete from bfd_ipv4 where id=#{id}
+  </delete>
+  
+  <select id="queryByCondition" resultType="BfdObject" parameterType="java.lang.Integer" >
+    SELECT * FROM  bfd_ipv4 WHERE siteId=#{siteId}
+  </select>
+  
+  <delete id="deleteBySiteId" parameterType="java.lang.Integer">
+    delete from bfd_ipv4 where siteId=#{siteId}
+  </delete>
+</mapper>

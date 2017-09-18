@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<driveRoot  xmlns="http://drive.bean.com">
+	<attribute length="1" description="MAC地址1" value="0" mapping="（默认00-00-00-00-00-00）"/>
+	<attribute length="1" description="MAC地址2" value="0" mapping="（默认00-00-00-00-00-00）"/>
+	<attribute length="1" description="MAC地址3" value="0" mapping="（默认00-00-00-00-00-00）"/>
+	<attribute length="1" description="MAC地址4" value="0" mapping="（默认00-00-00-00-00-00）"/>
+	<attribute length="1" description="MAC地址5" value="0" mapping="（默认00-00-00-00-00-00）"/>
+	<attribute length="1" description="MAC地址6" value="0" mapping="（默认00-00-00-00-00-00）"/>
+	
+</driveRoot>

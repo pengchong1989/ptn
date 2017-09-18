@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<driveRoot  xmlns="http://drive.bean.com">
+	<attribute length="1" description="NE地址1" value="" mapping="NE地址1,NE地址2"/>
+	<attribute length="1" description="NE地址2" value="" mapping="NE地址1,NE地址2"/>
+	<attribute length="1" description="盘类型1" value="" mapping="盘类型1,盘类型2,盘类型3,盘类型4"/>
+	<attribute length="1" description="盘类型2" value="" mapping="盘类型1,盘类型2,盘类型3,盘类型4"/>
+	<attribute length="1" description="盘类型3" value="" mapping="盘类型1,盘类型2,盘类型3,盘类型4"/>
+	<attribute length="1" description="盘类型4" value="" mapping="盘类型1,盘类型2,盘类型3,盘类型4"/>
+	<attribute length="1" description="盘地址1" value="" mapping="盘地址1,盘地址2"/>
+	<attribute length="1" description="盘地址2" value="" mapping="盘地址1,盘地址2"/>
+</driveRoot> 

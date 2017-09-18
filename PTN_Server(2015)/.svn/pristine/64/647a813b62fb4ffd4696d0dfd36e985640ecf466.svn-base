@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<driveRoot  xmlns="http://drive.bean.com">
+	<attribute length="1000" description="备用" value="0" mapping="(0)"/>
+</driveRoot>

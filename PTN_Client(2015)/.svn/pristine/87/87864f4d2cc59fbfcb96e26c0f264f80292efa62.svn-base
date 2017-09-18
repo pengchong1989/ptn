@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nms.db.dao.ptn.MacStudyAddressMapper" >
+  <resultMap id="BaseResultMap" type="SsMacStudy" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="num" property="num" jdbcType="INTEGER" />
+    <result column="siteId" property="siteid" jdbcType="INTEGER" />
+    <result column="portId" property="portid" jdbcType="INTEGER" />
+    <result column="vlan" property="vlan" jdbcType="INTEGER" />
+    <result column="macnum" property="macnum" jdbcType="INTEGER" />
+    <result column="macaddress" property="macaddress" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, num, siteId, portId, vlan, macnum, macaddress
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from macstudyaddress
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from macstudyaddress
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="SsMacStudy" >
+    insert into macstudyaddress (id, num, siteId, 
+      portId, vlan, macnum, 
+      macaddress)
+    values (#{id,jdbcType=INTEGER}, #{num,jdbcType=INTEGER}, #{siteid,jdbcType=INTEGER}, 
+      #{portid,jdbcType=INTEGER}, #{vlan,jdbcType=INTEGER}, #{macnum,jdbcType=INTEGER}, 
+      #{macaddress,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="SsMacStudy" >
+    insert into macstudyaddress
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="num != null" >
+        num,
+      </if>
+      <if test="siteid != null" >
+        siteId,
+      </if>
+      <if test="portid != null" >
+        portId,
+      </if>
+      <if test="vlan != null" >
+        vlan,
+      </if>
+      <if test="macnum != null" >
+        macnum,
+      </if>
+      <if test="macaddress != null" >
+        macaddress,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="num != null" >
+        #{num,jdbcType=INTEGER},
+      </if>
+      <if test="siteid != null" >
+        #{siteid,jdbcType=INTEGER},
+      </if>
+      <if test="portid != null" >
+        #{portid,jdbcType=INTEGER},
+      </if>
+      <if test="vlan != null" >
+        #{vlan,jdbcType=INTEGER},
+      </if>
+      <if test="macnum != null" >
+        #{macnum,jdbcType=INTEGER},
+      </if>
+      <if test="macaddress != null" >
+        #{macaddress,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="SsMacStudy" >
+    update macstudyaddress
+    <set >
+      <if test="num != null" >
+        num = #{num,jdbcType=INTEGER},
+      </if>
+      <if test="siteid != null" >
+        siteId = #{siteid,jdbcType=INTEGER},
+      </if>
+      <if test="portid != null" >
+        portId = #{portid,jdbcType=INTEGER},
+      </if>
+      <if test="vlan != null" >
+        vlan = #{vlan,jdbcType=INTEGER},
+      </if>
+      <if test="macnum != null" >
+        macnum = #{macnum,jdbcType=INTEGER},
+      </if>
+      <if test="macaddress != null" >
+        macaddress = #{macaddress,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="SsMacStudy" >
+    update macstudyaddress
+    set num = #{num,jdbcType=INTEGER},
+      siteId = #{siteid,jdbcType=INTEGER},
+      portId = #{portid,jdbcType=INTEGER},
+      vlan = #{vlan,jdbcType=INTEGER},
+      macnum = #{macnum,jdbcType=INTEGER},
+      macaddress = #{macaddress,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

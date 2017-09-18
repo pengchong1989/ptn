@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nms.db.dao.equipment.port.PortStmMapper" >
+  <resultMap id="BaseResultMap" type="PortStm" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="portid" property="portid" jdbcType="INTEGER" />
+    <result column="jobwavelength" property="jobwavelength" jdbcType="INTEGER" />
+    <result column="sfpexpect" property="sfpexpect" jdbcType="VARCHAR" />
+    <result column="sfpreality" property="sfpreality" jdbcType="VARCHAR" />
+    <result column="sfpvender" property="sfpvender" jdbcType="VARCHAR" />
+    <result column="siteid" property="siteid" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, portid, jobwavelength, sfpexpect, sfpreality, sfpvender, siteid
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from port_stm
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from port_stm
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+ 
+  <update id="update" parameterType="PortStm" >
+    UPDATE port_stm SET jobwavelength =#{jobwavelength} , sfpexpect =#{sfpexpect} , sfpreality =#{sfpreality} , sfpvender =#{sfpvender}   WHERE portid =#{portid}
+  </update>
+  
+   <insert id="insert" parameterType="PortStm"  useGeneratedKeys="true" keyProperty="portStm.id">
+    insert into port_stm
+    (portid,jobwavelength,sfpexpect,sfpreality,sfpvender,siteid) 
+    values(#{portStm.portid},#{portStm.jobwavelength},#{portStm.sfpexpect},
+    #{portStm.sfpreality},#{portStm.sfpvender},#{portStm.siteid})
+  </insert>
+  
+  <select id="quertyBySite" resultType="PortStm" parameterType="java.lang.Integer" >
+    SELECT *  from port_stm  ps , port_inst p WHERE p.portId = ps.portid and ps.siteId = #{0}
+  </select>
+  
+  <select id="queryByCondition" resultType="PortStm" parameterType="PortStm" >
+    SELECT *  from port_stm  ps , port_inst p WHERE p.portId = ps.portid 
+    <if test="id!=0"> and id=#{id}</if>
+  </select>
+  
+    <delete id="deleteBySite" parameterType="java.lang.Integer" >
+   delete from port_stm where siteid=#{siteId}
+  </delete>
+  
+   <select id="queryBySiteIdAndPortId" resultMap="BaseResultMap" parameterType="map" >
+    SELECT *  from port_stm  ps WHERE ps.siteId =#{siteId} and ps.portId =#{portId}
+  </select>
+</mapper>

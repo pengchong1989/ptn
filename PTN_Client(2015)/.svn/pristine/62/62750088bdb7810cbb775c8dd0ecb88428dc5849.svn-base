@@ -1,0 +1,360 @@
+package com.nms.db.dao.ptn;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.nms.db.bean.ptn.MacLearningInfo;
+
+public class MacLearningDao {
+
+	public void insert(MacLearningInfo mac, Connection connection) throws Exception {
+		if (null == mac) {
+			throw new Exception("macInfo is null");
+		}
+
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		try {
+			sql = "insert into maclearninglimit(siteId,portId,model,vlanId,count) " +
+					"values(?,?,?,?,?)";
+			preparedStatement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+			preparedStatement.setInt(1, mac.getSiteId());
+			preparedStatement.setInt(2, mac.getPortId());
+			preparedStatement.setInt(3, mac.getMacModel());
+			preparedStatement.setInt(4, mac.getVlanId());
+			preparedStatement.setInt(5, mac.getMacCount());
+			preparedStatement.executeUpdate();
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+	}
+
+	public void update(MacLearningInfo mac, Connection connection) throws Exception {
+		if (null == mac) {
+			throw new Exception("macInfo is null");
+		}
+
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+
+		try {
+			sql = "update maclearninglimit set model=?, vlanId=?, count=?" +
+					" where id=?";
+
+			preparedStatement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+			preparedStatement.setInt(1, mac.getMacModel());
+			preparedStatement.setInt(2, mac.getVlanId());
+			preparedStatement.setInt(3, mac.getMacCount());
+			preparedStatement.setInt(4, mac.getId());
+			preparedStatement.executeUpdate();
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+	}
+
+	public void delete(int id, Connection connection) throws Exception {
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+
+		try {
+			sql = "delete from maclearninglimit where id=?";
+			preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.setInt(1, id);
+			preparedStatement.executeUpdate();
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+	}
+
+	public List<MacLearningInfo> selectBySiteId(int siteId, Connection connection) throws Exception {
+		if (siteId == 0) {
+			throw new Exception("siteid is 0");
+		}
+		if (connection == null) {
+			throw new Exception("connection is null");
+		}
+
+		List<MacLearningInfo> macList = null;
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		try {
+			macList = new ArrayList<MacLearningInfo>();
+			sql = "select * from maclearninglimit m where m.siteId = "+ siteId + " order by m.id desc";
+			sql = "select * from (" + sql + ") b group by b.portId"; 
+			preparedStatement = connection.prepareStatement(sql);
+			macList = this.excuteQuery(preparedStatement);
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+		return macList;
+	}
+
+	public MacLearningInfo selectById(int id, Connection connection) throws Exception {
+		if (id == 0) {
+			throw new Exception("id is 0");
+		}
+		if (connection == null) {
+			throw new Exception("connection is null");
+		}
+
+		List<MacLearningInfo> macList = null;
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		try {
+			macList = new ArrayList<MacLearningInfo>();
+			sql = "select * from maclearninglimit m where m.id = "+id;
+			preparedStatement = connection.prepareStatement(sql);
+			macList = this.excuteQuery(preparedStatement);
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+		if(macList.size() > 0){
+			return macList.get(0);
+		}
+		return null;
+	}
+	
+	/**
+	 * 执行查询语句
+	 * 
+	 * @param connection
+	 *            数据库连接
+	 * @param sql
+	 *            sql语句
+	 * @return 查询集合
+	 * @throws Exception
+	 */
+	private List<MacLearningInfo> excuteQuery(PreparedStatement preparedStatement) throws Exception {
+		List<MacLearningInfo> macList = null;
+		ResultSet resultSet = null;
+		MacLearningInfo mac = null;
+		try {
+			macList = new ArrayList<MacLearningInfo>();
+			resultSet = preparedStatement.executeQuery();
+
+			while (resultSet.next()) {
+				mac = new MacLearningInfo();
+				mac.setId(resultSet.getInt("id"));
+				mac.setSiteId(resultSet.getInt("siteId"));
+				mac.setPortId(resultSet.getInt("portId"));
+				mac.setMacModel(resultSet.getInt("model"));
+				mac.setVlanId(resultSet.getInt("vlanId"));
+				mac.setMacCount(resultSet.getInt("count"));
+				macList.add(mac);
+			}
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (resultSet != null) {
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				resultSet = null;
+			}
+			mac = null;
+		}
+		return macList;
+	}
+
+	public void deleteByPortId(int portId, Connection connection) throws Exception {
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+
+		try {
+			sql = "delete from maclearninglimit where portId=?";
+			preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.setInt(1, portId);
+			preparedStatement.executeUpdate();
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+	}
+
+	public List<MacLearningInfo> queryBySiteId(int siteId,Connection connection) throws Exception {
+		if (siteId == 0) {
+			throw new Exception("siteid is 0");
+		}
+		if (connection == null) {
+			throw new Exception("connection is null");
+		}
+
+		List<MacLearningInfo> macList = null;
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		try {
+			macList = new ArrayList<MacLearningInfo>();
+			sql = "select * from maclearninglimit m where m.siteId = "+ siteId + " order by m.id desc";
+			sql = "select * from (" + sql + ") b group by b.portId"; 
+			preparedStatement = connection.prepareStatement(sql);
+			macList = this.excuteQuery(preparedStatement);
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+		return macList;
+	}
+
+	public List<Integer> selectAllPortId(int siteId, Connection connection) throws Exception {
+		if (siteId == 0) {
+			throw new Exception("siteid is 0");
+		}
+		if (connection == null) {
+			throw new Exception("connection is null");
+		}
+
+		List<Integer> portIdList = null;
+		List<MacLearningInfo> macList = null;
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		try {
+			portIdList = new ArrayList<Integer>();
+			sql = "select * from maclearninglimit m where m.siteId = "+ siteId + " group by m.portId";
+			preparedStatement = connection.prepareStatement(sql);
+			macList = this.excuteQuery(preparedStatement);
+			for (MacLearningInfo m : macList) {
+				portIdList.add(m.getPortId());
+			}
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+		return portIdList;
+	}
+
+	public boolean selectCountByPortId(int portId, Connection connection) throws Exception {
+		if (portId == 0) {
+			throw new Exception("portId is 0");
+		}
+		if (connection == null) {
+			throw new Exception("connection is null");
+		}
+
+		List<MacLearningInfo> macList = null;
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		try {
+			sql = "select * from maclearninglimit m where m.portId = "+ portId;
+			preparedStatement = connection.prepareStatement(sql);
+			macList = this.excuteQuery(preparedStatement);
+			if(macList.size() > 50){
+				return true;
+			}
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+			macList = null;
+		}
+		return false;
+	}
+
+}

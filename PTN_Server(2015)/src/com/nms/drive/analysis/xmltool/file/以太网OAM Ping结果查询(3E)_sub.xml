@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<driveRoot xmlns="http://drive.bean.com">
+	<attribute length="1" description="帧计数" value="1" mapping="1"/>
+	<attribute length="1" description="状态" value="1" mapping="1"/>
+	<attribute length="1" description="远端MAC1" value="1" mapping="1"/>
+	<attribute length="1" description="远端MAC2" value="1" mapping="1"/>
+	<attribute length="1" description="远端MAC3" value="1" mapping="1"/>
+	<attribute length="1" description="远端MAC4" value="1" mapping="1"/>
+	<attribute length="1" description="远端MAC5" value="1" mapping="1"/>
+	<attribute length="1" description="远端MAC6" value="1" mapping="1"/>
+	<attribute length="2" description="字节数" value="1" mapping="1"/>
+	<attribute length="2" description="时间" value="1" mapping="ms"/>
+</driveRoot>

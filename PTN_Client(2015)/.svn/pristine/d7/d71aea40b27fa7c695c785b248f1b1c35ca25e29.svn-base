@@ -1,0 +1,1609 @@
+package com.nms.ui.ptn.business.dialog.qinq;
+
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
+import javax.swing.JComponent;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JSplitPane;
+import javax.swing.JTextField;
+import javax.swing.border.LineBorder;
+
+import twaver.Element;
+
+import com.nms.db.bean.equipment.port.PortInst;
+import com.nms.db.bean.equipment.shelf.SiteInst;
+import com.nms.db.bean.path.Segment;
+import com.nms.db.bean.ptn.path.qinq.QinqChildInst;
+import com.nms.db.bean.ptn.path.qinq.QinqInst;
+import com.nms.db.bean.system.code.Code;
+import com.nms.db.enums.EOperationLogType;
+import com.nms.db.enums.EServiceType;
+import com.nms.model.equipment.port.PortService;
+import com.nms.model.equipment.shlef.SiteService;
+import com.nms.model.path.SegmentService;
+import com.nms.model.ptn.path.qinq.QinQChildInstService;
+import com.nms.model.ptn.path.qinq.QinQInstService;
+import com.nms.model.util.Services;
+import com.nms.rmi.ui.util.RmiKeys;
+import com.nms.ui.manager.AutoNamingUtil;
+import com.nms.ui.manager.ConstantUtil;
+import com.nms.ui.manager.ControlKeyValue;
+import com.nms.ui.manager.DialogBoxUtil;
+import com.nms.ui.manager.DispatchUtil;
+import com.nms.ui.manager.ExceptionManage;
+import com.nms.ui.manager.MyActionListener;
+import com.nms.ui.manager.ResourceUtil;
+import com.nms.ui.manager.UiUtil;
+import com.nms.ui.manager.VerifyNameUtil;
+import com.nms.ui.manager.control.PtnButton;
+import com.nms.ui.manager.control.PtnDialog;
+import com.nms.ui.manager.control.PtnTextField;
+import com.nms.ui.manager.keys.StringKeysBtn;
+import com.nms.ui.manager.keys.StringKeysLbl;
+import com.nms.ui.manager.keys.StringKeysTip;
+import com.nms.ui.manager.keys.StringKeysTitle;
+import com.nms.ui.ptn.business.dialog.tunnel.action.AutoRouteAction;
+import com.nms.ui.ptn.business.qinq.QinQBusinessPanel;
+/**
+ * 新建QinQ
+ * @author Administrator
+ *
+ */
+public class AddQinQDialog extends PtnDialog {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 2634493953481775629L;
+	private JLabel nameLabel;//QinQ名称
+	private JTextField nameField;
+	private JButton autoNameButton;//自动命名
+	private JLabel TPIDLabel;//TPID
+	private JComboBox TPIDComboBox;
+	private JLabel basedInVlanIdLabel;//是否基于内层vlanId
+	private JComboBox basedVlanIdComboBox;
+	private JLabel aSiteLabel;//A端网元
+	private JTextField aSiteField;
+	private JLabel zSiteLabel;//Z端网元
+	private JTextField zSiteField;
+	private JLabel autoRouterLabel;//选择自动路由
+	private JTextField autoRouterField;
+	private JButton autoButton;//计算路由
+	private JButton resetButton;//重置路由
+	private JLabel vlanIdMinLabel;//VlanId下限
+	private JLabel vlanIdMaxLabel;//VlanId上限
+	private JLabel aSiteAcLabel;//A端AC
+	private JComboBox aSiteAccomboBox;//A端端口
+	private JTextField vlanIdMinField;//VlanId下限
+	private JTextField vlanIdMaxField;//VlanId上限
+	private JLabel zSiteAcLabel;//Z端AC
+	private JComboBox zSiteAccomboBox;//Z端端口
+	private JLabel vlanIdLabel;//运营商vlanId
+	private JTextField vlanIdField;
+	private JCheckBox isActionCheckBox;//是否激活
+	private PtnButton saveButton;//保存
+	private JButton cancelButton;//取消
+	private JLabel vertifyLabel;//提示信息
+	private JSplitPane jSplitPane;
+	private JPanel leftPane;
+	//private static AddQinQDialog addQinQDialog;
+	private PortInst portInst_a = null;
+	private PortInst portInst_z = null;
+//	private static boolean workMust = false;
+//	private static boolean worksgMust = false;
+	private  List<List<Segment>> list = new ArrayList<List<Segment>>();
+	private  int shortestIndex = 0;
+//	private static int secondIndex = 0;
+	private  List<Segment> workSg = new ArrayList<Segment>();
+	private QinqInst qinq = null;
+	private QinQBusinessPanel qinQBusinessPanel = null;
+	private int vlanId = 0;
+	private QinQTopoPanel qinQTopoPanel=null;
+	
+//	public static AddQinQDialog getDialog() {
+//		if (addQinQDialog == null) {
+//			addQinQDialog = new AddQinQDialog(new QinQBusinessPanel(), true, null);
+//		}
+//		return addQinQDialog;
+//	}
+	
+	public AddQinQDialog(QinQBusinessPanel jpanel, boolean modal,QinqInst qinq) {
+		try {
+			this.qinq = qinq;
+			this.setModal(true);
+			this.setModal(modal);
+			super.setTitle(ResourceUtil.srcStr(StringKeysTitle.TIT_CREATE_QINQ));
+			qinQTopoPanel=new QinQTopoPanel(this);
+			qinQTopoPanel.setSiteA(null);
+			qinQTopoPanel.setSiteZ(null);
+			initComponents();
+			setLayout();
+			this.comboBoxData();
+			this.addListener();
+			jSplitPane.setRightComponent(qinQTopoPanel);
+			if(qinq != null){
+				super.setTitle(ResourceUtil.srcStr(StringKeysTitle.TIT_UPDATE_QINQ));
+				qinQTopoPanel.removePopMenu();
+				this.aSiteField.setEnabled(false);
+				this.zSiteField.setEnabled(false);
+				this.autoRouterField.setEnabled(false);
+				this.aSiteAccomboBox.setEnabled(false);
+				this.zSiteAccomboBox.setEnabled(false);
+				this.autoButton.setEnabled(false);
+				this.resetButton.setEnabled(false);
+				this.initLeftData();
+			}
+			//addQinQDialog = this;
+			qinQBusinessPanel = jpanel;
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		}
+		
+	}
+
+	public QinQTopoPanel getQinQTopoPanel() {
+		return qinQTopoPanel;
+	}
+
+	public void setQinQTopoPanel(QinQTopoPanel qinQTopoPanel) {
+		this.qinQTopoPanel = qinQTopoPanel;
+	}
+
+	/**
+	 * 修改QinQ时,初始化数据
+	 */
+	private void initLeftData() {
+		PortService portService = null;
+		PortInst Aport = null;
+		PortInst Zport = null;
+		try {
+			portService = (PortService) ConstantUtil.serviceFactory.newService(Services.PORT);
+
+			Aport = new PortInst();
+			Aport.setPortId(qinq.getaPortId());
+			Aport.setSiteId(qinq.getaSiteId());
+			Aport = portService.select(Aport).get(0);
+			this.setPortInst_A(Aport);
+
+			Zport = new PortInst();
+			Zport.setPortId(qinq.getzPortId());
+			Zport.setSiteId(qinq.getzSiteId());
+			Zport = portService.select(Zport).get(0);
+			this.setPortInst_Z(Zport);
+			
+			qinQTopoPanel.setSiteA(new SiteInst());
+			qinQTopoPanel.setSiteZ(new SiteInst());			
+			qinQTopoPanel.getSiteA().setSite_Inst_Id(qinq.getaSiteId());
+			qinQTopoPanel.getSiteZ().setSite_Inst_Id(qinq.getzSiteId());
+			this.nameField.setText(qinq.getQinqName());
+			this.setDataToComBox(this.TPIDComboBox);
+			super.getComboBoxDataUtil().comboBoxSelectByValue(this.basedVlanIdComboBox, qinq.getBasedInVlanId()+"");
+			this.aSiteField.setText(this.getSiteNameBySiteId(qinq.getaSiteId()));
+			this.zSiteField.setText(this.getSiteNameBySiteId(qinq.getzSiteId()));
+			this.autoRouterField.setText(this.getNameByQinQ());
+			this.setDataToAc(qinq.getaAcPortId(),qinq.getaSiteId(),this.aSiteAccomboBox);
+			this.setDataToAc(qinq.getzAcPortId(),qinq.getzSiteId(),this.zSiteAccomboBox);
+			this.vlanIdMinField.setText(qinq.getMinVlanId()+"");
+			this.vlanIdMaxField.setText(qinq.getMaxVlanId()+"");
+			this.vlanIdField.setText(qinq.getVlanId()+"");
+			this.isActionCheckBox.setSelected(qinq.getQinqStatus()==0 ? false : true);
+			this.vlanId = qinq.getVlanId();
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		} finally {
+			UiUtil.closeService(portService);
+			Aport = null;
+			Zport = null;
+		}
+		
+	}
+
+	/**
+	 * 给下拉列表赋值
+	 * @param box
+	 */
+	private void setDataToComBox(JComboBox box) {
+		if(qinq.getTpId().equals("0x8100")){
+			box.setSelectedIndex(0);
+		}
+		if(qinq.getTpId().equals("0x9100")){
+			box.setSelectedIndex(1);
+		}
+		if(qinq.getTpId().equals("0x88a8")){
+			box.setSelectedIndex(2);
+		}
+	}
+
+	/**
+	 * 修改时给UNI口赋值
+	 * @param portId
+	 * @param siteId
+	 * @param acComBox
+	 */
+	private void setDataToAc(int portId, int siteId, JComboBox acComBox) {
+		PortService portservice = null;
+		PortInst port = null;
+		List<PortInst> portList = null;
+		try {
+			portservice = (PortService) ConstantUtil.serviceFactory.newService(Services.PORT);
+			port = new PortInst();
+			port.setSiteId(siteId);
+			port.setPortId(portId);
+			portList = portservice.select(port);
+			if(portList != null && portList.size() == 1){
+				((DefaultComboBoxModel)acComBox.getModel()).
+				addElement(new ControlKeyValue(portList.get(0).getPortId() + "", 
+						portList.get(0).getPortName(), portList.get(0)));
+			}
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		} finally {
+			UiUtil.closeService(portservice);
+			port = null;
+			portList = null;
+		}
+	}
+
+	/**
+	 * 通过qinqChildInst拼接路由名称
+	 * @return
+	 */
+	private String getNameByQinQ() {
+		StringBuffer routerName = null;
+		QinQChildInstService childService = null;
+		List<QinqChildInst> childList = null;
+		QinqChildInst child = null;
+		try {
+			childService = (QinQChildInstService) ConstantUtil.serviceFactory.newService(Services.QinQChild);
+			child = new QinqChildInst();
+			child.setQinqId(qinq.getQinqId());
+			childList = childService.select(child);
+			if(childList != null & childList.size() > 0){
+				routerName = new StringBuffer();
+				for (QinqChildInst childInst : childList) {
+					routerName.append(this.getSiteNameBySiteId(childInst.getaSiteId()));
+					routerName.append("->");
+				}
+				routerName.append(this.getSiteNameBySiteId(childList.get(childList.size()-1).getzSiteId()));
+			}
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		} finally {
+			UiUtil.closeService(childService);
+			childList = null;
+			child = null;
+		}
+		return routerName.toString();
+	}
+
+	/**
+	 * 获取siteName
+	 * @param siteId
+	 * @return
+	 */
+	private String getSiteNameBySiteId(int siteId) {
+		SiteService siteService = null;
+		String siteName = null;
+		try {
+			siteService = (SiteService) ConstantUtil.serviceFactory.newService(Services.SITE);
+			siteName = siteService.select(siteId).getCellId();
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		} finally {
+			UiUtil.closeService(siteService);
+		}
+		return siteName;
+	}
+
+	/**
+	 * 初始化组件
+	 */
+	private void initComponents() {
+		Dimension dimension = new Dimension(1200, 700);
+		this.setSize(dimension);
+		this.setMinimumSize(dimension);
+		vertifyLabel = new JLabel();
+		vertifyLabel.setForeground(Color.red);
+		nameLabel = new JLabel(ResourceUtil.srcStr(StringKeysLbl.LBL_NAME));//QinQ名称
+		nameField = new JTextField();
+		autoNameButton = new JButton(ResourceUtil.srcStr(StringKeysLbl.LBL_AUTO_NAME));//自动命名
+		TPIDLabel = new JLabel(ResourceUtil.srcStr(StringKeysLbl.LBL_TPID));//TPID
+		TPIDComboBox = new JComboBox();
+		basedInVlanIdLabel = new JLabel(ResourceUtil.srcStr(StringKeysLbl.LBL_BASED_INVLANID));//是否基于内层vlanId
+		basedVlanIdComboBox = new JComboBox();
+		aSiteLabel = new JLabel(ResourceUtil.srcStr(StringKeysLbl.LBL_A_PORT));//A端网元
+		aSiteField = new PtnTextField();
+		aSiteField.setEditable(false);
+		zSiteLabel = new JLabel(ResourceUtil.srcStr(StringKeysLbl.LBL_Z_PORT));//Z端网元
+		zSiteField = new PtnTextField();
+		zSiteField.setEditable(false);
+		autoRouterLabel = new JLabel(ResourceUtil.srcStr(StringKeysLbl.LBL_SELECT_AUTOrOUTER));//选择自动路由
+		autoRouterField = new JTextField();
+		autoRouterField.setEditable(false);
+		autoButton = new JButton(ResourceUtil.srcStr(StringKeysBtn.BTN_WORK_ROUTER));//计算路由
+		resetButton = new JButton(ResourceUtil.srcStr(StringKeysBtn.BTN_RESET_ROUTER));//重置路由
+		vlanIdMinLabel = new JLabel(ResourceUtil.srcStr(StringKeysLbl.LBL_MIN_VLANID));//VlanId下限
+		vlanIdMaxLabel = new JLabel(ResourceUtil.srcStr(StringKeysLbl.LBL_MAX_VLANID));//VlanId上限
+		aSiteAcLabel = new JLabel(ResourceUtil.srcStr(StringKeysLbl.LBL_A_UNI_PORT));//A端AC
+		aSiteAccomboBox = new JComboBox();
+		vlanIdMinField = new JTextField();//端口VlanId下限
+		vlanIdMaxField = new JTextField();//端口VlanId上限
+		zSiteAcLabel = new JLabel(ResourceUtil.srcStr(StringKeysLbl.LBL_Z_UNI_PORT));//Z端AC
+		zSiteAccomboBox= new JComboBox();
+		vlanIdLabel = new JLabel(ResourceUtil.srcStr(StringKeysLbl.LBL_OUT_VLANID));//运营商vlanId
+		vlanIdField = new JTextField();
+		isActionCheckBox = new JCheckBox(ResourceUtil.srcStr(StringKeysLbl.LBL_IS_ACTIVATED));//是否激活
+		saveButton = new PtnButton(ResourceUtil.srcStr(StringKeysBtn.BTN_SAVE),true);//保存
+		cancelButton = new JButton(ResourceUtil.srcStr(StringKeysBtn.BTN_CANEL));//取消
+		leftPane = new JPanel();
+		jSplitPane = new JSplitPane();
+		jSplitPane.setLeftComponent(leftPane);
+	}
+
+	/**
+	 * 界面布局
+	 */
+	private void setLayout() {
+		this.add(this.jSplitPane);
+		this.leftPane.setPreferredSize(new Dimension(200, 700));
+		GridBagLayout layout = new GridBagLayout();
+		layout.columnWidths = new int[] { 50, 50, 50, 50};
+		layout.columnWeights = new double[] { 0, 0, 0 };
+		layout.rowHeights = new int[] { 15, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 200};
+		layout.rowWeights = new double[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+		this.leftPane.setLayout(layout);
+		GridBagConstraints c = new GridBagConstraints();
+		c.fill = GridBagConstraints.BOTH;
+		c.insets = new Insets(5, 15, 5, 5);
+		
+		addComponent(c,0,0,1,layout,this.nameLabel);
+		addComponent(c,1,0,2,layout,this.nameField);
+		addComponent(c,3,0,1,layout,this.autoNameButton);
+		addComponent(c,0,1,1,layout,this.TPIDLabel);
+		addComponent(c,1,1,3,layout,this.TPIDComboBox);
+		addComponent(c,0,2,1,layout,this.basedInVlanIdLabel);
+		addComponent(c,1,2,3,layout,this.basedVlanIdComboBox);
+		addComponent(c,0,3,1,layout,this.aSiteLabel);
+		addComponent(c,1,3,3,layout,this.aSiteField);
+		addComponent(c,0,4,1,layout,this.zSiteLabel);
+		addComponent(c,1,4,3,layout,this.zSiteField);
+		addComponent(c,0,5,1,layout,this.autoRouterLabel);
+		addComponent(c,1,5,3,layout,this.autoRouterField);
+		addComponent(c,1,6,1,layout,this.autoButton);
+		addComponent(c,2,6,1,layout,this.resetButton);
+		addComponent(c,0,7,1,layout,this.aSiteAcLabel);
+		addComponent(c,1,7,1,layout,this.aSiteAccomboBox);
+		addComponent(c,2,7,1,layout,this.vlanIdMinLabel);
+		addComponent(c,3,7,1,layout,this.vlanIdMaxLabel);
+		addComponent(c,0,8,1,layout,this.zSiteAcLabel);
+		addComponent(c,1,8,1,layout,this.zSiteAccomboBox);
+		addComponent(c,2,8,1,layout,this.vlanIdMinField);
+		addComponent(c,3,8,1,layout,this.vlanIdMaxField);
+		addComponent(c,0,9,1,layout,this.vlanIdLabel);
+		addComponent(c,1,9,3,layout,this.vlanIdField);
+		addComponent(c,0,10,1,layout,this.isActionCheckBox);
+		addComponent(c,0,12,2,layout,this.vertifyLabel);
+		addComponent(c,2,12,1,layout,this.saveButton);
+		addComponent(c,3,12,1,layout,this.cancelButton);
+	}
+	
+	/**
+	 * 组件布局公用方法
+	 */
+	private void addComponent(GridBagConstraints c, int gridx, int gridy, int gridwidth, GridBagLayout layout,
+			JComponent component) {
+		c.gridx = gridx;
+		c.gridy = gridy;
+		c.gridwidth = gridwidth;
+		layout.setConstraints(component, c);
+		this.leftPane.add(component);
+	}
+
+	/**
+	 * 下拉列表绑定数据
+	 * @throws Exception 
+	 */
+	private void comboBoxData() throws Exception {
+		super.getComboBoxDataUtil().comboBoxData(this.TPIDComboBox, "TPID");
+		super.getComboBoxDataUtil().comboBoxData(this.basedVlanIdComboBox, "basedInVlanId");
+	}
+
+	/**
+	 * 监听事件
+	 */
+	private void addListener() {
+		//自动命名
+		this.autoNameButton.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				autoNamingActionPerformed();
+			}
+		});
+		
+		//计算工作路由
+		this.autoButton.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				autoRouterActionPerformed();
+				//计算路由的同时,查询可用的ac
+				matchingAcActionPerformed();
+				
+			}
+		});
+		
+		//重置路由
+		this.resetButton.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				resetRouterActionPerformed();
+				
+			}
+		});
+		
+		//保存按钮
+		this.saveButton.addActionListener(new MyActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				saveQinQActionPerformed();
+			}
+
+			@Override
+			public boolean checking() {
+				// TODO Auto-generated method stub
+				return true;
+			}
+		});
+		
+		//取消按钮
+		this.cancelButton.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				dispose();
+			}
+		});
+		
+		//vlanId上限验证
+		this.vlanIdMaxField.addMouseListener(new MouseAdapter() {
+			
+			public void mouseExited(MouseEvent arg0) {
+				if(checkVlanIdMaxAndMin(vlanIdMaxField)){
+					return;
+				}
+			}
+		});
+		
+		this.vlanIdMaxField.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyReleased(KeyEvent arg0) {
+				if (checkVlanIdMaxAndMin(vlanIdMaxField)) {
+					return;
+				}
+			}
+		});
+		
+		//vlanId下限验证
+		this.vlanIdMinField.addMouseListener(new MouseAdapter() {
+			
+			@Override
+			public void mouseExited(MouseEvent arg0) {
+				if(checkVlanIdMaxAndMin(vlanIdMinField)){
+					return;
+				}
+			}
+		});
+		
+		this.vlanIdMaxField.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyReleased(KeyEvent arg0){
+				if(checkVlanIdMaxAndMin(vlanIdMaxField)){
+					return;
+				}
+			}
+		});
+		
+		//vlanId验证
+		this.vlanIdField.addMouseListener(new MouseAdapter() {
+			
+			@Override
+			public void mouseExited(MouseEvent arg0) {
+				if(checkVlanIdMaxAndMin(vlanIdField)){
+					return;
+				}
+			}
+		});
+		
+		this.vlanIdField.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyReleased(KeyEvent arg0) {
+				if(checkVlanIdMaxAndMin(vlanIdField)){
+					return;
+				}
+			}
+		});
+	}
+
+	/**
+	 * vlanId上限验证
+	 * 值要不小于vlanId下限
+	 * @param vlanField 
+	 * 返回值为true,表示没有通过验证
+	 */
+	private boolean checkVlanIdMaxAndMin(JTextField vlanField) {
+		try {
+			Integer.valueOf(vlanField.getText().trim());
+		} catch (Exception e) {
+			this.vertifyLabel.setText(ResourceUtil.srcStr(StringKeysTip.TIP_VLANID_1_4094));
+			vlanField.setBorder(new LineBorder(Color.RED));
+			this.saveButton.setEnabled(false);
+			this.cancelButton.setEnabled(false);
+			return true;
+		}
+		//验证vlanId上下限和vlanId的值的范围
+		if ("".equals(vlanField.getText().trim())
+				|| Integer.valueOf(vlanField.getText().trim()) > 4094
+				|| Integer.valueOf(vlanField.getText().trim()) < 1) {
+			this.vertifyLabel.setText(ResourceUtil.srcStr(StringKeysTip.TIP_VLANID_1_4094));
+			vlanField.setBorder(new LineBorder(Color.RED));
+			this.saveButton.setEnabled(false);
+			this.cancelButton.setEnabled(false);
+			return true;
+		}
+		//通过验证
+		this.vertifyLabel.setText("    ");
+		vlanField.setBorder(new LineBorder(Color.gray));
+		this.saveButton.setEnabled(true);
+		this.cancelButton.setEnabled(true);
+		return false;
+	}
+
+	/**
+	 * 保存按钮事件
+	 */
+	private void saveQinQActionPerformed() {
+		//下发之前先验证名称,路由,vlanId上下限,vlanId是否为空
+		if(nameField.getText() == null || nameField.getText().equals("") 
+			|| autoRouterField.getText()== null || autoRouterField.getText().equals("")
+			|| vlanIdMinField.getText() == null || vlanIdMinField.getText().equals("")
+			|| vlanIdMaxField.getText() == null || vlanIdMaxField.getText().equals("")
+			|| vlanIdField.getText() == null || vlanIdField.getText().equals("")
+			|| aSiteAccomboBox.getItemCount() == 0 || zSiteAccomboBox.getItemCount() == 0){
+			
+			DialogBoxUtil.errorDialog(this, ResourceUtil.srcStr(StringKeysTip.TIP_NOT_FULL));
+		}else{
+			String beforeName = null;
+			if (this.qinq != null) {
+				beforeName = this.qinq.getQinqName();
+			}
+			VerifyNameUtil verifyNameUtil = new VerifyNameUtil();
+			if (verifyNameUtil.verifyName(EServiceType.QINQ.getValue(), this.nameField.getText().trim(), beforeName)) {
+				DialogBoxUtil.errorDialog(this, ResourceUtil.srcStr(StringKeysTip.TIP_NAME_EXIST));
+				UiUtil.insertOperationLog(EOperationLogType.CREATEQIQNAME.getValue());//436
+				return;
+			}
+			if(checkVlanIdIsUsable()){
+				return;
+			}else{
+				this.getQinQFromUI();
+				try {
+					String str = "";
+					DispatchUtil qinqImpl = new DispatchUtil(RmiKeys.RMI_QINQ);
+					if (qinq.getQinqId() == 0) {
+						str = qinqImpl.excuteInsert(qinq);
+						UiUtil.insertOperationLog(EOperationLogType.QIQINSERT.getValue(),str);
+					} else {
+						str = qinqImpl.excuteUpdate(qinq);
+						UiUtil.insertOperationLog(EOperationLogType.QINUDAPTE.getValue(),str);
+					}
+					DialogBoxUtil.succeedDialog(this, str);
+					this.dispose();
+					//刷新界面
+					if (null != this.qinQBusinessPanel) {
+						qinQBusinessPanel.getController().refresh();
+					}
+				} catch (Exception e1) {
+					ExceptionManage.dispose(e1,this.getClass());
+				}
+			}
+		}
+	}
+
+	/**
+	 * 比较vlanId上下限
+	 * vlanId上限 大于等于 vlanId下限
+	 * @return
+	 */
+	private boolean checkVlanIdIsUsable() {
+		//vlanId上下限需要比较
+		if(!"".equals(this.vlanIdMaxField.getText().trim()) && !"".equals(this.vlanIdMinField.getText().trim())){
+			if(Integer.valueOf(this.vlanIdMaxField.getText().trim()) < 
+					Integer.valueOf(this.vlanIdMinField.getText().trim())){
+				this.vertifyLabel.setText(ResourceUtil.srcStr(StringKeysTip.TIP_MAXVLANID_MINVLANID));
+				return true;
+			}
+		}
+		
+		//上下限通过验证之后,再验证vlanId是否被用
+		QinQInstService qinqService = null;
+		List<QinqInst> qinqList = null;
+		try {
+			qinqService = (QinQInstService) ConstantUtil.serviceFactory.newService(Services.QinQ);
+			qinqList = qinqService.select();
+			if(qinqList != null && qinqList.size() > 0){
+				for (QinqInst qinqInst : qinqList) {
+					if(qinqInst.getVlanId() == Integer.parseInt(this.vlanIdField.getText())
+							&& Integer.parseInt(this.vlanIdField.getText()) != this.vlanId){
+						DialogBoxUtil.errorDialog(this, ResourceUtil.srcStr(StringKeysTip.TIP_LABEL_ISUSED));
+						UiUtil.insertOperationLog(EOperationLogType.QIQERROR.getValue());//449
+						return true;
+					}
+				}
+			}
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		} finally {
+			UiUtil.closeService(qinqService);
+			qinqList = null;
+		}
+		return false;
+	}
+
+	/**
+	 * 从界面上获取数据
+	 */
+	private void getQinQFromUI() {
+		if(qinq == null){
+			qinq = new QinqInst();
+			initPort();
+			getQinqChildInstFromRouter(qinq);
+			qinq.setaSiteId(qinQTopoPanel.getSiteA().getSite_Inst_Id());
+			qinq.setzSiteId(qinQTopoPanel.getSiteZ().getSite_Inst_Id());
+			qinq.setaPortId(portInst_a.getPortId());
+			qinq.setzPortId(portInst_z.getPortId());
+			qinq.setaAcPortId(this.getAcPortId(qinQTopoPanel.getSiteA().getSite_Inst_Id(),this.aSiteAccomboBox));
+			qinq.setzAcPortId(this.getAcPortId(qinQTopoPanel.getSiteZ().getSite_Inst_Id(),this.zSiteAccomboBox));
+			qinq.setAcVlanIdRule(0);
+			qinq.setCreateUser(ConstantUtil.user.getUser_Name());
+		}
+		qinq.setQinqName(this.nameField.getText().trim());
+		qinq.setTpId(((ControlKeyValue)this.TPIDComboBox.getSelectedItem()).getName());
+		qinq.setMinVlanId(Integer.parseInt(this.vlanIdMinField.getText()));
+		qinq.setMaxVlanId(Integer.parseInt(this.vlanIdMaxField.getText()));
+		qinq.setVlanId(Integer.parseInt(this.vlanIdField.getText()));
+		qinq.setQinqStatus(this.isActionCheckBox.isSelected() == true?1:0);
+		qinq.setBasedInVlanId(Integer.parseInt(((Code)((ControlKeyValue)this.basedVlanIdComboBox.
+				getSelectedItem()).getObject()).getCodeValue()));
+	}
+
+	/**
+	 * 通过端口名称获取portId
+	 * @param siteId
+	 * @param siteAccomboBox
+	 * @return
+	 */
+	private int getAcPortId(int siteId, JComboBox siteAccomboBox) {
+		int portId = 0;
+		PortService portService = null;
+		try {
+			portService = (PortService) ConstantUtil.serviceFactory.newService(Services.PORT);
+			String portName = ((ControlKeyValue)siteAccomboBox.getSelectedItem()).getName();
+			portId = portService.selectPortbySiteandPortname(siteId, portName).get(0).getPortId();
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		}finally{
+			UiUtil.closeService(portService);
+		}
+		return portId;
+	}
+
+	/**
+	 * 从界面上获取qinqChild值
+	 * @param qinq
+	 */
+	private void getQinqChildInstFromRouter(QinqInst qinq) {
+		String realSiteAName = qinQTopoPanel.getSiteA().getCellId().trim();
+		String realSiteZName = qinQTopoPanel.getSiteZ().getCellId().trim();
+		List<QinqChildInst> qinqChildList = new ArrayList<QinqChildInst>();
+		if(workSg.size() == 1){
+			QinqChildInst child = new QinqChildInst();
+			String sgNextA = workSg.get(0).getShowSiteAname().trim();
+			Segment segment0 = workSg.get(0);
+			if(sgNextA.equals(realSiteAName)){
+				child.setaSiteId(segment0.getASITEID());
+				child.setaPortId(segment0.getAPORTID());
+				child.setzPortId(segment0.getZPORTID());
+				child.setzSiteId(segment0.getZSITEID());
+			}else{
+				child.setaPortId(segment0.getZPORTID());
+				child.setaSiteId(segment0.getZSITEID());
+				child.setzPortId(segment0.getAPORTID());
+				child.setzSiteId(segment0.getASITEID());
+			}
+			
+			if(this.isActionCheckBox.isSelected()){
+				child.setPathStatus(1);
+			}else{
+				child.setPathStatus(0);
+			}
+			
+			child.setaSiteVlanIdRule(1);
+			child.setzSiteVlanIdRule(1);
+			child.setSegmentId(segment0.getId());
+			qinqChildList.add(child);
+		}
+		else if(workSg.size() > 1)
+		{
+			for(int i = 0; i < workSg.size() - 1; i++){
+				QinqChildInst child = new QinqChildInst();
+				String sgZname = workSg.get(i).getShowSiteZname().trim();
+				String sgNextA = workSg.get(i+1).getShowSiteAname().trim();
+				String sgNextZ = workSg.get(i+1).getShowSiteZname().trim();
+				
+				Segment segmentA = workSg.get(i);
+				//如果一个段的Z端与下一个段的A或Z端相同，那么这个段就是正的，否则就是反的
+				if(sgZname.equals(sgNextA) || sgZname.equals(sgNextZ)){
+					if(segmentA.getShowSiteAname().equals(realSiteAName)){
+						child.setaSiteVlanIdRule(1);
+						child.setzSiteVlanIdRule(2);
+					}else{
+						child.setaSiteVlanIdRule(2);
+						child.setzSiteVlanIdRule(2);
+					}
+					child.setaPortId(segmentA.getAPORTID());
+					child.setaSiteId(segmentA.getASITEID());
+					child.setzPortId(segmentA.getZPORTID());
+					child.setzSiteId(segmentA.getZSITEID());
+				}else{
+					if(segmentA.getShowSiteZname().equals(realSiteAName)){
+						child.setaSiteVlanIdRule(1);
+						child.setzSiteVlanIdRule(2);
+					}else{
+						child.setaSiteVlanIdRule(2);
+						child.setzSiteVlanIdRule(2);
+					}
+					child.setaPortId(segmentA.getZPORTID());
+					child.setaSiteId(segmentA.getZSITEID());
+					child.setzPortId(segmentA.getAPORTID());
+					child.setzSiteId(segmentA.getASITEID());
+				}
+				if(this.isActionCheckBox.isSelected()){
+					child.setPathStatus(1);
+				}else{
+					child.setPathStatus(0);
+				}
+				child.setSegmentId(segmentA.getId());
+				qinqChildList.add(child);
+			}
+			
+			//处理最后一条
+			QinqChildInst child = new QinqChildInst();
+			String sglastZname = workSg.get(workSg.size() - 1).getShowSiteZname().trim();
+			Segment segmentLast = workSg.get(workSg.size() - 1);
+			if(sglastZname.equals(realSiteZName)){
+				child.setaPortId(segmentLast.getAPORTID());
+				child.setaSiteId(segmentLast.getASITEID());
+				child.setzPortId(segmentLast.getZPORTID());
+				child.setzSiteId(segmentLast.getZSITEID());
+				child.setaSiteVlanIdRule(2);
+				child.setzSiteVlanIdRule(1);
+			}else{
+				child.setaPortId(segmentLast.getZPORTID());
+				child.setaSiteId(segmentLast.getZSITEID());
+				child.setzPortId(segmentLast.getAPORTID());
+				child.setzSiteId(segmentLast.getASITEID());
+				child.setaSiteVlanIdRule(2);
+				child.setzSiteVlanIdRule(1);
+			}
+			if(this.isActionCheckBox.isSelected()){
+				child.setPathStatus(1);
+			}else{
+				child.setPathStatus(0);
+			}
+			child.setSegmentId(segmentLast.getId());
+			qinqChildList.add(child);
+		}
+		qinq.setQinqChildInst(qinqChildList);
+	}
+
+	/**
+	 * 设置A,Z端的端口
+	 */
+	private void initPort() {
+		PortService portService = null;
+		PortInst Aport = null;
+		PortInst Zport = null;
+		try 
+		{
+			portService = (PortService) ConstantUtil.serviceFactory.newService(Services.PORT);
+			
+			Aport = new PortInst();
+			Zport = new PortInst();
+			Segment sgA = workSg.get(0);
+			Segment sgZ = workSg.get(workSg.size() - 1);
+			if(qinQTopoPanel.getSiteA().getSite_Inst_Id() == sgA.getASITEID())
+			{
+				Aport.setPortId(sgA.getAPORTID());
+				Aport.setSiteId(sgA.getASITEID());				
+			}
+			else
+			{
+				Aport.setPortId(sgA.getZPORTID());
+				Aport.setSiteId(sgA.getZSITEID());				
+			}
+			
+			if(qinQTopoPanel.getSiteZ().getSite_Inst_Id() == sgZ.getASITEID())
+			{
+				Zport.setPortId(sgZ.getAPORTID());
+				Zport.setSiteId(sgZ.getASITEID());
+			}
+			else
+			{
+				Zport.setPortId(sgZ.getZPORTID());
+				Zport.setSiteId(sgZ.getZSITEID());
+			}
+			Aport = portService.select(Aport).get(0);
+			this.setPortInst_A(Aport);
+			Zport = portService.select(Zport).get(0);
+			this.setPortInst_Z(Zport);
+
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		} finally {
+			UiUtil.closeService(portService);
+			Aport = null;
+			Zport = null;
+		}
+	}
+
+	/**
+	 * 重置路由
+	 */
+	private void resetRouterActionPerformed() {
+		// 重置路由，全部清空
+		aSiteField.setText(null);
+		zSiteField.setText(null);
+		autoRouterField.setText(null);
+		qinQTopoPanel.setSiteA(null);
+		qinQTopoPanel.setSiteZ(null);
+		qinQTopoPanel.setMust(false);
+		qinQTopoPanel.getSiteMust().clear();
+		qinQTopoPanel.setSgMust(false);
+		qinQTopoPanel.getSgMust().clear();
+		qinQTopoPanel.setLinkColor(Color.GREEN);
+		aSiteAccomboBox.removeAllItems();
+		zSiteAccomboBox.removeAllItems();
+
+		// 清除AZ提示
+		if (qinQTopoPanel.getElementA()!= null) {
+			qinQTopoPanel.removeBusinessObjct(qinQTopoPanel.getElementA(), "");
+			qinQTopoPanel.setElementA(null);
+		}
+		if (qinQTopoPanel.getElementZ() != null) {
+			qinQTopoPanel.removeBusinessObjct(qinQTopoPanel.getElementZ(), "");
+			qinQTopoPanel.setElementZ(null);
+		}
+		if (qinQTopoPanel.getElementM() != null) {
+			for (Element element : qinQTopoPanel.getElementM()) {
+				qinQTopoPanel.removeBusinessObjct(element, "");
+			}
+
+			qinQTopoPanel.getElementM().clear();
+		}
+		
+	}
+
+	/**
+	 * 自动命名
+	 */
+	private void autoNamingActionPerformed() {
+		try {
+			QinqInst qinq = new QinqInst();
+			if (null == qinQTopoPanel.getSiteA() || null == qinQTopoPanel.getSiteZ()) {
+				DialogBoxUtil.errorDialog(this, ResourceUtil.srcStr(StringKeysTip.TIP_PORTNULL));
+				UiUtil.insertOperationLog(EOperationLogType.TUNNELTOPO5.getValue());//449
+				return;
+			}
+			qinq.setaSiteId(qinQTopoPanel.getSiteA().getSite_Inst_Id());
+			qinq.setzSiteId(qinQTopoPanel.getSiteZ().getSite_Inst_Id());
+			AutoNamingUtil autoNamingUtil=new AutoNamingUtil();
+			String autoNaming = (String) autoNamingUtil.autoNaming(qinq, portInst_a, portInst_z);
+			nameField.setText(autoNaming);
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		}
+
+	}
+
+	/**
+	 * 根据A,Z端分配可用的UNI端口
+	 */
+	private void matchingAcActionPerformed() {
+		DefaultComboBoxModel aAcModel = null;
+		DefaultComboBoxModel zAcModel = null;
+		try {
+			if (qinQTopoPanel.getSiteA() != null && qinQTopoPanel.getSiteZ() != null) {
+				aSiteAccomboBox.removeAllItems();
+				zSiteAccomboBox.removeAllItems();
+				aAcModel = (DefaultComboBoxModel) aSiteAccomboBox.getModel();
+				zAcModel = (DefaultComboBoxModel) zSiteAccomboBox.getModel();
+				this.selectPortToAc(aAcModel,qinQTopoPanel.getSiteA().getSite_Inst_Id(), 1);
+				this.selectPortToAc(zAcModel,qinQTopoPanel.getSiteZ().getSite_Inst_Id(), 2);
+			}
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		}
+		
+	}
+	
+	/**
+	 * 查询可用的UNI端口并给下拉列表赋值
+	 * @param acModel
+	 * @param  
+	 */
+	private void selectPortToAc(DefaultComboBoxModel acModel, int siteId, int end) {
+		QinQInstService qinqService = null;
+		PortService portservice = null; 
+		try {
+			qinqService = (QinQInstService) ConstantUtil.serviceFactory.newService(Services.QinQ);
+			List<QinqInst> qinqList = qinqService.selectBySiteId(siteId);
+			List<Integer> portIdList = new ArrayList<Integer>();
+			for (QinqInst q : qinqList) {
+				if(q.getaSiteId() == siteId){
+					portIdList.add(q.getaAcPortId());
+				}else if(q.getzSiteId() == siteId){
+					portIdList.add(q.getzAcPortId());
+				}
+			}
+			portservice = (PortService) ConstantUtil.serviceFactory.newService(Services.PORT);
+			PortInst port = new PortInst();
+			port.setSiteId(siteId);
+			port.setPortType("UNI");
+			port.setIsEnabled_code(1);
+			List<PortInst> portList = portservice.select(port);
+			for (PortInst portInst : portList) {
+				if(portInst.getIsEnabled_QinQ() == 1 && !portIdList.contains(portInst.getPortId())){
+					acModel.addElement(new ControlKeyValue(portInst.getPortId() + "", portInst.getPortName(), portInst));
+				}
+			}
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		}finally{
+			UiUtil.closeService(qinqService);
+			UiUtil.closeService(portservice);
+		}
+	}
+
+	/**
+	 * 计算工作路由
+	 */
+	private void autoRouterActionPerformed() {
+		if (qinQTopoPanel.getSiteA() != null && qinQTopoPanel.getSiteZ() != null) {
+
+			list = autoRoute();
+			if (list == null) {
+				return;
+			}
+			// 找出list中最短的路径
+			shortestIndex = findShortestWay(list);
+//			secondIndex = findSecondWay(list, shortestIndex);
+
+			// 如果有必经网元，找出其index
+			if (qinQTopoPanel.isMust()) {
+				// 处理即有必经网元，又有必经段
+				if (qinQTopoPanel.isSgMust()) {
+					List<Integer> indexList1 = getMustSgindex(list);
+					List<Integer> indexList2 = getContainsMustIndex(list);
+					int index = 0;
+					if (indexList1.size() == 1 && indexList2.size() == 1) {
+						if (indexList1.get(0) == indexList2.get(0)) {
+							index = indexList1.get(0);
+						}
+					} else if (indexList1.size() == 1 && indexList2.size() > 1) {
+						int temp = indexList1.get(0);
+						if (indexList2.contains(temp)) {
+							index = temp;
+						}
+					} else if (indexList1.size() > 1 && indexList2.size() == 1) {
+						int temp = indexList2.get(0);
+						if (indexList1.contains(temp)) {
+							index = temp;
+						}
+					} else {
+						DialogBoxUtil.errorDialog(null, ResourceUtil.srcStr(StringKeysTip.TIP_NO_ROUTE));
+						UiUtil.insertOperationLog(EOperationLogType.ROUTEACTION.getValue());
+					}
+
+					workSg = list.get(index);
+				} else {
+					int index = 0;
+					List<Integer> indexList = getContainsMustIndex(list);
+					if (indexList != null && indexList.size() == 1) {
+						index = indexList.get(0);
+					} else {
+						index = 0;
+					}
+					workSg = list.get(index);
+				}
+			} else {
+				// 如果有必经段，找出其index
+				if (qinQTopoPanel.isSgMust()) {
+					int index = 0;
+					List<Integer> indexList = getMustSgindex(list);
+					if (indexList != null && indexList.size() == 1) {
+						index = indexList.get(0);
+					} else {
+						index = 0;
+					}
+					workSg = list.get(index);
+				} else {
+					workSg = list.get(shortestIndex);
+				}
+			}
+
+			String itemStr = addAutoRoute(workSg);
+			try {
+				autoRouterField.setText(itemStr);
+			} catch (Exception e1) {
+				ExceptionManage.dispose(e1,this.getClass());
+			}
+
+		} else {
+			DialogBoxUtil.errorDialog(null, ResourceUtil.srcStr(StringKeysTip.TIP_AZ_CONFIG_BEFORE));
+			UiUtil.insertOperationLog(EOperationLogType.TUNNELTOPO1.getValue());
+		}
+	}
+	
+	/**
+	 * 路由路径拼接
+	 * @param Segments
+	 * @return
+	 */
+	private String addAutoRoute(List<Segment> Segments) {
+		StringBuffer sb = new StringBuffer();
+		String realSiteAName = qinQTopoPanel.getSiteA().getCellId().trim();
+		String realSiteZName = qinQTopoPanel.getSiteZ().getCellId().trim();
+		sb.append(realSiteAName);
+		if (Segments != null) {
+			if (Segments.size() == 2) {
+				Segment segmentA = Segments.get(0);
+				String nameA = segmentA.getShowSiteAname().trim();
+				if (nameA.equals(realSiteAName)) {
+					sb.append("->").append(segmentA.getShowSiteZname());
+				} else {
+					sb.append("->").append(segmentA.getShowSiteAname());
+				}
+			} else if (Segments.size() > 2) {
+				String temp = "";
+				for (int i = 0; i < Segments.size() - 1; i++) {
+					if (i == 0) {
+						if (isSegmentS(Segments.get(i), realSiteAName)) {
+							temp += "->" + Segments.get(i).getShowSiteZname().trim();
+						} else {
+							temp += "->" + Segments.get(i).getShowSiteAname().trim();
+						}
+					} else if (i > 0) {
+						if (isSegmentS(Segments.get(i), Segments.get(i - 1))) {
+							temp += "->" + Segments.get(i).getShowSiteZname().trim();
+						} else {
+							temp += "->" + Segments.get(i).getShowSiteAname().trim();
+						}
+					}
+				}
+
+				sb.append(temp);
+			}
+
+			sb.append("->").append(realSiteZName);
+			return sb.toString();
+		}
+
+		return null;
+	}
+
+
+	/**
+	 *  判断一个段是顺着的还是反着
+	 */
+	private boolean isSegmentS(Segment sg, String name) {
+		String aName = sg.getShowSiteAname().trim();
+		if (name.equals(aName)) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	/** 
+	 * 判断第二个段是顺着的还是反着 
+	 */
+	private boolean isSegmentS(Segment sgNext, Segment sgBefore) {
+		String aNext = sgNext.getShowSiteAname().trim();
+		String aName = sgBefore.getShowSiteAname().trim();
+		String zName = sgBefore.getShowSiteZname().trim();
+		if (aNext.equals(aName) || aNext.equals(zName)) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	private List<Integer> getMustSgindex(List<List<Segment>> list) {
+		List<Integer> returnValue = new ArrayList<Integer>();
+		List<Segment> sgMust =qinQTopoPanel.getSgMust() ;
+		List<String> strList = new ArrayList<String>();
+		if (sgMust.size() == 0) {
+			return returnValue;
+		}
+
+		if (list != null && list.size() == 1) {
+			if (list.get(0) != null) {
+				returnValue.add(0);
+				return returnValue;
+			}
+		}
+
+		// 将路由转换成segment的ID的集合，以便于遍历
+		for (int i = 0; i < list.size(); i++) {
+			if (list.get(i) != null) {
+				List<Segment> sgs = list.get(i);
+				StringBuffer sb = new StringBuffer();
+				for (Segment sg : sgs) {
+					sb.append(sg.getId()).append("-");
+				}
+
+				strList.add(sb.toString());
+			}
+		}
+
+		for (int i = 0; i < strList.size(); i++) {
+			String temp = strList.get(i);
+			int iCount = 0;
+			for (Segment sg : sgMust) {
+				if (temp.indexOf(sg.getId() + "") != -1) {
+					iCount++;
+					if (iCount == sgMust.size()) {
+						returnValue.add(i);
+					}
+				}
+			}
+		}
+
+		return returnValue;
+	}
+
+	private  List<Integer> getContainsMustIndex(List<List<Segment>> list) {
+		List<Integer> returnValue = new ArrayList<Integer>();
+		List<String> mustList = new ArrayList<String>();
+		for (SiteInst site : qinQTopoPanel.getSiteMust()) {
+			mustList.add(site.getSite_Inst_Id() + "");
+		}
+		List<String> strList = new ArrayList<String>();
+
+		// 将路由转换成segment的网元ID的集合，以便于遍历
+		for (int i = 0; i < list.size(); i++) {
+			List<Integer> idList = new ArrayList<Integer>();
+			if (list.get(i) != null) {
+				List<Segment> sgs = list.get(i);
+				for (Segment sg : sgs) {
+					idList.add(sg.getASITEID());
+					idList.add(sg.getZSITEID());
+				}
+			}
+
+			// 去掉重复的网元ID
+			List<Integer> alone = new ArrayList<Integer>();
+			for (int k = 0; k < idList.size(); k++) {
+				if (!alone.contains(idList.get(k))) {
+					alone.add(idList.get(k));
+				}
+			}
+
+			// 将格式转换成1-2的格式
+			StringBuffer sb = new StringBuffer();
+			for (int k = 0; k < alone.size(); k++) {
+				sb.append(alone.get(k).toString()).append("-");
+			}
+
+			strList.add(sb.toString());
+		}
+
+		for (int i = 0; i < strList.size(); i++) {
+			String temp = strList.get(i);
+			int iCount = 0;
+			for (String id : mustList) {
+				if (temp.indexOf(id) != -1) {
+					iCount++;
+					if (iCount == mustList.size()) {
+						returnValue.add(i);
+					}
+				}
+			}
+		}
+
+		return returnValue;
+	}
+	
+	/**
+	 * 找出最短路径
+	 * @param list
+	 * @return
+	 */
+	private int findShortestWay(List<List<Segment>> list) {
+		int index = 0;
+		int min = 0;
+		if (list != null && list.size() > 0) {
+			min = list.get(0).size();
+		}
+
+		for (int i = 1; i < list.size(); i++) {
+			if (list.get(i) != null && list.get(i).size() < min) {
+				min = list.get(i).size();
+				index = i;
+			}
+		}
+
+		return index;
+	}
+	
+	/**
+	 * 找出所有可能的路径
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	private List<List<Segment>> autoRoute(){
+		AutoRouteAction auto = new AutoRouteAction(); 
+		List<Segment> Segments = new ArrayList<Segment>();
+		List<List<Segment>> RouteSegments = new ArrayList<List<Segment>>();
+		
+		try 
+		{
+			Segments = qinQTopoPanel.getAllSegmentFromTopo();
+		} 
+		catch (Exception e) 
+		{
+			ExceptionManage.dispose(e,this.getClass());
+		}
+		for(Segment sg : Segments)
+		{
+			auto.addRoute(sg.getASITEID(), sg.getZSITEID(), 1);
+		}
+		int from =qinQTopoPanel.getSiteA() .getSite_Inst_Id();
+		int to = qinQTopoPanel.getSiteZ().getSite_Inst_Id();
+		if(qinQTopoPanel.isMust() ||qinQTopoPanel.isSgMust())
+		{
+			//将必经分为网元必经和段必经，分别验证
+			List<Integer> nePass = new ArrayList<Integer>();
+			List<Integer> segPass = new ArrayList<Integer>();
+			List<Integer> segproPass = new ArrayList<Integer>();
+			for(SiteInst site: qinQTopoPanel.getSiteMust())
+			{
+				nePass.add(site.getSite_Inst_Id());
+			}
+			
+			//添加必经段所转换成的网元
+			if(qinQTopoPanel.isSgMust() &&qinQTopoPanel.getSgMust() .size()>0)
+			{
+				for(Segment sg : qinQTopoPanel.getSgMust())
+				{
+					segPass.add(sg.getASITEID());
+					segPass.add(sg.getZSITEID());
+				}
+			}
+
+			RouteSegments=id2Segment(auto.show(from, nePass, segPass, segproPass, to));
+		}
+		else
+		{
+			RouteSegments=id2Segment(auto.show(from, to));
+		}
+		
+		return RouteSegments;
+	}
+
+	/**
+	 * list 中装了多个含有段ID的list 转换成多个含有段的list
+	 */
+	private List<List<Segment>> id2Segment(List<String> list)
+	{
+		List<List<Segment>> segmentsList = new ArrayList<List<Segment>>();
+		if(list == null)
+		{
+			return null;
+		}
+		
+		//如果2-1间有多个段，也应该找出多条段
+		if(list.size()==1)
+		{
+			String temp = list.get(0).toString();
+			String[] a = temp.split("-");
+			if(findSegmentNum(Integer.valueOf(a[0]),Integer.valueOf(a[1]))>1)
+			{
+				return dealSimilarWay(list);
+			}
+		}
+
+		for(int i = 0; i < list.size(); i++)
+		{
+			List<Segment> mysg = new ArrayList<Segment>();
+			String temp = list.get(i).toString();
+			String[] a = temp.split("-");
+			for(int j = 0; j < a.length - 1; j++)
+			{
+				Segment sgM = new Segment();
+				if(qinQTopoPanel.getSgMust().size()>0)
+				{
+					sgM =qinQTopoPanel.getSgMust().get(0);
+				}
+				
+				Segment sg = querySegment(Integer.valueOf(a[j]), Integer.valueOf(a[j+1]), sgM);
+				mysg.add(sg);
+			}		
+			
+			segmentsList.add(mysg);
+		}	
+		
+		return segmentsList;
+	}
+	
+	private List<List<Segment>> dealSimilarWay(List<String> list){
+		List<List<Segment>> ll = new ArrayList<List<Segment>>();
+		String[] a = list.get(0).toString().split("-");
+		List<Segment> SegmentA = new ArrayList<Segment>();
+		if(a.length == 2)
+		{
+			SegmentA = querySegmentbySiteinst(Integer.valueOf(a[0]));
+		
+			for(Segment sgA: SegmentA)
+			{
+				ll.add(findSegment(sgA,Integer.valueOf(a[1])));
+			}
+		}
+		else if(a.length > 2)
+		{
+			List<List<Segment>> tempList = new ArrayList<List<Segment>>();
+			Segment sgSignle = new Segment();
+			boolean isSingle = false;
+			boolean isMulty = false;
+			
+			//分别找出两个网元之间的一条段或者两条段
+			for(int i = 0; i < a.length - 1; i++)
+			{
+				int num = findSegmentNum(Integer.valueOf(a[i]), Integer.valueOf(a[i+1]));
+				if(num == 1)
+				{
+					isSingle = true;
+					isMulty = false;
+					sgSignle = querySegment(Integer.valueOf(a[i]), Integer.valueOf(a[i+1]), new Segment());
+					
+					if(isSingle && !isMulty)
+					{
+						List<Segment> temp = new ArrayList<Segment>();
+						temp.add(sgSignle);
+						tempList.add(temp);
+					}
+				}
+				
+				if(num > 1)
+				{
+					isMulty = true;
+					isSingle = false;
+					SegmentA = querySegmentbySiteinst(Integer.valueOf(a[i]));
+					List<Segment> tempMulti = new ArrayList<Segment>();
+					for(Segment sgA: SegmentA)
+					{
+						List<Segment> listtSg = findSegment(sgA, Integer.valueOf(a[i+1]));
+						if( listtSg!= null)
+						{
+							tempMulti.addAll(listtSg);
+						}
+					}
+					
+					if(isMulty && !isSingle)
+					{
+						tempList.add(tempMulti);
+					}
+				}
+			}
+			
+		}
+			//如果两个网元之间都是两个以上的网元
+//			ll = allCombine(tempList);
+			return ll;
+	}
+		
+	//递归实现与后面的段进行组合排列
+//	private List allCombine(List list)
+//	{
+//		List ll = new ArrayList();
+//		if(list.size() == 2)
+//		{
+////				List listtemp = findTwoComb((List<Segment>)list.get(0),(List<Segment>)list.get(1));
+//			
+////				return listtemp;
+//		}
+//		
+//		if(list.size() > 2)
+//		{
+//			List temp  = new ArrayList();
+//			for(int j = 0; j< list.size() - 1; j++)
+//			{
+//				temp.add(list.get(j));
+//			}
+//				//System.arraycopy(list, 0, temp, 0, list.size() - last);
+//			
+////				ll = combListandSeg(allCombine(temp), (List<Segment>)list.get(list.size() - 1));
+//		}
+//		return ll;
+//	}
+		
+	private List<Segment> findSegment(Segment sgA, int zId)
+	{
+		List<Segment> Segments = new ArrayList<Segment>();
+		List<Segment> SegmentZ = new ArrayList<Segment>();
+		SegmentZ = querySegmentbySiteinst(zId);
+		for(Segment sgZ: SegmentZ)
+		{
+			if(sgA.getASITEID() == sgZ.getASITEID() && sgA.getZSITEID() == sgZ.getZSITEID())
+			{
+				Segments.add(sgA);
+				return Segments;
+			}
+		}
+		
+		return null;
+	}
+
+	/**
+	 * 判断两个网元之间有几个段
+	 */
+	private int findSegmentNum(int siteInstIDA, int siteInstIDZ){
+		List<Segment> SegmentA = new ArrayList<Segment>();
+		List<Segment> SegmentZ = new ArrayList<Segment>();
+		SegmentA = querySegmentbySiteinst(siteInstIDA);
+		SegmentZ = querySegmentbySiteinst(siteInstIDZ);
+		int iCount = 0;
+		for(int i = 0; i < SegmentA.size(); i++)
+		{
+			for(int j = 0; j < SegmentZ.size(); j++)
+			{
+				if(SegmentA.get(i).getASITEID() == SegmentZ.get(j).getASITEID()
+					&&	SegmentA.get(i).getZSITEID() == SegmentZ.get(j).getZSITEID())
+				{
+					iCount++;
+				}
+			}
+		}
+		
+		return iCount;
+	}
+	
+	/**
+	 * 通过两个网元确定一个段
+	 */
+	private Segment querySegment(int siteInstIDA, int siteInstIDZ, Segment sgM)
+	{
+		List<Segment> SegmentA = new ArrayList<Segment>();
+		List<Segment> SegmentZ = new ArrayList<Segment>();
+		SegmentA = querySegmentbySiteinst(siteInstIDA);
+		SegmentZ = querySegmentbySiteinst(siteInstIDZ);
+		for(int i = 0; i < SegmentA.size(); i++)
+		{
+			for(int j = 0; j < SegmentZ.size(); j++)
+			{
+				if(SegmentA.get(i).getASITEID() == SegmentZ.get(j).getASITEID()
+					&&	SegmentA.get(i).getZSITEID() == SegmentZ.get(j).getZSITEID())
+				{
+					//如果必经段为空
+					if(sgM.getId() == 0)
+					{
+						return SegmentA.get(i);
+					}
+					
+					if(sgM.getId() >0)
+					{
+						if(SegmentA.get(i).getId() == sgM.getId())
+						{
+							return SegmentA.get(i);
+						}
+						
+						//如果必经段与此两网元之间的段毫无关联
+//						int aId = sgM.getASITEID();
+						if(unRelated(siteInstIDA, siteInstIDZ, sgM))
+						{
+							return SegmentA.get(i);
+						}
+					}
+				}
+			}
+		}
+		
+		return null;
+	}
+	
+	private boolean unRelated(int idA, int idZ, Segment sg)
+	{
+		boolean unRelated = true;
+		int sgAid = sg.getASITEID();
+		int sgZid = sg.getZSITEID();
+		if((sgAid == idA && sgZid == idZ) || (sgAid == idZ && sgZid == idA))
+		{
+			unRelated = false;
+		}
+		
+		return unRelated;
+	}
+	
+	/**
+	 * 查一个网元上所有的段
+	 */
+	private List<Segment> querySegmentbySiteinst(int siteInstID)
+	{
+		SegmentService service = null;
+		List<Segment> segmentList = null;
+		try
+		{
+			service = (SegmentService) ConstantUtil.serviceFactory
+					.newService(Services.SEGMENT);
+			segmentList = service.queryBySiteId(siteInstID);
+		}
+		catch (NumberFormatException e)
+		{
+			ExceptionManage.dispose(e,this.getClass());
+		}
+		catch (Exception e)
+		{
+			ExceptionManage.dispose(e,this.getClass());
+		}
+		finally
+		{
+			UiUtil.closeService(service);
+		}
+		return segmentList;	
+	}
+	
+	
+	public void setASiteField(String text) {
+		aSiteField.setText(text);
+	}
+
+
+	public void setZSiteField(String text) {
+		zSiteField.setText(text);
+	}
+
+	public void setPortInst_A(PortInst portInst) {
+		this.portInst_a = portInst;
+	}
+
+	public void setPortInst_Z(PortInst portInst) {
+		this.portInst_z = portInst;
+	}
+
+	public PortInst getPortInst_a() {
+		return portInst_a;
+	}
+
+	public PortInst getPortInst_z() {
+		return portInst_z;
+	}
+}

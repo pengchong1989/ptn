@@ -1,0 +1,19 @@
+package com.nms.db.dao.ptn;
+
+import com.nms.db.bean.ptn.CccInfo;
+
+
+
+public interface CccInfoMapper {
+    int deleteByPrimaryKey(Integer id);
+
+    int insert(CccInfo record);
+
+    int insertSelective(CccInfo record);
+
+    CccInfo selectByPrimaryKey(Integer id);
+
+    int updateByPrimaryKeySelective(CccInfo record);
+
+    int updateByPrimaryKey(CccInfo record);
+}

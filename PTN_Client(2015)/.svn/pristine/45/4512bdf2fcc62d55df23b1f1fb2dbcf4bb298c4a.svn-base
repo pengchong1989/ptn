@@ -1,0 +1,428 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nms.db.dao.ptn.AllConfigInfoMapper" >
+  <resultMap id="BaseResultMap" type="AllConfigInfo" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="singleMACAddress" property="singlemacaddress" jdbcType="VARCHAR" />
+    <result column="addressAgeSwitch" property="addressageswitch" jdbcType="INTEGER" />
+    <result column="macAddressAgeDate" property="macaddressagedate" jdbcType="INTEGER" />
+    <result column="throwWrapDateGap" property="throwwrapdategap" jdbcType="INTEGER" />
+    <result column="fdiStatus" property="fdistatus" jdbcType="INTEGER" />
+    <result column="fidMel" property="fidmel" jdbcType="INTEGER" />
+    <result column="apsRecoverTime" property="apsrecovertime" jdbcType="INTEGER" />
+    <result column="crcVerify" property="crcverify" jdbcType="INTEGER" />
+    <result column="throwWrap" property="throwwrap" jdbcType="INTEGER" />
+    <result column="receiveBadWrap" property="receivebadwrap" jdbcType="INTEGER" />
+    <result column="align" property="align" jdbcType="INTEGER" />
+    <result column="mirrorModel" property="mirrormodel" jdbcType="INTEGER" />
+    <result column="mirrorByPort" property="mirrorbyport" jdbcType="INTEGER" />
+    <result column="mirrorPort" property="mirrorport" jdbcType="INTEGER" />
+    <result column="mplsTPControl" property="mplstpcontrol" jdbcType="INTEGER" />
+    <result column="channelType" property="channeltype" jdbcType="INTEGER" />
+    <result column="siteId" property="siteid" jdbcType="INTEGER" />
+    <result column="tmsWorsen" property="tmsworsen" jdbcType="INTEGER" />
+    <result column="tmsLose" property="tmslose" jdbcType="INTEGER" />
+    <result column="tmcfdi" property="tmcfdi" jdbcType="INTEGER" />
+    <result column="tmcmel" property="tmcmel" jdbcType="INTEGER" />
+    <result column="apsModel" property="apsmodel" jdbcType="INTEGER" />
+    <result column="roundEnable" property="roundenable" jdbcType="INTEGER" />
+    <result column="vlanMAC" property="vlanmac" jdbcType="INTEGER" />
+    <result column="vlanValue" property="vlanvalue" jdbcType="INTEGER" />
+    <result column="macNumber" property="macnumber" jdbcType="INTEGER" />
+    <result column="lacp" property="lacp" jdbcType="INTEGER" />
+    <result column="equipmentPriority" property="equipmentpriority" jdbcType="INTEGER" />
+    <result column="dhcpModel" property="dhcpmodel" jdbcType="INTEGER" />
+    <result column="loopCheck" property="loopcheck" jdbcType="INTEGER" />
+    <result column="ssmModel" property="ssmmodel" jdbcType="INTEGER" />
+    <result column="twoLayer" property="twolayer" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, singleMACAddress, addressAgeSwitch, macAddressAgeDate, throwWrapDateGap, fdiStatus, 
+    fidMel, apsRecoverTime, crcVerify, throwWrap, receiveBadWrap, align, mirrorModel, 
+    mirrorByPort, mirrorPort, mplsTPControl, channelType, siteId, tmsWorsen, tmsLose, 
+    tmcfdi, tmcmel, apsModel, roundEnable, vlanMAC, vlanValue, macNumber, lacp, equipmentPriority, 
+    dhcpModel, loopCheck, ssmModel, twoLayer
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from all_config
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <select id="queryBySiteId" resultType="AllConfigInfo" parameterType="int">
+	select * from all_config where siteId=#{siteId}  
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from all_config
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="AllConfigInfo" >
+    insert into all_config (id, singleMACAddress, addressAgeSwitch, 
+      macAddressAgeDate, throwWrapDateGap, fdiStatus, 
+      fidMel, apsRecoverTime, crcVerify, 
+      throwWrap, receiveBadWrap, align, 
+      mirrorModel, mirrorByPort, mirrorPort, 
+      mplsTPControl, channelType, siteId, 
+      tmsWorsen, tmsLose, tmcfdi, 
+      tmcmel, apsModel, roundEnable, 
+      vlanMAC, vlanValue, macNumber, 
+      lacp, equipmentPriority, dhcpModel, 
+      loopCheck, ssmModel, twoLayer
+      )
+    values (#{id,jdbcType=INTEGER}, #{singlemacaddress,jdbcType=VARCHAR}, #{addressageswitch,jdbcType=INTEGER}, 
+      #{macaddressagedate,jdbcType=INTEGER}, #{throwwrapdategap,jdbcType=INTEGER}, #{fdistatus,jdbcType=INTEGER}, 
+      #{fidmel,jdbcType=INTEGER}, #{apsrecovertime,jdbcType=INTEGER}, #{crcverify,jdbcType=INTEGER}, 
+      #{throwwrap,jdbcType=INTEGER}, #{receivebadwrap,jdbcType=INTEGER}, #{align,jdbcType=INTEGER}, 
+      #{mirrormodel,jdbcType=INTEGER}, #{mirrorbyport,jdbcType=INTEGER}, #{mirrorport,jdbcType=INTEGER}, 
+      #{mplstpcontrol,jdbcType=INTEGER}, #{channeltype,jdbcType=INTEGER}, #{siteid,jdbcType=INTEGER}, 
+      #{tmsworsen,jdbcType=INTEGER}, #{tmslose,jdbcType=INTEGER}, #{tmcfdi,jdbcType=INTEGER}, 
+      #{tmcmel,jdbcType=INTEGER}, #{apsmodel,jdbcType=INTEGER}, #{roundenable,jdbcType=INTEGER}, 
+      #{vlanmac,jdbcType=INTEGER}, #{vlanvalue,jdbcType=INTEGER}, #{macnumber,jdbcType=INTEGER}, 
+      #{lacp,jdbcType=INTEGER}, #{equipmentpriority,jdbcType=INTEGER}, #{dhcpmodel,jdbcType=INTEGER}, 
+      #{loopcheck,jdbcType=INTEGER}, #{ssmmodel,jdbcType=INTEGER}, #{twolayer,jdbcType=INTEGER}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="AllConfigInfo" >
+    insert into all_config
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="singlemacaddress != null" >
+        singleMACAddress,
+      </if>
+      <if test="addressageswitch != null" >
+        addressAgeSwitch,
+      </if>
+      <if test="macaddressagedate != null" >
+        macAddressAgeDate,
+      </if>
+      <if test="throwwrapdategap != null" >
+        throwWrapDateGap,
+      </if>
+      <if test="fdistatus != null" >
+        fdiStatus,
+      </if>
+      <if test="fidmel != null" >
+        fidMel,
+      </if>
+      <if test="apsrecovertime != null" >
+        apsRecoverTime,
+      </if>
+      <if test="crcverify != null" >
+        crcVerify,
+      </if>
+      <if test="throwwrap != null" >
+        throwWrap,
+      </if>
+      <if test="receivebadwrap != null" >
+        receiveBadWrap,
+      </if>
+      <if test="align != null" >
+        align,
+      </if>
+      <if test="mirrormodel != null" >
+        mirrorModel,
+      </if>
+      <if test="mirrorbyport != null" >
+        mirrorByPort,
+      </if>
+      <if test="mirrorport != null" >
+        mirrorPort,
+      </if>
+      <if test="mplstpcontrol != null" >
+        mplsTPControl,
+      </if>
+      <if test="channeltype != null" >
+        channelType,
+      </if>
+      <if test="siteid != null" >
+        siteId,
+      </if>
+      <if test="tmsworsen != null" >
+        tmsWorsen,
+      </if>
+      <if test="tmslose != null" >
+        tmsLose,
+      </if>
+      <if test="tmcfdi != null" >
+        tmcfdi,
+      </if>
+      <if test="tmcmel != null" >
+        tmcmel,
+      </if>
+      <if test="apsmodel != null" >
+        apsModel,
+      </if>
+      <if test="roundenable != null" >
+        roundEnable,
+      </if>
+      <if test="vlanmac != null" >
+        vlanMAC,
+      </if>
+      <if test="vlanvalue != null" >
+        vlanValue,
+      </if>
+      <if test="macnumber != null" >
+        macNumber,
+      </if>
+      <if test="lacp != null" >
+        lacp,
+      </if>
+      <if test="equipmentpriority != null" >
+        equipmentPriority,
+      </if>
+      <if test="dhcpmodel != null" >
+        dhcpModel,
+      </if>
+      <if test="loopcheck != null" >
+        loopCheck,
+      </if>
+      <if test="ssmmodel != null" >
+        ssmModel,
+      </if>
+      <if test="twolayer != null" >
+        twoLayer,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="singlemacaddress != null" >
+        #{singlemacaddress,jdbcType=VARCHAR},
+      </if>
+      <if test="addressageswitch != null" >
+        #{addressageswitch,jdbcType=INTEGER},
+      </if>
+      <if test="macaddressagedate != null" >
+        #{macaddressagedate,jdbcType=INTEGER},
+      </if>
+      <if test="throwwrapdategap != null" >
+        #{throwwrapdategap,jdbcType=INTEGER},
+      </if>
+      <if test="fdistatus != null" >
+        #{fdistatus,jdbcType=INTEGER},
+      </if>
+      <if test="fidmel != null" >
+        #{fidmel,jdbcType=INTEGER},
+      </if>
+      <if test="apsrecovertime != null" >
+        #{apsrecovertime,jdbcType=INTEGER},
+      </if>
+      <if test="crcverify != null" >
+        #{crcverify,jdbcType=INTEGER},
+      </if>
+      <if test="throwwrap != null" >
+        #{throwwrap,jdbcType=INTEGER},
+      </if>
+      <if test="receivebadwrap != null" >
+        #{receivebadwrap,jdbcType=INTEGER},
+      </if>
+      <if test="align != null" >
+        #{align,jdbcType=INTEGER},
+      </if>
+      <if test="mirrormodel != null" >
+        #{mirrormodel,jdbcType=INTEGER},
+      </if>
+      <if test="mirrorbyport != null" >
+        #{mirrorbyport,jdbcType=INTEGER},
+      </if>
+      <if test="mirrorport != null" >
+        #{mirrorport,jdbcType=INTEGER},
+      </if>
+      <if test="mplstpcontrol != null" >
+        #{mplstpcontrol,jdbcType=INTEGER},
+      </if>
+      <if test="channeltype != null" >
+        #{channeltype,jdbcType=INTEGER},
+      </if>
+      <if test="siteid != null" >
+        #{siteid,jdbcType=INTEGER},
+      </if>
+      <if test="tmsworsen != null" >
+        #{tmsworsen,jdbcType=INTEGER},
+      </if>
+      <if test="tmslose != null" >
+        #{tmslose,jdbcType=INTEGER},
+      </if>
+      <if test="tmcfdi != null" >
+        #{tmcfdi,jdbcType=INTEGER},
+      </if>
+      <if test="tmcmel != null" >
+        #{tmcmel,jdbcType=INTEGER},
+      </if>
+      <if test="apsmodel != null" >
+        #{apsmodel,jdbcType=INTEGER},
+      </if>
+      <if test="roundenable != null" >
+        #{roundenable,jdbcType=INTEGER},
+      </if>
+      <if test="vlanmac != null" >
+        #{vlanmac,jdbcType=INTEGER},
+      </if>
+      <if test="vlanvalue != null" >
+        #{vlanvalue,jdbcType=INTEGER},
+      </if>
+      <if test="macnumber != null" >
+        #{macnumber,jdbcType=INTEGER},
+      </if>
+      <if test="lacp != null" >
+        #{lacp,jdbcType=INTEGER},
+      </if>
+      <if test="equipmentpriority != null" >
+        #{equipmentpriority,jdbcType=INTEGER},
+      </if>
+      <if test="dhcpmodel != null" >
+        #{dhcpmodel,jdbcType=INTEGER},
+      </if>
+      <if test="loopcheck != null" >
+        #{loopcheck,jdbcType=INTEGER},
+      </if>
+      <if test="ssmmodel != null" >
+        #{ssmmodel,jdbcType=INTEGER},
+      </if>
+      <if test="twolayer != null" >
+        #{twolayer,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="AllConfigInfo" >
+    update all_config
+    <set >
+      <if test="singlemacaddress != null" >
+        singleMACAddress = #{singlemacaddress,jdbcType=VARCHAR},
+      </if>
+      <if test="addressageswitch != null" >
+        addressAgeSwitch = #{addressageswitch,jdbcType=INTEGER},
+      </if>
+      <if test="macaddressagedate != null" >
+        macAddressAgeDate = #{macaddressagedate,jdbcType=INTEGER},
+      </if>
+      <if test="throwwrapdategap != null" >
+        throwWrapDateGap = #{throwwrapdategap,jdbcType=INTEGER},
+      </if>
+      <if test="fdistatus != null" >
+        fdiStatus = #{fdistatus,jdbcType=INTEGER},
+      </if>
+      <if test="fidmel != null" >
+        fidMel = #{fidmel,jdbcType=INTEGER},
+      </if>
+      <if test="apsrecovertime != null" >
+        apsRecoverTime = #{apsrecovertime,jdbcType=INTEGER},
+      </if>
+      <if test="crcverify != null" >
+        crcVerify = #{crcverify,jdbcType=INTEGER},
+      </if>
+      <if test="throwwrap != null" >
+        throwWrap = #{throwwrap,jdbcType=INTEGER},
+      </if>
+      <if test="receivebadwrap != null" >
+        receiveBadWrap = #{receivebadwrap,jdbcType=INTEGER},
+      </if>
+      <if test="align != null" >
+        align = #{align,jdbcType=INTEGER},
+      </if>
+      <if test="mirrormodel != null" >
+        mirrorModel = #{mirrormodel,jdbcType=INTEGER},
+      </if>
+      <if test="mirrorbyport != null" >
+        mirrorByPort = #{mirrorbyport,jdbcType=INTEGER},
+      </if>
+      <if test="mirrorport != null" >
+        mirrorPort = #{mirrorport,jdbcType=INTEGER},
+      </if>
+      <if test="mplstpcontrol != null" >
+        mplsTPControl = #{mplstpcontrol,jdbcType=INTEGER},
+      </if>
+      <if test="channeltype != null" >
+        channelType = #{channeltype,jdbcType=INTEGER},
+      </if>
+      <if test="siteid != null" >
+        siteId = #{siteid,jdbcType=INTEGER},
+      </if>
+      <if test="tmsworsen != null" >
+        tmsWorsen = #{tmsworsen,jdbcType=INTEGER},
+      </if>
+      <if test="tmslose != null" >
+        tmsLose = #{tmslose,jdbcType=INTEGER},
+      </if>
+      <if test="tmcfdi != null" >
+        tmcfdi = #{tmcfdi,jdbcType=INTEGER},
+      </if>
+      <if test="tmcmel != null" >
+        tmcmel = #{tmcmel,jdbcType=INTEGER},
+      </if>
+      <if test="apsmodel != null" >
+        apsModel = #{apsmodel,jdbcType=INTEGER},
+      </if>
+      <if test="roundenable != null" >
+        roundEnable = #{roundenable,jdbcType=INTEGER},
+      </if>
+      <if test="vlanmac != null" >
+        vlanMAC = #{vlanmac,jdbcType=INTEGER},
+      </if>
+      <if test="vlanvalue != null" >
+        vlanValue = #{vlanvalue,jdbcType=INTEGER},
+      </if>
+      <if test="macnumber != null" >
+        macNumber = #{macnumber,jdbcType=INTEGER},
+      </if>
+      <if test="lacp != null" >
+        lacp = #{lacp,jdbcType=INTEGER},
+      </if>
+      <if test="equipmentpriority != null" >
+        equipmentPriority = #{equipmentpriority,jdbcType=INTEGER},
+      </if>
+      <if test="dhcpmodel != null" >
+        dhcpModel = #{dhcpmodel,jdbcType=INTEGER},
+      </if>
+      <if test="loopcheck != null" >
+        loopCheck = #{loopcheck,jdbcType=INTEGER},
+      </if>
+      <if test="ssmmodel != null" >
+        ssmModel = #{ssmmodel,jdbcType=INTEGER},
+      </if>
+      <if test="twolayer != null" >
+        twoLayer = #{twolayer,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="update" parameterType="AllConfigInfo" >
+    update all_config
+    set singleMACAddress = #{singlemacaddress,jdbcType=VARCHAR},
+      addressAgeSwitch = #{addressageswitch,jdbcType=INTEGER},
+      macAddressAgeDate = #{macaddressagedate,jdbcType=INTEGER},
+      throwWrapDateGap = #{throwwrapdategap,jdbcType=INTEGER},
+      fdiStatus = #{fdistatus,jdbcType=INTEGER},
+      fidMel = #{fidmel,jdbcType=INTEGER},
+      apsRecoverTime = #{apsrecovertime,jdbcType=INTEGER},
+      crcVerify = #{crcverify,jdbcType=INTEGER},
+      throwWrap = #{throwwrap,jdbcType=INTEGER},
+      receiveBadWrap = #{receivebadwrap,jdbcType=INTEGER},
+      align = #{align,jdbcType=INTEGER},
+      mirrorModel = #{mirrormodel,jdbcType=INTEGER},
+      mirrorByPort = #{mirrorbyport,jdbcType=INTEGER},
+      mirrorPort = #{mirrorport,jdbcType=INTEGER},
+      mplsTPControl = #{mplstpcontrol,jdbcType=INTEGER},
+      channelType = #{channeltype,jdbcType=INTEGER},
+      siteId = #{siteid,jdbcType=INTEGER},
+      tmsWorsen = #{tmsworsen,jdbcType=INTEGER},
+      tmsLose = #{tmslose,jdbcType=INTEGER},
+      tmcfdi = #{tmcfdi,jdbcType=INTEGER},
+      tmcmel = #{tmcmel,jdbcType=INTEGER},
+      apsModel = #{apsmodel,jdbcType=INTEGER},
+      roundEnable = #{roundenable,jdbcType=INTEGER},
+      vlanMAC = #{vlanmac,jdbcType=INTEGER},
+      vlanValue = #{vlanvalue,jdbcType=INTEGER},
+      macNumber = #{macnumber,jdbcType=INTEGER},
+      lacp = #{lacp,jdbcType=INTEGER},
+      equipmentPriority = #{equipmentpriority,jdbcType=INTEGER},
+      dhcpModel = #{dhcpmodel,jdbcType=INTEGER},
+      loopCheck = #{loopcheck,jdbcType=INTEGER},
+      ssmModel = #{ssmmodel,jdbcType=INTEGER},
+      twoLayer = #{twolayer,jdbcType=INTEGER}
+    where siteId = #{siteId,jdbcType=INTEGER}
+  </update>
+</mapper>

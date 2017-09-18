@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nms.db.dao.ptn.qos.QosMappingAttrMapper" >
+  <sql id="Base_Column_List" >
+    id, qosModelId, grade, name, value, siteId, model, direction, color
+  </sql>
+  <select id="queryByCondition" resultType="QosMappingAttr" parameterType="QosMappingAttr" >
+    select 
+    <include refid="Base_Column_List" />
+    from qostable where 1=1
+    <if test="id > 0">
+    and id = #{id}
+    </if>
+    <if test="siteId > 0">
+    and siteId = #{siteId}
+    </if>
+    <if test="phbId > 0">
+    and qosModelId = #{phbId}
+    </if>
+    <if test="value > 0">
+    and value = #{value}
+    </if>
+    <if test="grade != null and grade != ''">
+    and grade = #{grade}
+    </if>
+    <if test="model > 0">
+    and model = #{model}
+    </if>
+    <if test="direction > 0">
+    and direction = #{direction}
+    </if>
+    <if test="color > 0">
+    and color = #{color}
+    </if>
+  </select>
+</mapper>

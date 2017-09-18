@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<driveRoot xmlns="http://drive.bean.com">
+	<attribute length="1" description="类型基于内层VLAN标签" value="0" mapping="类型基于内层VLAN标签：否/是=0/1"/>
+	<attribute length="1" description="QinQ ID" value="1" mapping="QinQ ID:1~256"/>
+	<attribute length="2" description="TPID" value="0x8100" mapping="TPID：0x8100/0x9100/0x88a8"/>
+	<attribute length="1" description="VLAN Port1端口号" value="0" mapping="0/1/2/…/19H=无/LAN1/LAN2/LAN3/…/ LAN22 /WAN1/…/WAN4"/>
+	<attribute length="1" description="port1VLAN标签处理" value="0" mapping="VLAN标签处理：增加（port1如果为uni则为增加，否则为透传）/透传=0/1/2"/>
+	<attribute length="2" description="Port1匹配vlan标签下限" value="1" mapping="（port1如果为uni口）Port1匹配vlan 标签下限：1~4094 "/>
+	<attribute length="2" description="Port1匹配vlan标签上限" value="1" mapping="（port1如果为uni口）Port1匹配vlan标签上限：1~4094（大于或者等于下限）"/>
+	<attribute length="1" description="VLAN Port2端口号" value="0" mapping="VLAN Port2端口号:0/1/2/…/19H=无/LAN1/LAN2/LAN3/…/ LAN22 /WAN1/…/WAN4"/>
+	<attribute length="1" description="port2VLAN标签处理" value="0" mapping="VLAN标签处理：删除（port2如果为uni则这里为删除，否则为透传）/透传=0/1/2"/>
+	<attribute length="2" description="VLAN ID" value="1" mapping="VLAN ID：1~4094"/>
+	<attribute length="6" description="备用" value="0" mapping="7个备用字节"/>
+</driveRoot>

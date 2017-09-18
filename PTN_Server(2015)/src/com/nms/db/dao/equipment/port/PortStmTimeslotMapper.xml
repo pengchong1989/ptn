@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nms.db.dao.equipment.port.PortStmTimeslotMapper" >
+  <resultMap id="BaseResultMap" type="PortStmTimeslot" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="siteId" property="siteid" jdbcType="INTEGER" />
+    <result column="portid" property="portid" jdbcType="INTEGER" />
+    <result column="portstmid" property="portstmid" jdbcType="INTEGER" />
+    <result column="timeslotnumber" property="timeslotnumber" jdbcType="VARCHAR" />
+    <result column="timeslotname" property="timeslotname" jdbcType="VARCHAR" />
+    <result column="managerStatus" property="managerstatus" jdbcType="INTEGER" />
+    <result column="jobstatus" property="jobstatus" jdbcType="VARCHAR" />
+    <result column="expectjtwo" property="expectjtwo" jdbcType="VARCHAR" />
+    <result column="sendjtwo" property="sendjtwo" jdbcType="VARCHAR" />
+    <result column="realityjtwo" property="realityjtwo" jdbcType="VARCHAR" />
+    <result column="lptim" property="lptim" jdbcType="INTEGER" />
+    <result column="expectvfive" property="expectvfive" jdbcType="VARCHAR" />
+    <result column="sendvfive" property="sendvfive" jdbcType="VARCHAR" />
+    <result column="realityvfive" property="realityvfive" jdbcType="VARCHAR" />
+    <result column="checkvfive" property="checkvfive" jdbcType="INTEGER" />
+    <result column="isUsed" property="isused" jdbcType="INTEGER" />
+  </resultMap>
+
+  <sql id="Base_Column_List" >
+    id, siteId, portid, portstmid, timeslotnumber, timeslotname, managerStatus, jobstatus, 
+    expectjtwo, sendjtwo, realityjtwo, lptim, expectvfive, sendvfive, realityvfive, checkvfive, 
+    isUsed
+  </sql>
+  <select id="selectByPrimaryKey" resultType="PortStmTimeslot" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from port_stm_timeslot
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from port_stm_timeslot
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+ 
+  <insert id="insertSelective" parameterType="PortStmTimeslot" >
+    insert into port_stm_timeslot
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="siteid != null" >
+        siteId,
+      </if>
+      <if test="portid != null" >
+        portid,
+      </if>
+      <if test="portstmid != null" >
+        portstmid,
+      </if>
+      <if test="timeslotnumber != null" >
+        timeslotnumber,
+      </if>
+      <if test="timeslotname != null" >
+        timeslotname,
+      </if>
+      <if test="managerstatus != null" >
+        managerStatus,
+      </if>
+      <if test="jobstatus != null" >
+        jobstatus,
+      </if>
+      <if test="expectjtwo != null" >
+        expectjtwo,
+      </if>
+      <if test="sendjtwo != null" >
+        sendjtwo,
+      </if>
+      <if test="realityjtwo != null" >
+        realityjtwo,
+      </if>
+      <if test="lptim != null" >
+        lptim,
+      </if>
+      <if test="expectvfive != null" >
+        expectvfive,
+      </if>
+      <if test="sendvfive != null" >
+        sendvfive,
+      </if>
+      <if test="realityvfive != null" >
+        realityvfive,
+      </if>
+      <if test="checkvfive != null" >
+        checkvfive,
+      </if>
+      <if test="isused != null" >
+        isUsed,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="siteid != null" >
+        #{siteid,jdbcType=INTEGER},
+      </if>
+      <if test="portid != null" >
+        #{portid,jdbcType=INTEGER},
+      </if>
+      <if test="portstmid != null" >
+        #{portstmid,jdbcType=INTEGER},
+      </if>
+      <if test="timeslotnumber != null" >
+        #{timeslotnumber,jdbcType=VARCHAR},
+      </if>
+      <if test="timeslotname != null" >
+        #{timeslotname,jdbcType=VARCHAR},
+      </if>
+      <if test="managerstatus != null" >
+        #{managerstatus,jdbcType=INTEGER},
+      </if>
+      <if test="jobstatus != null" >
+        #{jobstatus,jdbcType=VARCHAR},
+      </if>
+      <if test="expectjtwo != null" >
+        #{expectjtwo,jdbcType=VARCHAR},
+      </if>
+      <if test="sendjtwo != null" >
+        #{sendjtwo,jdbcType=VARCHAR},
+      </if>
+      <if test="realityjtwo != null" >
+        #{realityjtwo,jdbcType=VARCHAR},
+      </if>
+      <if test="lptim != null" >
+        #{lptim,jdbcType=INTEGER},
+      </if>
+      <if test="expectvfive != null" >
+        #{expectvfive,jdbcType=VARCHAR},
+      </if>
+      <if test="sendvfive != null" >
+        #{sendvfive,jdbcType=VARCHAR},
+      </if>
+      <if test="realityvfive != null" >
+        #{realityvfive,jdbcType=VARCHAR},
+      </if>
+      <if test="checkvfive != null" >
+        #{checkvfive,jdbcType=INTEGER},
+      </if>
+      <if test="isused != null" >
+        #{isused,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+
+  <update id="update" parameterType="PortStmTimeslot" >
+    update port_stm_timeslot 
+    set managerStatus=#{managerStatus},jobstatus=#{jobstatus},expectjtwo=#{expectjtwo},
+    sendjtwo=#{sendjtwo},realityjtwo=#{realityjtwo},lptim=#{lptim},
+    expectvfive=#{expectvfive},sendvfive=#{sendvfive},realityvfive=#{realityvfive},
+    checkvfive=#{checkvfive} where id=#{id}
+  </update>
+
+   <insert id="insert" parameterType="PortStmTimeslot"  useGeneratedKeys="true" keyProperty="portStm.id">
+    insert into port_stm_timeslot
+    (siteId,portid,portstmid,timeslotnumber,
+    timeslotname,managerStatus, isUsed)
+    values(#{portStm.siteId},#{portStm.portid},#{portStm.portstmid},#{portStm.timeslotnumber},
+    #{portStm.timeslotname},#{portStm.managerStatus},#{portStm.isUsed})
+  </insert>
+  
+  <select id="quertyByPortId" resultType="PortStmTimeslot" parameterType="java.lang.Integer" >
+    select * from port_stm_timeslot where portid=#{0}
+  </select>
+  
+  <select id="quertyBySite" resultType="PortStmTimeslot" parameterType="java.lang.Integer" >
+    select * from port_stm_timeslot where siteId=#{siteId}
+  </select>
+  
+  <update id="setUsed">
+  	update port_stm_timeslot set isUsed = #{0} where id=#{1}
+  </update>
+  
+  <select id="selectBySiteIdAndPortIdAndName" resultType="PortStmTimeslot" >
+  	select * from port_stm_timeslot where siteId=#{0} and portId=#{1} and timeslotname=#{2}
+  </select>
+  
+   <delete id="deleteBySite" parameterType="java.lang.Integer" >
+    delete from port_stm_timeslot where siteid=#{siteId}
+  </delete>
+  
+  <update id="updateStatus" parameterType="map" >
+  update port_stm_timeslot set managerStatus=#{status} where siteId =#{siteId}
+  </update>
+  
+   <select id="selectBySiteIdAndNumberAndName" resultType="PortStmTimeslot" parameterType="map" >
+    select * from port_stm_timeslot where siteId=#{siteId} and portid=#{portId} and timeslotname=#{name}
+  </select>
+
+</mapper>

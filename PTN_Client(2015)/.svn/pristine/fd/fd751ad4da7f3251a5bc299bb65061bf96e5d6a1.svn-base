@@ -1,0 +1,256 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nms.db.dao.path.SegmentMapper" >
+  <resultMap id="BaseResultMap" type="Segment" >
+    <id column="ID" property="id" jdbcType="INTEGER" />
+    <result column="NAME" property="NAME" jdbcType="VARCHAR" />
+    <result column="BANDWIDTH" property="BANDWIDTH" jdbcType="VARCHAR" />
+    <result column="TYPE" property="TYPE" jdbcType="INTEGER" />
+    <result column="ASITEID" property="ASITEID" jdbcType="INTEGER" />
+    <result column="speed" property="speedSegment" jdbcType="VARCHAR" />
+    <result column="ZSITEID" property="ZSITEID" jdbcType="INTEGER" />
+    <result column="APORTID" property="APORTID" jdbcType="INTEGER" />
+    <result column="ZPORTID" property="ZPORTID" jdbcType="INTEGER" />
+    <result column="CREATUSER" property="CREATUSER" jdbcType="VARCHAR" />
+    <result column="CREATTIME" property="CREATTIME" jdbcType="TIMESTAMP" />
+    <result column="ASLOT" property="aSlotNumber" jdbcType="INTEGER" />
+    <result column="ZSLOT" property="zSlotNumber" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ID, NAME, BANDWIDTH, TYPE, ASITEID, speed, ZSITEID, APORTID, ZPORTID, CREATUSER, 
+    CREATTIME, ASLOT, ZSLOT
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from segment
+    where ID = #{id,jdbcType=INTEGER}
+  </select>
+  <select id="queryBySiteIdAndPortId" resultType="Segment" parameterType="Segment" >
+    SELECT s.ID, s.speed, s.NAME, s.BANDWIDTH, s.TYPE, s.ASITEID, s.ZSITEID, s.APORTID, s.ZPORTID, s.ASLOT, s.ZSLOT,sa.CellId AS showaSiteName,
+     sz.CellId AS showzSiteName, pa.portName AS showaPortName, pz.portName AS showzPortName, s.CREATUSER, s.CREATTIME FROM segment s, site_inst sa,
+      site_inst sz, port_inst pa, port_inst pz WHERE s.aSiteId = sa.site_inst_id AND s.zSiteId = sz.site_inst_id AND s.aPortId = pa.portId AND 
+      s.zPortId = pz.portId
+      <if test="ASITEID > 0">
+     	 and (s.ASITEID = #{ASITEID} or s.ZSITEID = #{ASITEID})
+      </if>
+      <if test="APORTID > 0">
+      	and (s.APORTID = #{APORTID} or s.ZPORTID = #{APORTID})
+      </if>
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from segment
+    where ID = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="Segment" >
+    insert into segment (ID, NAME, BANDWIDTH, 
+      TYPE, ASITEID, speed, 
+      ZSITEID, APORTID, ZPORTID, 
+      CREATUSER, CREATTIME, ASLOT, 
+      ZSLOT)
+    values (#{id,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{bandwidth,jdbcType=VARCHAR}, 
+      #{type,jdbcType=INTEGER}, #{asiteid,jdbcType=INTEGER}, #{speed,jdbcType=VARCHAR}, 
+      #{zsiteid,jdbcType=INTEGER}, #{aportid,jdbcType=INTEGER}, #{zportid,jdbcType=INTEGER}, 
+      #{creatuser,jdbcType=VARCHAR}, #{creattime,jdbcType=TIMESTAMP}, #{aslot,jdbcType=INTEGER}, 
+      #{zslot,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="Segment" >
+    insert into segment
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="name != null" >
+        NAME,
+      </if>
+      <if test="bandwidth != null" >
+        BANDWIDTH,
+      </if>
+      <if test="type != null" >
+        TYPE,
+      </if>
+      <if test="asiteid != null" >
+        ASITEID,
+      </if>
+      <if test="speed != null" >
+        speed,
+      </if>
+      <if test="zsiteid != null" >
+        ZSITEID,
+      </if>
+      <if test="aportid != null" >
+        APORTID,
+      </if>
+      <if test="zportid != null" >
+        ZPORTID,
+      </if>
+      <if test="creatuser != null" >
+        CREATUSER,
+      </if>
+      <if test="creattime != null" >
+        CREATTIME,
+      </if>
+      <if test="aslot != null" >
+        ASLOT,
+      </if>
+      <if test="zslot != null" >
+        ZSLOT,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="name != null" >
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="bandwidth != null" >
+        #{bandwidth,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null" >
+        #{type,jdbcType=INTEGER},
+      </if>
+      <if test="asiteid != null" >
+        #{asiteid,jdbcType=INTEGER},
+      </if>
+      <if test="speed != null" >
+        #{speed,jdbcType=VARCHAR},
+      </if>
+      <if test="zsiteid != null" >
+        #{zsiteid,jdbcType=INTEGER},
+      </if>
+      <if test="aportid != null" >
+        #{aportid,jdbcType=INTEGER},
+      </if>
+      <if test="zportid != null" >
+        #{zportid,jdbcType=INTEGER},
+      </if>
+      <if test="creatuser != null" >
+        #{creatuser,jdbcType=VARCHAR},
+      </if>
+      <if test="creattime != null" >
+        #{creattime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="aslot != null" >
+        #{aslot,jdbcType=INTEGER},
+      </if>
+      <if test="zslot != null" >
+        #{zslot,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="Segment" >
+    update segment
+    <set >
+      <if test="name != null" >
+        NAME = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="bandwidth != null" >
+        BANDWIDTH = #{bandwidth,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null" >
+        TYPE = #{type,jdbcType=INTEGER},
+      </if>
+      <if test="asiteid != null" >
+        ASITEID = #{asiteid,jdbcType=INTEGER},
+      </if>
+      <if test="speed != null" >
+        speed = #{speed,jdbcType=VARCHAR},
+      </if>
+      <if test="zsiteid != null" >
+        ZSITEID = #{zsiteid,jdbcType=INTEGER},
+      </if>
+      <if test="aportid != null" >
+        APORTID = #{aportid,jdbcType=INTEGER},
+      </if>
+      <if test="zportid != null" >
+        ZPORTID = #{zportid,jdbcType=INTEGER},
+      </if>
+      <if test="creatuser != null" >
+        CREATUSER = #{creatuser,jdbcType=VARCHAR},
+      </if>
+      <if test="creattime != null" >
+        CREATTIME = #{creattime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="aslot != null" >
+        ASLOT = #{aslot,jdbcType=INTEGER},
+      </if>
+      <if test="zslot != null" >
+        ZSLOT = #{zslot,jdbcType=INTEGER},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="Segment" >
+    update segment
+    set NAME = #{name,jdbcType=VARCHAR},
+      BANDWIDTH = #{bandwidth,jdbcType=VARCHAR},
+      TYPE = #{type,jdbcType=INTEGER},
+      ASITEID = #{asiteid,jdbcType=INTEGER},
+      speed = #{speed,jdbcType=VARCHAR},
+      ZSITEID = #{zsiteid,jdbcType=INTEGER},
+      APORTID = #{aportid,jdbcType=INTEGER},
+      ZPORTID = #{zportid,jdbcType=INTEGER},
+      CREATUSER = #{creatuser,jdbcType=VARCHAR},
+      CREATTIME = #{creattime,jdbcType=TIMESTAMP},
+      ASLOT = #{aslot,jdbcType=INTEGER},
+      ZSLOT = #{zslot,jdbcType=INTEGER}
+    where ID = #{id,jdbcType=INTEGER}
+  </update>
+  
+  
+  <select id="query_site" resultType="Segment" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from segment
+   where asiteid=#{siteId} or zsiteid=#{siteId}
+  </select>
+  
+  
+
+  <select id="queryByCondition" resultMap="SegmentMap" parameterType="Segment" >
+   
+    SELECT s.ID, s.NAME, s.BANDWIDTH, s.TYPE, s.ASITEID, s.ZSITEID, s.APORTID, s.ZPORTID,s.ASLOT, 
+    s.ZSLOT,s.speed,sa.CellId AS showaSiteName, sz.CellId AS showzSiteName, pa.portName AS showaPortName, 
+    pz.portName AS showzPortName, s.CREATUSER, s.CREATTIME ,sa.site_inst_id as saSiteid,sz.site_inst_id as szSiteId,
+    pa.portId as paPortId,pz.portId as pzPortId FROM segment s, site_inst sa, site_inst sz, 
+    port_inst pa, port_inst pz 
+    
+    <where>
+    s.ASITEID = sa.site_inst_id AND s.ZSITEID = sz.site_inst_id AND s.APORTID = pa.portId AND s.ZPORTID = pz.portId
+    <if test="segment.id>0 "> and s.ID=#{segment.id}</if>
+    <if test="segment.NAME!=null and segment.NAME!='' "> and s.NAME=#{segment.NAME}</if>
+    <if test="segment.ASITEID!=0 "> and s.ASITEID=#{segment.ASITEID}</if>
+    <if test="segment.ZSITEID!=0 "> and s.ZSITEID=#{segment.ZSITEID}</if>
+    <if test="segment.APORTID!=0 "> and s.APORTID=#{segment.APORTID}</if>
+    <if test="segment.ZPORTID!=0 "> and s.ZPORTID=#{segment.ZPORTID}</if>
+    <if test="segment.speedSegment!=null and segment.speedSegment!='' "> and s.speed=#{segment.speedSegment}</if>
+    <if test="segment.CREATUSER!=null and segment.CREATUSER!='' "> and s.CREATUSER=#{segment.CREATUSER}</if> 
+    </where> 
+  </select>
+
+<resultMap id="SegmentMap" type="Segment" >
+    <id column="ID" property="id" jdbcType="INTEGER" />
+    <result column="NAME" property="NAME" jdbcType="VARCHAR" />
+    <result column="BANDWIDTH" property="BANDWIDTH" jdbcType="VARCHAR" />
+    <result column="TYPE" property="TYPE" jdbcType="INTEGER" />
+    <result column="ASITEID" property="ASITEID" jdbcType="INTEGER" />
+    <result column="speed" property="speedSegment" jdbcType="VARCHAR" />
+    <result column="ZSITEID" property="ZSITEID" jdbcType="INTEGER" />
+    <result column="APORTID" property="APORTID" jdbcType="INTEGER" />
+    <result column="ZPORTID" property="ZPORTID" jdbcType="INTEGER" />
+    <result column="CREATUSER" property="CREATUSER" jdbcType="VARCHAR" />
+    <result column="CREATTIME" property="CREATTIME" jdbcType="TIMESTAMP" />
+    <result column="ASLOT" property="aSlotNumber" jdbcType="INTEGER" />
+    <result column="ZSLOT" property="zSlotNumber" jdbcType="INTEGER" /> 
+    <result column="showaSiteName" property="ShowSiteAname" jdbcType="INTEGER" />
+    <result column="showzSiteName" property="ShowSiteZname" jdbcType="INTEGER" />
+    <result column="showaPortName" property="ShowPortAname" jdbcType="INTEGER" />
+    <result column="showzPortName" property="ShowPortZname" jdbcType="INTEGER" /> 
+  </resultMap>
+ <select id="query_name" resultType="java.lang.Integer" parameterType="map">
+    select count(*) as selectcount from segment where name=#{afterName}
+    <if test="beforeName!=null">and name!=#{beforeName}</if>
+  </select>
+
+</mapper>

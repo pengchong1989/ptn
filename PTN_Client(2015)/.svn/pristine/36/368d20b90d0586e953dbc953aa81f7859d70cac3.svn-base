@@ -1,0 +1,5 @@
+package com.nms.db.dao.ptn.clock;
+
+public class FrequencyInfo_neClockDao {
+
+}

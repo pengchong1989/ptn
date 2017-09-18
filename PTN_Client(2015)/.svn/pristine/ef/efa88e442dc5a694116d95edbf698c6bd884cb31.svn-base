@@ -1,0 +1,247 @@
+package com.nms.db.dao.ptn.port;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.nms.db.bean.ptn.path.protect.DualRelevance;
+import com.nms.ui.manager.ExceptionManage;
+
+public class DualRelevanceDao {
+	/**
+	 * 查询语句
+	 */
+	private static final String SELECT_SQL = "select * from dualRelevance where 1=1 "; 
+	
+	/**
+	 * 通过条件查询
+	 * @param dualProtect   dualProtect类 （条件）
+	 * @param connection connection
+	 * @return dualProtect集合
+	 * @throws Exception 
+	 */
+	@SuppressWarnings("static-access")
+	public List<DualRelevance> queryByCondition(DualRelevance dualRelevance,Connection connection) throws Exception {
+		if (null == dualRelevance) {
+			throw new Exception("dualRelevance is null");
+		}
+		if (null == connection) {
+			throw new Exception("conection is null");
+		}
+
+		PreparedStatement preparedStatement = null;
+		StringBuffer stringBuffer = null; // sql语句
+		List<Object> paramList = null; // 查询参数集合
+		List<DualRelevance> dualRelevanceList = null;
+		try {
+			paramList = new ArrayList<Object>();
+			stringBuffer = new StringBuffer(this.SELECT_SQL);
+
+			// 根据条件拼接sql语句
+			if (dualRelevance.getId() > 0) {
+				stringBuffer.append(" and id=?");
+				paramList.add(dualRelevance.getId());
+			}
+			if (dualRelevance.getSiteId() > 0) {
+				stringBuffer.append(" and siteId=?");
+				paramList.add(dualRelevance.getSiteId());
+			}
+			if (dualRelevance.getObjType() > 0) {
+				stringBuffer.append(" and ObjType=?");
+				paramList.add(dualRelevance.getObjType());
+			}
+			if (dualRelevance.getDualGroupId() > 0) {
+				stringBuffer.append(" and DualGroupId=?");
+				paramList.add(dualRelevance.getDualGroupId());
+			}
+			preparedStatement = connection.prepareStatement(stringBuffer.toString());
+			// 添加参数
+			if (paramList.size() > 0) {
+				for (int i = 0; i < paramList.size(); i++) {
+					preparedStatement.setObject(i + 1, paramList.get(i));
+				}
+			}
+			dualRelevanceList = this.executeQuery(preparedStatement);
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+			stringBuffer = null; // sql语句
+			paramList = null; // 查询参数集合
+		}
+		return dualRelevanceList;
+	}
+	/**
+	 * 执行sql语句 返回结果集
+	 * 
+	 * @param preparedStatement
+	 * @return
+	 * @throws Exception
+	 */
+	private List<DualRelevance> executeQuery(PreparedStatement preparedStatement) throws Exception {
+
+		if (null == preparedStatement) {
+			throw new Exception("preparedStatement is null");
+		}
+		ResultSet resultSet = null;
+		List<DualRelevance> dualRelevanceList = null;
+		DualRelevance dualRelevance = null;
+		try {
+			dualRelevanceList = new ArrayList<DualRelevance>();
+			resultSet = preparedStatement.executeQuery();
+			while (resultSet.next()) {
+				dualRelevance = new DualRelevance();
+				dualRelevance.setId(resultSet.getInt("id"));
+				dualRelevance.setObjId(resultSet.getInt("objId"));
+				dualRelevance.setObjType(resultSet.getInt("ObjType"));
+				dualRelevance.setDualGroupId(resultSet.getInt("DualGroupId"));
+				dualRelevance.setSiteId(resultSet.getInt("siteId"));
+				dualRelevance.setTunnelId(resultSet.getInt("tunnelId"));
+				dualRelevanceList.add(dualRelevance);
+			}
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if(null!=resultSet){
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				resultSet = null;
+			}
+			dualRelevance = null;
+		}
+		return dualRelevanceList;
+	}
+	public int save(DualRelevance dualRelevance, Connection connection) throws Exception {
+		if (null == dualRelevance) {
+			throw new Exception("dualRelevance is null");
+		}
+
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		int result = 0;
+		ResultSet resultSet = null;
+		try {
+			sql = "insert into dualRelevance(objId,objType,dualGroupId,tunnelId,siteId) values(?,?,?,?,?)";
+			preparedStatement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+			preparedStatement.setInt(1, dualRelevance.getObjId());
+			preparedStatement.setInt(2, dualRelevance.getObjType());
+			preparedStatement.setInt(3, dualRelevance.getDualGroupId());
+			preparedStatement.setInt(4, dualRelevance.getTunnelId());
+			preparedStatement.setInt(5, dualRelevance.getSiteId());
+			preparedStatement.executeUpdate();
+			resultSet = preparedStatement.getGeneratedKeys();
+			if (resultSet.next()) {
+				result = resultSet.getInt(1);
+			}
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if(null!=resultSet){
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				resultSet = null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+
+			sql = null;
+		}
+		return result;
+	}
+	public int update(DualRelevance dualRelevance, Connection connection) throws Exception {
+		if (null == dualRelevance) {
+			throw new Exception("dualRelevance is null");
+		}
+
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		int result = 0;
+		try {
+			sql = "update dualProtect set objId=?,objType=?,dualGroupId=?,tunnelId=?,siteId=? where id=?";
+			preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.setInt(1, dualRelevance.getObjId());
+			preparedStatement.setInt(2, dualRelevance.getObjType());
+			preparedStatement.setInt(3, dualRelevance.getDualGroupId());
+			preparedStatement.setInt(4, dualRelevance.getTunnelId());
+			preparedStatement.setInt(5, dualRelevance.getSiteId());
+			preparedStatement.setInt(10, dualRelevance.getId());
+			result = preparedStatement.executeUpdate();
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+		return result;
+	}
+	public int delete(DualRelevance dualRelevance, Connection connection) throws Exception {
+		if (null == dualRelevance) {
+			throw new Exception("dualProtect is null");
+		}
+		PreparedStatement preparedStatement = null;
+		int result = 0;
+		String sql = "delete from dualRelevance where 1=1";
+		try {
+			if(0!=dualRelevance.getId()){
+				sql += " and id = ?" + dualRelevance.getId();
+			}
+			if(0!=dualRelevance.getDualGroupId()){
+				sql += " and dualGroupId = " +dualRelevance.getDualGroupId();
+			}
+			preparedStatement = connection.prepareStatement(sql);
+			result = preparedStatement.executeUpdate();
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+		}
+		return result;
+		
+	}
+}

@@ -1,0 +1,234 @@
+package com.nms.db.dao.system;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.nms.db.bean.system.UdaGroup;
+import com.nms.db.fac.f.DButil;
+import com.nms.ui.manager.ExceptionManage;
+
+public class UdaGroupDao {
+	/**
+	 * 新增udagroup
+	 * @param udaGroup 实体
+	 * @param connection数据库连接
+	 * @return 插入的记录数
+	 * @throws Exception
+	 */
+	public int insert(UdaGroup udaGroup, Connection connection)
+			throws Exception {
+
+		if (null == udaGroup) {
+			throw new Exception("udaGroup is null");
+		}
+
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		int result = 0;
+
+		try {
+			sql = "insert into udagroup(groupName,groupType,parentId,parentName) values(?,?,?,?)";
+			preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.setString(1, udaGroup.getGroupName());
+			preparedStatement.setString(2, udaGroup.getGroupType());
+			preparedStatement.setInt(3, udaGroup.getParentId());
+			preparedStatement.setString(4, udaGroup.getParentName());
+
+			result = preparedStatement.executeUpdate();
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+
+			sql = null;
+		}
+
+		return result;
+	}
+
+	/**
+	 * 修改udaGroup
+	 * @param udaGroup 实体
+	 * @param connection 数据库连接
+	 * @return 插入的记录数
+	 * @throws Exception
+	 */
+	public int update(UdaGroup udaGroup, Connection connection)
+			throws Exception {
+		if (null == udaGroup) {
+			throw new Exception("udaGroup is null");
+		}
+
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		int result = 0;
+
+		try {
+			sql = "update udagroup set groupName=?,groupType=?,parentId=?,parentName=?  where id=?";
+			preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.setString(1, udaGroup.getGroupName());
+			preparedStatement.setString(2, udaGroup.getGroupType());
+			preparedStatement.setInt(3, udaGroup.getParentId());
+			preparedStatement.setString(4, udaGroup.getParentName());
+			preparedStatement.setInt(5, udaGroup.getId());
+
+			result = preparedStatement.executeUpdate();
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+
+		return result;
+	}
+
+	/**
+	 * 通过主键删除udagrouop
+	 * @param id 主键
+	 * @param connection 数据库连接
+	 * @return 删除记录数
+	 * @throws Exception
+	 */
+	public int delete(int id, Connection connection) throws Exception {
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		int result = 0;
+
+		try {
+			sql = "delete from udagroup where id=?";
+			preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.setInt(1, id);
+
+			result = preparedStatement.executeUpdate();
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+
+		return result;
+	}
+
+   /**
+    * 根据条件查询UdaGroup
+    * @param udagroupCondition 查询条件
+    * @param connection 数据库连接
+    * @return UdaGroup集合
+    * @throws Exception
+    */
+	public List<UdaGroup> queryByCondition(UdaGroup udagroupCondition, Connection connection) throws Exception {
+
+		if (null == udagroupCondition) {
+			throw new Exception("udagroupCondition is null");
+		}
+
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		List<UdaGroup> udagroupList = null;
+		String sql = null;
+		ResultSet resultSet = null;
+		PreparedStatement preparedStatement = null;
+		UdaGroup udaGroup = null;
+
+		try {
+			udagroupList = new ArrayList<UdaGroup>();
+			sql = "select id,groupName,groupType,parentId,parentName from udagroup where 1=1";
+
+			if (udagroupCondition.getId() > 0) {
+				sql += " and id=" + udagroupCondition.getId();
+			}
+
+			if (udagroupCondition.getGroupType() != null) {
+				sql += " and groupType=" + DButil.toSingleMark(udagroupCondition.getGroupType());
+			}
+
+			if (udagroupCondition.getParentId() != 0) {
+				sql += " and parentId=" + udagroupCondition.getParentId();
+			}
+
+			preparedStatement = connection.prepareStatement(sql);
+			resultSet = preparedStatement.executeQuery();
+
+			while (resultSet.next()) {
+				udaGroup = new UdaGroup();
+				udaGroup.setId(resultSet.getInt("id"));
+				udaGroup.setGroupName(resultSet.getString("groupName"));
+				udaGroup.setGroupType(resultSet.getString("groupType"));
+				udaGroup.setParentId(resultSet.getInt("parentId"));
+				udaGroup.setParentName(resultSet.getString("parentName"));
+				udagroupList.add(udaGroup);
+			}
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (resultSet != null) {
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				resultSet = null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+			udaGroup = null;
+		}
+
+		return udagroupList;
+
+	}
+}

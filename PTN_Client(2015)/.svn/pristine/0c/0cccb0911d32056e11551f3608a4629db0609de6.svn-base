@@ -1,0 +1,302 @@
+package com.nms.model.system.loginlog;
+
+import java.net.InetAddress;
+import java.util.ArrayList;
+import java.util.List;
+import org.apache.ibatis.session.SqlSession;
+import com.nms.db.bean.system.loginlog.LoginLog;
+import com.nms.db.dao.system.loginlog.LoginLogMapper;
+import com.nms.db.dao.system.user.UserInstMapper;
+import com.nms.model.util.ObjectService_Mybatis;
+import com.nms.ui.manager.DateUtil;
+import com.nms.ui.manager.ExceptionManage;
+
+/**表login_log
+ * 登陆日志记录，操作DAO。
+ * @author songyang
+ *
+ */
+public class LoginLogServiece_Mb extends ObjectService_Mybatis{
+	
+	private final int MAXID=1;//上次登陆信息，是否成功
+	private List<LoginLog> loginlogList=null;
+	private LoginLog log=null;
+	private LoginLogMapper loginLogMapper = null;
+    public LoginLogMapper getMapper() {
+		return loginLogMapper;
+	}
+
+	public void setMapper(LoginLogMapper loginLogMapper) {
+		this.loginLogMapper = loginLogMapper;
+	}
+
+	public void setPtnuser(String ptnuser) {
+		super.ptnuser = ptnuser;
+	}
+
+	public void setSqlSession(SqlSession sqlSession) {
+		super.sqlSession = sqlSession;
+	}
+  
+	/**
+	 * 新增 login_log(用户登陆日志表)
+	 * 
+	 * @param loginlog
+	 *            实体
+	 * @throws Exception
+	 */	
+	public LoginLog insertSuccessLoginLog(LoginLog loginlog)throws Exception{
+		if (loginlog == null) {
+			throw new Exception("userInst is null");
+		}
+		LoginLog log=null;
+		int result=0;
+		try {
+			LoginLog log1 = new LoginLog();
+			log1.setUser_id(loginlog.getUser_id());
+			String date = DateUtil.getDate(DateUtil.FULLTIME);
+			log1.setLoginTime(date);
+			log1.setIP(InetAddress.getLocalHost().getHostAddress());
+			result=loginLogMapper.insertLoginLog(log1);
+			sqlSession.commit();
+			if(result>0){
+				log=log1;
+			}			
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		}
+		return log;
+	}
+	
+	/**
+	 * 用户退出时，修改outTime，state
+	 * @param loginlog
+	 * @param logoutState 
+	 * @throws Exception
+	 */
+	
+	public int updateExitLoginLog(LoginLog loginlog, int logoutState)throws Exception{
+		if (loginlog == null) {
+			throw new Exception("loginlog is null");
+		}
+	
+		int result=0;
+		try {
+			//MAXID =1.退出时只查看上一次登录的ID号。
+			  loginlogList = new ArrayList<LoginLog>();
+			  loginlogList =loginLogMapper.findState(loginlog, this.MAXID);			
+			  if(loginlogList != null && loginlogList.size()>0){
+				log=(LoginLog)loginlogList.get(0);
+				log.setLogoutState(logoutState);
+				result=loginLogMapper.updateExitLoginLog(log);	
+				sqlSession.commit();
+			  }
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		}finally{
+			loginlogList=null;
+		}
+		return result;
+	}
+	
+	/**
+	 * 查询全部
+	 * 在线用户
+	 * @return List<SiteInst>集合
+	 * @throws Exception
+	 */
+	public List<LoginLog> select(LoginLog loginlog) throws Exception {
+		List<LoginLog> siteinstList = null;		
+		try {
+			siteinstList = new ArrayList<LoginLog>();
+			siteinstList = this.loginLogMapper.queryByCondition(loginlog);
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		}
+		return siteinstList;
+	}
+///**
+// * 
+// * 返回flag=true时已经登陆
+// * @return
+// * @throws Exception
+// */
+//	public boolean findLoginLog(LoginLog loginlog)throws Exception{
+//		if (loginlog == null) {
+//			throw new Exception("loginlog is null");
+//		}
+//		boolean flag=false;
+//		try {
+//			//MAXID =1.只查看上一次登录的ID号。
+//				if(loginlog.getUser_id()>0){
+//					loginlogList=loginLogDao.findState(loginlog,this.MAXID, connection);
+//					if(loginlogList.size()>0){
+//						log=(LoginLog)loginlogList.get(0);		
+//						if(((null==log.getOutTime())||("".equals(log.getOutTime())))&&(log.getState()==1)){
+//							flag=true;					
+//						}
+//					}			
+//				}				
+//		} catch (Exception e) {
+//			ExceptionManage.dispose(e,this.getClass());
+//		}finally{
+//			log=null;
+//			loginlogList=null;
+//		}
+//		return flag;
+//	}
+//	/**
+//	 * 用户自动的锁屏根据IP来获取当前的用户
+//	 * @param loginlog
+//	 * @throws Exception
+//	 */
+//	
+//	public List<LoginLog>  selectOnline(String ipAddress)throws Exception{
+//		List<LoginLog> siteinstList = null;
+//		try {
+//			//MAXID =1.退出时只查看上一次登录的ID号。
+//			siteinstList=new ArrayList<LoginLog>();
+//			siteinstList=loginLogDao.findStateIP(ipAddress,1,connection);
+//		
+//		} catch (Exception e) {
+//			ExceptionManage.dispose(e,this.getClass());
+//		}
+//		return siteinstList;
+//	}
+//	/**
+//	 * 注销时调用
+//	 * 返回flag=true时已经登陆
+//	 * 提取loginTime
+//	 * @return
+//	 * @throws Exception
+//	 */
+//		public boolean findLoginTime(LoginLog loginlog)throws Exception{
+//			if (loginlog == null) 
+//			{
+//				throw new Exception("loginlog is null");
+//			}
+//			boolean flag=false;
+//			try {
+//				if(loginlog.getUser_id()>0)
+//				{
+//					if(loginlog.getLoginTime()!=null)
+//					{
+//						LoginLog log = loginLogDao.findLoginTime(loginlog, connection);
+//						if(log!= null)
+//						{
+//							if(((null==log.getOutTime())||("".equals(log.getOutTime())))&&(log.getState()==1))
+//							{
+//								flag=true;
+//							}						
+//					    }
+//					}
+//				}	
+//			} catch (Exception e) {
+//				ExceptionManage.dispose(e,this.getClass());
+//			}finally{
+//				log = null;
+//			}
+//			return flag;
+//		}
+//	/**
+//	 * 查询全部
+//	 * 在线用户
+//	 * @return List<SiteInst>集合
+//	 * @throws Exception
+//	 */
+//	public List<LoginLog> select(LoginLog loginlog) throws Exception {
+//		List<LoginLog> siteinstList = null;
+//		
+//		try {
+//			
+//			siteinstList = loginLogDao.queryByidCondition(loginlog,connection);
+//		} catch (Exception e) {
+//			ExceptionManage.dispose(e,this.getClass());
+//		}
+//		return siteinstList;
+//	}
+//	/**
+//	 * 查看在线用户
+//	 * @return
+//	 * @throws Exception
+//	 */
+//	public List<LoginLog> selectOnLine() throws Exception {
+//		List<LoginLog> siteinstList = null;
+//
+//		try {
+//			siteinstList = loginLogDao.selectOnLine(connection);
+//		} catch (Exception e) {
+//			ExceptionManage.dispose(e,this.getClass());
+//		}
+//		return siteinstList;
+//	}
+//	
+//	/**
+//	 * 查看在线用户总数
+//	 * @return
+//	 * @throws Exception
+//	 */
+//	public int selectLogCount() throws Exception {
+//        int count = 0;
+//		try {
+//			count = loginLogDao.selectLogCount(connection);
+//		} catch (Exception e) {
+//			ExceptionManage.dispose(e,this.getClass());
+//		}
+//		return count;
+//	}
+//	
+//	/**
+//	 * 移除  某一时间 以前的  登陆信息
+//	 * @param removeTime
+//	 * @return
+//	 * @throws Exception
+//	 */
+//	public int delete(String removeTime)throws Exception{
+//		int result=0;
+//		List<LoginLog> loginLogList=null;
+//		try {
+//			//查询在线用户
+//			loginLogList=loginLogDao.selectOnLine(connection);
+//			result = loginLogDao.delete( loginLogList,removeTime,connection);
+//		} catch (Exception e) {
+//			ExceptionManage.dispose(e,this.getClass());
+//		}
+//		return result;
+//	}
+//	
+//	/**
+//	 * 移除 网元的shi失败的状态
+//	 * @param removeTime
+//	 * @return
+//	 * @throws Exception
+//	 */
+//	public void deleteBySite(LoginLog loginlog)throws Exception{
+//		try {
+//			loginLogDao.deleteFailState(loginlog,connection);
+//		} catch (Exception e) { 
+//			ExceptionManage.dispose(e,this.getClass());
+//		}
+//	}
+//	
+//	/**
+//	 * 根据 -- 操作日志记录表--主键集合，批量删除
+//	 * 
+//	 * @param idList
+//	 * @return
+//	 * @throws Exception
+//	 */
+//	public int delete(List<Integer> idList) throws Exception {
+//		int result = 0;
+//		try {
+//			if (idList == null || idList.size() == 0) {
+//				return 0;
+//			}
+//			result = loginLogDao.delete(idList, connection);
+//		} catch (Exception e) {
+//			ExceptionManage.dispose(e,this.getClass());
+//		}
+//		return result;
+//	}
+
+}

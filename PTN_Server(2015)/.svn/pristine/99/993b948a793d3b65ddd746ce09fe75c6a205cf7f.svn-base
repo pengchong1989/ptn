@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nms.db.dao.ptn.BlackListMacMapper" >
+  <resultMap id="BaseResultMap" type="MacManagementInfo" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="siteId" property="siteId" jdbcType="INTEGER" />
+    <result column="vlanId" property="vlanId" jdbcType="INTEGER" />
+    <result column="mac" property="mac" jdbcType="VARCHAR" />
+    <result column="portId" property="portId" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, siteId, vlanId, mac, portId
+  </sql>
+ 
+  <delete id="delete" parameterType="java.lang.Integer" >
+    delete from blacklistmac where id=#{id}
+  </delete>
+  
+  <insert id="insert" parameterType="MacManagementInfo" useGeneratedKeys="true" keyProperty="id">
+    insert into blacklistmac (siteId, vlanId, 
+      mac, portId)
+    values (#{siteId,jdbcType=INTEGER}, #{vlanId,jdbcType=INTEGER}, 
+      #{mac,jdbcType=VARCHAR}, #{portId,jdbcType=INTEGER})
+  </insert>
+ 
+  <update id="update" parameterType="MacManagementInfo" >
+    update blacklistmac set 
+      vlanId = #{vlanId,jdbcType=INTEGER},
+      mac = #{mac,jdbcType=VARCHAR},
+      portId = #{portId,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  
+   <select id="selectBySiteId" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from blacklistmac m where m.siteId = #{siteId}
+  </select>
+  
+  <select id="checkVlanAndMac" resultMap="BaseResultMap" parameterType="MacManagementInfo" >
+    select * from blacklistmac m where m.siteId =#{siteId} and m.mac =#{mac}
+  </select>
+  
+  <select id="selectCountBySiteId" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select * from blacklistmac m where m.siteId =#{siteId}
+  </select>
+  
+   <delete id="deleteBySiteId" parameterType="java.lang.Integer" >
+    delete from blacklistmac where siteId=#{siteId}
+  </delete>
+  
+  <select id="selectById" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select * from blacklistmac m where m.id =#{id}
+  </select>
+</mapper>

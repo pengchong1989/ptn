@@ -1,0 +1,2808 @@
+﻿package com.nms.model.ptn.path.tunnel;
+
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import com.nms.db.bean.equipment.shelf.SiteInst;
+import com.nms.db.bean.path.Segment;
+import com.nms.db.bean.ptn.Businessid;
+import com.nms.db.bean.ptn.SiteRoate;
+import com.nms.db.bean.ptn.oam.OamInfo;
+import com.nms.db.bean.ptn.oam.OamMepInfo;
+import com.nms.db.bean.ptn.oam.OamMipInfo;
+import com.nms.db.bean.ptn.path.tunnel.Lsp;
+import com.nms.db.bean.ptn.path.tunnel.Tunnel;
+import com.nms.db.bean.ptn.qos.QosInfo;
+import com.nms.db.bean.ptn.qos.QosRelevance;
+import com.nms.db.dao.ptn.BusinessidDao;
+import com.nms.db.dao.ptn.LabelInfoDao;
+import com.nms.db.dao.ptn.SiteRoateDao;
+import com.nms.db.dao.ptn.path.tunnel.LspDao;
+import com.nms.db.dao.ptn.path.tunnel.TunnelDao;
+import com.nms.db.dao.ptn.qos.QosInfoDao;
+import com.nms.db.dao.ptn.qos.QosRelevanceDao;
+import com.nms.db.enums.EActionType;
+import com.nms.db.enums.EActiveStatus;
+import com.nms.db.enums.EManufacturer;
+import com.nms.db.enums.EQosDirection;
+import com.nms.db.enums.EServiceType;
+import com.nms.db.enums.OamTypeEnum;
+import com.nms.model.equipment.port.PortService;
+import com.nms.model.equipment.shlef.SiteService;
+import com.nms.model.path.SegmentService;
+import com.nms.model.ptn.BusinessidService;
+import com.nms.model.ptn.LabelInfoService;
+import com.nms.model.ptn.SiteRoateService;
+import com.nms.model.ptn.oam.OamInfoService;
+import com.nms.model.ptn.qos.QosInfoService;
+import com.nms.model.ptn.qos.QosRelevanceService;
+import com.nms.model.util.LabelManage;
+import com.nms.model.util.ObjectService;
+import com.nms.model.util.Services;
+import com.nms.ui.manager.BusinessIdException;
+import com.nms.ui.manager.ConstantUtil;
+import com.nms.ui.manager.ExceptionManage;
+import com.nms.ui.manager.ResourceUtil;
+import com.nms.ui.manager.UiUtil;
+import com.nms.ui.manager.keys.StringKeysTip;
+
+/**
+ * Tunnel 的业务类
+ * 
+ * @author sy
+ * 
+ */
+public class TunnelService extends ObjectService {
+
+	public void setConnection(Connection connection) {
+		super.connection = connection;
+	}
+
+	public void setPtnuser(String ptnuser) {
+		super.ptnuser = ptnuser;
+	}
+
+	private TunnelDao tunnelDao = new TunnelDao();
+
+	/**
+	 * 新增或修改Tunnel对象，通过Tunnel.getTunnelId()来判断是修改还是新增
+	 * 
+	 * @param tunnel
+	 * @return
+	 * @throws Exception
+	 */
+	public int save(Tunnel tunnel) throws Exception, BusinessIdException {
+
+		if (tunnel == null) {
+			throw new Exception("tunnel is null");
+		}
+
+		Lsp lspParticular = null;
+		LspDao lspParticularDao = null;
+		BusinessidService businessidService = null;
+		OamInfoService oamInfoService = null;
+		// ProtectInfoService pInfoService = null;
+		Businessid businessid_tunnel = null;
+
+		List<Lsp> lspparticularlist = null;
+		Map<Integer, Integer> siteServicemap = null;
+		int tunnelId = 0;
+		int isSingle = -1;
+		int protectTunnelId = 0;
+		QosRelevanceService qosRelevanceService = null;
+		List<QosRelevance> qosRelevanceList = null;
+		SiteRoateService siteRoateService = null;
+		SiteRoate siteRoate = null;
+		SiteService siteService = null;
+		try {
+			connection.setAutoCommit(false);
+		    siteService=(SiteService) ConstantUtil.serviceFactory.newService(Services.SITE, this.connection);
+			businessidService = (BusinessidService) ConstantUtil.serviceFactory.newService(Services.BUSINESSID, this.connection);
+			oamInfoService = (OamInfoService) ConstantUtil.serviceFactory.newService(Services.OamInfo, this.connection);
+			siteServicemap = new HashMap<Integer, Integer>();// 用于保存网元，以及对应的ServiceId
+
+			tunnelId = tunnelDao.insert(tunnel, connection);
+
+			tunnel.setTunnelId(tunnelId);
+			isSingle = tunnel.getIsSingle();
+
+			lspParticularDao = new LspDao();
+			lspparticularlist = tunnel.getLspParticularList();
+			if(lspparticularlist!=null&&lspparticularlist.size()>0){
+				for (int j = 0; j < lspparticularlist.size(); j++) {
+					lspParticular = lspparticularlist.get(j);
+					lspParticular.setTunnelId(tunnelId);
+ 
+					// 配置标签
+					this.getLabel(lspParticular, isSingle);
+
+					/* 如果j>0说明有多条leg，就有xc存在 xc的上条数据的z设备id应该等于的二条数据的a设备id */
+					if (j > 0) {
+						lspParticular.setAtunnelbusinessid(businessid_tunnel.getIdValue());
+					} else {
+						// 数据中存在a网元时，配置a端的设备id
+						if (lspParticular.getAPortId() > 0) {
+							/** 获取A端的tunnel业务id */
+							businessid_tunnel = this.setbusinessId(lspParticular, siteServicemap, businessidService, "a");
+						}
+					}
+					// 数据中存在Z网元时，配置Z端的设备id
+					if (lspParticular.getZPortId() > 0) {
+						/** 获取Z端的tunnel业务id */
+						businessid_tunnel = this.setbusinessId(lspParticular, siteServicemap, businessidService, "z");
+					}
+
+					lspParticularDao.insert(lspParticular, connection);
+				}
+
+			}
+			
+			for (OamInfo oamInfo : tunnel.getOamList()) {
+				if (oamInfo.getOamType() == OamTypeEnum.AMEP || oamInfo.getOamType() == OamTypeEnum.ZMEP) {
+					oamInfo.getOamMep().setServiceId(tunnelId);
+					oamInfo.getOamMep().setObjId(siteServicemap.get(oamInfo.getOamMep().getSiteId()));
+
+					// 如果tunnel的类型是保护，并且是晨晓的设备⾿就去修改保护tunnel oam的objid
+					if (tunnel.getProtectTunnelId() > 0 && siteService.getManufacturer(oamInfo.getOamMep().getSiteId()) == EManufacturer.CHENXIAO.getValue()) {
+						oamInfoService.update_mep_objid(siteServicemap.get(oamInfo.getOamMep().getSiteId()), oamInfo.getOamMep().getSiteId(), tunnel.getProtectTunnelId(), EServiceType.TUNNEL.toString(), connection);
+					}
+				} else if (oamInfo.getOamType() == OamTypeEnum.MIP) {
+					oamInfo.getOamMip().setServiceId(tunnelId);
+					oamInfo.getOamMip().setObjId(siteServicemap.get(oamInfo.getOamMip().getSiteId()));
+				} else if (oamInfo.getOamType() == OamTypeEnum.MEP) {
+					oamInfo.getOamMep().setServiceId(tunnelId);
+				}
+				oamInfoService.saveOrUpdate(oamInfo);
+			}
+
+			qosRelevanceService = (QosRelevanceService) ConstantUtil.serviceFactory.newService(Services.QOSRELEVANCE, this.connection);
+			qosRelevanceList = qosRelevanceService.getList(tunnel);
+			qosRelevanceService.save(qosRelevanceList);
+			
+			// 保存保护tunnel
+			if (null != tunnel.getProtectTunnel()) {
+				tunnel.getProtectTunnel().setTunnelName(tunnel.getTunnelName() + "_protect");
+				tunnel.getProtectTunnel().setTunnelStatus(tunnel.getTunnelStatus());
+				protectTunnelId = this.savaProtect(tunnel.getProtectTunnel());
+				tunnel.setProtectTunnelId(protectTunnelId);
+				tunnelDao.update(tunnel, connection);
+			}
+			
+			// 离线网元数据下载
+			if (0 != tunnel.getASiteId()) {
+				super.dateDownLoad(tunnel.getASiteId(), tunnelId, EServiceType.TUNNEL.getValue(), EActionType.INSERT.getValue(), tunnel.getLspParticularList().get(0).getAtunnelbusinessid() + "", null, tunnel.getAPortId(), 0, null);
+			}
+			if (0 != tunnel.getZSiteId()) {
+				super.dateDownLoad(tunnel.getZSiteId(), tunnelId, EServiceType.TUNNEL.getValue(), EActionType.INSERT.getValue(), tunnel.getLspParticularList().get(0).getZtunnelbusinessid() + "", null, tunnel.getZPortId(), 0, null);
+			}
+			if(!connection.getAutoCommit()){
+				connection.commit();
+			}
+		} catch (BusinessIdException e) {
+			connection.rollback();
+			throw e;
+		} catch (Exception e) {
+			connection.rollback();
+			ExceptionManage.dispose(e, this.getClass());
+		} finally {
+			connection.setAutoCommit(true);
+		}
+		return tunnelId;
+	}
+
+	/**
+	 * 先把保护tunnel插入到数据库䶿
+	 * 
+	 * @author kk
+	 * 
+	 * @param
+	 * 
+	 * @return
+	 * @throws Exception
+	 * 
+	 * @Exception 异常对象
+	 */
+	public int savaProtect(Tunnel protectTunnel) throws Exception {
+		BusinessidService businessidService = null;
+		// QosInfoService qosInfoService = null;
+		int tunnelId = 0;
+		int isSingle = -1;
+		Lsp lspParticular = null;
+		LspDao lspParticularDao = null;
+		List<Lsp> lspparticularlist = null;
+		Businessid businessid_tunnel = null;
+		Map<Integer, Integer> siteServicemap = null;
+		OamInfoService oamInfoService = null;
+		Businessid abusinessid = null;
+		Businessid zbusinessid = null;
+		QosRelevanceService qosRelevanceService = null;
+		List<QosRelevance> qosRelevanceList = null;
+		SiteRoateService siteRoateService=null;//添加保护tunnel时，添加倒换命令
+		SiteRoate siteRoate=null;
+		SiteService siteService = null;
+		try {
+		    siteService=(SiteService) ConstantUtil.serviceFactory.newService(Services.SITE, this.connection);
+			businessidService = (BusinessidService) ConstantUtil.serviceFactory.newService(Services.BUSINESSID, this.connection);
+			// qosInfoService = (QosInfoService) ConstantUtil.serviceFactory.newService(Services.QosInfo);
+			oamInfoService = (OamInfoService) ConstantUtil.serviceFactory.newService(Services.OamInfo, this.connection);
+
+			siteServicemap = new HashMap<Integer, Integer>();// 用于保存网元，以及对应的ServiceId
+
+			// 生成保护id(武汉)
+			if (protectTunnel.getASiteId() != 0 && siteService.getManufacturer(protectTunnel.getASiteId()) == EManufacturer.WUHAN.getValue()) {
+				abusinessid = businessidService.select(protectTunnel.getASiteId(), "lspprotect");
+				if (abusinessid == null) {
+					throw new BusinessIdException(siteService.getSiteName(protectTunnel.getASiteId()) + ResourceUtil.srcStr(StringKeysTip.TIP_TUNNEL_PROTECT_ID));
+				}
+				businessidService.update(abusinessid.getId(), 1);// 将该保护id设置为不可用
+				protectTunnel.setAprotectId(abusinessid.getIdValue());
+			}
+			if (protectTunnel.getZSiteId() != 0 && siteService.getManufacturer(protectTunnel.getZSiteId()) == EManufacturer.WUHAN.getValue()) {
+				zbusinessid = businessidService.select(protectTunnel.getZSiteId(), "lspprotect");
+				if (zbusinessid == null) {
+					throw new BusinessIdException(siteService.getSiteName(protectTunnel.getZSiteId()) + ResourceUtil.srcStr(StringKeysTip.TIP_TUNNEL_PROTECT_ID));
+				}
+				businessidService.update(zbusinessid.getId(), 1);// 将该保护id设置为不可用
+				protectTunnel.setZprotectId(zbusinessid.getIdValue());
+			}
+
+			tunnelId = tunnelDao.insert(protectTunnel, connection);
+			//添加倒换命令
+			siteRoateService = (SiteRoateService) ConstantUtil.serviceFactory.newService(Services.SITEROATE, this.connection);
+			siteRoate = new SiteRoate();
+			siteRoate.setType("tunnel");
+			siteRoate.setRoate(-1);
+			siteRoate.setTypeId(tunnelId );
+			if (protectTunnel.getASiteId() > 0) {
+				siteRoate.setSiteId(protectTunnel.getASiteId());
+				siteRoateService.insert(siteRoate);
+			}
+			if (protectTunnel.getZSiteId() > 0) {
+				siteRoate.setSiteId(protectTunnel.getZSiteId());
+				siteRoateService.insert(siteRoate);
+			}
+			// }
+			protectTunnel.setTunnelId(tunnelId);
+			isSingle = protectTunnel.getIsSingle();
+
+			lspParticularDao = new LspDao();
+			lspparticularlist = protectTunnel.getLspParticularList();
+
+			for (int j = 0; j < lspparticularlist.size(); j++) {
+				lspParticular = lspparticularlist.get(j);
+				lspParticular.setTunnelId(tunnelId);
+
+				// 配置标签
+				this.getLabel(lspParticular, isSingle);
+
+				/* 如果j>0说明有多条leg，就有xc存在 xc的上条数据的z设备id应该等于的二条数据的a设备id */
+				if (j > 0) {
+					if (lspParticular.getASiteId() != protectTunnel.getASiteId()) {
+						lspParticular.setAtunnelbusinessid(businessid_tunnel.getIdValue());
+					}
+				} else {
+					// 数据中存在a网元时，配置a端的设备id
+					if (lspParticular.getAPortId() > 0) {
+						if (lspParticular.getASiteId() != protectTunnel.getASiteId()) {
+							businessid_tunnel = this.setbusinessId(lspParticular, siteServicemap, businessidService, "a");
+						} else {
+							// 如果是武汉设备，取businessid 如果是晨晓设备，把主用tunnel的businessid赋到siteServicemap䶿
+							if (siteService.getManufacturer(lspParticular.getASiteId()) == EManufacturer.WUHAN.getValue()) {
+								businessid_tunnel = this.setbusinessId(lspParticular, siteServicemap, businessidService, "a");
+							} else {
+								if (null == businessid_tunnel) {
+									siteServicemap.put(lspParticular.getASiteId(), 0);
+								} else {
+									siteServicemap.put(lspParticular.getASiteId(), businessid_tunnel.getIdValue());
+								}
+							}
+						}
+					}
+				}
+				// 数据中存在Z网元时，配置Z端的设备id
+				if (lspParticular.getZPortId() > 0) {
+					if (lspParticular.getZSiteId() != protectTunnel.getZSiteId()) {
+						businessid_tunnel = this.setbusinessId(lspParticular, siteServicemap, businessidService, "z");
+					} else {
+						// 如果是武汉设备，取businessid 如果是晨晓设备，把主用tunnel的businessid赋到siteServicemap䶿
+						if (siteService.getManufacturer(lspParticular.getZSiteId()) == EManufacturer.WUHAN.getValue()) {
+							businessid_tunnel = this.setbusinessId(lspParticular, siteServicemap, businessidService, "z");
+						} else {
+							if (null == businessid_tunnel) {
+								siteServicemap.put(lspParticular.getZSiteId(), 0);
+							} else {
+								siteServicemap.put(lspParticular.getZSiteId(), businessid_tunnel.getIdValue());
+							}
+						}
+					}
+				}
+
+				lspParticularDao.insert(lspParticular, connection);
+			}
+
+			// oam
+			for (OamInfo oamInfo : protectTunnel.getOamList()) {
+				if (oamInfo.getOamType() == OamTypeEnum.AMEP || oamInfo.getOamType() == OamTypeEnum.ZMEP) {
+					oamInfo.getOamMep().setServiceId(tunnelId);
+					oamInfo.getOamMep().setObjId(siteServicemap.get(oamInfo.getOamMep().getSiteId()));
+				} else if (oamInfo.getOamType() == OamTypeEnum.MIP) {
+					oamInfo.getOamMip().setServiceId(tunnelId);
+					oamInfo.getOamMip().setObjId(siteServicemap.get(oamInfo.getOamMip().getSiteId()));
+				} else if (oamInfo.getOamType() == OamTypeEnum.MEP) {
+					oamInfo.getOamMep().setServiceId(tunnelId);
+				}
+				oamInfoService.saveOrUpdate(oamInfo);
+			}
+
+			// // qos
+			// for (int j = 0; j < protectTunnel.getQosList().size(); j++) {
+			// protectTunnel.getQosList().get(j).setObjId(tunnelId);
+			// if (null == protectTunnel.getQosList().get(j).getQosname() || protectTunnel.getQosList().get(j).getQosname().equals("")) {
+			// protectTunnel.getQosList().get(j).setQosname(protectTunnel.getQosList().get(j).getQosType().toLowerCase() + "tunnel" + tunnelId);
+			// }
+			// }
+			// if (null != protectTunnel.getQosList() && protectTunnel.getQosList().size() > 0) {
+			// qosInfoService.saveOrUpdate(protectTunnel.getQosList());
+			// }
+			// qos
+			qosRelevanceService = (QosRelevanceService) ConstantUtil.serviceFactory.newService(Services.QOSRELEVANCE, this.connection);
+			qosRelevanceList = qosRelevanceService.getList(protectTunnel);
+			qosRelevanceService.save(qosRelevanceList);
+
+			// 离线网元数据下载
+			if (0 != protectTunnel.getASiteId()) {
+				super.dateDownLoad(protectTunnel.getASiteId(), tunnelId, EServiceType.TUNNEL.getValue(), EActionType.INSERT.getValue());
+			}
+			if (0 != protectTunnel.getZSiteId()) {
+				super.dateDownLoad(protectTunnel.getZSiteId(), tunnelId, EServiceType.TUNNEL.getValue(), EActionType.INSERT.getValue());
+			}
+		} catch (Exception e) {
+			throw e;
+		} finally {
+//			UiUtil.closeService(oamInfoService);
+//			UiUtil.closeService(businessidService);
+//			UiUtil.closeService(siteService);
+//			UiUtil.closeService(siteRoateService);
+//			UiUtil.closeService(qosRelevanceService);
+		}
+
+		return tunnelId;
+	}
+
+	/**
+	 * 初始化标签
+	 */
+	private int initLabel(int asiteId, int zsiteId, LabelInfoDao labelInfoDao, Connection connection,
+							int manufacturerA, int manufacturerZ) throws Exception {
+		try {
+			while (true) {
+				LabelManage labelManage = new LabelManage();
+				labelManage.addLabel(asiteId, zsiteId, "TUNNEL", connection);
+				List<Integer> labelList = labelInfoDao.quertyLabelListBySite(asiteId, zsiteId,
+						new ArrayList<Integer>(), "TUNNEL", connection, manufacturerA, manufacturerZ);
+				for (Integer label : labelList) {
+					if(label > 0){
+						return label;
+					}
+				}
+			}
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+
+	/**
+	 * 获取businessid 并修改businessid状徿
+	 * 
+	 * @author kk
+	 * 
+	 * @param
+	 * 
+	 * @return
+	 * 
+	 * @Exception 异常对象
+	 */
+	public Businessid setbusinessId(Lsp lspParticular, Map<Integer, Integer> siteServicemap, BusinessidService businessidService, String type) throws Exception {
+
+		int businessId = 0;
+		int siteId = 0;
+		Businessid businessid_tunnel = null;
+		SiteService siteService = null;
+		try {
+			siteService=(SiteService) ConstantUtil.serviceFactory.newService(Services.SITE, this.connection);
+			if ("a".equals(type)) {
+				businessId = lspParticular.getAtunnelbusinessid();
+				siteId = lspParticular.getASiteId();
+			} else {
+				businessId = lspParticular.getZtunnelbusinessid();
+				siteId = lspParticular.getZSiteId();
+			}
+
+			/** 获取A端的tunnel业务id */
+			if (businessId == 0) {
+				businessid_tunnel = businessidService.select(siteId, "tunnel");
+			} else {
+				businessid_tunnel = businessidService.select(businessId, siteId, "tunnel");
+			}
+			if (businessid_tunnel == null) {
+				throw new BusinessIdException(siteService.getSiteName(siteId) + ResourceUtil.srcStr(StringKeysTip.TIP_TUNNELID));
+			}
+			if ("a".equals(type)) {
+				lspParticular.setAtunnelbusinessid(businessid_tunnel.getIdValue());
+			} else {
+				lspParticular.setZtunnelbusinessid(businessid_tunnel.getIdValue());
+			}
+			siteServicemap.put(siteId, businessid_tunnel.getIdValue());
+			businessidService.update(businessid_tunnel.getId(), 1);
+		} catch (Exception e) {
+			throw e;
+		} finally {
+//			UiUtil.closeService(siteService);
+		}
+		return businessid_tunnel;
+	}
+
+	/**
+	 * 获取label
+	 * 
+	 * @param lsp
+	 *            lsp对象
+	 * @return
+	 * @throws Exception
+	 */
+	public void getLabel(Lsp lsp, int isSingle) throws Exception {
+		if (null == lsp) {
+			throw new Exception("lsp is null");
+		}
+		LabelInfoService labelInfoService = null;
+		SiteService siteService = null;
+		try {
+			String type = "";
+			int manufacturerA = 0;
+			int manufacturerZ = 0;
+			int label = 0;
+			LabelInfoDao labelInfoDao = new LabelInfoDao();
+			labelInfoService = (LabelInfoService) ConstantUtil.serviceFactory.newService(Services.LABELINFO, this.connection);
+			// 判断isSingle为0，则代表网络侧，1，则代表单站侧
+			siteService = (SiteService) ConstantUtil.serviceFactory.newService(Services.SITE, this.connection);
+			//等于1是晨晓设备,入标签网元唯一
+			manufacturerA = siteService.getManufacturer(lsp.getASiteId());
+			manufacturerZ = siteService.getManufacturer(lsp.getZSiteId());
+			if (isSingle == 0) {
+				// 没有填写标签值说明是批量创建Tunnel，自动分配前向标签
+				if (lsp.getFrontLabelValue() == 0) {
+					List<Integer> labelList = labelInfoDao.quertyLabelListBySite(lsp.getASiteId(), lsp.getZSiteId(),
+							new ArrayList<Integer>(), "TUNNEL", connection, manufacturerA, manufacturerZ);
+					if (labelList.size() == 0) {
+						label = this.initLabel(lsp.getASiteId(), lsp.getZSiteId(), labelInfoDao, connection,
+												manufacturerA, manufacturerZ);
+					}else{
+						label = labelList.get(0);
+					}
+					lsp.setFrontLabelValue(label);
+				}
+				// 将前向标签插入labelInfo表中
+				if(manufacturerZ == 1){
+					type = "CX";
+				}else{
+					type = "TUNNEL";
+				}
+				labelInfoDao.insertNewLabel(lsp.getFrontLabelValue(), lsp.getZSiteId(), type, connection);
+				labelInfoDao.updateStatusBatch(lsp.getFrontLabelValue(), lsp.getZSiteId(), 0, type, connection);
+				// 没有填写标签值说明是批量创建Tunnel，自动分配后向标签
+				if (lsp.getBackLabelValue() == 0) {
+					List<Integer> labelList = labelInfoDao.quertyLabelListBySite(lsp.getASiteId(), lsp.getZSiteId(),
+							new ArrayList<Integer>(), "TUNNEL", connection, manufacturerA, manufacturerZ);
+					if (labelList.size() == 0) {
+						label = this.initLabel(lsp.getASiteId(), lsp.getZSiteId(), labelInfoDao, connection,
+												manufacturerA, manufacturerZ);
+					}else{
+						label = labelList.get(0);
+					}
+					lsp.setBackLabelValue(label);
+				}
+				// 将后向标签插入labelInfo表中
+				if(manufacturerA == 1){
+					type = "CX";
+				}else{
+					type = "TUNNEL";
+				}
+				labelInfoDao.insertNewLabel(lsp.getBackLabelValue(), lsp.getASiteId(), type, connection);
+				labelInfoDao.updateStatusBatch(lsp.getBackLabelValue(), lsp.getASiteId(), 0, type, connection);
+			} else {
+				// 填写了标签,说明是单网元配置，直接修改标签状态
+				if (lsp.getASiteId() > 0) {
+					if(manufacturerA == 1){
+						type = "CX";
+					}else{
+						type = "TUNNEL";
+					}
+					labelInfoService.saveOrUpdate(lsp.getBackLabelValue(), lsp.getASiteId(), 0, type, connection);
+				}
+				if (lsp.getZSiteId() > 0) {
+					if(manufacturerZ == 1){
+						type = "CX";
+					}else{
+						type = "TUNNEL";
+					}
+					labelInfoService.saveOrUpdate(lsp.getFrontLabelValue(), lsp.getZSiteId(), 0, type, connection);
+				}
+			}
+		} catch (Exception e) {
+			ExceptionManage.dispose(e, this.getClass());
+		} finally {
+//			UiUtil.closeService(labelInfoService);
+//			UiUtil.closeService(siteService);
+		}
+	}
+
+	public void update(Tunnel tunnel) throws Exception {
+		// ProtectInfoService pInfoService = null;
+		List<Lsp> lspparticularlist = null;
+		OamInfoService oamInfoService = null;
+		LabelInfoService labelInfoService = null;
+		SiteService siteService = null;
+		BusinessidService businessidService = null;
+		Businessid abusinessid = null;
+		Businessid zbusinessid = null;
+		BusinessidDao businessidDao = null;
+		Businessid businessId = null;
+		try {
+			oamInfoService = (OamInfoService) ConstantUtil.serviceFactory.newService(Services.OamInfo, this.connection);
+		    labelInfoService = (LabelInfoService) ConstantUtil.serviceFactory.newService(Services.LABELINFO, this.connection);
+		    siteService = (SiteService) ConstantUtil.serviceFactory.newService(Services.SITE, this.connection);
+		    businessidService = (BusinessidService) ConstantUtil.serviceFactory.newService(Services.BUSINESSID, this.connection);
+		    businessidDao = new BusinessidDao();
+			// 如果是普通的类型，但又有保护tunnel，则得删掉保护tunnel
+			if (tunnel.getTunnelType().equals("185") && null != tunnel.getProtectTunnel()) {
+				this.deleteProtect(tunnel, connection);
+				tunnel.setProtectTunnelId(0);
+				tunnel.setProtectTunnel(null);
+			}
+
+			if (null != tunnel.getProtectTunnel()) {
+				// 此处判断保护路由是否已经在数据库中，如没有则插入，如有则更新
+				String protectName = tunnel.getTunnelName() + "_protect";
+				if (tunnelDao.selectByTunnelId(tunnel.getProtectTunnelId(), connection)) {
+					tunnel.getProtectTunnel().setTunnelStatus(tunnel.getTunnelStatus());
+					// 生成保护id(武汉)
+
+					if (tunnel.getProtectTunnel().getASiteId() != 0 && siteService.getManufacturer(tunnel.getProtectTunnel().getASiteId()) == EManufacturer.WUHAN.getValue() && tunnel.getProtectTunnel().getAprotectId()==0) {
+						abusinessid = businessidService.select(tunnel.getProtectTunnel().getASiteId(), "lspprotect");
+						if (abusinessid == null) {
+							throw new BusinessIdException(siteService.getSiteName(tunnel.getProtectTunnel().getASiteId()) + ResourceUtil.srcStr(StringKeysTip.TIP_TUNNEL_PROTECT_ID));
+						}
+						businessidService.update(abusinessid.getId(), 1);// 将该保护id设置为不可用
+						tunnel.getProtectTunnel().setAprotectId(abusinessid.getIdValue());
+					}
+					if (tunnel.getProtectTunnel().getZSiteId() != 0 && siteService.getManufacturer(tunnel.getProtectTunnel().getZSiteId()) == EManufacturer.WUHAN.getValue()&& tunnel.getProtectTunnel().getZprotectId()==0) {
+						zbusinessid = businessidService.select(tunnel.getProtectTunnel().getZSiteId(), "lspprotect");
+						if (zbusinessid == null) {
+							throw new BusinessIdException(siteService.getSiteName(tunnel.getProtectTunnel().getZSiteId()) + ResourceUtil.srcStr(StringKeysTip.TIP_TUNNEL_PROTECT_ID));
+						}
+						businessidService.update(zbusinessid.getId(), 1);// 将该保护id设置为不可用
+						tunnel.getProtectTunnel().setZprotectId(zbusinessid.getIdValue());
+					}
+					tunnelDao.update(tunnel.getProtectTunnel(), connection);
+				} else {//将普通类型tunnel改为1:1 保护tunnel
+					tunnel.getProtectTunnel().setTunnelName(protectName);
+					tunnel.getProtectTunnel().setTunnelStatus(tunnel.getTunnelStatus());
+					int protectTunnelId = this.savaProtect(tunnel.getProtectTunnel());
+					tunnel.setProtectTunnelId(protectTunnelId);
+				}
+
+			}else if(tunnel.getProtectTunnel() == null && tunnel.getTunnelType().equals("185")){//网络侧删除TNP时，释放保护id
+				if(tunnel.getAprotectId()>0 && tunnel.getZprotectId()>0){
+					businessId = new Businessid();
+					businessId.setIdStatus(0);
+					businessId.setIdValue(tunnel.getAprotectId());
+					businessId.setType("lspprotect");
+					businessId.setSiteId(tunnel.getASiteId());
+					businessidDao.updateBusinessid(businessId, connection);
+					tunnel.setAprotectId(0);
+					businessId.setIdStatus(0);
+					businessId.setIdValue(tunnel.getZprotectId());
+					businessId.setType("lspprotect");
+					businessId.setSiteId(tunnel.getZSiteId());
+					businessidDao.updateBusinessid(businessId, connection);
+					tunnel.setZprotectId(0);
+				}
+			}
+			
+			tunnelDao.update(tunnel, connection);
+
+			// 更新lsp信息
+			LspDao lspParticularDao = new LspDao();
+			// 先释放之前的标签，再更新工作路径，更新标签
+			// 释放标签
+			lspparticularlist = lspParticularDao.queryByTunnnelId(tunnel.getTunnelId(), connection);
+			for (Lsp obj : lspparticularlist) {
+				if (tunnel.getIsSingle() == 0) { // 修改标签状态，如果是网络配置，修改a z端否则只修改一端
+					// labelInfoDao.updateStatusBatch(obj.getFrontLabelValue(), obj.getASiteId(), 1, connection);
+					labelInfoService.updateBatch(obj.getBackLabelValue(), obj.getASiteId(), 1, "TUNNEL");
+					labelInfoService.updateBatch(obj.getFrontLabelValue(), obj.getZSiteId(), 1, "TUNNEL");
+					// labelInfoDao.updateStatusBatch(obj.getBackLabelValue(), obj.getZSiteId(), 1, connection);
+				} else {
+					if (obj.getASiteId() > 0) {
+						labelInfoService.updateBatch(obj.getBackLabelValue(), obj.getASiteId(), 1, "TUNNEL");
+					}
+					if (obj.getZSiteId() > 0) {
+						labelInfoService.updateBatch(obj.getFrontLabelValue(), obj.getZSiteId(), 1,"TUNNEL");
+					}
+				}
+			}
+			// 更新标签
+			lspparticularlist = tunnel.getLspParticularList();
+			for (Lsp obj : lspparticularlist) {
+				// 将labelInfo中没有的数据插入labelInfo䶿
+				if (tunnel.getIsSingle() == 0) {
+					// labelInfoDao.insertNewLabel(obj.getFrontLabelValue(), obj.getASiteId(), connection);
+					labelInfoService.insertNewLabel(obj.getFrontLabelValue(), obj.getZSiteId(),"TUNNEL");
+					labelInfoService.insertNewLabel(obj.getBackLabelValue(), obj.getASiteId(),"TUNNEL");
+					// labelInfoDao.insertNewLabel(obj.getBackLabelValue(), obj.getZSiteId(), connection);
+					// labelInfoDao.updateStatusBatch(obj.getFrontLabelValue(), obj.getASiteId(), 0, connection);
+					labelInfoService.updateBatch(obj.getFrontLabelValue(), obj.getZSiteId(), 0, "TUNNEL");
+					labelInfoService.updateBatch(obj.getBackLabelValue(), obj.getASiteId(), 0, "TUNNEL");
+					// labelInfoDao.updateStatusBatch(obj.getBackLabelValue(), obj.getZSiteId(), 0, connection);
+				} else {
+					if (obj.getASiteId() > 0) {
+						labelInfoService.insertNewLabel(obj.getBackLabelValue(), obj.getASiteId(), "TUNNEL");
+						labelInfoService.updateBatch(obj.getBackLabelValue(), obj.getASiteId(), 0,"TUNNEL");
+					}
+					if (obj.getZSiteId() > 0) {
+						labelInfoService.insertNewLabel(obj.getFrontLabelValue(), obj.getZSiteId(),"TUNNEL");
+						labelInfoService.updateBatch(obj.getFrontLabelValue(), obj.getZSiteId(), 0, "TUNNEL");
+					}
+				}
+			}
+			// 更新lsp
+			for (int j = 0; j < lspparticularlist.size(); j++) {
+				lspParticularDao.update(lspparticularlist.get(j), connection);
+			}
+			// 先释放之前的标签，再更新保护路径，更新标竿
+			if (tunnel.getProtectTunnelId() > 0) {
+				if (tunnel.getProtectTunnel() != null) {
+					// 释放标签
+					lspparticularlist = lspParticularDao.queryByTunnnelId(tunnel.getProtectTunnelId(), connection);
+					for (Lsp obj : lspparticularlist) {
+						if (tunnel.getIsSingle() == 0) { // 修改标签状态，如果是网络配置，修改a z穿否则只修改一穿
+							labelInfoService.updateBatch(obj.getFrontLabelValue(), obj.getZSiteId(), 1, "TUNNEL");
+							// labelInfoDao.updateStatusBatch(obj.getFrontLabelValue(), obj.getZSiteId(), 1, connection);
+							// labelInfoDao.updateStatusBatch(obj.getBackLabelValue(), obj.getASiteId(), 1, connection);
+							labelInfoService.updateBatch(obj.getBackLabelValue(), obj.getASiteId(), 1, "TUNNEL");
+						} else {
+							if (obj.getASiteId() > 0) {
+								labelInfoService.updateBatch(obj.getBackLabelValue(), obj.getASiteId(), 1, "TUNNEL");
+							}
+							if (obj.getZSiteId() > 0) {
+								labelInfoService.updateBatch(obj.getFrontLabelValue(), obj.getZSiteId(), 1, "TUNNEL");
+							}
+						}
+					}
+					// 更新标签
+					lspparticularlist = tunnel.getProtectTunnel().getLspParticularList();
+					for (Lsp obj : lspparticularlist) {
+						// 将labelInfo中没有的数据插入labelInfo䶿
+						if (tunnel.getIsSingle() == 0) {
+							labelInfoService.insertNewLabel(obj.getFrontLabelValue(), obj.getZSiteId(), "TUNNEL");
+							// labelInfoDao.insertNewLabel(obj.getFrontLabelValue(), obj.getZSiteId(), connection);
+							// labelInfoDao.insertNewLabel(obj.getBackLabelValue(), obj.getASiteId(), connection);
+							labelInfoService.insertNewLabel(obj.getBackLabelValue(), obj.getASiteId(), "TUNNEL");
+							labelInfoService.updateBatch(obj.getFrontLabelValue(), obj.getZSiteId(), 0, "TUNNEL");
+							// labelInfoDao.updateStatusBatch(obj.getFrontLabelValue(), obj.getZSiteId(), 0, connection);
+							// labelInfoDao.updateStatusBatch(obj.getBackLabelValue(), obj.getASiteId(), 0, connection);
+							labelInfoService.updateBatch(obj.getBackLabelValue(), obj.getASiteId(), 0,"TUNNEL");
+						} else {
+							if (obj.getASiteId() > 0) {
+								labelInfoService.insertNewLabel(obj.getBackLabelValue(), obj.getASiteId(), "TUNNEL");
+								labelInfoService.updateBatch(obj.getBackLabelValue(), obj.getASiteId(), 0, "TUNNEL");
+							}
+							if (obj.getZSiteId() > 0) {
+								labelInfoService.insertNewLabel(obj.getFrontLabelValue(), obj.getZSiteId(),"TUNNEL");
+								labelInfoService.updateBatch(obj.getFrontLabelValue(), obj.getZSiteId(), 0, "TUNNEL");
+							}
+						}
+					}
+					for (int j = 0; j < lspparticularlist.size(); j++) {
+						lspParticularDao.update(lspparticularlist.get(j), connection);
+					}
+				}
+			}
+			// List<ProtectionInfo> pList = tunnel.getProList();
+			// if (pList != null && pList.size() > 0) {
+			// pInfoService.saveOrUpdate(tunnel.getProList());
+			// }
+			for (OamInfo oamInfo : tunnel.getOamList()) {
+				if (oamInfo.getOamType() == OamTypeEnum.AMEP) {
+					oamInfo.getOamMep().setServiceId(tunnel.getTunnelId());
+					oamInfo.getOamMep().setObjId(tunnel.getLspParticularList().get(0).getAtunnelbusinessid());
+					oamInfo.setOamType(OamTypeEnum.AMEP);
+				} else if (oamInfo.getOamType() == OamTypeEnum.ZMEP) {
+					oamInfo.getOamMep().setServiceId(tunnel.getTunnelId());
+					oamInfo.getOamMep().setObjId(tunnel.getLspParticularList().get(tunnel.getLspParticularList().size() - 1).getZtunnelbusinessid());
+					oamInfo.setOamType(OamTypeEnum.ZMEP);
+				} else if (oamInfo.getOamType() == OamTypeEnum.MIP) {
+					oamInfo.getOamMip().setServiceId(tunnel.getTunnelId());
+					oamInfo.getOamMip().setObjId(tunnel.getLspParticularList().get(0).getZtunnelbusinessid());
+					oamInfo.setOamType(OamTypeEnum.MIP);
+				}
+				oamInfoService.saveOrUpdate(oamInfo);
+			}
+			if (tunnel.getProtectTunnelId() > 0 && tunnel.getProtectTunnel() != null) {
+				if (tunnel.getProtectTunnel().getOamList().size() > 0) {
+					tunnel = tunnel.getProtectTunnel();
+					for (OamInfo oamInfo : tunnel.getOamList()) {
+						if (oamInfo.getOamType() == OamTypeEnum.AMEP) {
+							oamInfo.getOamMep().setServiceId(tunnel.getTunnelId());
+							oamInfo.getOamMep().setObjId(tunnel.getLspParticularList().get(0).getAtunnelbusinessid());
+							oamInfo.setOamType(OamTypeEnum.AMEP);
+						} else if (oamInfo.getOamType() == OamTypeEnum.ZMEP) {
+							oamInfo.getOamMep().setServiceId(tunnel.getTunnelId());
+							oamInfo.getOamMep().setObjId(tunnel.getLspParticularList().get(tunnel.getLspParticularList().size() - 1).getZtunnelbusinessid());
+							oamInfo.setOamType(OamTypeEnum.ZMEP);
+						} else if (oamInfo.getOamType() == OamTypeEnum.MIP) {
+							oamInfo.getOamMip().setServiceId(tunnel.getTunnelId());
+							oamInfo.getOamMip().setObjId(tunnel.getLspParticularList().get(0).getZtunnelbusinessid());
+							oamInfo.setOamType(OamTypeEnum.MIP);
+						}
+						oamInfoService.saveOrUpdate(oamInfo);
+					}
+				}
+			}
+
+			// 离线网元数据下载
+			if (0 != tunnel.getASiteId()) {
+				super.dateDownLoad(tunnel.getASiteId(), tunnel.getTunnelId(), EServiceType.TUNNEL.getValue(), EActionType.UPDATE.getValue());
+			}
+			if (0 != tunnel.getZSiteId()) {
+				super.dateDownLoad(tunnel.getZSiteId(), tunnel.getTunnelId(), EServiceType.TUNNEL.getValue(), EActionType.UPDATE.getValue());
+			}
+
+		} catch (Exception e) {
+			ExceptionManage.dispose(e, this.getClass());
+		} finally {
+		}
+	}
+
+	/**
+	 * 通过主键删除tunnel对象
+	 * 
+	 * @param tunnelId
+	 *            主键
+	 * @return 删除的记录数
+	 * @throws Exception
+	 */
+	public void delete(List<Tunnel> tunnelList) throws Exception {
+		LabelInfoService labelInfoService = null;
+		LspDao lspParticulardao = null;
+		OamInfoService oamInfoService = null;
+		OamInfo oamInfo = null;
+		OamMepInfo oamMepInfo = null;
+		OamMipInfo oamMipInfo = null;
+		List<Lsp> lspPList = null;
+		BusinessidDao businessidDao = null;
+		Businessid businessId = null;
+		QosRelevanceDao qosRelevanceDao = null;
+//		QosInfoDao qosInfoDao = null;
+		QosRelevance qosRelevance = null;
+		try {
+			connection.setAutoCommit(false);
+
+			oamInfoService = (OamInfoService) ConstantUtil.serviceFactory.newService(Services.OamInfo, this.connection);
+			labelInfoService = (LabelInfoService) ConstantUtil.serviceFactory.newService(Services.LABELINFO, this.connection);
+			businessidDao = new BusinessidDao();
+			lspParticulardao = new LspDao();
+
+			for (Tunnel tunnel : tunnelList) {
+				if (!"0".equals(tunnel.getTunnelType()) && ("2".equals(UiUtil.getCodeById(Integer.parseInt(tunnel.getTunnelType())).getCodeValue()) 
+						|| "3".equals(UiUtil.getCodeById(Integer.parseInt(tunnel.getTunnelType())).getCodeValue()))) {
+					this.deleteProtect(tunnel, connection);
+				}
+
+				oamInfo = new OamInfo();
+				oamMepInfo = new OamMepInfo();
+				oamMepInfo.setServiceId(tunnel.getTunnelId());
+				oamMepInfo.setObjType(EServiceType.TUNNEL.toString());
+				oamInfo.setOamMep(oamMepInfo);
+
+				oamMipInfo = new OamMipInfo();
+				oamMipInfo.setServiceId(tunnel.getTunnelId());
+				oamMipInfo.setObjType(EServiceType.TUNNEL.toString());
+				oamInfo.setOamMip(oamMipInfo);
+				oamInfoService.delete(oamInfo);
+
+				//删除之前先判断该条QoS是否被其他tunnel使用，如果被其他tunnel使用，则不删除，否则删除
+				//先删除qosInfo,再删除qosRelevance
+				QosInfoDao qosInfoDao = new QosInfoDao();
+				qosRelevanceDao = new QosRelevanceDao();
+				List<QosRelevance> qosRelavanceList = this.getQosRelevanceList(tunnel);
+				this.checkIsOccupy(tunnel, qosRelavanceList);
+				if(qosRelavanceList != null && !qosRelavanceList.isEmpty()){
+					for (QosRelevance relevance : qosRelavanceList) {
+						if(!relevance.isRepeat()){
+							qosInfoDao.deleteByGroupId(relevance.getQosGroupId(), connection);
+						}
+					}
+				}
+				
+				qosRelevance = new QosRelevance();
+				qosRelevance.setObjType(EServiceType.TUNNEL.toString());
+				qosRelevance.setObjId(tunnel.getTunnelId());
+				qosRelevanceDao.delete(qosRelevance, connection);
+
+				// pList = new ArrayList<ProtectionInfo>();
+				// if (tunnel.getProtectType() != 0) {
+				// protection = new ProtectionInfo();
+				// protection.setTunnelId(tunnel.getTunnelId());
+				// pList = pInfoService.selectByTunnelId(protection);
+				// pInfoService.delete(protection);
+				// }
+
+				lspPList = lspParticulardao.queryByTunnnelId(tunnel.getTunnelId(), connection);
+				for (Lsp obj : lspPList) {
+
+					if (tunnel.getIsSingle() == 0) { // 修改标签状态，如果是网络配置，修改a z穿否则只修改一穿
+						labelInfoService.updateBatch(obj.getBackLabelValue(), obj.getASiteId(), 1, "TUNNEL");
+//						labelInfoService.updateBatch(obj.getFrontLabelValue(), obj.getZSiteId(), 1, "TUNNEL");
+//						labelInfoService.updateBatch(obj.getBackLabelValue(), obj.getASiteId(), 1, "TUNNEL");
+						labelInfoService.updateBatch(obj.getFrontLabelValue(), obj.getZSiteId(), 1, "TUNNEL");
+					} else {
+						if (obj.getASiteId() == 0) {
+							labelInfoService.updateBatch(obj.getFrontLabelValue(), obj.getZSiteId(), 1, "TUNNEL");
+						}
+						if (obj.getZSiteId() == 0) {
+							labelInfoService.updateBatch(obj.getBackLabelValue(), obj.getASiteId(), 1, "TUNNEL");
+						}
+					}
+
+					businessId = new Businessid();
+					businessId.setIdStatus(0);
+					businessId.setIdValue(obj.getAtunnelbusinessid());
+					businessId.setType("tunnel");
+					businessId.setSiteId(obj.getASiteId());
+					businessidDao.updateBusinessid(businessId, connection);
+					businessId.setIdValue(obj.getZtunnelbusinessid());
+					businessId.setSiteId(obj.getZSiteId());
+					businessidDao.updateBusinessid(businessId, connection);
+
+				}
+				lspParticulardao.deleteByTunnelID(tunnel.getTunnelId(), connection);
+				tunnelDao.delete(tunnel.getTunnelId(), connection);
+
+				// 离线网元数据下载
+				if (0 != tunnel.getASiteId()) {
+					super.dateDownLoad(tunnel.getASiteId(), 0, EServiceType.TUNNEL.getValue(), EActionType.DELETE.getValue(), tunnel.getLspParticularList().get(0).getAtunnelbusinessid() + "", null, tunnel.getAPortId(), 0, null);
+				}
+				if (0 != tunnel.getZSiteId()) {
+					super.dateDownLoad(tunnel.getZSiteId(), 0, EServiceType.TUNNEL.getValue(), EActionType.DELETE.getValue(), tunnel.getLspParticularList().get(0).getZtunnelbusinessid() + "", null, tunnel.getZPortId(), 0, null);
+				}
+				// connection.commit();
+			}
+			if(!connection.getAutoCommit()){
+				connection.commit();
+			}
+		} catch (Exception e) {
+			connection.rollback();
+			ExceptionManage.dispose(e, this.getClass());
+		} finally {
+			connection.setAutoCommit(true);
+		}
+	}
+	
+	/**
+	 * 判断tunnel引用的该条QoS是否被其他tunnel使用
+	 * @param qosRelavanceList 
+	 */
+	private void checkIsOccupy(Tunnel tunnel, List<QosRelevance> qosRelevanceList) {
+		try {
+			QosRelevanceDao qosRelevanceDao = new QosRelevanceDao();
+			if(qosRelevanceList != null && !qosRelevanceList.isEmpty()){
+				QosRelevance qosRelevance = new QosRelevance();
+				for (QosRelevance relevance : qosRelevanceList) {
+					qosRelevance.setSiteId(relevance.getSiteId());
+					qosRelevance.setObjId(0);
+					qosRelevance.setObjType(EServiceType.TUNNEL.toString());
+					qosRelevance.setQosGroupId(relevance.getQosGroupId());
+					List<QosRelevance> qosList = qosRelevanceDao.queryByCondition(qosRelevance, connection); 
+					if(qosList != null && qosList.size() > 1){
+						relevance.setRepeat(true);
+					}else{
+						relevance.setRepeat(false);
+					}
+				}
+			}
+		} catch (Exception e) {
+			ExceptionManage.dispose(e, this.getClass());
+		}
+	}
+	
+	private List<QosRelevance> getQosRelevanceList(Tunnel tunnel) throws Exception{
+		QosRelevanceDao qosRelevanceDao = new QosRelevanceDao();
+		QosRelevance qosRelevance = new QosRelevance();
+		qosRelevance.setObjId(tunnel.getTunnelId());
+		qosRelevance.setObjType(EServiceType.TUNNEL.toString());
+		return qosRelevanceDao.queryByCondition(qosRelevance, connection);
+	}
+
+	/**
+	 * 
+	 * 删除保护tunnel
+	 * 
+	 * @author kk
+	 * 
+	 * @param
+	 * 
+	 * @return
+	 * @throws Exception
+	 * 
+	 * @Exception 异常对象
+	 */
+	private void deleteProtect(Tunnel tunnel, Connection connection) throws Exception {
+		LspDao lspParticulardao = null;
+		List<Lsp> lspPList = null;
+		BusinessidDao businessidDao = null;
+		Businessid businessId = null;
+		OamInfoService oamInfoService = null;
+		OamInfo oamInfo = null;
+		OamMepInfo oamMepInfo = null;
+		OamMipInfo oamMipInfo = null;
+		QosRelevanceDao qosRelevanceDao = null;
+		QosRelevance qosRelevance = null;
+		// ProtectRorateInfoDao ProtectRorateInfoDao = null;
+		// ProtectRorateInfo protectRorateInfo = null;
+		SiteRoateDao siteRoateDao = null;
+		SiteRoate siteRoate = null;
+		LabelInfoService labelInfoService = null;
+		QosInfoDao qosInfoDao = null;
+		try {
+			// //删除相应保护倒换数据
+			// ProtectRorateInfoDao = new ProtectRorateInfoDao();
+			// protectRorateInfo = new ProtectRorateInfo();
+			// protectRorateInfo.setTunnelId(tunnel.getTunnelId());
+			// ProtectRorateInfoDao.delete(protectRorateInfo, connection);
+
+			lspParticulardao = new LspDao();
+			oamInfoService = (OamInfoService) ConstantUtil.serviceFactory.newService(Services.OamInfo, this.connection);
+		    labelInfoService = (LabelInfoService) ConstantUtil.serviceFactory.newService(Services.LABELINFO, this.connection);
+			businessidDao = new BusinessidDao();
+
+			oamInfo = new OamInfo();
+			oamMepInfo = new OamMepInfo();
+			oamMepInfo.setServiceId(tunnel.getProtectTunnelId());
+			oamMepInfo.setObjType("TUNNEL");
+			oamInfo.setOamMep(oamMepInfo);
+
+			oamMipInfo = new OamMipInfo();
+			oamMipInfo.setServiceId(tunnel.getProtectTunnelId());
+			oamMipInfo.setObjType("TUNNEL");
+			oamInfo.setOamMip(oamMipInfo);
+			oamInfoService.delete(oamInfo);
+
+			//删除之前先判断该条QoS是否被其他tunnel使用，如果被其他tunnel使用，则不删除，否则删除
+			//先删除qosInfo,再删除qosRelevance
+			qosInfoDao = new QosInfoDao();
+			qosRelevanceDao = new QosRelevanceDao();
+			List<QosRelevance> qosRelavanceList = this.getQosRelevanceList(tunnel.getProtectTunnel());
+			this.checkIsOccupy(tunnel.getProtectTunnel(), qosRelavanceList);
+			if(qosRelavanceList != null && !qosRelavanceList.isEmpty()){
+				for (QosRelevance relevance : qosRelavanceList) {
+					if(!relevance.isRepeat()){
+						qosInfoDao.deleteByGroupId(relevance.getQosGroupId(), connection);
+					}
+				}
+			}
+			qosRelevance = new QosRelevance();
+			qosRelevance.setObjType(EServiceType.TUNNEL.toString());
+			qosRelevance.setObjId(tunnel.getProtectTunnelId());
+			qosRelevanceDao.delete(qosRelevance, connection);
+			
+			businessId = new Businessid();
+			lspPList = lspParticulardao.queryByTunnnelId(tunnel.getProtectTunnelId(), connection);
+			for (Lsp obj : lspPList) {
+
+				if (tunnel.getIsSingle() == 0) { // 修改标签状态，如果是网络配置，修改a z端否则只修改一端
+					labelInfoService.updateBatch(obj.getBackLabelValue(), obj.getASiteId(), 1, "TUNNEL");
+//					labelInfoService.updateBatch(obj.getFrontLabelValue(), obj.getZSiteId(), 1, "TUNNEL");
+//					labelInfoService.updateBatch(obj.getBackLabelValue(), obj.getASiteId(), 1, "TUNNEL");
+					labelInfoService.updateBatch(obj.getFrontLabelValue(), obj.getZSiteId(), 1, "TUNNEL");
+				} else {
+					if (obj.getASiteId() == 0) {
+						labelInfoService.updateBatch(obj.getFrontLabelValue(), obj.getZSiteId(), 1, "TUNNEL");
+					}
+					if (obj.getZSiteId() == 0) {
+						labelInfoService.updateBatch(obj.getBackLabelValue(), obj.getASiteId(), 1, "TUNNEL");
+					}
+				}
+
+				businessId.setIdStatus(0);
+				businessId.setIdValue(obj.getAtunnelbusinessid());
+				businessId.setType("tunnel");
+				businessId.setSiteId(obj.getASiteId());
+				businessidDao.updateBusinessid(businessId, connection);
+				businessId.setIdValue(obj.getZtunnelbusinessid());
+				businessId.setSiteId(obj.getZSiteId());
+				businessidDao.updateBusinessid(businessId, connection);
+
+			}
+			businessId.setIdStatus(0);
+			businessId.setIdValue(tunnel.getProtectTunnel().getAprotectId());
+			businessId.setType("lspprotect");
+			businessId.setSiteId(tunnel.getProtectTunnel().getASiteId());
+			businessidDao.updateBusinessid(businessId, connection);
+			businessId.setIdStatus(0);
+			businessId.setIdValue(tunnel.getProtectTunnel().getZprotectId());
+			businessId.setType("lspprotect");
+			businessId.setSiteId(tunnel.getProtectTunnel().getZSiteId());
+			businessidDao.updateBusinessid(businessId, connection);
+			lspParticulardao.deleteByTunnelID(tunnel.getProtectTunnelId(), connection);
+			tunnelDao.delete(tunnel.getProtectTunnelId(), connection);
+			/**
+			 * 删除 保护tunnel 时 删除 倒换信息
+			 */
+			siteRoate = new SiteRoate();
+			siteRoateDao = new SiteRoateDao();
+			siteRoate.setTypeId(tunnel.getProtectTunnelId());
+			siteRoate.setType("tunnel");
+			if (tunnel.getASiteId() > 0) {
+				siteRoate.setSiteId(tunnel.getASiteId());
+				siteRoateDao.delete(siteRoate, connection);
+			}
+			if (tunnel.getZSiteId() > 0) {
+				siteRoate.setSiteId(tunnel.getZSiteId());
+				siteRoateDao.delete(siteRoate, connection);
+			}
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+//			UiUtil.closeService(oamInfoService);
+//			UiUtil.closeService(labelInfoService);
+		}
+
+	}
+
+	/**
+	 * 查询全部 网络侧数据
+	 * @return List<Tunnel>集合
+	 * @throws Exception
+	 */
+	public List<Tunnel> select() {
+
+		List<Tunnel> tunnelList = null;
+		Tunnel tunnel = null;
+		try {
+			tunnel = new Tunnel();
+			tunnelList = tunnelDao.queryByCondition(tunnel, connection);
+			this.setTunnelLsp(tunnelList,false);
+		} catch (Exception e) {
+			ExceptionManage.dispose(e, this.getClass());
+		} finally {
+			tunnel = null;
+		}
+		return tunnelList;
+	}
+
+	/**
+	 * 查询全部数据（单站侧和网络侧）
+	 * @return List<Tunnel>集合
+	 * @throws Exception
+	 */
+	public List<Tunnel> selectAllData() {
+
+		List<Tunnel> tunnelList = null;
+		try {
+			tunnelList = tunnelDao.queryAllTunnel(connection);
+			this.setTunnelLsp(tunnelList,false);
+		} catch (Exception e) {
+			ExceptionManage.dispose(e, this.getClass());
+		} finally {
+		}
+		return tunnelList;
+	}
+	/**
+	 * 通过条件查询
+	 * 
+	 * @param tunnel
+	 *            查询条件
+	 * @return List<Tunnel>集合
+	 * @throws Exception
+	 */
+	public List<Tunnel> select(Tunnel tunnel) throws Exception {
+
+		List<Tunnel> tunnelList = null;
+
+		try {
+			tunnelList = tunnelDao.queryByCondition(tunnel, connection);
+			this.setTunnelLsp(tunnelList,false);
+		} catch (Exception e) {
+			ExceptionManage.dispose(e, this.getClass());
+		} finally {
+		}
+		return tunnelList;
+	}
+
+	/**
+	 * 查询所有状态为激活的tunnel所用到的网元ID
+	 * 
+	 * @return
+	 * @throws Exception
+	 */
+	public List<Integer> getSiteIdByTunnelStatus() throws Exception {
+
+		List<Integer> siteIds = new ArrayList<Integer>();
+		List<Tunnel> tunnelList = null;
+		Tunnel tunnelSelect = null;
+		List<Lsp> lspParticularList = null;
+		try {
+			tunnelSelect = new Tunnel();
+			tunnelSelect.setTunnelStatus(EActiveStatus.ACTIVITY.getValue());
+			tunnelList = this.select(tunnelSelect);
+
+			for (Tunnel tunnel : tunnelList) {
+				lspParticularList = tunnel.getLspParticularList();
+
+				for (Lsp lspParticular : lspParticularList) {
+					if (!siteIds.contains(lspParticular.getZSiteId())) {
+						siteIds.add(lspParticular.getZSiteId());
+					}
+					if (!siteIds.contains(lspParticular.getASiteId())) {
+						siteIds.add(lspParticular.getASiteId());
+					}
+				}
+			}
+		} catch (Exception e) {
+			ExceptionManage.dispose(e, this.getClass());
+		} finally {
+			tunnelList = null;
+			tunnelSelect = null;
+			lspParticularList = null;
+		}
+		return siteIds;
+	}
+
+	public List<Integer> getPortIdsBySiteId(int siteId) throws Exception {
+
+		List<Integer> portIds = new ArrayList<Integer>();
+		List<Tunnel> tunnelList = null;
+		Tunnel tunnelSelect = null;
+		try {
+			tunnelSelect = new Tunnel();
+			tunnelList = this.select_nojoin(tunnelSelect);
+
+			for (Tunnel tunnel : tunnelList) {
+				if (tunnel.getASiteId() == siteId && !portIds.contains(tunnel.getAPortId()))
+					portIds.add(tunnel.getAPortId());
+				else if (tunnel.getZSiteId() == siteId && !portIds.contains(tunnel.getZPortId()))
+					portIds.add(tunnel.getZPortId());
+			}
+		} catch (Exception e) {
+			ExceptionManage.dispose(e, this.getClass());
+		} finally {
+			tunnelList = null;
+			tunnelSelect = null;
+		}
+		return portIds;
+	}
+
+	/**
+	 * 根据site查询
+	 * 
+	 * @param siteId
+	 *            网元ID
+	 * @return
+	 * @throws Exception
+	 */
+	public List<Tunnel> select(int siteId) throws Exception {
+
+		LspDao lspParticularDao = null;
+		List<Tunnel> tunnelList = null;
+		List<Lsp> lspparticularList = null;
+
+		try {
+			lspParticularDao = new LspDao();
+
+			tunnelList = tunnelDao.queryBySiteId(siteId, connection);
+			if (null != tunnelList && tunnelList.size() != 0) {
+				for (int i = 0; i < tunnelList.size(); i++) {
+					lspparticularList = lspParticularDao.queryBySiteId(siteId, tunnelList.get(i).getTunnelId(), connection);
+					tunnelList.get(i).setLspParticularList(lspparticularList);
+				}
+
+				setOtherInfomationforTunnel(tunnelList);
+			}
+
+		} catch (Exception e) {
+			ExceptionManage.dispose(e, this.getClass());
+		} finally {
+			lspParticularDao = null;
+			lspparticularList = null;
+		}
+		return tunnelList;
+	}
+
+	/**
+	 * 修改激活状态为删除
+	 * 
+	 * @param idList
+	 *            主键集合
+	 * @throws Exception
+	 */
+	public void updateStatusDelete(List<Integer> idList) throws Exception {
+		try {
+			tunnelDao.updateStatus(idList, EActiveStatus.ACTIVITY.getValue(), EActiveStatus.UNACTIVITY.getValue(), connection);
+		} catch (Exception e) {
+			ExceptionManage.dispose(e, this.getClass());
+		}
+	}
+
+	/**
+	 * 修改删除状态为激沿
+	 * 
+	 * @param idList
+	 *            主键集合
+	 * @throws Exception
+	 */
+	public void updateStatusActivate(List<Integer> idList) throws Exception {
+		try {
+			tunnelDao.updateStatus(idList, EActiveStatus.UNACTIVITY.getValue(), EActiveStatus.ACTIVITY.getValue(), connection);
+		} catch (Exception e) {
+			ExceptionManage.dispose(e, this.getClass());
+		}
+	}
+
+	// 查询并设置OAM、QoS、保护信忿
+	private void setOtherInfomationforTunnel(List<Tunnel> tunnels) {
+		OamInfoService oamInfoService = null;
+		QosInfoService qosInfoService = null;
+		OamInfo oamInfo = null;
+		OamMepInfo oamMepInfo = null;
+		OamMipInfo oamMipInfo = null;
+		List<OamInfo> oamInfoList;
+		try {
+			qosInfoService = (QosInfoService) ConstantUtil.serviceFactory.newService(Services.QosInfo, this.connection);
+			oamInfoService = (OamInfoService) ConstantUtil.serviceFactory.newService(Services.OamInfo, this.connection);
+
+			for (int i = 0; i < tunnels.size(); i++) {
+				oamInfoList = new ArrayList<OamInfo>();
+				oamInfo = new OamInfo();
+				oamMepInfo = new OamMepInfo();
+				oamMepInfo.setServiceId(tunnels.get(i).getTunnelId());
+				oamMepInfo.setObjType("TUNNEL");
+				oamInfo.setOamMep(oamMepInfo);
+
+				oamMipInfo = new OamMipInfo();
+				oamMipInfo.setServiceId(tunnels.get(i).getTunnelId());
+				oamMipInfo.setObjType("TUNNEL");
+				oamInfo.setOamMip(oamMipInfo);
+
+				oamInfoList = oamInfoService.queryByServiceId(oamInfo);
+
+				for (OamInfo obj : oamInfoList) {
+					if(null != obj.getOamMep())
+						if(obj.getOamMep().getSiteId() == tunnels.get(i).getaSiteId()){
+							obj.setOamType(OamTypeEnum.AMEP);
+						}else{
+							obj.setOamType(OamTypeEnum.ZMEP);
+						}
+					if(null != obj.getOamMip())
+						obj.setOamType(OamTypeEnum.MIP);
+				}
+				tunnels.get(i).setOamList(oamInfoList);
+
+				// 查询qos
+				tunnels.get(i).setQosList(qosInfoService.getQosByObj(EServiceType.TUNNEL.toString(), tunnels.get(i).getTunnelId()));
+				String type = tunnels.get(i).getTunnelType();
+				if (Integer.parseInt(type) > 0) {// 过滤保护tunnel
+					String code = UiUtil.getCodeById(Integer.parseInt(type)).getCodeValue();
+
+					if (!"0".equals(type) && ("2".equals(code) || "3".equals(code)) && tunnels.get(i).getProtectTunnelId()>0) {
+						Tunnel tunnelSelect = new Tunnel();
+						tunnelSelect.setTunnelId(tunnels.get(i).getProtectTunnelId());
+						List<Tunnel> tunnelList = this.select_nojoin(tunnelSelect);
+						if (null != tunnelList) {
+							if (tunnelList.size() != 1) {
+								tunnels.get(i).setProtectTunnel(null);
+							} else {
+								tunnels.get(i).setProtectTunnel(tunnelList.get(0));
+							}
+						}
+
+					}
+				}
+
+				// if (tunnels.get(i).getProtectTunnelId() != 0) {
+				// protectionInfo = new ProtectionInfo();
+				// protectionInfo.setTunnelId(tunnels.get(i).getTunnelId());
+				// tunnels.get(i).setProList(pInfoService.selectByTunnelId(protectionInfo));
+				// }
+			}
+		} catch (Exception e) {
+			ExceptionManage.dispose(e, this.getClass());
+		} finally {
+//			UiUtil.closeService(oamInfoService);
+//			UiUtil.closeService(qosInfoService);
+		}
+	}
+
+	public Tunnel select(int siteId, int serviceId) throws Exception {
+		LspDao lspDao = null;
+		Tunnel tunnel = null;
+		Lsp lsp = null;
+		try {
+			tunnel = this.tunnelDao.queryBySiteIdAndServiceId(siteId, serviceId, connection);
+			if(tunnel!=null){
+			if(tunnel!=null){
+				lspDao = new LspDao();
+				lsp = new Lsp();
+				lsp.setTunnelId(tunnel.getTunnelId());
+				tunnel.setLspParticularList(lspDao.queryByCondition(lsp, connection));
+			}			
+			}			
+
+		} catch (Exception e) {
+			ExceptionManage.dispose(e, this.getClass());
+		} finally {
+			lspDao = null;
+			lsp = null;
+		}
+		return tunnel;
+	}
+
+	public static void main(String[] args) {
+
+	}
+
+	public Tunnel selectByTunnelIdAndSiteId(int siteId, int tunnelId) throws Exception {
+
+		LspDao lspDao = null;
+		Tunnel tunnel = null;
+		Lsp lsp = null;
+		try {
+			tunnel = this.tunnelDao.queryBySiteIdAndTunnelId(siteId, tunnelId, connection);
+			if (tunnel != null) {
+				lspDao = new LspDao();
+				lsp = new Lsp();
+				lsp.setTunnelId(tunnel.getTunnelId());
+				tunnel.setLspParticularList(lspDao.queryByCondition(lsp, connection));
+				if(tunnel.getProtectTunnelId()>0){
+					tunnel.setProtectTunnel(this.selectId(tunnel.getProtectTunnelId()));
+				}
+			}
+
+		} catch (Exception e) {
+			ExceptionManage.dispose(e, this.getClass());
+		} finally {
+			lspDao = null;
+			lsp = null;
+		}
+		return tunnel;
+	}
+
+	/**
+	 * 查询单网元的tunnel
+	 * 
+	 * @param siteId
+	 * @return
+	 * @throws Exception
+	 */
+	public List<Tunnel> selectNodesBySiteId(int siteId) throws Exception {
+
+		List<Tunnel> tunnelList = null;
+		Lsp lsp = null;
+		LspDao lspDao = null;
+		try {
+			lspDao = new LspDao();
+			tunnelList = this.tunnelDao.quertyNodeBySite(siteId, new Tunnel(),false, connection);
+			for (Tunnel tunnel : tunnelList) {
+				tunnel.setNode(true);
+				lsp = new Lsp();
+				lsp.setTunnelId(tunnel.getTunnelId());
+				tunnel.setLspParticularList(lspDao.queryByCondition(lsp, connection));
+			}
+			this.setOtherInfomationforTunnel(tunnelList);
+
+		} catch (Exception e) {
+			ExceptionManage.dispose(e, this.getClass());
+		} finally {
+			lsp = null;
+			lspDao = null;
+		}
+		return tunnelList;
+	}
+
+	/**
+	 * 查询武汉单网元的tunnel 包含保护tunnel
+	 * 
+	 * @param siteId
+	 * @return
+	 * @throws Exception
+	 */
+	public List<Tunnel> selectWHNodesBySiteId(int siteId) throws Exception {
+
+		List<Tunnel> tunnelList = null;
+		LspDao lspDao = null;
+		List<Lsp> lspparticularList = null;
+		try {
+			lspDao = new LspDao();
+			tunnelList = this.tunnelDao.quertyWHNodeBySite(siteId, connection);
+			for (Tunnel tunnel : tunnelList) {
+				tunnel.setNode(true);
+				lspparticularList = lspDao.queryBySiteId(siteId, tunnel.getTunnelId(), connection);
+				tunnel.setLspParticularList(lspparticularList);
+			}
+			this.setOtherInfomationforTunnel(tunnelList);
+
+		} catch (Exception e) {
+			ExceptionManage.dispose(e, this.getClass());
+		} finally {
+			lspparticularList = null;
+			lspDao = null;
+		}
+		return tunnelList;
+	}
+
+	/**
+	 * 查询单网元的tunnel 保护时选择tunnel璿
+	 * 
+	 * @param siteId
+	 * @return
+	 * @throws Exception
+	 */
+	public List<Tunnel> selectNodesBySiteId_protect(int siteId, String type) throws Exception {
+
+		List<Tunnel> tunnelList = null;
+		try {
+			tunnelList = this.tunnelDao.quertyNodeBySite_noxc(siteId, type, connection);
+
+		} catch (Exception e) {
+			ExceptionManage.dispose(e, this.getClass());
+		}
+		return tunnelList;
+	}
+
+	// 端到端、单点数据都可以板
+	public List<Tunnel> selectNodeByTunnelId(Tunnel tunnel) {
+
+		Lsp lspParticular = null;
+		LspDao lspParticularDao = null;
+		List<Tunnel> infos = null;
+		List<Lsp> lspparticularList = null;
+
+		try {
+			infos = tunnelDao.queryByCondition_nojoin(tunnel, connection);
+
+			if (null != infos && infos.size() != 0) {
+				for (int i = 0; i < infos.size(); i++) {
+					lspParticular = new Lsp();
+					lspParticularDao = new LspDao();
+					lspParticular.setTunnelId(infos.get(i).getTunnelId());
+
+					lspparticularList = lspParticularDao.queryByCondition(lspParticular, connection);
+					infos.get(i).setLspParticularList(lspparticularList);
+				}
+
+				setOtherInfomationforTunnel(infos);
+			}
+		} catch (Exception e) {
+			ExceptionManage.dispose(e, this.getClass());
+		} finally {
+			lspParticular = null;
+			lspParticularDao = null;
+			lspparticularList = null;
+		}
+		return infos;
+	}
+
+	/**
+	 * 根据条件查询 不关联其他表
+	 * 
+	 * @param tunnel
+	 * @return
+	 * @throws Exception
+	 */
+	public List<Tunnel> select_nojoin(Tunnel tunnel) throws Exception {
+		Lsp lspParticular = null;
+		LspDao lspParticularDao = null;
+		List<Tunnel> infos = null;
+		List<Lsp> lspparticularList = null;
+		try {
+			infos = this.tunnelDao.queryByCondition_nojoin(tunnel, connection);
+			if (null != infos && infos.size() != 0) {
+				for (int i = 0; i < infos.size(); i++) {
+					lspParticular = new Lsp();
+					lspParticularDao = new LspDao();
+					lspParticular.setTunnelId(infos.get(i).getTunnelId());
+
+					lspparticularList = lspParticularDao.queryByCondition(lspParticular, connection);
+					infos.get(i).setLspParticularList(lspparticularList);
+				}
+
+				setOtherInfomationforTunnel(infos);
+			}
+		} catch (Exception e) {
+			ExceptionManage.dispose(e, this.getClass());
+		}
+
+		return infos;
+	}
+
+	/**
+	 * 同步时修改， 修改激活状态、工作状徿
+	 * 
+	 * @author kk
+	 * 
+	 * @param tunnel
+	 *            数据库对诿
+	 * 
+	 * @return
+	 * @throws Exception
+	 * @throw NumberFormatException
+	 * 
+	 * @Exception 异常对象
+	 */
+	public void update_synchro(Tunnel tunnel) throws NumberFormatException, Exception {
+		QosRelevanceService qosRelevanceService = null;
+		try {
+			this.tunnelDao.updateStatus(tunnel, connection);
+
+			qosRelevanceService = (QosRelevanceService) ConstantUtil.serviceFactory.newService(Services.QOSRELEVANCE, this.connection);
+			if (null != tunnel.getQosList() && tunnel.getQosList().size() > 0) {
+				qosRelevanceService.synchro(tunnel.getTunnelId(), tunnel.getQosList().get(0), EServiceType.TUNNEL.toString());
+			}
+		} catch (Exception e) {
+			throw e;
+		} finally {
+//			UiUtil.closeService(qosRelevanceService);
+		}
+	}
+
+	/**
+	 * 修改所有tunnel的激活状徿
+	 * 
+	 * @author kk
+	 * 
+	 * @param actitity
+	 *            激活状徿
+	 * 
+	 * @return
+	 * @throws Exception
+	 * 
+	 * @Exception 异常对象
+	 */
+	public void update_activity(int siteId, int activity) throws Exception {
+		this.tunnelDao.update_activity(siteId, activity, connection);
+	}
+
+	/**
+	 * 验证名字是否重复
+	 * 
+	 * @author kk
+	 * 
+	 * @param afterName
+	 *            修改之后的名?
+	 * @param beforeName
+	 *            修改之前的名?
+	 * 
+	 * @return
+	 * @throws Exception
+	 * 
+	 * @Exception 异常对象
+	 */
+	public boolean nameRepetitionBySingle(String afterName, String beforeName, int siteId) throws Exception {
+
+		int result = this.tunnelDao.query_nameBySingle(afterName, beforeName, connection, siteId);
+		if (0 == result) {
+			return false;
+		} else {
+			return true;
+		}
+
+	}
+
+	/**
+	 * 验证名字是否重复
+	 * 
+	 * @author kk
+	 * 
+	 * @param afterName
+	 *            修改之后的名嫿
+	 * @param beforeName
+	 *            修改之前的名嫿
+	 * 
+	 * @return
+	 * @throws Exception
+	 * 
+	 * @Exception 异常对象
+	 */
+	public boolean nameRepetition(String afterName, String beforeName) throws Exception {
+
+		int result = this.tunnelDao.query_name(afterName, beforeName, connection);
+		if (0 == result) {
+			return false;
+		} else {
+			return true;
+		}
+
+	}
+
+	/**
+	 * 通过业务id和网元id查询
+	 * 
+	 * @param siteId
+	 * @param serviceId
+	 * @return
+	 * @throws Exception
+	 */
+
+	public Tunnel selectBySiteIdAndServiceId(int siteId, int serviceId) throws Exception {
+
+		LspDao lspDao = null;
+		Tunnel tunnel = null;
+		Lsp lsp = null;
+		try {
+			tunnel = this.tunnelDao.queryBySiteIdAndServiceId(siteId, serviceId, connection);
+			if (tunnel != null) {
+				lspDao = new LspDao();
+				lsp = new Lsp();
+				lsp.setTunnelId(tunnel.getTunnelId());
+				tunnel.setLspParticularList(lspDao.queryByCondition(lsp, connection));
+			}
+
+		} catch (Exception e) {
+			ExceptionManage.dispose(e, this.getClass());
+		} finally {
+			lspDao = null;
+			lsp = null;
+		}
+		return tunnel;
+	}
+
+	/**
+	 *function:就是主要通过业务id和网元id查询为性能查询tunnel
+	 * @param siteId  网元id
+	 * @param serviceId 业务id
+	 * @return
+	 * @throws Exception
+	 */
+
+	public Tunnel selectBySiteIdAndServiceIdByPerformance(int siteId, int serviceId) throws Exception {
+
+		Tunnel tunnel = null;
+		try {
+			tunnel = this.tunnelDao.queryBySiteIdAndServiceIdByPerformance(siteId, serviceId, connection);
+
+		} catch (Exception e) {
+			ExceptionManage.dispose(e, this.getClass());
+		} finally {
+		}
+		return tunnel;
+	}
+	/**
+	 * 通过portId和网元id查询
+	 * 
+	 * @param siteId
+	 * @param serviceId
+	 * @return
+	 * @throws Exception
+	 */
+
+	public List<Tunnel> selectByPortIdAndSiteId(int siteId, int portId) throws Exception {
+
+		LspDao lspDao = null;
+		Lsp lsp = null;
+		List<Tunnel> tunnelList = null;
+		try {
+			tunnelList = this.tunnelDao.queryByPortIdAndServiceId(siteId, portId, connection);
+			for (Tunnel tunnel : tunnelList) {
+				lspDao = new LspDao();
+				lsp = new Lsp();
+				lsp.setTunnelId(tunnel.getTunnelId());
+				tunnel.setLspParticularList(lspDao.queryByCondition(lsp, connection));
+			}
+
+		} catch (Exception e) {
+			ExceptionManage.dispose(e, this.getClass());
+		} finally {
+			lspDao = null;
+			lsp = null;
+		}
+		return tunnelList;
+	}
+
+	/***
+	 * 
+	 * **/
+	// public void doSearch() {
+	// try {
+	// tunnelDao.exeSearchEline(connection);
+	// } catch (Exception e) {
+	// ExceptionManage.dispose(e,this.getClass());
+	// }
+	// }
+	// update 20131024 .
+	public void doSearch(List<SiteInst> siteInstList) {
+		if (siteInstList.size() > 1) {
+			String siteidin = " (0,";
+			for (SiteInst si : siteInstList) {
+				siteidin = siteidin + si.getSite_Inst_Id() + ",";
+			}
+			siteidin = siteidin.substring(0, siteidin.length() - 1) + ") ";
+			// System.out.println("line 1508 . siteidin = "+siteidin);
+			try {
+				tunnelDao.exeSearchTunnel(connection, siteidin);
+			} catch (Exception e) {
+				ExceptionManage.dispose(e, this.getClass());
+			}
+		} else {
+			System.out.println("siteInstList.size <=1 . error");
+		}
+	}
+
+	/**
+	 * 根据网元id，初始化某网元tunnel
+	 * 
+	 * @param siteId
+	 * @throws SQLException
+	 */
+	public void initializtionSite(int siteId) throws SQLException {
+		List<Tunnel> tunnels = null;
+		List<Tunnel> singleTunnels = null;
+		try {
+			tunnels = this.selectWHNodesBySiteId(siteId);
+			singleTunnels = new ArrayList<Tunnel>();
+			if (tunnels != null && tunnels.size() > 0) {
+				for (Tunnel tunnel : tunnels) {
+					if (tunnel.getIsSingle() == 1) {// 单网元数据，直接删除
+						singleTunnels.add(tunnel);
+					} else {// 网络侧的，初始化该网元，并成为单网元业务
+						if (tunnel.getASiteId() == siteId) {
+							tunnel.setASiteId(0);
+							tunnel.setAPortId(0);
+							tunnel.setIsSingle(1);
+						} else if (tunnel.getZSiteId() == siteId) {
+							tunnel.setZSiteId(0);
+							tunnel.setZPortId(0);
+							tunnel.setIsSingle(1);
+						} else {
+							tunnel.setIsSingle(1);
+						}
+						this.update(tunnel);
+					}
+				}
+			}
+			if (singleTunnels.size() > 0) {
+				this.delete(singleTunnels);
+			}
+		} catch (Exception e) {
+			ExceptionManage.dispose(e, this.getClass());
+		} finally {
+		}
+	}
+
+	/**
+	 * 查询数据库中条件等于参数tunnel的tunnel集合。（eline快速配置业务时，查询是否存在可用tunnel时用ﺿ
+	 * 
+	 * @param tunnel
+	 *            页面传递的tunnel对象
+	 * @return tunnel 对象
+	 * @throws Exception
+	 */
+	public Tunnel selectExistTunnel(Tunnel tunnel) throws Exception {
+		List<Tunnel> tunnelList = null;
+		Tunnel tunneResult = null;
+		LspService lspService = null;
+		QosInfoService qosInfoService = null;
+		List<Tunnel> tunnelListResult = null;
+		try {
+			lspService = (LspService) ConstantUtil.serviceFactory.newService(Services.LSPINFO, this.connection);
+			qosInfoService = (QosInfoService) ConstantUtil.serviceFactory.newService(Services.QosInfo, this.connection);
+			tunnelList = this.tunnelDao.queryExistTunnel(tunnel, connection);
+			if (null != tunnelList && tunnelList.size() > 0) {
+
+				for (Tunnel tunnelSelect : tunnelList) {
+					// 如果lsp比较路径相同。就接着比较qos
+					if (lspService.compareLsp(tunnelSelect.getTunnelId(), tunnel.getLspParticularList())) {
+						// 如果tunnel斿:1保护 比较保护的路弿
+						if ("2".equals(UiUtil.getCodeById(Integer.parseInt(tunnelSelect.getTunnelType())).getCodeValue())) {
+							if (!lspService.compareLsp(tunnelSelect.getTunnelId(), tunnel.getLspParticularList())) {
+								continue;
+							}
+						}
+
+						// 比较qos 如果返回的是成功 结束循环 直接把此tunnel对象返回到界面中
+						if (qosInfoService.compareQos(tunnelSelect.getTunnelId(), EServiceType.TUNNEL, tunnel.getQosList())) {
+							tunneResult = tunnelSelect;
+							break;
+						}
+
+					}
+				}
+			}
+
+			// 如果有返回的tunnel 就把tunnel下的lsp qos oam 补全
+			if (null != tunneResult) {
+				tunneResult.setLspParticularList(lspService.selectBytunnelId(tunneResult.getTunnelId()));
+				tunnelListResult = new ArrayList<Tunnel>();
+				tunnelListResult.add(tunneResult);
+				this.setOtherInfomationforTunnel(tunnelListResult);
+				tunneResult = tunnelListResult.get(0);
+			}
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+//			UiUtil.closeService(lspService);
+//			UiUtil.closeService(qosInfoService);
+		}
+		return tunneResult;
+	}
+
+	public void rotate_a(Tunnel tunnel) {
+		tunnel.setPosition(1);
+		Tunnel ProtectTunnel = tunnel.getProtectTunnel();
+		ProtectTunnel.setPosition(1);
+		List<Lsp> lspList = tunnel.getLspParticularList();
+		for (Lsp lsp : lspList) {
+			lsp.setPosition(1);
+		}
+		List<Lsp> protectLspList = ProtectTunnel.getLspParticularList();
+		for (Lsp lsp : protectLspList) {
+			lsp.setPosition(1);
+		}
+		try {
+			tunnelDao.update(ProtectTunnel, connection);
+		} catch (Exception e) {
+			ExceptionManage.dispose(e, this.getClass());
+		}
+	}
+
+	/**
+	 * 根据tunnel中的qos和businessId获取tunnel可创建的做多数量
+	 * 
+	 * @param tunnel
+	 *            页面传入的tunnel对象。
+	 * @return 可创建的最大数量
+	 * @throws Exception
+	 */
+	public int getCreateNum(Tunnel tunnel) throws Exception {
+		if (null == tunnel) {
+			throw new Exception("tunnel is null");
+		}
+		if (null == tunnel.getLspParticularList() || tunnel.getLspParticularList().size() == 0) {
+			throw new Exception("lsp is null");
+		}
+		if (null == tunnel.getQosList() || tunnel.getQosList().size() == 0) {
+			throw new Exception("qos is null");
+		}
+
+		List<Lsp> lspList = null;
+		int minBusinessIdNum = 0;
+		int minQosNum = 0;
+		int result = 0;
+		try {
+			lspList = this.getAllLsp(tunnel);
+			minBusinessIdNum = this.getMinBusinessIdNum(lspList);
+			minQosNum = this.getMinQosNum(lspList, tunnel.getQosList(), null);
+
+			// 如果qos返回数量是-1 说明下发的qos带宽都为0 可以随便创建
+			if (minQosNum == -1) {
+				result = minBusinessIdNum;
+			} else {
+				if (minBusinessIdNum <= minQosNum) {
+					result = minBusinessIdNum;
+				} else {
+					result = minQosNum;
+				}
+			}
+		} catch (Exception e) {
+			throw e;
+		}
+		return result;
+	}
+
+	/**
+	 * 从tunnel对象中获取全部的lsp集合，如果有保护的lsp也返回
+	 * 
+	 * @param tunnel
+	 * @return
+	 * @throws NumberFormatException
+	 * @throws Exception
+	 */
+	public List<Lsp> getAllLsp(Tunnel tunnel) throws NumberFormatException, Exception {
+
+		List<Lsp> lspList = null;
+		lspList = new ArrayList<Lsp>();
+		lspList.addAll(tunnel.getLspParticularList());
+		// 如果是保护。把保护的lsp集合添加到集合中
+		if ("2".equals(UiUtil.getCodeById(Integer.parseInt(tunnel.getTunnelType())).getCodeValue())) {
+			lspList.addAll(tunnel.getProtectTunnel().getLspParticularList());
+		}
+		return lspList;
+	}
+
+	/**
+	 * 获取可用businessId最小的数量
+	 * 
+	 * @param lspList
+	 *            lsp集合
+	 * @return
+	 * @throws Exception
+	 */
+	public int getMinBusinessIdNum(List<Lsp> lspList) throws Exception {
+		List<Integer> siteIdList = null;
+		int minBusinessIdNum = 0;
+		int businessIdNum = 0;
+		BusinessidService businessidService = null;
+		try {
+			businessidService = (BusinessidService) ConstantUtil.serviceFactory.newService(Services.BUSINESSID, this.connection);
+
+			// 获取lsp中所有去重复的网元ID集合
+			siteIdList = new ArrayList<Integer>();
+			for (Lsp lsp : lspList) {
+				if (!siteIdList.contains(lsp.getASiteId())) {
+					siteIdList.add(lsp.getASiteId());
+				}
+				if (!siteIdList.contains(lsp.getZSiteId())) {
+					siteIdList.add(lsp.getZSiteId());
+				}
+			}
+
+			// 遍历所有网元集合，查询businessid
+			for (int i = 0; i < siteIdList.size(); i++) {
+				businessIdNum = businessidService.getBusinessCount(siteIdList.get(i), "tunnel");
+				if (i == 0) {
+					minBusinessIdNum = businessIdNum;
+				} else {
+					if (businessIdNum < minBusinessIdNum) {
+						minBusinessIdNum = businessIdNum;
+					}
+				}
+			}
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+//			UiUtil.closeService(businessidService);
+		}
+		return minBusinessIdNum;
+	}
+
+	/**
+	 * 通过lsp集合和已知的qos集合查询出最小的qos支持数量
+	 * 
+	 * @param lspList
+	 *            lsp集合
+	 * @param qosInfoList
+	 *            qosInfo集合
+	 * @return 返回-1 说明已知的qos带宽都为0.可以随便创建
+	 * @throws Exception
+	 */
+	public int getMinQosNum(List<Lsp> lspList, List<QosInfo> qosInfoList, List<QosInfo> qosInfoList_before) throws Exception {
+		int result = -1;
+		int value = 0;
+		try {
+
+			for (Lsp lsp : lspList) {
+				if (lsp.getAPortId() > 0) {
+					value = this.getQosNum(lsp.getAPortId(), qosInfoList, "a", qosInfoList_before);
+					if (value != -1) {
+						if (result != -1) {
+							if (result > value) {
+								result = value;
+							}
+						} else {
+							result = value;
+						}
+					}
+				}
+
+				if (lsp.getZPortId() > 0) {
+					value = this.getQosNum(lsp.getZPortId(), qosInfoList, "z", qosInfoList_before);
+					if (value != -1) {
+						if (result != -1) {
+							if (result > value) {
+								result = value;
+							}
+						} else {
+							result = value;
+						}
+					}
+				}
+			}
+
+		} catch (Exception e) {
+			throw e;
+		}
+		return result;
+	}
+
+	/**
+	 * 根据端口计算出 端口QOS/qosInfoList的结果
+	 * 
+	 * @param portId
+	 *            端口主键
+	 * @param qosInfoList
+	 *            已知的qos集合
+	 * @param type
+	 *            类型。a或z 用来验证比较前向还是后向
+	 * @return 返回-1 说明已知的qos带宽都为0.可以随便创建
+	 * @throws Exception
+	 */
+	private int getQosNum(int portId, List<QosInfo> qosInfoList, String type, List<QosInfo> qosInfo_before) throws Exception {
+		Map<Integer, Integer> qosMap = null;
+		PortService portService = null;
+		int result = -1;
+		int value = 0;
+		try {
+			// 查询QOS剩余带宽。
+			portService = (PortService) ConstantUtil.serviceFactory.newService(Services.PORT, this.connection);
+			qosMap = portService.getResidueQos(portId);
+			for (QosInfo qosInfo : qosInfoList) {
+				if (qosInfo.getCir() > 0) {
+					// a端比较前向
+					if ("a".equals(type)) {
+						if (Integer.parseInt(qosInfo.getDirection()) == EQosDirection.FORWARD.getValue()) {
+							value = (qosMap.get(qosInfo.getCos()) + this.getBeforeCir(qosInfo_before, qosInfo.getCos(), EQosDirection.FORWARD.getValue())) / qosInfo.getCir();
+							if (result != -1) {
+								if (result > value) {
+									result = value;
+								}
+							} else {
+								result = value;
+							}
+						}
+					} else {
+						// z端比较后向
+						if (Integer.parseInt(qosInfo.getDirection()) == EQosDirection.BACKWARD.getValue()) {
+							value = (qosMap.get(qosInfo.getCos()) + this.getBeforeCir(qosInfo_before, qosInfo.getCos(), EQosDirection.BACKWARD.getValue())) / qosInfo.getCir();
+							if (result != -1) {
+								if (result > value) {
+									result = value;
+								}
+							} else {
+								result = value;
+							}
+						}
+					}
+				}
+			}
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			qosMap = null;
+//			UiUtil.closeService(portService);
+			value = 0;
+		}
+		return result;
+	}
+
+	/**
+	 * 获取修改之前的CIR 如果参数为null 则返回0
+	 * 
+	 * @param qosInfoList
+	 *            之前的qos集合
+	 * @param cos
+	 *            要匹配的cos
+	 * @param direction
+	 *            方向
+	 * @return cir
+	 * @throws Exception
+	 */
+	private int getBeforeCir(List<QosInfo> qosInfoList, int cos, int direction) throws Exception {
+		int result = 0;
+		try {
+			if (null != qosInfoList && qosInfoList.size() > 0) {
+				for (QosInfo qosInfo : qosInfoList) {
+					if (Integer.parseInt(qosInfo.getDirection())==direction && qosInfo.getCos() == cos) {
+						result = qosInfo.getCir();
+						break;
+					}
+				}
+			}
+
+		} catch (Exception e) {
+			throw e;
+		}
+		return result;
+	}
+
+	/**
+	 * 根据端口和保护Id查找主用tunnel，不关联
+	 * 
+	 * @param siteId
+	 * @param protectId
+	 * @return
+	 * @throws Exception
+	 */
+	public Tunnel selectBySiteIdAndProtectId(int siteId, int protectId) throws Exception {
+
+		LspDao lspDao = null;
+		Tunnel tunnel = null;
+		Lsp lsp = null;
+		try {
+			tunnel = this.tunnelDao.queryBySiteIdAndProtectId(siteId, protectId, connection);
+			if(tunnel != null){
+				lspDao = new LspDao();
+				lsp = new Lsp();
+				lsp.setTunnelId(tunnel.getTunnelId());
+				tunnel.setLspParticularList(lspDao.queryByCondition(lsp, connection));
+			}
+		} catch (Exception e) {
+			ExceptionManage.dispose(e, this.getClass());
+		} finally {
+			lspDao = null;
+			lsp = null;
+		}
+		return tunnel;
+	}
+
+	/**
+	 * 根据tunnelA,Z过滤可用SNCP保护（武汉）
+	 * 
+	 * @return
+	 */
+	public List<Tunnel> selectSNCPtunnel(int asiteId, int zsiteId) {
+		List<Tunnel> tunnels = null;
+		LspDao lspDao = null;
+		Lsp lsp = null;
+		try {
+			tunnels = this.tunnelDao.querySNCPbySiteId(asiteId, zsiteId, "493", connection);
+			for (Tunnel tunnel : tunnels) {
+				lspDao = new LspDao();
+				lsp = new Lsp();
+				lsp.setTunnelId(tunnel.getTunnelId());
+				tunnel.setLspParticularList(lspDao.queryByCondition(lsp, connection));
+			}
+		} catch (Exception e) {
+			ExceptionManage.dispose(e, this.getClass());
+		} finally {
+			lsp = null;
+			lspDao = null;
+		}
+		return tunnels;
+	}
+
+	/**
+	 * 根据site查询
+	 * 
+	 * @param siteId
+	 *            网元ID
+	 * @param connection
+	 *            数据库连接
+	 * @return
+	 * @throws Exception
+	 */
+	public List<Tunnel> selectTunnelBySiteId(int siteId) throws Exception {
+		List<Tunnel> tunnels = null;
+		try {
+			tunnels = this.tunnelDao.selectTunnelBySiteId(siteId, connection);
+		} catch (Exception e) {
+			ExceptionManage.dispose(e, this.getClass());
+		}
+		return tunnels;
+	}
+
+	/**
+	 * 获取tunnel下的所有网元ID
+	 * 
+	 * @param tunnel
+	 * @return siteid集合
+	 * @throws Exception
+	 */
+	public List<Integer> getSiteId(Tunnel tunnel) throws Exception {
+		List<Integer> siteIdList = null;
+		try {
+			siteIdList = new ArrayList<Integer>();
+			if(tunnel.getLspParticularList()!=null&&tunnel.getLspParticularList().size()>0){
+				for (Lsp lsp : tunnel.getLspParticularList()) {
+					if (!siteIdList.contains(lsp.getASiteId()) && lsp.getASiteId() != 0) {
+						siteIdList.add(lsp.getASiteId());
+					}
+					if (!siteIdList.contains(lsp.getZSiteId()) && lsp.getZSiteId() != 0) {
+						siteIdList.add(lsp.getZSiteId());
+					}
+				}
+			}
+			
+
+		} catch (Exception e) {
+			throw e;
+		}
+		return siteIdList;
+	}
+
+	/**
+	 * 根据两个端口查询出跟这两个端口相关联的所有tunnel 段模块中查询剩余带宽时用
+	 * 
+	 * @param portId1
+	 *            端口id=段的aportid
+	 * @param portId2
+	 *            端口id=段的zportid
+	 * @return
+	 * @throws Exception
+	 * @throws Exception
+	 */
+	public List<Tunnel> selectByPort(int portId1, int portId2) throws Exception {
+
+		List<Tunnel> tunnelList = null;
+		List<Tunnel> tunnels = null;
+		try {
+			tunnelList = this.tunnelDao.queryPort(portId1, portId2, connection);
+			tunnels = new ArrayList<Tunnel>();
+			for (Tunnel tunnel : tunnelList) {
+				// 如果是保护的tunnel 并且入参为tunnel的a端或者z端 则不参与计算。 因为保护tunnel的xc才有实际意义
+				if (!("0".equals(tunnel.getTunnelType()) && (tunnel.getAPortId() == portId1 || tunnel.getAPortId() == portId1 || tunnel.getAPortId() == portId2 || tunnel.getZPortId() == portId2))) {
+					tunnels.add(tunnel);
+				}
+			}
+		} catch (Exception e) {
+			throw e;
+		}
+		return tunnels;
+	}
+
+	/**
+	 * 根据site查询
+	 * 
+	 * @param siteId
+	 *            网元ID
+	 * @param connection
+	 *            数据库连接
+	 * @return
+	 * @throws Exception
+	 */
+	public List<Tunnel> selectBySiteId(int siteId) throws Exception {
+		List<Tunnel> tunnelList = null;
+		try {
+			tunnelList = this.tunnelDao.selectBySiteId(siteId, connection);
+
+			this.setOtherInfomationforTunnel(tunnelList);
+		} catch (Exception e) {
+			throw e;
+		}
+
+		return tunnelList;
+	}
+
+	/**
+	 * 查询同一端口下是否有多条tunnel
+	 * 
+	 * @param portId
+	 * @param label
+	 * @return
+	 * @throws Exception
+	 */
+	public List<Integer> checkPortUsable(int portId) throws Exception {
+		return this.tunnelDao.checkPortUsable(portId, connection);
+	}
+
+	public List<Integer> querySiteIdByTunnelName(String oldTunnelName) throws Exception {
+		return this.tunnelDao.querySiteIdByTunnelName(oldTunnelName, connection);
+	}
+
+	public List<Tunnel> selectForSite(int siteId) throws Exception {
+		List<Tunnel> tunnelList = null;
+		try {
+			tunnelList = this.tunnelDao.selectForSite(siteId, connection);
+
+			this.setOtherInfomationforTunnel(tunnelList);
+		} catch (Exception e) {
+			throw e;
+		}
+
+		return tunnelList;
+	}
+
+	/**
+	 * 通过a、z端网元ID查询tunnel
+	 * 
+	 * @param aSiteId
+	 *            a端网元ID
+	 * @param zSiteId
+	 *            z端网元ID
+	 * @return
+	 * @throws Exception
+	 */
+	public List<Tunnel> selectByASiteIdAndZSiteId(int aSiteId, int zSiteId) throws Exception {
+
+		LspDao lspDao = null;
+		List<Tunnel> tunnelList = null;
+		Lsp lsp = null;
+		try {
+			tunnelList = this.tunnelDao.selectByASiteIdAndZSiteId(aSiteId, zSiteId, connection);
+			for (Tunnel tunnel : tunnelList) {
+				lspDao = new LspDao();
+				lsp = new Lsp();
+				lsp.setTunnelId(tunnel.getTunnelId());
+				tunnel.setLspParticularList(lspDao.queryByCondition(lsp, connection));
+			}
+		} catch (Exception e) {
+			ExceptionManage.dispose(e, this.getClass());
+		} finally {
+			lspDao = null;
+			lsp = null;
+		}
+		return tunnelList;
+	}
+
+	/**
+	 * 按照tunnel过滤条件查询
+	 * 
+	 * @param siteId
+	 *            网元id
+	 * @param tunnelCondition
+	 *            tunnel的过滤条件
+	 * @return tunnel的集合
+	 * @throws Exception
+	 * @author xxx
+	 */
+	public List<Tunnel> quertyNodeByTunnelCondition(int siteId, Tunnel tunnelCondition,boolean isAddIsSingle) throws Exception {
+
+		List<Tunnel> tunnelList = null;
+		Lsp lsp = null;
+		LspDao lspDao = null;
+		try {
+			lspDao = new LspDao();
+			tunnelList = this.tunnelDao.quertyNodeBySite(siteId, tunnelCondition,isAddIsSingle, connection);
+			for (Tunnel tunnel : tunnelList) {
+				tunnel.setNode(true);
+				lsp = new Lsp();
+				lsp.setTunnelId(tunnel.getTunnelId());
+				tunnel.setLspParticularList(lspDao.queryByCondition(lsp, connection));
+			}
+			this.setOtherInfomationforTunnel(tunnelList);
+
+		} catch (Exception e) {
+			ExceptionManage.dispose(e, this.getClass());
+		} finally {
+			lsp = null;
+			lspDao = null;
+		}
+		return tunnelList;
+	}
+
+	/**
+	 * 根据主键获取tunnel
+	 * 
+	 * @param tunnelId
+	 * @return
+	 * @throws Exception
+	 */
+	public Tunnel selectId(int tunnelId) throws Exception {
+		Tunnel tunnel = null;
+		List<Tunnel> tunnelList = null;
+		LspDao lspDao = null;
+		Lsp lsp = null;
+		try {
+			tunnel = tunnelDao.queryByTunnelId(tunnelId,connection);
+			if (tunnel != null) {
+				lspDao = new LspDao();
+				lsp = new Lsp();
+				lsp.setTunnelId(tunnel.getTunnelId());
+				tunnel.setLspParticularList(lspDao.queryByCondition(lsp, connection));
+				tunnelList = new ArrayList<Tunnel>();
+				tunnelList.add(tunnel);
+				this.setOtherInfomationforTunnel(tunnelList);
+			}
+
+		} catch (Exception e) {
+			throw e;
+		} 
+		return tunnel;
+	}
+	
+	/**
+	 * 通过tunnel名称查询
+	 * @param tunnelName
+	 * @return
+	 */
+	public List<Tunnel> selectByTunnelName(String tunnelName){
+		LspDao lspDao = null;
+		List<Tunnel> tunnelList = null;
+		Lsp lsp = null;
+		try {
+			tunnelList = this.tunnelDao.selectByTunnelName(tunnelName, connection);
+			for (Tunnel tunnel : tunnelList) {
+				lspDao = new LspDao();
+				lsp = new Lsp();
+				lsp.setTunnelId(tunnel.getTunnelId());
+				tunnel.setLspParticularList(lspDao.queryByCondition(lsp, connection));
+			}
+			
+			this.setOtherInfomationforTunnel(tunnelList);
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		} finally {
+			lspDao = null;
+			lsp = null;
+		}
+		return tunnelList;
+	}
+	
+	/**
+	 * 通过条件查询Tunnel 关联site_roate表
+	 * @param tunnel 条件
+	 * @return	tunnel结果集
+	 * @throws Exception
+	 */
+	public List<Tunnel> queryByCondition_joinRotate(Tunnel tunnel) throws Exception {
+		Lsp lspParticular = null;
+		LspDao lspParticularDao = null;
+		List<Tunnel> infos = null;
+		List<Lsp> lspparticularList = null;
+		try {
+			infos = this.tunnelDao.queryByCondition_joinRotate(tunnel, connection);
+			if (null != infos && infos.size() != 0) {
+				for (int i = 0; i < infos.size(); i++) {
+					lspParticular = new Lsp();
+					lspParticularDao = new LspDao();
+					lspParticular.setTunnelId(infos.get(i).getTunnelId());
+
+					lspparticularList = lspParticularDao.queryByCondition(lspParticular, connection);
+					infos.get(i).setLspParticularList(lspparticularList);
+				}
+
+				setOtherInfomationforTunnel(infos);
+			}
+		} catch (Exception e) {
+			ExceptionManage.dispose(e, this.getClass());
+		}
+
+		return infos;
+	}
+	
+	/**
+	 * 验证此tunnel的qos在pw中是否还有带宽
+	 * 用tunnel的qos减去tunnel下的所有pw的qos
+	 * @param qosInfList 要验证的QOS集合
+	 * @param tunnel 要验证的tunnel对象。
+	 * @return true 有带宽  false 没有带宽
+	 * @throws Exception 
+	 */
+	public boolean checkingQosInPw(List<QosInfo> qosInfoList,Tunnel tunnel) throws Exception{
+		
+		if(null==qosInfoList || qosInfoList.size()==0){
+			throw new Exception("qosInfoList is null");
+		}
+		
+		if(null == tunnel){
+			throw new Exception("tunnel is null");
+		}
+		boolean flag=true;
+		QosInfoService qosInfoService=null;
+		try {
+			qosInfoService=(QosInfoService) ConstantUtil.serviceFactory.newService(Services.QosInfo, this.connection);
+			
+			//遍历qos 计算每个qos的剩余带宽
+			for(QosInfo qosInfo : qosInfoList){
+				QosInfo qosInfo_result=qosInfoService.calculateQos(qosInfo, EServiceType.TUNNEL, tunnel.getTunnelId());
+				
+				//如果剩余带宽小于0  说明没有带宽了，直接返回。
+				if(qosInfo_result.getCir() < 0 || qosInfo_result.getEir() < 0){
+					flag=false;
+					break;
+				}
+			}
+			
+		} catch (Exception e) {
+			throw e;
+		} finally {
+//			UiUtil.closeService(qosInfoService);
+		}
+		return flag;
+	}
+	
+	
+	/**
+	 * 获取此tunnel下的所有网元ID
+	 * 
+	 * @param tunnel
+	 *            tunnel对象
+	 * @param isProtect
+	 *            是否包含保护的网元
+	 * @return siteID集合
+	 * @throws Exception
+	 */
+	public List<Integer> getSiteIds(Tunnel tunnel, boolean isProtect) throws Exception {
+		List<Integer> siteIds = null;
+		TunnelService tunnelService = null;
+		Tunnel protectTunnel = null;
+		SiteService siteService=(SiteService) ConstantUtil.serviceFactory.newService(Services.SITE, this.connection);
+		try {
+			siteIds = new ArrayList<Integer>();
+			tunnelService = (TunnelService) ConstantUtil.serviceFactory.newService(Services.Tunnel, this.connection);
+			if (tunnel.getIsSingle() == 1 && siteService.getManufacturer(ConstantUtil.siteId) == EManufacturer.WUHAN.getValue()) {
+				siteIds.add(ConstantUtil.siteId);
+			} else {
+				if (isProtect) {// 包含保护所包括的网元
+					if (tunnel.getProtectTunnelId() > 0) {
+						protectTunnel = new Tunnel();
+						protectTunnel.setTunnelId(tunnel.getProtectTunnelId());
+						protectTunnel = tunnelService.select_nojoin(protectTunnel).get(0);
+						for (Lsp lspParticular : protectTunnel.getLspParticularList()) {
+							if (lspParticular.getASiteId() > 0) {
+								if (!siteIds.contains(lspParticular.getASiteId()) && siteService.getManufacturer(lspParticular.getASiteId()) == EManufacturer.WUHAN.getValue()) {
+									siteIds.add(lspParticular.getASiteId());
+								}
+							}
+							if (lspParticular.getZSiteId() > 0) {
+								if (!siteIds.contains(lspParticular.getZSiteId()) && lspParticular.getZPortId() > 0 && siteService.getManufacturer(lspParticular.getZSiteId()) == EManufacturer.WUHAN.getValue()) {
+									siteIds.add(lspParticular.getZSiteId());
+								}
+							}
+						}
+
+					}
+				}
+
+				for (Lsp lspParticular : tunnel.getLspParticularList()) {
+					if (lspParticular.getASiteId() > 0) {
+						if (!siteIds.contains(lspParticular.getASiteId()) && siteService.getManufacturer(lspParticular.getASiteId()) == EManufacturer.WUHAN.getValue()) {
+							siteIds.add(lspParticular.getASiteId());
+						}
+					}
+					if (lspParticular.getZSiteId() > 0) {
+						if (!siteIds.contains(lspParticular.getZSiteId()) && lspParticular.getZPortId() > 0 && siteService.getManufacturer(lspParticular.getZSiteId()) == EManufacturer.WUHAN.getValue()) {
+							siteIds.add(lspParticular.getZSiteId());
+						}
+					}
+				}
+			}
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+//			UiUtil.closeService(siteService);
+		}
+		return siteIds;
+	}
+	
+	/**
+	 * 获取tunnel的名称 显示用
+	 * 
+	 * @param tunnelId
+	 * @return
+	 * @throws Exception
+	 */
+	public String getTunnelName(int tunnelId) throws Exception {
+
+		Tunnel tunnel = null;
+		String result = null;
+		try {
+			tunnel = new Tunnel();
+			tunnel.setTunnelId(tunnelId);
+			tunnel = this.select_nojoin(tunnel).get(0);
+
+			if (null != tunnel) {
+				result = tunnel.getTunnelName();
+			} else {
+				result = "";
+			}
+
+		} catch (Exception e) {
+			ExceptionManage.dispose(e, this.getClass());
+		} finally {
+			tunnel = null;
+		}
+		return result;
+	}
+	
+	/**
+	 * 根据site查询
+	 * 
+	 * @param siteId
+	 *            网元ID
+	 * @param connection
+	 *            数据库连接
+	 * @return
+	 * @throws Exception
+	 */
+	public List<Tunnel> queryTunnelBySiteId(int siteId) throws Exception {
+		List<Tunnel> tunnels = null;
+		try {
+			tunnels = this.tunnelDao.queryTunnelBySiteId(siteId, connection);
+		} catch (Exception e) {
+			ExceptionManage.dispose(e, this.getClass());
+		}
+		return tunnels;
+	}
+	/**
+	 * 根据site查询和保护ID来获取相应的tunnel
+	 * 
+	 * @param siteId
+	 *            网元ID
+	 * @param connection
+	 *            数据库连接
+	 * @return
+	 * @throws Exception
+	 */
+	public Tunnel queryTunnelBySiteIdAndProtectId(Tunnel tunnel) throws Exception {
+		Tunnel tunnelInst = null;
+		try {
+			tunnelInst = this.tunnelDao.queryTunnelBySiteIdAndProtectId(tunnel, connection);
+		} catch (Exception e) {
+			ExceptionManage.dispose(e, this.getClass());
+		}
+		return tunnelInst;
+	}
+	/**
+	 * 根据tunnelId 查询tunnel
+	 * @param tunnelId
+	 * @return
+	 * @throws Exception
+	 */
+	public Tunnel queryTunnleById(int tunnelId)throws Exception{
+		Tunnel tunnelInst = null;
+		try {
+			tunnelInst = this.tunnelDao.queryTunnelById(tunnelId, connection);
+		} catch (Exception e) {
+			ExceptionManage.dispose(e, this.getClass());
+		}
+		return tunnelInst;
+	}
+	
+	/**
+	 * 过滤查询tunnel ， tunnel列表中用到
+	 * @param tunnelFilter
+	 * @return
+	 * @throws Exception 
+	 */
+	public List<Tunnel> filterSelect(Tunnel tunnelFilter) throws Exception{
+		List<Tunnel> tunnelList=null;
+		try {
+			tunnelList=this.tunnelDao.filterSelect(tunnelFilter, connection);
+			this.setTunnelLsp(tunnelList,false);
+		} catch (Exception e) {
+			throw e;
+		}
+		return tunnelList;
+	}
+	
+	/**
+	 * 给tunnel集合的lsp赋值
+	 * @throws Exception 
+	 */
+	private void setTunnelLsp(List<Tunnel> tunnelList,boolean isNode) throws Exception{
+		Lsp lspParticular=null;
+		LspDao lspParticularDao = new LspDao();
+		List<Lsp> lspparticularList=null;
+		try {
+			if (null != tunnelList && tunnelList.size() != 0) {
+				for (int i = 0; i < tunnelList.size(); i++) {
+					tunnelList.get(i).setNode(isNode);
+					lspParticular = new Lsp();
+					lspParticular.setTunnelId(tunnelList.get(i).getTunnelId());
+					lspparticularList = lspParticularDao.queryByCondition(lspParticular, connection);
+					tunnelList.get(i).setLspParticularList(lspparticularList);
+				}
+				setOtherInfomationforTunnel(tunnelList);
+			}
+		} catch (Exception e) {
+			throw e;
+		} finally{
+			lspParticular=null;
+			lspParticularDao = new LspDao();
+			lspparticularList=null;
+		}
+	}
+	
+	/**
+	 * 单网元列表过滤查询
+	 * 
+	 * @param tunnel
+	 *            查询条件
+	 * @param connection
+	 *            数据库连接
+	 * @return
+	 * @throws Exception
+	 */
+	public List<Tunnel> filterSelectNE(int siteId,Tunnel tunnel) throws Exception{
+		List<Tunnel> tunnelList = null;
+		try {
+			tunnelList = this.tunnelDao.filterSelectNE(siteId, tunnel, connection);
+			this.setTunnelLsp(tunnelList, true);
+		} catch (Exception e) {
+			ExceptionManage.dispose(e, this.getClass());
+		} finally {
+		}
+		return tunnelList;
+	}
+	
+	/**
+	 * 武汉搜索
+	 * @param siteID
+	 * @return
+	 */
+	public List<Tunnel> searchWh(int siteID){
+		List<Tunnel> tunnels = null;
+		SegmentService segmentService = null;
+		List<Tunnel> needTunnels = null;
+		List<Segment> segments = null;
+		try {
+			tunnels = this.tunnelDao.searchWh(siteID, connection);
+			setTunnelLsp(tunnels, true);
+			segmentService = (SegmentService) ConstantUtil.serviceFactory.newService(Services.SEGMENT,connection);
+			needTunnels = new ArrayList<Tunnel>();
+			for(Tunnel tunnel : tunnels){
+				for(Lsp lsp :tunnel.getLspParticularList()){
+					if(lsp.getASiteId() != 0 && lsp.getAPortId() != 0){
+						segments = segmentService.selectBySideAndPort(lsp.getASiteId(), lsp.getAPortId());
+						if(segments.size() == 0){
+							break;
+						}
+					}else if(lsp.getZSiteId() != 0 && lsp.getZPortId() != 0){
+						segments = segmentService.selectBySideAndPort(lsp.getZSiteId(), lsp.getZPortId());
+						if(segments.size() == 0){
+							break;
+						}
+					}
+				}
+				needTunnels.add(tunnel);
+			}
+		} catch (Exception e) {
+			ExceptionManage.dispose(e, this.getClass());
+		}
+		return needTunnels;
+	}
+	
+	public void doSearchWh(List<Tunnel> tunnels){
+		tunnelDao.doSearchWh(tunnels, connection);
+	}
+
+	public Map<Integer, String> selectAllTunnelName() {
+		Map<Integer, String> tunnelNameMap = new HashMap<Integer, String>();
+		try {
+			List<Tunnel> tunnelList = this.tunnelDao.selectAllTunnel(connection);
+			if(tunnelList.size() > 0){
+				for (Tunnel t : tunnelList) {
+					tunnelNameMap.put(t.getTunnelId(), t.getTunnelName());
+				}
+			}
+		} catch (Exception e) {
+			ExceptionManage.dispose(e, getClass());
+		}
+		return tunnelNameMap;
+	}
+	
+	public Map<Integer,String> selectTunnelNameBySiteId(int siteId) throws Exception{
+		return this.tunnelDao.selectTunnelNameBySiteId(siteId, connection);
+	}
+	
+	/**
+	 * 同步portId来查询tunnle
+	 * @param portId
+	 * @return
+	 * @throws Exception
+	 */
+	public List<Tunnel> findTunnelByPortId(int portId) throws Exception
+	{
+		List<Tunnel> tunnelList = new ArrayList<Tunnel>();
+		try {
+			tunnelList = this.tunnelDao.queryByportId(portId, connection);
+		} catch (Exception e) {
+			ExceptionManage.dispose(e, getClass());
+		}
+		return tunnelList;
+		
+	}
+	
+	/**
+	 * 通过tunnel名称查询tunnelId
+	 * @param tunnelName
+	 * @return
+	 */
+	public List<Integer> selectTunnelIdByTunnelName(String tunnelName){
+		List<Integer> tunnelIdList = new ArrayList<Integer>();
+		try {
+			tunnelIdList = this.tunnelDao.selectTunnelIdByTunnelName(tunnelName, connection);
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		}
+		return tunnelIdList;
+	}
+}
+ 

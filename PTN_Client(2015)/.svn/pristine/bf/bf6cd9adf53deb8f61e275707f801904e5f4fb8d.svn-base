@@ -1,0 +1,110 @@
+package com.nms.model.system.code;
+
+import java.sql.Connection;
+import java.util.List;
+
+import com.nms.db.bean.system.code.Code;
+import com.nms.db.bean.system.code.CodeGroup;
+import com.nms.db.dao.system.code.CodeDao;
+import com.nms.db.dao.system.code.CodeGroupDao;
+import com.nms.model.util.ObjectService;
+import com.nms.ui.manager.ExceptionManage;
+
+public class CodeGroupService extends ObjectService{
+
+	public void setConnection(Connection connection) {
+		super.connection = connection;
+	}
+
+	public void setPtnuser(String ptnuser) {
+		super.ptnuser = ptnuser;
+	}
+    
+	private CodeGroupDao codeGroupDao = new CodeGroupDao();
+	
+	
+	public int saveOrUpdate(CodeGroup codegroup) throws Exception {
+
+		if (codegroup == null) {
+			throw new Exception("codegroup is null");
+		}
+
+		int result = 0;
+		try {
+
+			if (codegroup.getId() == 0) {
+				result = this.codeGroupDao.insert(codegroup, connection);
+			} else {
+				result = this.codeGroupDao.update(codegroup, connection);
+			}
+
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		}
+		return result;
+	}
+	
+	public void delete(CodeGroup codegroup) throws Exception {
+		try {
+			connection.setAutoCommit(false);
+			new CodeGroupDao().delete(codegroup.getId(), connection);
+			
+			Code code=new Code();
+			code.setCodeGroupId(codegroup.getId());
+			
+			new CodeDao().delete(code.getId(), connection);
+			if(!connection.getAutoCommit()){
+				connection.commit();
+			}
+		} catch (Exception e) {
+			connection.rollback();
+			ExceptionManage.dispose(e,this.getClass());
+		}finally{
+			connection.setAutoCommit(true);
+		}
+	}
+
+	public List<CodeGroup> select() throws Exception {
+		List<CodeGroup> codegroupList = new CodeGroupDao().queryByConditionall(connection);
+		if (null != codegroupList && codegroupList.size() != 0) {
+			for (int i = 0; i < codegroupList.size(); i++) {
+				Code code = new Code();
+				CodeDao codeDao = new CodeDao();
+				code.setCodeGroupId(codegroupList.get(i).getId());
+
+				List<Code> codeList = codeDao.queryByCondition(code,connection);
+				codegroupList.get(i).setCodeList(codeList);
+			}
+		}
+		return codegroupList;
+	}
+	public List<CodeGroup> selectCodeByCodeGroup() throws Exception {
+		List<CodeGroup> codegroupList = new CodeGroupDao().queryByConditionall(connection);
+		if (null != codegroupList && codegroupList.size() != 0) {
+			for (int i = 0; i < codegroupList.size(); i++) {
+				Code code = new Code();
+				CodeDao codeDao = new CodeDao();
+				code.setCodeGroupId(codegroupList.get(i).getId());
+				
+				List<Code> codeList = codeDao.queryByCode(code,connection);
+				codegroupList.get(i).setCodeList(codeList);
+			}
+		}
+		return codegroupList;
+	}
+	
+	public List<CodeGroup> select(CodeGroup codegroup) throws Exception{
+		List<CodeGroup> codegroupList = new CodeGroupDao().queryByCondition(codegroup, connection);
+		if (null != codegroupList && codegroupList.size() != 0) {
+			for (int i = 0; i < codegroupList.size(); i++) {
+				Code code = new Code();
+				CodeDao codeDao = new CodeDao();
+				code.setId(codegroupList.get(i).getId());
+
+				List<Code> codeList = codeDao.queryByCondition(code, connection);
+				codegroupList.get(i).setCodeList(codeList);
+			}
+		}
+		return codegroupList;
+	}
+}

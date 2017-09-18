@@ -1,0 +1,18 @@
+package com.nms.db.dao.equipment.port;
+
+import com.nms.db.bean.equipment.port.PortStmTimeslot;
+
+
+public interface PortStmTimeslotMapper {
+    int deleteByPrimaryKey(Integer id);
+
+    int insert(PortStmTimeslot record);
+
+    int insertSelective(PortStmTimeslot record);
+
+    PortStmTimeslot selectByPrimaryKey(Integer id);
+
+    int updateByPrimaryKeySelective(PortStmTimeslot record);
+
+    int updateByPrimaryKey(PortStmTimeslot record);
+}

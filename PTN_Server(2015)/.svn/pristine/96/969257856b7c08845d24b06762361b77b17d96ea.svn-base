@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<driveRoot  xmlns="http://drive.bean.com">
+	<attribute length="2" description="条目数" value="1" mapping="1-100"/>
+	<attribute length="4" description="备用字节" value="0" mapping="(00)"/>
+	<attribute length="0" description="条目" value="1" mapping="1-100">
+		<listRoot file="com/nms/drive/analysis/xmltool/file/ARP配置块(42H)_sub.xml">
+		</listRoot>
+	</attribute>
+	<attribute length="11" description="校验码" value="0" mapping="(00)"/>
+</driveRoot>

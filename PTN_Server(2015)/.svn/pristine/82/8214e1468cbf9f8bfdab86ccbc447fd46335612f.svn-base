@@ -1,0 +1,64 @@
+package com.nms.ui.manager;
+
+public class SiteLockTypeUtil {
+
+	public static final String TUNNEL_INSERT = "创建tunnel";
+	public static final String TUNNEL_UPDATE = "更新tunnel";
+	public static final String TUNNEL_DELETE = "删除tunnel";
+	public static final String PW_INSERT = "创建pw";
+	public static final String PW_UPDATE = "更新pw";
+	public static final String PW_DELETE = "删除pw";
+	public static final String ELINE_INSERT = "创建eline";
+	public static final String ELINE_UPDATE = "更新eline";
+	public static final String ELINE_DELETE = "删除eline";
+	public static final String PORT_UPDATE = "更新port";
+	public static final String ETREE_UPDATE = "更新etree";
+	public static final String ETREE_INSERT = "创建etree";
+	public static final String ETREE_DELETE = "删除etree";
+	public static final String ELAN_UPDATE = "更新elan";
+	public static final String ELAN_INSERT = "创建elan";
+	public static final String ELAN_DELETE = "删除elan";
+	public static final String SEGMENT_INSERT = "创建segment";
+	public static final String SEGMENT_UPDATE = "更新segment";
+	public static final String SEGMENT_DELETE = "删除segment";
+	public static final String E1_UPDATE = "更新E1支路";
+	public static final String PORTLAG_INSERT = "创建portLag";
+	public static final String PORTLAG_UPDATE = "更新portLag";
+	public static final String PORTLAG_DELETE = "删除portLag";
+	public static final String TMSOAM_INSERT = "创建tmsOAM";
+	public static final String TMPOAM_INSERT = "创建tmpOAM";
+	public static final String TMCOAM_INSERT = "创建tmcOAM";
+	public static final String ETHCOAM_INSERT = "创建ethOAM";
+	public static final String ETHLINK_INSERT = "创建ethLinkOam";
+	public static final String PHB_TO_EXP_UPDATE = "更新PHBToEXP映射表";
+	public static final String EXP_TO_PHB_UPDATE = "更新EXPToPHB映射表";
+	public static final String QINQ_UPDATE = "更新qinq";
+	public static final String QINQ_INSERT = "创建qinq";
+	public static final String DUAL_INSERT="新建dual";
+	public static final String DUAL_UPDATE="修改dual";
+	public static final String DUAL_DELETE="删除dual";
+	public static final String MAC_UPDATE = "更新mac";
+	public static final String MAC_INSERT = "创建mac";
+	public static final String MAC_DELETE="删除mac";
+	public static final String ETHLOOP_INSERT="以太网环回设置";
+	public static final String ETHLOOP_UPDATE="以太网环回更新";
+	public static final String ACL_INSERT="ACL新建";
+	public static final String ACL_UPDATE="ACL更新";
+	public static final String ACL_DELETE="ACL删除";
+	public static final String MAC_LEARN_UPDATE = "更新mac学习数目限制";
+	public static final String MAC_LEARN_INSERT = "创建mac学习数目限制";
+	public static final String MAC_LEARN_DELETE="删除mac学习数目限制";
+	public static final String BLACKWHITEMAC_INSERT="MAC地址的黑白名单创建";
+	public static final String ETH_SERVICE_INSERT = "以太网二层业务新建";
+	public static final String ETH_SERVICE_UPDATE = "以太网二层业务修改";
+	public static final String ETH_SERVICE_DELETE = "以太网二层业务删除";
+	public static final String L2CP_SERVICE_INSERT = "L2CP新建";
+	public static final String SSMAC_INSERT="二层静态MAC学习地址新建";
+	public static final String SSMAC_UPDATE="二层静态MAC学习地址更新";
+	public static final String CCC_INSERT="CCC配置块新建";
+	public static final String CCC_DELETE="CCC配置块删除";
+	public static final String BFD_DELETE="BFD配置块删除";
+	public static final String BFD_INSERT="BFD配置块新建";
+	public static final String BFD_UPDATE="BFD配置块更新";
+	//public static final String SSMAC_DELETE="二层静态MAC学习地址删除"
+}

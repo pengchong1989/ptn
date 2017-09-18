@@ -1,0 +1,398 @@
+package com.nms.db.dao.ptn;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.nms.db.bean.ptn.MacManagementInfo;
+
+public class MacManageDao {
+
+	public void insert(MacManagementInfo mac, Connection connection) throws Exception {
+		if (null == mac) {
+			throw new Exception("macInfo is null");
+		}
+
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		try {
+			sql = "insert into blacklistmac(siteId,vlanId,mac,portId) " +
+					"values(?,?,?,?)";
+			preparedStatement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+			preparedStatement.setInt(1, mac.getSiteId());
+			preparedStatement.setInt(2, mac.getVlanId());
+			preparedStatement.setString(3, mac.getMac());
+			preparedStatement.setInt(4, mac.getPortId());
+			preparedStatement.executeUpdate();
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+	}
+
+	public void update(MacManagementInfo mac, Connection connection) throws Exception {
+		if (null == mac) {
+			throw new Exception("macInfo is null");
+		}
+
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+
+		try {
+			sql = "update blacklistmac set vlanId=?, mac=?, portId=?" +
+					" where id=?";
+
+			preparedStatement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+			preparedStatement.setInt(1, mac.getVlanId());
+			preparedStatement.setString(2, mac.getMac());
+			preparedStatement.setInt(3, mac.getPortId());
+			preparedStatement.setInt(4, mac.getId()); 
+			preparedStatement.executeUpdate();
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+	}
+
+	public void delete(int id, Connection connection) throws Exception {
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+
+		try {
+			sql = "delete from blacklistmac where id=?";
+			preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.setInt(1, id);
+			preparedStatement.executeUpdate();
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+	}
+
+	public List<MacManagementInfo> selectBySiteId(int siteId, Connection connection) throws Exception {
+		if (siteId == 0) {
+			throw new Exception("siteid is 0");
+		}
+		if (connection == null) {
+			throw new Exception("connection is null");
+		}
+
+		List<MacManagementInfo> macList = null;
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		try {
+			macList = new ArrayList<MacManagementInfo>();
+			sql = "select * from blacklistmac m where m.siteId = " + siteId;
+			preparedStatement = connection.prepareStatement(sql);
+			macList = this.excuteQuery(preparedStatement);
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+		return macList;
+	}
+
+	public MacManagementInfo selectById(int id, Connection connection) throws Exception {
+		if (id == 0) {
+			throw new Exception("id is 0");
+		}
+		if (connection == null) {
+			throw new Exception("connection is null");
+		}
+
+		List<MacManagementInfo> macList = null;
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		try {
+			macList = new ArrayList<MacManagementInfo>();
+			sql = "select * from blacklistmac m where m.id = "+id;
+			preparedStatement = connection.prepareStatement(sql);
+			macList = this.excuteQuery(preparedStatement);
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+		if(macList.size() > 0){
+			return macList.get(0);
+		}
+		return null;
+	}
+	
+	/**
+	 * 执行查询语句
+	 * 
+	 * @param connection
+	 *            数据库连接
+	 * @param sql
+	 *            sql语句
+	 * @return 查询集合
+	 * @throws Exception
+	 */
+	private List<MacManagementInfo> excuteQuery(PreparedStatement preparedStatement) throws Exception {
+		List<MacManagementInfo> macList = null;
+		ResultSet resultSet = null;
+		MacManagementInfo mac = null;
+		try {
+			macList = new ArrayList<MacManagementInfo>();
+			resultSet = preparedStatement.executeQuery();
+
+			while (resultSet.next()) {
+				mac = new MacManagementInfo();
+				mac.setId(resultSet.getInt("id"));
+				mac.setSiteId(resultSet.getInt("siteId"));
+				mac.setVlanId(resultSet.getInt("vlanId"));
+				mac.setMac(resultSet.getString("mac"));
+				mac.setPortId(resultSet.getInt("portId"));
+				macList.add(mac);
+			}
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (resultSet != null) {
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				resultSet = null;
+			}
+			mac = null;
+		}
+		return macList;
+	}
+
+	public void deleteById(int id, Connection connection) throws Exception {
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+
+		try {
+			sql = "delete from blacklistmac where id=?";
+			preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.setInt(1, id);
+			preparedStatement.executeUpdate();
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+	}
+
+	public boolean selectCountBySiteId(int siteId, Connection connection) throws Exception {
+		if (siteId == 0) {
+			throw new Exception("siteId is 0");
+		}
+		if (connection == null) {
+			throw new Exception("connection is null");
+		}
+
+		List<MacManagementInfo> macList = null;
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		try {
+			sql = "select * from blacklistmac m where m.siteId = "+ siteId;
+			preparedStatement = connection.prepareStatement(sql);
+			macList = this.excuteQuery(preparedStatement);
+			if(macList.size() >= 50){
+				return true;
+			}
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+			macList = null;
+		}
+		return false;
+	}
+
+	/**
+	 * 判断一个网元下mac是否重复
+	 * @param macInfo
+	 * @param connection
+	 * @return
+	 * @throws Exception 
+	 */
+	public boolean checkVlanAndMac(MacManagementInfo macInfo,Connection connection) throws Exception {
+		if (macInfo == null) {
+			throw new Exception("macInfo is null");
+		}
+		if (connection == null) {
+			throw new Exception("connection is null");
+		}
+
+		List<MacManagementInfo> macList = null;
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		try {
+			sql = "select * from blacklistmac m where m.siteId = "+ macInfo.getSiteId()+
+					" and m.mac = '"+macInfo.getMac()+"'";
+			preparedStatement = connection.prepareStatement(sql);
+			macList = this.excuteQuery(preparedStatement);
+			if(macList.size() > 0){
+				return true;
+			}
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+			macList = null;
+		}
+		return false;
+	}
+
+	public List<Integer> selectAllPortId(int siteId, Connection connection) throws Exception {
+		if (siteId == 0) {
+			throw new Exception("siteid is 0");
+		}
+		if (connection == null) {
+			throw new Exception("connection is null");
+		}
+
+		List<Integer> portIdList = null;
+		List<MacManagementInfo> macList = null;
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		try {
+			portIdList = new ArrayList<Integer>();
+			sql = "select * from blacklistmac m where m.siteId = "+ siteId + " group by m.portId";
+			preparedStatement = connection.prepareStatement(sql);
+			macList = this.excuteQuery(preparedStatement);
+			for (MacManagementInfo m : macList) {
+				portIdList.add(m.getPortId());
+			}
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+		return portIdList;
+	}
+	/**
+	 * function:根据网元Id删除数据
+	 * @param connection 
+	 * @throws Exception
+	 */
+	public void deleteBySiteId(int siteId, Connection connection) throws Exception {
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+
+		try {
+			sql = "delete from blacklistmac where siteId=?";		
+			preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.setInt(1, siteId);	
+			preparedStatement.executeUpdate();
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+	}
+	
+}

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<node>
+	<table>pwInfo</table>
+	<table>pwNNIInfo</table>
+	<table>Tunnel</table>
+        <table>ssMacStudy</table>
+        <table>l2cp</table>
+        <table>AclInfo</table>
+        <table>blackAndWhiteMacInfo</table>
+</node>

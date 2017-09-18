@@ -1,0 +1,17 @@
+package com.nms.db.dao.ptn.path.eth;
+
+import com.nms.db.bean.ptn.path.eth.ElineInfo;
+
+public interface ElineInfoMapper {
+    int deleteByPrimaryKey(Integer id);
+
+    int insert(ElineInfo record);
+
+    int insertSelective(ElineInfo record);
+
+    ElineInfo selectByPrimaryKey(Integer id);
+
+    int updateByPrimaryKeySelective(ElineInfo record);
+
+    int updateByPrimaryKey(ElineInfo record);
+}

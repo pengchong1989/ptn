@@ -1,0 +1,33 @@
+package com.nms.db.dao.alarm;
+
+import java.sql.Connection;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.nms.db.bean.alarm.OamEvent;
+
+/**
+ * OAM 事件
+ * **/
+public class SiteOamEventDao {
+
+	/**查询
+	 * **/
+	public List<OamEvent> select(Connection connection){
+		List<OamEvent> arr = new ArrayList<OamEvent>(); 
+		
+//test data		
+//		for(int i=0;i<10; i++){
+//			OamEvent oam = new OamEvent();
+//			oam.setId(i+"");
+//			oam.setEnvPort("ge.1.1");
+//			oam.setEnv("oam env");
+//			oam.setEnvState("");
+//			oam.setIsthis("this");
+//			oam.setDatetime("");
+//			oam.setEnvCrc("");
+//			arr.add(oam);
+//		}
+		return  arr;
+	}
+}

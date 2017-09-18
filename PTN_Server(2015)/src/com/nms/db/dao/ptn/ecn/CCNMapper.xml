@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nms.db.dao.ptn.ecn.CCNMapper" >
+  <resultMap id="BaseResultMap" type="CCN" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="neId" property="neid" jdbcType="VARCHAR" />
+    <result column="ccnName" property="ccnname" jdbcType="VARCHAR" />
+    <result column="admin" property="admin" jdbcType="VARCHAR" />
+    <result column="oper" property="oper" jdbcType="VARCHAR" />
+    <result column="ip" property="ip" jdbcType="VARCHAR" />
+    <result column="peer" property="peer" jdbcType="VARCHAR" />
+    <result column="mtu" property="mtu" jdbcType="VARCHAR" />
+    <result column="portname" property="portname" jdbcType="VARCHAR" />
+    <result column="status" property="status" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, neId, ccnName, admin, oper, ip, peer, mtu, portname, status
+  </sql>
+   
+  <insert id="insert" parameterType="CCN"  useGeneratedKeys="true" keyProperty="id">
+    insert into ecn_ccn (neId, ccnName, 
+      admin, oper, ip, peer, 
+      mtu, portname, status
+      )
+    values ( #{neId,jdbcType=VARCHAR}, #{ccnName,jdbcType=VARCHAR}, 
+      #{admin,jdbcType=VARCHAR}, #{oper,jdbcType=VARCHAR}, #{ip,jdbcType=VARCHAR}, #{peer,jdbcType=VARCHAR}, 
+      #{mtu,jdbcType=VARCHAR}, #{portname,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER}
+      )
+  </insert>
+   
+  <update id="update" parameterType="CCN" >
+    UPDATE ecn_ccn SET admin =#{admin,jdbcType=VARCHAR} , ip =#{ip,jdbcType=VARCHAR} , peer =#{peer,jdbcType=VARCHAR}, 
+    mtu =#{mtu,jdbcType=VARCHAR},oper=#{oper,jdbcType=VARCHAR},
+    portname=#{portname,jdbcType=VARCHAR},status=#{status} WHERE id =#{id}
+  </update>
+  
+  <select id="queryByNeID" parameterType="java.lang.String" resultType="CCN">
+  SELECT * from ecn_ccn WHERE neId = #{0}
+  </select>
+  
+    <delete id="deleteBySiteId" parameterType="java.lang.String" >
+    delete from ecn_ccn
+    where neId = #{siteId,jdbcType=INTEGER}
+  </delete>
+  
+ <select id="selectByNeIdAndName" parameterType="map" resultType="CCN">
+  SELECT * from ecn_ccn WHERE neId =#{siteId} and ccnName =#{name}
+  </select>
+  
+   <update id="updateStatus" parameterType="CCN" >
+   UPDATE ecn_ccn SET status=#{status} WHERE neId=#{neId}
+  </update>
+  
+     <delete id="deleteById" parameterType="java.lang.Integer" >
+    delete from ecn_ccn
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+</mapper>

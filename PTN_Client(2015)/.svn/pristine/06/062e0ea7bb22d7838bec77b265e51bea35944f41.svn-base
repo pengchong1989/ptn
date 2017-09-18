@@ -1,0 +1,301 @@
+package com.nms.db.dao.system.code;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.nms.db.bean.system.code.CodeGroup;
+import com.nms.db.fac.f.DButil;
+import com.nms.ui.manager.ExceptionManage;
+
+public class CodeGroupDao {
+
+	/**
+	 * 新增 codegroup
+	 * 
+	 * @param codegroup
+	 *            实体对象
+	 * @param connection
+	 *            数据库连接
+	 * @return 插入记录数
+	 * @throws Exception
+	 */
+	public int insert(CodeGroup codegroup, Connection connection)
+			throws Exception {
+
+		if (null == codegroup) {
+			throw new Exception("codeGroup is null");
+		}
+
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		int result = 0;
+
+		try {
+			sql = "insert into codegroup(codeGroupName,codeIdentily,codeDesc) values(?,?,?)";
+			preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.setString(1, codegroup.getCodeGroupName());
+			preparedStatement.setString(2, codegroup.getCodeIdentily());
+			preparedStatement.setString(3, codegroup.getCodeDesc());
+
+			result = preparedStatement.executeUpdate();
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+
+			sql = null;
+		}
+		return result;
+	}
+
+	/**
+	 * 修改codeGroup
+	 * 
+	 * @param codeGroup
+	 *            实体对象
+	 * @param connection
+	 *            数据库连接
+	 * @return 插入条数
+	 * @throws Exception
+	 */
+	public int update(CodeGroup codeGroup, Connection connection)
+			throws Exception {
+		if (null == codeGroup) {
+			throw new Exception("codeGroup is null");
+		}
+
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		int result = 0;
+
+		try {
+			sql = "update codegroup set codeGroupName=?,codeIdentily=?,codeDesc=? where id=?";
+			preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.setString(1, codeGroup.getCodeGroupName());
+			preparedStatement.setString(2, codeGroup.getCodeIdentily());
+			preparedStatement.setString(3, codeGroup.getCodeDesc());
+			preparedStatement.setInt(4, codeGroup.getId());
+			result = preparedStatement.executeUpdate();
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+
+		return result;
+	}
+
+	/**
+	 * 通过主键删除codeGroup对象
+	 * 
+	 * @param id
+	 *            主键
+	 * @param connection
+	 *            数据库链接
+	 * @return 删除记录数
+	 * @throws Exception
+	 */
+	public int delete(int id, Connection connection) throws Exception {
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		int result = 0;
+
+		try {
+			sql = "delete from codegroup where id=?";
+			preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.setInt(1, id);
+
+			result = preparedStatement.executeUpdate();
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+
+		return result;
+	}
+    /**
+     * 查询全部
+     * @param connection 数据库连接
+     * @return CodeGroup集合
+     * @throws Exception
+     */
+	public List<CodeGroup> queryByConditionall(Connection connection) throws Exception {
+
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		List<CodeGroup> codegroupList = null;
+		String sql = null;
+		ResultSet resultSet = null;
+		PreparedStatement preparedStatement = null;
+		CodeGroup codeGroup = null;
+
+		try {
+			codegroupList = new ArrayList<CodeGroup>();
+			sql = "select id,codeGroupName,codeIdentily , codeDesc from codegroup";
+
+			preparedStatement = connection.prepareStatement(sql);
+			resultSet = preparedStatement.executeQuery();
+
+			while (resultSet.next()) {
+				codeGroup = new CodeGroup();
+				codeGroup.setId(resultSet.getInt("id"));
+				codeGroup
+						.setCodeGroupName(resultSet.getString("codeGroupName"));
+				codeGroup.setCodeIdentily(resultSet.getString("codeIdentily"));
+				codeGroup.setCodeDesc(resultSet.getString("codeDesc"));
+				codegroupList.add(codeGroup);
+			}
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (resultSet != null) {
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				resultSet = null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+			codeGroup = null;
+		}
+
+		return codegroupList;
+
+	}
+	
+	/**
+	 * 通过条件查询CodeGroup
+	 * 
+	 * @param codegroupCondition
+	 *            查询条件
+	 * @param connection
+	 *            数据库链接
+	 * @return CodeGroup集合
+	 * @throws Exception
+	 */
+	public List<CodeGroup> queryByCondition(CodeGroup codegroupCondition,
+			Connection connection) throws Exception {
+
+		if (null == codegroupCondition) {
+			throw new Exception("codegroupCondition is null");
+		}
+
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		List<CodeGroup> codegroupList = null;
+		String sql = null;
+		ResultSet resultSet = null;
+		PreparedStatement preparedStatement = null;
+		CodeGroup codeGroup = null;
+
+		try {
+			codegroupList = new ArrayList<CodeGroup>();
+			sql = "select id,codeGroupName,codeIdentily , codeDesc from codegroup where 1=1";
+
+			if (codegroupCondition.getId() > 0) {
+				sql += " and id=" + codegroupCondition.getId();
+			}
+
+			if (codegroupCondition.getCodeIdentily() != null) {
+				sql += " and codeIdentily="+ DButil.toSingleMark(codegroupCondition.getCodeIdentily());
+			}
+
+			preparedStatement = connection.prepareStatement(sql);
+			resultSet = preparedStatement.executeQuery();
+
+			while (resultSet.next()) {
+				codeGroup = new CodeGroup();
+				codeGroup.setId(resultSet.getInt("id"));
+				codeGroup
+						.setCodeGroupName(resultSet.getString("codeGroupName"));
+				codeGroup.setCodeIdentily(resultSet.getString("codeIdentily"));
+				codeGroup.setCodeDesc(resultSet.getString("codeDesc"));
+				codegroupList.add(codeGroup);
+			}
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (resultSet != null) {
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				resultSet = null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+			codeGroup = null;
+		}
+
+		return codegroupList;
+
+	}
+}

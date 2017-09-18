@@ -1,0 +1,14 @@
+#TunnelOAM信息#######################################################
+#名称
+objNameLog=LBL_TUNNEL_NAME
+#MEG Id
+megId=LBL_MEG_ID
+#维护点ID
+mipId=LBL_OAM_MAINTENANCE_POINT_ID
+#两端维护点id1
+aMId=LBL_OAM_TWO_MAINTENANCE_POINT_ID1
+#两端维护点id2
+zMId=LBL_OAM_TWO_MAINTENANCE_POINT_ID2
+#TC
+tc=LBL_TC
+

@@ -1,0 +1,21 @@
+package com.nms.db.dao.ptn.qos;
+
+import java.util.List;
+
+import com.nms.db.bean.ptn.qos.QosMappingAttr;
+
+public interface QosMappingTemplateMapper {
+    int deleteByPrimaryKey(Integer id);
+
+    int insert(QosMappingAttr record);
+
+    int insertSelective(QosMappingAttr record);
+
+    QosMappingAttr selectByPrimaryKey(Integer id);
+
+    int updateByPrimaryKeySelective(QosMappingAttr record);
+
+    int updateByPrimaryKey(QosMappingAttr record);
+
+	List<QosMappingAttr> queryByCondition(QosMappingAttr qosMappingAttr);
+}

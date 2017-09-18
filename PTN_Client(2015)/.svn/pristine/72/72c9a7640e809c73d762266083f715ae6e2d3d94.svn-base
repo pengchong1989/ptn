@@ -1,0 +1,344 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nms.db.dao.ptn.path.pw.PwInfoMapper" >
+  <resultMap id="BaseResultMap" type="PwInfo" >
+    <id column="pwId" property="pwId" jdbcType="INTEGER" />
+    <result column="pwName" property="pwName" jdbcType="VARCHAR" />
+    <result column="pwStatus" property="pwStatus" jdbcType="INTEGER" />
+    <result column="tunnelId" property="tunnelId" jdbcType="INTEGER" />
+    <result column="inlabelValue" property="inlabelValue" jdbcType="INTEGER" />
+    <result column="outlabelValue" property="OutlabelValue" jdbcType="INTEGER" />
+    <result column="aSiteId" property="aSiteId" jdbcType="INTEGER" />
+    <result column="zSiteId" property="zSiteId" jdbcType="INTEGER" />
+   <result column="showaSiteName" property="showaSiteName" jdbcType="VARCHAR" />
+   <result column="showzSiteName" property="showzSiteName" jdbcType="VARCHAR" />
+    <result column="direction" property="direction" jdbcType="VARCHAR" />
+    <result column="createTime" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="createUser" property="createUser" jdbcType="VARCHAR" />
+    <result column="apwServiceId" property="apwServiceId" jdbcType="INTEGER" />
+    <result column="zpwServiceId" property="zpwServiceId" jdbcType="INTEGER" />
+    <result column="rserviceId" property="relatedServiceId" jdbcType="INTEGER" />
+    <result column="rserviceType" property="relatedServiceType" jdbcType="INTEGER" />
+    <result column="aPortConfigId" property="aPortConfigId" jdbcType="INTEGER" />
+    <result column="zPortConfigId" property="zPortConfigId" jdbcType="INTEGER" />
+    <result column="type" property="type_db" jdbcType="INTEGER" />
+    <result column="isSingle" property="isSingle" jdbcType="INTEGER" />
+    <result column="aoppositeId" property="aoppositeId" jdbcType="VARCHAR" />
+    <result column="zoppositeId" property="zoppositeId" jdbcType="VARCHAR" />
+    <result column="jobstatus" property="jobStatus" jdbcType="VARCHAR" />
+    <result column="expStrategy" property="expStrategy" jdbcType="INTEGER" />
+    <result column="expAssignment" property="expAssignment" jdbcType="INTEGER" />
+    <result column="phbToExpId" property="phbToExpId" jdbcType="INTEGER" />
+    <result column="phbStrategy" property="phbStrategy" jdbcType="INTEGER" />
+    <result column="phbAssignment" property="phbAssignment" jdbcType="INTEGER" />
+    <result column="expTophbId" property="expTophbId" jdbcType="INTEGER" />
+    <result column="payload" property="payload" jdbcType="INTEGER" />
+    <result column="aVlanEnable" property="aVlanEnable" jdbcType="INTEGER" />
+    <result column="aOutVlanValue" property="aOutVlanValue" jdbcType="INTEGER" />
+    <result column="aSourceMac" property="aSourceMac" jdbcType="VARCHAR" />
+    <result column="atargetMac" property="atargetMac" jdbcType="VARCHAR" />
+    <result column="zVlanEnable" property="zVlanEnable" jdbcType="INTEGER" />
+    <result column="zOutVlanValue" property="zOutVlanValue" jdbcType="INTEGER" />
+    <result column="zSourceMac" property="zSourceMac" jdbcType="VARCHAR" />
+    <result column="ztargetMac" property="ztargetMac" jdbcType="VARCHAR" />
+    <result column="businessType" property="businessType" jdbcType="VARCHAR" />
+    <result column="backInlabel" property="backInlabel" jdbcType="INTEGER" />
+    <result column="backOutlabel" property="backOutlabel" jdbcType="INTEGER" />
+    <result column="atp_id" property="atp_id" jdbcType="INTEGER" />
+    <result column="ztp_id" property="ztp_id" jdbcType="INTEGER" />
+    <result column="qosModel" property="qosModel" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    pwId, pwName, pwStatus, tunnelId, inlabelValue, outlabelValue, aSiteId, zSiteId, 
+    direction, createTime, createUser, apwServiceId, zpwServiceId, rserviceId, rserviceType, 
+    aPortConfigId, zPortConfigId, type, isSingle, aoppositeId, zoppositeId, jobstatus, 
+    expStrategy, expAssignment, phbToExpId, phbStrategy, phbAssignment, expTophbId, payload, 
+    aVlanEnable, aOutVlanValue, aSourceMac, atargetMac, zVlanEnable, zOutVlanValue, zSourceMac, 
+    ztargetMac, businessType, backInlabel, backOutlabel, atp_id, ztp_id, pri, qosModel, 
+    snmpPwName
+  </sql>
+  <insert id="insert" parameterType="PwInfo" >
+    insert into pwinfo (pwId, pwName, pwStatus, 
+      tunnelId, inlabelValue, outlabelValue, 
+      aSiteId, zSiteId, direction, 
+      createTime, createUser, apwServiceId, 
+      zpwServiceId, rserviceId, rserviceType, 
+      aPortConfigId, zPortConfigId, type, 
+      isSingle, aoppositeId, zoppositeId, 
+      jobstatus, expStrategy, expAssignment, 
+      phbToExpId, phbStrategy, phbAssignment, 
+      expTophbId, payload, aVlanEnable, 
+      aOutVlanValue, aSourceMac, atargetMac, 
+      zVlanEnable, zOutVlanValue, zSourceMac, 
+      ztargetMac, businessType, backInlabel, 
+      backOutlabel, atp_id, ztp_id, qosModel
+      )
+    values (#{pwId,jdbcType=INTEGER}, #{pwName,jdbcType=VARCHAR}, #{pwStatus,jdbcType=INTEGER}, 
+      #{tunnelId,jdbcType=INTEGER}, #{InlabelValue,jdbcType=INTEGER}, #{OutlabelValue,jdbcType=INTEGER}, 
+      #{aSiteId,jdbcType=INTEGER}, #{zSiteId,jdbcType=INTEGER}, #{direction,jdbcType=VARCHAR}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{createUser,jdbcType=VARCHAR}, #{apwServiceId,jdbcType=INTEGER}, 
+      #{zpwServiceId,jdbcType=INTEGER}, #{relatedServiceId,jdbcType=INTEGER}, #{relatedServiceType,jdbcType=INTEGER}, 
+      #{aPortConfigId,jdbcType=INTEGER}, #{zPortConfigId,jdbcType=INTEGER}, #{type_db,jdbcType=INTEGER}, 
+      #{isSingle,jdbcType=INTEGER}, #{aoppositeId,jdbcType=VARCHAR}, #{zoppositeId,jdbcType=VARCHAR}, 
+      #{jobStatus,jdbcType=VARCHAR}, #{expStrategy,jdbcType=INTEGER}, #{expAssignment,jdbcType=INTEGER}, 
+      #{phbToExpId,jdbcType=INTEGER}, #{phbStrategy,jdbcType=INTEGER}, #{phbAssignment,jdbcType=INTEGER}, 
+      #{expTophbId,jdbcType=INTEGER}, #{payload,jdbcType=INTEGER}, #{aVlanEnable,jdbcType=INTEGER}, 
+      #{aOutVlanValue,jdbcType=INTEGER}, #{aSourceMac,jdbcType=VARCHAR}, #{atargetMac,jdbcType=VARCHAR}, 
+      #{zVlanEnable,jdbcType=INTEGER}, #{zOutVlanValue,jdbcType=INTEGER}, #{zSourceMac,jdbcType=VARCHAR}, 
+      #{ztargetMac,jdbcType=VARCHAR}, #{businessType,jdbcType=VARCHAR}, #{backInlabel,jdbcType=INTEGER}, 
+      #{backOutlabel,jdbcType=INTEGER}, #{atp_id,jdbcType=INTEGER}, #{ztp_id,jdbcType=INTEGER}, 
+      #{qosModel,jdbcType=INTEGER}}
+      )
+  </insert>
+  <update id="updateTunnelID" >
+  	update pwinfo set tunnelId=#{0} where tunnelId in #{1}
+  </update>
+  <select id="queryByCondition" resultMap="BaseResultMap" parameterType="PwInfo">
+  SELECT p.qosModel,p.atp_id,p.ztp_id,p.businessType,p.backInlabel,p.backOutlabel,p.ztargetMac,p.zSourceMac,p.zOutVlanValue,
+  p.zVlanEnable,p.atargetMac,p.aSourceMac,p.aOutVlanValue,p.aVlanEnable,p.expStrategy,p.expAssignment,p.phbToExpId,
+  p.phbStrategy,p.phbAssignment,p.expTophbId,p.jobstatus,p.aoppositeId,p.zoppositeId,p.isSingle, p.pwId, p.pwName, 
+  p.pwStatus, p.tunnelId,p.aSiteId,p.zSiteId, p.type, p.inlabelValue, p.outlabelValue,p.apwServiceId,p.zpwServiceId,
+  sa.CellId AS showaSiteName, sz.CellId AS showzSiteName, p.direction, p.createTime, p.createUser,p.rserviceId,
+  p.rserviceType,p.aPortConfigId,p.zPortConfigId,p.payload FROM pwinfo p, site_inst sa, site_inst sz 
+  WHERE p.aSiteId = sa.site_inst_id AND p.zSiteId = sz.site_inst_id and p.issingle=0
+  <if test="pwId > 0">
+  and pwId=#{pwId}
+  </if>
+  <if test="type_db > 0">
+  and p.type=#{type_db}
+  </if>
+  <if test="aSiteId > 0">
+  and p.aSiteId=#{aSiteId}
+  </if>
+  <if test="zSiteId > 0">
+  and p.zSiteId=#{zSiteId}
+  </if>
+  <if test="tunnelId > 0">
+  AND p.tunnelId=#{tunnelId}
+  </if>
+  <if test="pwStatus != 0">
+  AND  p.pwStatus=#{pwStatus}
+  </if>
+  <if test="createUser != null and createUser != ''">
+  AND  p.createUser=#{createUser}
+  </if>
+  <if test="pwName != null and pwName != ''">
+  AND  p.pwName like "%"#{pwName}"%"
+  </if>
+  <if test="inLblMinValue != 0">
+  AND p.inlabelValue &gt;= #{inLblMinValue}
+  </if>
+  <if test="inLblMaxValue != 0">
+  AND p.inlabelValue &lt;= #{inLblMaxValue}
+  </if>
+  <if test="outLblMinValue != 0">
+  AND p.outlabelValue &gt;= #{outLblMinValue}
+  </if>
+  <if test="outLblMaxValue != 0">
+  AND p.outlabelValue &lt;= #{outLblMaxValue}
+  </if>
+  <if test="businessType != null and businessType != ''">
+  AND p.businessType = #{businessType}
+  </if>
+  </select>
+  <select id="queryByPwTunnelIdCondition" resultMap="BaseResultMap" parameterType="java.util.List">
+  SELECT * FROM pwinfo WHERE tunnelId in
+  <foreach item="item" index="index" collection="tunnelIdList" open="(" separator="," close=")">  
+ 	 #{item}  
+ 	</foreach>
+  </select>
+  <select id="queryFilte" resultMap="BaseResultMap" parameterType="PwInfo">
+  SELECT p.qosModel,p.atp_id,p.ztp_id,p.businessType,p.backInlabel,p.backOutlabel,p.ztargetMac,p.zSourceMac,p.zOutVlanValue,
+  p.zVlanEnable,p.atargetMac,p.aSourceMac,p.aOutVlanValue,p.aVlanEnable,p.expStrategy,p.expAssignment,p.phbToExpId,p.phbStrategy,
+  p.phbAssignment,p.expTophbId,p.jobstatus,p.aoppositeId,p.zoppositeId,p.isSingle , p.pwId, p.pwName, p.pwStatus, p.tunnelId,
+  p.aSiteId,p.zSiteId, p.type, p.inlabelValue, p.outlabelValue,p.apwServiceId,p.zpwServiceId,sa.CellId AS showaSiteName, 
+  sz.CellId AS showzSiteName, p.direction, p.createTime,p.createUser,p.rserviceId,p.rserviceType,p.aPortConfigId,p.zPortConfigId,
+  p.payload FROM pwinfo p, site_inst sa, site_inst sz where 1=1 and p.aSiteId = sa.site_inst_id AND p.zSiteId = sz.site_inst_id 
+  and p.tunnelId > 0 and p.isSingle=#{isSingle}
+  <if test="aSiteId > 0">
+  and (p.aSiteId = #{aSiteId} or p.zSiteId = #{aSiteId})
+  </if>
+  <if test="pwStatus > 0">
+  AND  p.pwStatus=#{pwStatus}
+  </if>
+  <if test="pwName != null and pwName != ''">
+  AND  p.pwName like "%"#{pwName}"%"
+  </if>
+  <if test="type_db > 0">
+  AND p.type = #{type_db}
+  </if>
+  </select>
+  <select id="selectByPWId" resultMap="BaseResultMap" parameterType="PwInfo">
+  SELECT * from pwinfo where pwId=#{pwId}
+  </select>
+  <select id="queryPwBySiteIdAndIsSingle" resultMap="BaseResultMap" parameterType="PwInfo">
+  SELECT * from pwinfo where isSingle=#{isSingle} and (aSiteId=#{aSiteId} or zSiteId=#{aSiteId})
+  </select>
+  <select id="queryByPwidCondition_notjoin" resultMap="BaseResultMap" parameterType="PwInfo">
+  SELECT * from pwinfo where 1=1
+  <if test="pwId > 0">
+  and pwId=#{pwId}
+  </if>
+  <if test="pwName != null and pwName != ''">
+  and pwName=#{pwName}
+  </if>
+  <if test="InlabelValue > 0">
+  and inlabelValue=#{InlabelValue}
+  </if>
+  <if test="OutlabelValue > 0">
+  and inlabelValue=#{OutlabelValue}
+  </if>
+  <if test="backInlabel > 0">
+  and inlabelValue=#{backInlabel}
+  </if>
+  <if test="backOutlabel > 0">
+  and inlabelValue=#{backOutlabel}
+  </if>
+  </select>
+  <select id="findPwByIds" resultMap="BaseResultMap" parameterType="java.util.List">
+  select * from pwinfo p where p.pwid in
+  <foreach item="item" index="index" collection="pwIdList" open="(" separator="," close=")">  
+ 	 #{item}  
+ 	</foreach>
+  </select>
+  <select id="queryNode" resultMap="BaseResultMap" parameterType="PwInfo">
+  select * from pwinfo p where (asiteId=#{aSiteId} or zsiteid=#{zSiteId}) 
+   <if test="pwName != null and pwName != ''">
+  AND  p.pwName like "%"#{pwName}"%"
+  </if>
+   <if test="type_db > 0">
+  AND  p.type=#{type_db}
+  </if>
+   <if test="tunnelId > 0">
+  AND  p.tunnelId=#{tunnelId}
+  </if>
+   <if test="pwStatus > 0">
+  AND  p.pwStatus=#{pwStatus}
+  </if>
+   <if test="inLblMinValue > 0">
+  AND p.inlabelValue &gt;=#{inLblMinValue}
+  </if>
+   <if test="inLblMaxValue > 0">
+  AND p.inlabelValue &lt;=#{inLblMaxValue}
+  </if>
+   <if test="outLblMinValue > 0">
+  AND p.outlabelValue &gt;=#{outLblMinValue}
+  </if>
+   <if test="outLblMaxValue > 0">
+  AND p.outlabelValue &lt;=#{outLblMaxValue}
+  </if>
+  </select>
+  <update id="updateServiceByPwId" >
+  	update serviceinfo set pwId = #{newPwId} where pwId in
+  	<foreach item="item" index="index" collection="pwIdList" open="(" separator="," close=")">  
+ 	 #{item}  
+ 	</foreach>
+  </update>
+  <update id="updatePwBuffByPwId" >
+  	update pwnnibuffer set pwId = #{newPwId} where pwId in
+  	<foreach item="item" index="index" collection="pwIdList" open="(" separator="," close=")">  
+ 	 #{item}  
+ 	</foreach>
+  </update>
+  <update id="updateQosRelevanceByPwId" >
+  	update qosrelevance set objId = #{newPwId} where objType='PW' and objId in
+  	<foreach item="item" index="index" collection="pwIdList" open="(" separator="," close=")">  
+ 	 #{item}  
+ 	</foreach>
+  </update>
+  <update id="updateOamMepByPwId" >
+  	update oammepinfo set serviceId = #{newPwId} where objType='PW' and serviceId in
+  	<foreach item="item" index="index" collection="pwIdList" open="(" separator="," close=")">  
+ 	 #{item}  
+ 	</foreach>
+  </update>
+  <update id="updateCurrAlarmByPwId" >
+  	update current_alarm set objectid = #{newPwId} where objecttype=4 and objectid in
+  	<foreach item="item" index="index" collection="pwIdList" open="(" separator="," close=")">  
+ 	 #{item}  
+ 	</foreach>
+  </update>
+  <update id="updateHisAlarmByPwId" >
+  	update history_alarm set objectid = #{newPwId} where objecttype=4 and objectid in
+  	<foreach item="item" index="index" collection="pwIdList" open="(" separator="," close=")">  
+ 	 #{item}  
+ 	</foreach>
+  </update>
+  <update id="updatePerformanceByPwId" >
+  	update history_performance set objectid = #{newPwId} where objecttype=4 and objectid in
+  	<foreach item="item" index="index" collection="pwIdList" open="(" separator="," close=")">  
+ 	 #{item}  
+ 	</foreach>
+  </update>
+  <delete id="deleteByPwIdList" parameterType="java.util.List">
+  delete from pwinfo where pwid in
+  <foreach item="item" index="index" collection="pwIdList" open="(" separator="," close=")">  
+ 	 #{item}  
+ 	</foreach>
+  </delete>
+
+  
+  <select id="queryByTunnelId" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+  select * from pwinfo p where p.isSingle=0 and p.tunnelId =#{tunnelId}
+  
+  </select>
+  
+  
+  <select id="selectSamePortByTunnelId" resultMap="BaseResultMap">
+  select * from pwinfo p where p.tunnelId = #{0} and p.aSiteId = #{1} or p.zSiteId = #{1} 
+  </select>
+  <select id="query_synchro" resultMap="BaseResultMap">
+  select * from pwinfo where ((asiteid=#{0} and apwServiceId=#{1}) or (zsiteid=#{0} and zpwServiceId=#{1})) and type=#{2}
+  </select>
+  <update id="update" parameterType="PwInfo" >
+    update pwinfo
+    set pwName = #{pwName,jdbcType=VARCHAR},
+      pwStatus = #{pwStatus,jdbcType=INTEGER},
+      tunnelId = #{tunnelId,jdbcType=INTEGER},
+      inlabelValue = #{InlabelValue,jdbcType=INTEGER},
+      outlabelValue = #{OutlabelValue,jdbcType=INTEGER},
+      aSiteId = #{aSiteId,jdbcType=INTEGER},
+      zSiteId = #{zSiteId,jdbcType=INTEGER},
+      direction = #{direction,jdbcType=VARCHAR},
+      createTime = #{createTime,jdbcType=TIMESTAMP},
+      createUser = #{createUser,jdbcType=VARCHAR},
+      apwServiceId = #{apwServiceId,jdbcType=INTEGER},
+      zpwServiceId = #{zpwServiceId,jdbcType=INTEGER},
+      rserviceId = #{relatedServiceId,jdbcType=INTEGER},
+      rserviceType = #{relatedServiceType,jdbcType=INTEGER},
+      aPortConfigId = #{aPortConfigId,jdbcType=INTEGER},
+      zPortConfigId = #{zPortConfigId,jdbcType=INTEGER},
+      type = #{type_db,jdbcType=INTEGER},
+      isSingle = #{isSingle,jdbcType=INTEGER},
+      aoppositeId = #{aoppositeId,jdbcType=VARCHAR},
+      zoppositeId = #{zoppositeId,jdbcType=VARCHAR},
+      jobstatus = #{jobStatus,jdbcType=VARCHAR},
+      expStrategy = #{expStrategy,jdbcType=INTEGER},
+      expAssignment = #{expAssignment,jdbcType=INTEGER},
+      phbToExpId = #{phbToExpId,jdbcType=INTEGER},
+      phbStrategy = #{phbStrategy,jdbcType=INTEGER},
+      phbAssignment = #{phbAssignment,jdbcType=INTEGER},
+      expTophbId = #{expTophbId,jdbcType=INTEGER},
+      payload = #{payload,jdbcType=INTEGER},
+      aVlanEnable = #{aVlanEnable,jdbcType=INTEGER},
+      aOutVlanValue = #{aOutVlanValue,jdbcType=INTEGER},
+      aSourceMac = #{aSourceMac,jdbcType=VARCHAR},
+      atargetMac = #{atargetMac,jdbcType=VARCHAR},
+      zVlanEnable = #{zVlanEnable,jdbcType=INTEGER},
+      zOutVlanValue = #{zOutVlanValue,jdbcType=INTEGER},
+      zSourceMac = #{zSourceMac,jdbcType=VARCHAR},
+      ztargetMac = #{ztargetMac,jdbcType=VARCHAR},
+      businessType = #{businessType,jdbcType=VARCHAR},
+      backInlabel = #{backInlabel,jdbcType=INTEGER},
+      backOutlabel = #{backOutlabel,jdbcType=INTEGER},
+      atp_id = #{atp_id,jdbcType=INTEGER},
+      ztp_id = #{ztp_id,jdbcType=INTEGER},
+      qosModel = #{qosModel,jdbcType=INTEGER},
+    where pwId = #{pwId,jdbcType=INTEGER}
+  </update>
+
+  <select id="queryBySiteId" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+  	select * from pwinfo p where p.issingle=0 and (aSiteId=#{0} or zSiteId=#{0})
+  </select>
+  
+</mapper>

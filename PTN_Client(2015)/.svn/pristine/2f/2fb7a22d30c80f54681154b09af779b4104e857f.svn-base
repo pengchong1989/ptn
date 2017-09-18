@@ -1,0 +1,348 @@
+package com.nms.model.ptn.port;
+
+import java.sql.Connection;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.nms.db.bean.ptn.Businessid;
+import com.nms.db.bean.ptn.SiteRoate;
+import com.nms.db.bean.ptn.path.protect.DualProtect;
+import com.nms.db.bean.ptn.path.protect.DualRelevance;
+import com.nms.db.bean.ptn.path.tunnel.Tunnel;
+import com.nms.db.dao.ptn.BusinessidDao;
+import com.nms.db.dao.ptn.SiteRoateDao;
+import com.nms.db.dao.ptn.path.tunnel.TunnelDao;
+import com.nms.db.dao.ptn.port.DualProtectDao;
+import com.nms.db.enums.EActionType;
+import com.nms.db.enums.EDualProtectType;
+import com.nms.db.enums.EServiceType;
+import com.nms.model.util.ObjectService;
+import com.nms.model.util.Services;
+import com.nms.ui.manager.BusinessIdException;
+import com.nms.ui.manager.ConstantUtil;
+import com.nms.ui.manager.ExceptionManage;
+/**
+ * 双规保护的业务层
+ * @author dzy
+ *
+ */
+public class DualProtectService extends ObjectService{
+	DualProtectDao dualProtectDao;
+	public DualProtectService(){
+		 try {
+			dualProtectDao = new DualProtectDao();
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		}
+	}
+	
+	public void setConnection(Connection connection) {
+		super.connection = connection;
+	}
+
+	public void setPtnuser(String ptnuser) {
+		super.ptnuser = ptnuser;
+	}
+	/**
+	 * 通过网元ID查询
+	 * @param siteId 网元ID
+	 * @return
+	 */
+	public List<DualProtect> selectBySite(int siteId) {
+		TunnelDao tunnelDao = new TunnelDao();
+		DualProtect dualProtectSel = null;
+		dualProtectSel = new DualProtect();
+		dualProtectSel.setSiteId(siteId);
+		List<DualProtect> dualProtectList = null;
+		Tunnel BreakoverTunnel;
+		Tunnel relevanceTunnel;
+		List<Tunnel> relevanceTunnelList;
+		DualRelevance dualRelevanceSel;
+		List<DualRelevance> dualRelevanceList;
+		List<Tunnel> relevanceTunnelListSel;
+		DualRelevanceService dualRelevanceService = null;
+		try {
+			dualRelevanceService = (DualRelevanceService) ConstantUtil.serviceFactory.newService(Services.DUALRELEVANCE, this.connection);
+			relevanceTunnelList = new ArrayList<Tunnel>();
+			BreakoverTunnel = new Tunnel();
+			relevanceTunnel = new Tunnel();
+			dualProtectList =  this.dualProtectDao.queryByCondition(dualProtectSel, super.connection);
+			//添加没一个 穿通 和 关联Tunnel
+			for(DualProtect dualProtect:dualProtectList){
+				dualRelevanceSel = new DualRelevance();
+				dualRelevanceSel.setSiteId(dualProtect.getSiteId());
+				dualRelevanceSel.setObjId(dualProtect.getId());
+				dualRelevanceSel.setDualGroupId(dualProtect.getDualRelevanceGroupId());
+				dualRelevanceList = dualRelevanceService.queryByCondition(dualRelevanceSel);
+				for(DualRelevance dualRelevance:dualRelevanceList){
+					//如果是穿通tunnel
+					if(EDualProtectType.BREAKOVER.getValue()==dualRelevance.getObjType()){
+						BreakoverTunnel = tunnelDao.queryBySiteIdAndTunnelId(dualRelevance.getSiteId(), dualRelevance.getTunnelId(), connection);
+						dualProtect.setBreakoverTunnel(BreakoverTunnel);
+					}else{//如果是关联tunnel
+						relevanceTunnel.setTunnelId(dualRelevance.getTunnelId());
+						relevanceTunnelListSel = tunnelDao.queryByCondition_nojoin(relevanceTunnel, connection);
+						if(null!=relevanceTunnelListSel&&relevanceTunnelListSel.size()==1){
+							relevanceTunnelList.add(relevanceTunnelListSel.get(0));
+						}
+					}
+				}
+				dualProtect.setRelevanceTunnelList(relevanceTunnelList);
+			}
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		} finally {
+//			UiUtil.closeService(dualRelevanceService);
+		}
+		return dualProtectList;
+	}
+	
+	/**
+	 * 通过条件查询
+	 * @param siteId 网元ID
+	 * @return
+	 */
+	public List<DualProtect> queryByCondition(DualProtect condition) {
+		TunnelDao tunnelDao = new TunnelDao();
+		DualProtect dualProtectSel = condition;
+		List<DualProtect> dualProtectList = null;
+		Tunnel BreakoverTunnel;
+		Tunnel relevanceTunnel;
+		DualRelevance dualRelevanceSel;
+		List<Tunnel> relevanceTunnelList;
+		List<DualRelevance> dualRelevanceList;
+		List<Tunnel> relevanceTunnelListSel;
+		DualRelevanceService dualRelevanceService = null;
+		try {
+			dualRelevanceService = (DualRelevanceService) ConstantUtil.serviceFactory.newService(Services.DUALRELEVANCE, this.connection);
+			relevanceTunnelList = new ArrayList<Tunnel>();
+			BreakoverTunnel = new Tunnel();
+			relevanceTunnel = new Tunnel();
+			dualProtectList =  this.dualProtectDao.queryByCondition(dualProtectSel, super.connection);
+			//添加没一个 穿通 和 关联Tunnel
+			for(DualProtect dualProtect:dualProtectList){
+				dualRelevanceSel = new DualRelevance();
+				dualRelevanceSel.setSiteId(dualProtect.getSiteId());
+				dualRelevanceSel.setObjId(dualProtect.getId());
+				dualRelevanceSel.setDualGroupId(dualProtect.getDualRelevanceGroupId());
+				dualRelevanceList = dualRelevanceService.queryByCondition(dualRelevanceSel);
+				for(DualRelevance dualRelevance:dualRelevanceList){
+					//如果是穿通tunnel
+					if(EDualProtectType.BREAKOVER.getValue()==dualRelevance.getObjType()){
+						BreakoverTunnel = tunnelDao.queryBySiteIdAndServiceId(dualRelevance.getSiteId(), dualRelevance.getTunnelId(), connection);
+						dualProtect.setBreakoverTunnel(BreakoverTunnel);
+					}
+					//如果是关联tunnel
+					else{
+						relevanceTunnel.setTunnelId(dualRelevance.getTunnelId());
+						relevanceTunnelListSel = tunnelDao.queryByCondition_nojoin(relevanceTunnel, connection);
+						if(null!=relevanceTunnelListSel&&relevanceTunnelListSel.size()==1){
+							relevanceTunnelList.add(relevanceTunnelListSel.get(0));
+						}
+					}
+				}
+				dualProtect.setRelevanceTunnelList(relevanceTunnelList);
+			}
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		} finally {
+//			UiUtil.closeService(dualRelevanceService);
+		}
+		return dualProtectList;
+	}
+	/**
+	 * 添加修改方法
+	 * @param dualProtect 双规保护对象
+	 * @return
+	 */
+	public int saveOrUpdate(DualProtect dualProtect) {
+		DualRelevance dualRelevance;
+		int dualId = 0;
+		SiteRoate siteRoate=null;
+		SiteRoateDao siteRoateDao=null;
+		DualRelevanceService dualRelevanceService = null;
+		try {
+			dualRelevanceService = (DualRelevanceService) ConstantUtil.serviceFactory.newService(Services.DUALRELEVANCE, this.connection);
+			dualRelevance = new DualRelevance();
+			//新建双规保护时，添加双规的倒换
+			siteRoateDao=new SiteRoateDao();
+			siteRoate=new SiteRoate();
+			siteRoate.setType("dual");
+			siteRoate.setSiteId(dualProtect.getSiteId());
+			//tunnel  关联数据保存
+			dualRelevance.setObjId(dualId);
+			dualRelevance.setSiteId(dualProtect.getSiteId());
+			dualRelevance.setDualGroupId(dualProtect.getBreakoverTunnel().getTunnelId());
+			dualProtect.setDualRelevanceGroupId(dualProtect.getBreakoverTunnel().getTunnelId());
+			if(0==dualProtect.getId()){
+				Businessid businessid = null;
+				BusinessidDao businessidDao = new BusinessidDao();
+
+				// 如果没有businessId 说明是界面插入，需要从businessid管理表中取businessid
+				if (dualProtect.getBusinessId() == 0) {
+					businessid = businessidDao.query(dualProtect.getSiteId(), "dual", connection);
+				} else {
+					businessid = businessidDao.query(dualProtect.getBusinessId(), dualProtect.getSiteId(), "dual", connection);
+				}
+
+				// 如果没有查询到。 抛给页面一个异常
+				if (businessid == null) {
+					throw new BusinessIdException("dualBusinessId is null");
+				}
+				dualProtect.setBusinessId(businessid.getIdValue());
+				// 修改此id为已用状态
+				businessidDao.update(businessid.getId(), 1, super.connection);
+				
+				dualId = this.dualProtectDao.save(dualProtect,super.connection);
+				/*
+				 * 新增双规保护成功时，新增 双规的倒换信息
+				 */
+				if(dualId>0){
+					siteRoate.setTypeId(dualId);
+					siteRoate.setRoate(-1);
+					siteRoateDao.insert(siteRoate, connection);
+				}
+
+				//离线网元数据下载
+				super.dateDownLoad(dualProtect.getSiteId(),dualId, EServiceType.DUAL.getValue(), EActionType.INSERT.getValue());
+			}else{
+				dualId = this.dualProtectDao.update(dualProtect,super.connection);
+				siteRoate.setRoate(dualProtect.getRotateOrder());
+				dualRelevanceService.delete(dualRelevance);
+				//离线网元数据下载
+				super.dateDownLoad(dualProtect.getSiteId(),dualId, EServiceType.DUAL.getValue(), EActionType.UPDATE.getValue());
+			}
+			//tunnel  关联数据保存
+			dualRelevance.setObjId(dualId);
+			dualRelevance.setSiteId(dualProtect.getSiteId());
+			dualRelevance.setDualGroupId(dualProtect.getBreakoverTunnel().getTunnelId());
+			//穿通tunnel  数据保存
+			dualRelevance.setObjType(EDualProtectType.BREAKOVER.getValue());
+			dualRelevance.setTunnelId(dualProtect.getBreakoverTunnel().getTunnelId());
+			dualRelevanceService.saveOrUpdate(dualRelevance);
+			//关联tunnel  数据保存
+			for(Tunnel tunnel:dualProtect.getRelevanceTunnelList()){
+				dualRelevance.setObjType(EDualProtectType.RELEVANCE.getValue());
+				dualRelevance.setTunnelId(tunnel.getTunnelId());
+				dualRelevanceService.saveOrUpdate(dualRelevance);
+			}
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		} finally {
+//			UiUtil.closeService(dualRelevanceService);
+		}
+		return dualId;
+	}
+
+	/**
+	 * 删除方法
+	 * @param dualProtect 双规保护对象
+	 */
+	public void delete(DualProtect dualProtect) {
+		DualRelevance dualRelevance;
+		int result=0;
+		SiteRoateDao siteRoateDao=null;
+		SiteRoate siteRoate=null;
+		DualRelevanceService dualRelevanceService = null;
+		try {
+			dualRelevanceService = (DualRelevanceService) ConstantUtil.serviceFactory.newService(Services.DUALRELEVANCE, this.connection);
+			dualRelevance = new DualRelevance();
+			siteRoateDao=new SiteRoateDao();
+			this.dualProtectDao.delete(dualProtect, super.connection);
+			//删除双规的关系表
+			dualRelevance.setDualGroupId(dualProtect.getDualRelevanceGroupId());
+			result=dualRelevanceService.delete(dualRelevance);
+			/**
+			 * 删除双规保护时：删除双规的倒换
+			 */
+			if(result>0){
+				siteRoate=new SiteRoate();
+				siteRoate.setType("dual");
+				siteRoate.setTypeId(dualProtect.getId());
+				if(dualProtect.getSiteId()>0){
+					siteRoate.setSiteId(dualProtect.getSiteId());
+				}
+				siteRoateDao.delete(siteRoate, connection);
+			}
+			// 修改此Businessid为未用状态
+			BusinessidDao businessidDao = new BusinessidDao();
+			Businessid businessid = businessidDao.query(dualProtect.getBusinessId(), dualProtect.getSiteId(), "dual", connection);
+			businessidDao.update(businessid.getId(), 0, super.connection);
+			
+			//离线网元数据下载
+			super.dateDownLoad(dualProtect.getSiteId(),dualProtect.getId(), EServiceType.DUAL.getValue(), EActionType.DELETE.getValue(), dualProtect.getBusinessId()+"",null,0,0,null);
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		} finally {
+//			UiUtil.closeService(dualRelevanceService);
+		}
+	}
+	
+	/**
+	 * 修改状态（设备是否存在）
+	 * @param siteId 网元ID
+	 * @param status 状态值
+	 */
+	public void updateActiveStatus(int siteId, int status) {
+		try {
+			this.dualProtectDao.updateActiveStatus(siteId,status, super.connection);
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		}
+	}
+	
+	/**
+	 * 同步查询
+	 * @param siteId 网元ID
+	 * @return
+	 */
+	public List<DualProtect> queryByConditionForSynchro(DualProtect condition) {
+		TunnelDao tunnelDao = new TunnelDao();
+		DualProtect dualProtectSel = condition;
+		List<DualProtect> dualProtectList = null;
+		Tunnel BreakoverTunnel;
+		Tunnel relevanceTunnel;
+		DualRelevance dualRelevanceSel;
+		List<Tunnel> relevanceTunnelList;
+		List<DualRelevance> dualRelevanceList;
+		List<Tunnel> relevanceTunnelListSel;
+		DualRelevanceService dualRelevanceService = null;
+		try {
+			dualRelevanceService = (DualRelevanceService) ConstantUtil.serviceFactory.newService(Services.DUALRELEVANCE, this.connection);
+			relevanceTunnelList = new ArrayList<Tunnel>();
+			BreakoverTunnel = new Tunnel();
+			relevanceTunnel = new Tunnel();
+			dualProtectList =  this.dualProtectDao.queryByConditionForSynchro(dualProtectSel, super.connection);
+			//添加没一个 穿通 和 关联Tunnel
+			for(DualProtect dualProtect:dualProtectList){
+				dualRelevanceSel = new DualRelevance();
+				dualRelevanceSel.setSiteId(dualProtect.getSiteId());
+				dualRelevanceSel.setObjId(dualProtect.getId());
+				dualRelevanceSel.setDualGroupId(dualProtect.getDualRelevanceGroupId());
+				dualRelevanceList = dualRelevanceService.queryByCondition(dualRelevanceSel);
+				for(DualRelevance dualRelevance:dualRelevanceList){
+					//如果是穿通tunnel
+					if(EDualProtectType.BREAKOVER.getValue()==dualRelevance.getObjType()){
+						BreakoverTunnel = tunnelDao.queryBySiteIdAndServiceId(dualRelevance.getSiteId(), dualRelevance.getTunnelId(), connection);
+						dualProtect.setBreakoverTunnel(BreakoverTunnel);
+					}
+					//如果是关联tunnel
+					else{
+						relevanceTunnel.setTunnelId(dualRelevance.getTunnelId());
+						relevanceTunnelListSel = tunnelDao.queryByCondition_nojoin(relevanceTunnel, connection);
+						if(null!=relevanceTunnelListSel&&relevanceTunnelListSel.size()==1){
+							relevanceTunnelList.add(relevanceTunnelListSel.get(0));
+						}
+					}
+				}
+				dualProtect.setRelevanceTunnelList(relevanceTunnelList);
+			}
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		} finally {
+//			UiUtil.closeService(dualRelevanceService);
+		}
+		return dualProtectList;
+	}
+	
+}

@@ -1,0 +1,274 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nms.db.dao.ptn.qos.QosInfoMapper" >
+  <resultMap id="BaseResultMap" type="QosInfo" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="siteId" property="siteid" jdbcType="INTEGER" />
+    <result column="groupId" property="groupid" jdbcType="INTEGER" />
+    <result column="qosType" property="qostype" jdbcType="VARCHAR" />
+    <result column="qosname" property="qosname" jdbcType="VARCHAR" />
+    <result column="seq" property="seq" jdbcType="INTEGER" />
+    <result column="cos" property="cos" jdbcType="INTEGER" />
+    <result column="direction" property="direction" jdbcType="VARCHAR" />
+    <result column="cir" property="cir" jdbcType="INTEGER" />
+    <result column="cbs" property="cbs" jdbcType="INTEGER" />
+    <result column="eir" property="eir" jdbcType="INTEGER" />
+    <result column="ebs" property="ebs" jdbcType="INTEGER" />
+    <result column="pir" property="pir" jdbcType="INTEGER" />
+    <result column="pbs" property="pbs" jdbcType="INTEGER" />
+    <result column="strategy" property="strategy" jdbcType="INTEGER" />
+    <result column="colorSense" property="colorsense" jdbcType="INTEGER" />
+    <result column="status" property="status" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, siteId, groupId, qosType, qosname, seq, cos, direction, cir, cbs, eir, ebs, pir, 
+    pbs, strategy, colorSense, status
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from qosinfo
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from qosinfo
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="QosInfo" >
+    insert into qosinfo (id, siteId, groupId, 
+      qosType, qosname, seq, 
+      cos, direction, cir, 
+      cbs, eir, ebs, pir, 
+      pbs, strategy, colorSense, 
+      status)
+    values (#{id,jdbcType=INTEGER}, #{siteid,jdbcType=INTEGER}, #{groupid,jdbcType=INTEGER}, 
+      #{qostype,jdbcType=VARCHAR}, #{qosname,jdbcType=VARCHAR}, #{seq,jdbcType=INTEGER}, 
+      #{cos,jdbcType=INTEGER}, #{direction,jdbcType=VARCHAR}, #{cir,jdbcType=INTEGER}, 
+      #{cbs,jdbcType=INTEGER}, #{eir,jdbcType=INTEGER}, #{ebs,jdbcType=INTEGER}, #{pir,jdbcType=INTEGER}, 
+      #{pbs,jdbcType=INTEGER}, #{strategy,jdbcType=INTEGER}, #{colorsense,jdbcType=INTEGER}, 
+      #{status,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="QosInfo" >
+    insert into qosinfo
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="siteid != null" >
+        siteId,
+      </if>
+      <if test="groupid != null" >
+        groupId,
+      </if>
+      <if test="qostype != null" >
+        qosType,
+      </if>
+      <if test="qosname != null" >
+        qosname,
+      </if>
+      <if test="seq != null" >
+        seq,
+      </if>
+      <if test="cos != null" >
+        cos,
+      </if>
+      <if test="direction != null" >
+        direction,
+      </if>
+      <if test="cir != null" >
+        cir,
+      </if>
+      <if test="cbs != null" >
+        cbs,
+      </if>
+      <if test="eir != null" >
+        eir,
+      </if>
+      <if test="ebs != null" >
+        ebs,
+      </if>
+      <if test="pir != null" >
+        pir,
+      </if>
+      <if test="pbs != null" >
+        pbs,
+      </if>
+      <if test="strategy != null" >
+        strategy,
+      </if>
+      <if test="colorsense != null" >
+        colorSense,
+      </if>
+      <if test="status != null" >
+        status,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="siteid != null" >
+        #{siteid,jdbcType=INTEGER},
+      </if>
+      <if test="groupid != null" >
+        #{groupid,jdbcType=INTEGER},
+      </if>
+      <if test="qostype != null" >
+        #{qostype,jdbcType=VARCHAR},
+      </if>
+      <if test="qosname != null" >
+        #{qosname,jdbcType=VARCHAR},
+      </if>
+      <if test="seq != null" >
+        #{seq,jdbcType=INTEGER},
+      </if>
+      <if test="cos != null" >
+        #{cos,jdbcType=INTEGER},
+      </if>
+      <if test="direction != null" >
+        #{direction,jdbcType=VARCHAR},
+      </if>
+      <if test="cir != null" >
+        #{cir,jdbcType=INTEGER},
+      </if>
+      <if test="cbs != null" >
+        #{cbs,jdbcType=INTEGER},
+      </if>
+      <if test="eir != null" >
+        #{eir,jdbcType=INTEGER},
+      </if>
+      <if test="ebs != null" >
+        #{ebs,jdbcType=INTEGER},
+      </if>
+      <if test="pir != null" >
+        #{pir,jdbcType=INTEGER},
+      </if>
+      <if test="pbs != null" >
+        #{pbs,jdbcType=INTEGER},
+      </if>
+      <if test="strategy != null" >
+        #{strategy,jdbcType=INTEGER},
+      </if>
+      <if test="colorsense != null" >
+        #{colorsense,jdbcType=INTEGER},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="QosInfo" >
+    update qosinfo
+    <set >
+      <if test="siteid != null" >
+        siteId = #{siteid,jdbcType=INTEGER},
+      </if>
+      <if test="groupid != null" >
+        groupId = #{groupid,jdbcType=INTEGER},
+      </if>
+      <if test="qostype != null" >
+        qosType = #{qostype,jdbcType=VARCHAR},
+      </if>
+      <if test="qosname != null" >
+        qosname = #{qosname,jdbcType=VARCHAR},
+      </if>
+      <if test="seq != null" >
+        seq = #{seq,jdbcType=INTEGER},
+      </if>
+      <if test="cos != null" >
+        cos = #{cos,jdbcType=INTEGER},
+      </if>
+      <if test="direction != null" >
+        direction = #{direction,jdbcType=VARCHAR},
+      </if>
+      <if test="cir != null" >
+        cir = #{cir,jdbcType=INTEGER},
+      </if>
+      <if test="cbs != null" >
+        cbs = #{cbs,jdbcType=INTEGER},
+      </if>
+      <if test="eir != null" >
+        eir = #{eir,jdbcType=INTEGER},
+      </if>
+      <if test="ebs != null" >
+        ebs = #{ebs,jdbcType=INTEGER},
+      </if>
+      <if test="pir != null" >
+        pir = #{pir,jdbcType=INTEGER},
+      </if>
+      <if test="pbs != null" >
+        pbs = #{pbs,jdbcType=INTEGER},
+      </if>
+      <if test="strategy != null" >
+        strategy = #{strategy,jdbcType=INTEGER},
+      </if>
+      <if test="colorsense != null" >
+        colorSense = #{colorsense,jdbcType=INTEGER},
+      </if>
+      <if test="status != null" >
+        status = #{status,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="QosInfo" >
+    update qosinfo
+    set siteId = #{siteid,jdbcType=INTEGER},
+      groupId = #{groupid,jdbcType=INTEGER},
+      qosType = #{qostype,jdbcType=VARCHAR},
+      qosname = #{qosname,jdbcType=VARCHAR},
+      seq = #{seq,jdbcType=INTEGER},
+      cos = #{cos,jdbcType=INTEGER},
+      direction = #{direction,jdbcType=VARCHAR},
+      cir = #{cir,jdbcType=INTEGER},
+      cbs = #{cbs,jdbcType=INTEGER},
+      eir = #{eir,jdbcType=INTEGER},
+      ebs = #{ebs,jdbcType=INTEGER},
+      pir = #{pir,jdbcType=INTEGER},
+      pbs = #{pbs,jdbcType=INTEGER},
+      strategy = #{strategy,jdbcType=INTEGER},
+      colorSense = #{colorsense,jdbcType=INTEGER},
+      status = #{status,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  
+    <select id="queryByCondition" resultType="QosInfo" parameterType="QosInfo" >
+    select 
+    <include refid="Base_Column_List" />
+    from qosinfo
+    <where>
+    1=1
+    <if test="qosInfo !=null ">
+       <if test="qosInfo.siteId>0 "> 
+           and siteId=#{qosInfo.siteId}
+       </if>
+       <if test="qosInfo.groupId>0">
+           and groupid=#{qosInfo.groupId}
+       </if>
+       <if test="qosInfo.qosType !=null and qosInfo.qosType!='' ">
+           and qostype=#{qosInfo.qosType}
+       </if>
+       <if test="qosInfo.qosname !=null and qosInfo.qosname!='' ">
+           and qosname=#{qosInfo.qosname}
+       </if>
+       <if test="qosInfo.status>0">
+           and status=#{qosInfo.status}
+       </if>
+       <if test="qosInfo.id>0">
+           and id=#{qosInfo.id}
+       </if>
+    </if>
+    </where>
+  </select>
+  
+  <select id="selectByCondition" resultType="QosInfo" parameterType="map" >
+    select 
+    <include refid="Base_Column_List" />
+    from qosinfo
+    where groupId in (select qosGroupId from qosrelevance where objType = #{objType} 
+    and objId in 
+    <foreach item="item" index="index" collection="list" open="(" separator= ", " close=" )">
+     #{objectIdList}
+       </foreach> 
+  </select>       
+</mapper>

@@ -1,0 +1,224 @@
+package com.nms.model.ptn;
+
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.nms.db.bean.ptn.MacManagementInfo;
+import com.nms.db.dao.ptn.MacManageDao;
+import com.nms.model.util.ObjectService;
+import com.nms.ui.manager.ExceptionManage;
+
+public class MacManageService extends ObjectService {
+	public void setConnection(Connection connection) {
+		super.connection = connection;
+	}
+
+	public void setPtnuser(String ptnuser) {
+		super.ptnuser = ptnuser;
+	}
+	
+	private MacManageDao macDao = new MacManageDao();
+	
+	public void save(MacManagementInfo macInfo) throws Exception {
+		if(macInfo == null){
+			throw new Exception("macInfo is null");
+		}
+		try {
+			connection.setAutoCommit(false);
+			macDao.insert(macInfo, connection);
+			if(!connection.getAutoCommit()){
+				connection.commit();
+			}
+		} catch (Exception e) {
+			connection.rollback();
+			ExceptionManage.dispose(e, this.getClass());
+		} finally {
+			connection.setAutoCommit(true);
+		}
+	}
+
+	public void update(MacManagementInfo macInfo) throws SQLException {
+		try {
+			connection.setAutoCommit(false);
+			macDao.update(macInfo, connection);
+			if(!connection.getAutoCommit()){
+				connection.commit();
+			}
+		} catch (Exception e) {
+			connection.rollback();
+			ExceptionManage.dispose(e, this.getClass());
+		} finally {
+			connection.setAutoCommit(true);
+		}
+	}
+
+	/**
+	 * 多选删除
+	 * 虚拟网元操作
+	 */
+	public void delete(List<MacManagementInfo> list) throws SQLException {
+		try {
+			connection.setAutoCommit(false);
+			if(list != null){
+				for (MacManagementInfo mac : list) {
+					macDao.delete(mac.getId(), connection);
+				}
+			}
+			if(!connection.getAutoCommit()){
+				connection.commit();
+			}
+		} catch (Exception e) {
+			connection.rollback();
+			ExceptionManage.dispose(e, this.getClass());
+		} finally {
+			connection.setAutoCommit(true);
+		}
+		
+	}
+
+	/**
+	 * 根据网元id查询对应的mac
+	 * @param siteId
+	 * @return
+	 * @throws SQLException
+	 */
+	public List<MacManagementInfo> selectBySiteId(int siteId) throws SQLException {
+		List<MacManagementInfo> macManagementInfoList = new ArrayList<MacManagementInfo>();
+		try {
+			connection.setAutoCommit(false);
+			macManagementInfoList =  macDao.selectBySiteId(siteId, connection);
+			if(!connection.getAutoCommit()){
+				connection.commit();
+			}
+		} catch (Exception e) {
+			connection.rollback();
+			ExceptionManage.dispose(e, this.getClass());
+		} finally {
+			connection.setAutoCommit(true);
+		}
+		return macManagementInfoList;
+	}
+
+	public void delete(MacManagementInfo macInfo) throws SQLException {
+		try {
+			connection.setAutoCommit(false);
+			macDao.delete(macInfo.getId(), connection);
+			if(!connection.getAutoCommit()){
+				connection.commit();
+			}
+		} catch (Exception e) {
+			connection.rollback();
+			ExceptionManage.dispose(e, this.getClass());
+		} finally {
+			connection.setAutoCommit(true);
+		}
+	}
+
+	public MacManagementInfo selectById(int id) throws SQLException {
+		MacManagementInfo macManagementInfo = null;
+		try {
+			connection.setAutoCommit(false);
+			macManagementInfo =  macDao.selectById(id, connection);
+			if(!connection.getAutoCommit()){
+				connection.commit();
+			}
+		} catch (Exception e) {
+			connection.rollback();
+			ExceptionManage.dispose(e, this.getClass());
+		} finally {
+			connection.setAutoCommit(true);
+		}
+		return macManagementInfo;
+	}
+
+	public void deleteById(int id) throws SQLException {
+		try {
+			connection.setAutoCommit(false);
+			macDao.deleteById(id, connection);
+			if(!connection.getAutoCommit()){
+				connection.commit();
+			}
+		} catch (Exception e) {
+			connection.rollback();
+			ExceptionManage.dispose(e, this.getClass());
+		} finally {
+			connection.setAutoCommit(true);
+		}
+		
+	}
+
+	public boolean selectCountBySiteId(int siteId) throws SQLException {
+		boolean flag = false;
+		try {
+			connection.setAutoCommit(false);
+			flag = macDao.selectCountBySiteId(siteId, connection);
+			if(!connection.getAutoCommit()){
+				connection.commit();
+			}
+		} catch (Exception e) {
+			connection.rollback();
+			ExceptionManage.dispose(e, this.getClass());
+		} finally {
+			connection.setAutoCommit(true);
+		}
+		return flag;
+	}
+
+	public boolean checkVlanAndMac(MacManagementInfo macInfo) throws SQLException {
+		boolean flag = false;
+		try {
+			connection.setAutoCommit(false);
+			flag = macDao.checkVlanAndMac(macInfo, connection);
+			if(!connection.getAutoCommit()){
+				connection.commit();
+			}
+		} catch (Exception e) {
+			connection.rollback();
+			ExceptionManage.dispose(e, this.getClass());
+		} finally {
+			connection.setAutoCommit(true);
+		}
+		return flag;
+	}
+
+	public List<Integer> selectAllPortId(int siteId) throws SQLException {
+		List<Integer> listIntger = null;
+		try {
+			listIntger = new ArrayList<Integer>();
+			connection.setAutoCommit(false);
+			listIntger =  macDao.selectAllPortId(siteId, connection);
+			if(!connection.getAutoCommit()){
+				connection.commit();
+			}
+		} catch (Exception e) {
+			connection.rollback();
+			ExceptionManage.dispose(e, this.getClass());
+		} finally {
+			connection.setAutoCommit(true);
+		}
+		return listIntger;
+	}
+	/**
+	 * 根据网元Id删除数据
+	 */
+	public void deleteBySiteId(int siteId) throws Exception{
+		if(siteId == 0){
+			throw new Exception("siteId is null");
+		}
+		try {
+			connection.setAutoCommit(false);
+			macDao.deleteBySiteId(siteId, connection);
+			if(!connection.getAutoCommit()){
+				connection.commit();
+			}
+		} catch (Exception e) {
+			connection.rollback();
+			ExceptionManage.dispose(e,this.getClass());
+		}finally{
+			connection.setAutoCommit(true);
+		}
+	}
+	
+}

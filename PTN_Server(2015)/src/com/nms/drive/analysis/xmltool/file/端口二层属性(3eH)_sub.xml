@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<driveRoot xmlns="http://drive.bean.com">
+    <attribute length="1" description="端口号" value="0" mapping="0"/>
+	<attribute length="1" description="MAC地址学习使能" value="0" mapping="0/1=禁止/使能"/>
+	<attribute length="2" description="MAC地址学习条目数" value="0" mapping="1-512-30000"/>
+	<attribute length="1" description="TPID" value="0" mapping="0/1/2/3=8100/88a8/9100/9200"/>
+	<attribute length="1" description="端口类型" value="0" mapping="0/1/2/3=8100/88a8/9100/9200"/>
+	<attribute length="2" description="PVID" value="0" mapping="0/1/2/3=8100/88a8/9100/9200"/>
+	<attribute length="1" description="QINQ使能" value="0" mapping="0/1/2/3=8100/88a8/9100/9200"/>
+	<attribute length="11" description="备用" value="0" mapping=""/>
+	<attribute length="2" description="所加入VLAN的数目" value="0" mapping="0">
+	<listRoot file="com/nms/drive/analysis/xmltool/file/端口二层属性(3eH)_vlan_sub.xml">
+		</listRoot>
+	</attribute>
+	<attribute length="1" description="QINQ模式" value="0" mapping="0/1/2/3=8100/88a8/9100/9200"/>
+	<attribute length="4" description="备用" value="0" mapping=""/>
+	<attribute length="1" description="QINQ配置数目" value="0" mapping="0">
+	<listRoot file="com/nms/drive/analysis/xmltool/file/端口二层属性(3eH)_qinq_sub.xml">
+		</listRoot>
+	</attribute>
+</driveRoot>

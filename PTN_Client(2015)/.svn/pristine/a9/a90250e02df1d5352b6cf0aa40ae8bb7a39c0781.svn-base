@@ -1,0 +1,207 @@
+package com.nms.db.dao.system.roleManage;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.nms.db.bean.system.roleManage.RoleInfo;
+import com.nms.db.bean.system.roleManage.RoleRelevance;
+import com.nms.ui.manager.ExceptionManage;
+/**
+ * 查询    角色、权限关联表
+ * @author Administrator
+ *
+ */
+public class RoleRelevanceDao {
+
+	/**
+	 * 查询权限表
+	 * @param roleInfo
+	 * @param connection
+	 * @return
+	 * @throws Exception
+	 */
+	public List<RoleRelevance> select(RoleRelevance roleRelevance,Connection connection) throws Exception {
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		// 级联查询 r.infoId=i.id 主键ID r.manageId=m.id 菜单 ID
+		String sql = "select r.id,r.infoId,r.manageId,m.name,m.parentId,m.label "
+				+ "from rolerelevance r,roleinfo i,rolemanage m where 1=1 and r.infoId=i.id and r.manageId=m.id";
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+		RoleRelevance info=null;
+		List<RoleRelevance> roleInfoList = null;
+		try {
+			if (null != roleRelevance) {
+				if (roleRelevance.getInfoId() > 0) {
+					sql += " and r.infoId= " + roleRelevance.getInfoId();
+				}
+				if (roleRelevance.getId() > 0) {
+					sql += " and r.id =" + roleRelevance.getId();
+				}
+				if (roleRelevance.getManageId() > 0) {
+					sql += " and r.manageId=" + roleRelevance.getManageId();
+				}
+			}
+			preparedStatement = connection.prepareStatement(sql);
+			resultSet = preparedStatement.executeQuery();
+			roleInfoList = new ArrayList<RoleRelevance>();
+			while(resultSet.next()){
+				info=new RoleRelevance();
+				info.setId(resultSet.getInt("r.id"));
+				info.setInfoId(resultSet.getInt("r.infoId"));
+				info.setManageId(resultSet.getInt("r.manageId"));
+				info.setRoleName(resultSet.getString("m.name"));
+				info.setParentId(resultSet.getInt("m.parentId"));
+				info.setLabel(resultSet.getInt("m.label"));
+				roleInfoList.add(info);
+			}			
+		} catch (Exception e) {
+				throw e;
+		}finally {
+			if (resultSet != null) {
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				resultSet = null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+		info=null;
+		}
+		return roleInfoList;
+	}
+	/**
+	 * 更新
+	 * @param roleRelevance
+	 * @param connection
+	 * @return
+	 * @throws Exception
+	 */
+	public int update(RoleRelevance roleRelevance,Connection connection) throws Exception {
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+		if(null ==roleRelevance){
+			throw new Exception("roleRelevance is null");
+		}
+		PreparedStatement preparedStatement = null;
+		int result=0;
+		String sql="update rolerelevance set infoId=?,manageId=? where id=?";
+		try {
+			preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.setInt(1, roleRelevance.getInfoId());
+			preparedStatement.setInt(2, roleRelevance.getManageId());
+			preparedStatement.setInt(3, roleRelevance.getId());
+			result= preparedStatement.executeUpdate();
+		
+		} catch (Exception e) {
+			throw e;
+		}finally {
+			
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+		}
+		return result;
+	}
+	/**
+	 * 批量删除
+	 * @param  （roleInfo）角色Id  
+	 * @param connection
+	 * @return
+	 * @throws Exception
+	 */
+	public int delete(RoleInfo roleInfo,Connection connection) throws Exception {
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+		if(null ==roleInfo){
+			throw new Exception("roleInfo is null");
+		}
+		int result=0;
+		PreparedStatement preparedStatement = null;
+		String sql="delete from rolerelevance  where infoId=?";
+		try {
+			preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.setInt(1, roleInfo.getId());
+			result= preparedStatement.executeUpdate();
+		
+		} catch (Exception e) {
+			throw e;
+		}finally {
+		
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+		}
+		return result;
+	}
+	/**
+	 * 新增\批量
+	 * @param roleRelevance
+	 * @param connection
+	 * @return
+	 * @throws Exception
+	 */
+	public int insert(List<RoleRelevance> roleRelevanceList,Connection connection) throws Exception {
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+		if(null ==roleRelevanceList){
+			throw new Exception("roleRelevanceList is null");
+		}
+		int result=0;
+		RoleRelevance roleRelevance=null;
+		PreparedStatement preparedStatement = null;
+		String sql="insert into rolerelevance (infoId,manageId)values(?,?)";
+		try {			
+			preparedStatement = connection.prepareStatement(sql);
+			for(int i=0;i<roleRelevanceList.size();i++){
+				roleRelevance =roleRelevanceList.get(i);				
+				preparedStatement.setInt(1, roleRelevance.getInfoId());
+				preparedStatement.setInt(2, roleRelevance.getManageId());
+				preparedStatement.addBatch();
+			}
+			
+		preparedStatement.executeBatch();
+			
+		
+		} catch (Exception e) {
+			throw e;
+		}finally {
+			
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+		}
+		return result;
+	}
+}

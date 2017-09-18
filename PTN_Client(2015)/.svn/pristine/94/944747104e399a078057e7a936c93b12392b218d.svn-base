@@ -1,0 +1,18 @@
+package com.nms.db.dao.ptn.clock;
+
+import com.nms.db.bean.ptn.clock.LineClockInterface;
+
+
+public interface LineClockInterfaceMapper {
+    int deleteByPrimaryKey(Integer id);
+
+    int insert(LineClockInterface record);
+
+    int insertSelective(LineClockInterface record);
+
+    LineClockInterface selectByPrimaryKey(Integer id);
+
+    int updateByPrimaryKeySelective(LineClockInterface record);
+
+    int updateByPrimaryKey(LineClockInterface record);
+}

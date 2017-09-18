@@ -1,0 +1,26 @@
+package com.nms.model.alarm;
+
+import java.sql.Connection;
+import java.util.List;
+
+import com.nms.db.bean.alarm.OamEvent;
+import com.nms.db.dao.alarm.SiteOamEventDao;
+import com.nms.model.util.ObjectService;
+
+public class SiteOamEventService extends ObjectService{
+	public void setConnection(Connection connection) {
+		super.connection = connection;
+	}
+
+	public void setPtnuser(String ptnuser) {
+		super.ptnuser = ptnuser;
+	}
+	/**查询
+	 * **/
+	public List<OamEvent> select(int siteid){
+		SiteOamEventDao oamdao = new SiteOamEventDao();
+		return oamdao.select(connection);
+	}
+	
+	
+}

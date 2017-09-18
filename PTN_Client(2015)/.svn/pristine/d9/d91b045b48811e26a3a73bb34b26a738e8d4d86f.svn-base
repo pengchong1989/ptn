@@ -1,0 +1,309 @@
+package com.nms.db.dao.system;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.nms.db.bean.system.SiteLock;
+import com.nms.ui.manager.ExceptionManage;
+
+public class SiteLockDao {
+	
+	/**
+	 * 新增方法
+	 * @param siteLock 实体bean
+	 * @param connection 数据库连接
+	 * @return 成功记录数
+	 * @throws Exception 
+	 */
+	public int insert(SiteLock siteLock , Connection connection) throws Exception{
+		
+		if(null == siteLock){
+			throw new Exception("siteLock is null");
+		}
+		if(null == connection){
+			throw new Exception("connection is null");
+		}
+		
+		PreparedStatement preparedStatement=null;
+		String sql=null;
+		int result=0;
+		try {
+			sql="insert into sitelock(siteId,lockType,lockStatus,lockUser,lockdate,clearuser,cleardate,isforceclear) " +
+				" values(?,?,?,?,?,?,?,?)";
+			
+			preparedStatement=connection.prepareStatement(sql);
+			preparedStatement.setInt(1, siteLock.getSiteId());
+			preparedStatement.setString(2, siteLock.getLockType());
+			preparedStatement.setInt(3, siteLock.getLockStatus());
+			preparedStatement.setString(4, siteLock.getLockUser());
+			preparedStatement.setString(5, siteLock.getLockDate());
+			preparedStatement.setString(6, siteLock.getClearUser());
+			preparedStatement.setString(7, siteLock.getClearDate());
+			preparedStatement.setInt(8, siteLock.getIsForceClear());
+			
+			result=preparedStatement.executeUpdate();
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		}finally{
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+			sql=null;
+		}
+		return result;
+	}
+	
+	/**
+	 * 修改锁住状态
+	 * @param siteLock
+	 * @param connection
+	 * @return
+	 * @throws Exception 
+	 */
+	public int update(int siteId , String userName , String date , Connection connection) throws Exception{
+		if(null == connection){
+			throw new Exception("connection is null");
+		}
+		
+		PreparedStatement preparedStatement=null;
+		String sql=null;
+		int result=0;
+		try {
+			sql="update siteLock set lockStatus=1,clearUser=?,clearDate=? where"  +
+					" siteId=? and lockStatus=0 and lockDate=" +
+					"(SELECT MAX(a.lockdate) from (select tmp.* from sitelock tmp where tmp.siteId=?) a)";
+			
+			preparedStatement=connection.prepareStatement(sql);
+			preparedStatement.setString(1, userName);
+			preparedStatement.setString(2, date);
+			preparedStatement.setInt(3, siteId);
+			preparedStatement.setInt(4, siteId);
+			
+			result=preparedStatement.executeUpdate();
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		}finally{
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+			sql=null;
+		}
+		return result;
+	}
+	
+	/**
+	 * 修改锁住状态
+	 * @param siteLock
+	 * @param connection
+	 * @return
+	 * @throws Exception 
+	 */
+	public int updateSiteLock(int siteId, String date , Connection connection) throws Exception{
+		if(null == connection){
+			throw new Exception("connection is null");
+		}
+		
+		PreparedStatement preparedStatement=null;
+		String sql=null;
+		int result=0;
+		try {
+			sql="update siteLock set lockStatus=1,clearUser=?,clearDate=? where"  +
+					" siteId=? and lockStatus=0";
+			
+			preparedStatement=connection.prepareStatement(sql);
+			preparedStatement.setString(1, "admin");
+			preparedStatement.setString(2, date);
+			preparedStatement.setInt(3, siteId);
+			
+			result=preparedStatement.executeUpdate();
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		}finally{
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+			sql=null;
+		}
+		return result;
+	}
+
+	
+	/**
+	 * 强制解锁
+	 * @param siteLock
+	 * @param connection
+	 * @return
+	 * @throws Exception 
+	 */
+	public int updateForce(int id , String userName , String date , Connection connection) throws Exception{
+		if(null == connection){
+			throw new Exception("connection is null");
+		}
+		
+		PreparedStatement preparedStatement=null;
+		String sql=null;
+		int result=0;
+		try {
+			sql="update siteLock set lockStatus=1,clearUser=?,clearDate=?,isForceClear=1 where id=?";
+			
+			preparedStatement=connection.prepareStatement(sql);
+			preparedStatement.setString(1, userName);
+			preparedStatement.setString(2, date);
+			preparedStatement.setInt(3, id);
+			
+			result=preparedStatement.executeUpdate();
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		}finally{
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+			sql=null;
+		}
+		return result;
+	}
+	
+	/**
+	 * 查询网元被锁住的记录
+	 * @return
+	 * @throws Exception 
+	 */
+	public List<SiteLock> query(int siteId,Connection connection) throws Exception{
+		
+		if(null==connection){
+			throw new Exception("connection is null");
+		}
+		
+		PreparedStatement preparedStatement=null;
+		String sql=null;
+		ResultSet resultSet=null;
+		List<SiteLock> siteLockList=null;
+		SiteLock siteLock=null;
+		try {
+			siteLockList=new ArrayList<SiteLock>();
+			sql="select * from siteLock where siteId=? and lockstatus=0";
+			preparedStatement=connection.prepareStatement(sql);
+			preparedStatement.setInt(1, siteId);
+			resultSet=preparedStatement.executeQuery();
+			while(resultSet.next()){
+				siteLock=new SiteLock();
+				siteLock.setClearDate(resultSet.getString("clearDate"));
+				siteLock.setClearUser(resultSet.getString("clearUser"));
+				siteLock.setId(resultSet.getInt("id"));
+				siteLock.setIsForceClear(resultSet.getInt("IsForceClear"));
+				siteLock.setLockDate(resultSet.getString("lockDate"));
+				siteLock.setLockStatus(resultSet.getInt("lockStatus"));
+				siteLock.setLockType(resultSet.getString("locktype"));
+				siteLock.setLockUser(resultSet.getString("lockUser"));
+				siteLock.setSiteId(resultSet.getInt("siteId"));
+				siteLockList.add(siteLock);
+			}
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		}finally{
+			if (resultSet != null) {
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				resultSet = null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+			siteLock=null;
+		}
+		return siteLockList;
+	}
+	
+	/**
+	 * 查询单个网元锁的记录
+	 * @return
+	 * @throws Exception 
+	 */
+	public List<SiteLock> selectBySiteId(int siteId,Connection connection) throws Exception{
+		
+		if(null==connection){
+			throw new Exception("connection is null");
+		}
+		
+		PreparedStatement preparedStatement=null;
+		String sql=null;
+		ResultSet resultSet=null;
+		List<SiteLock> siteLockList=null;
+		SiteLock siteLock=null;
+		try {
+			siteLockList=new ArrayList<SiteLock>();
+			sql="select * from siteLock where siteId=? order by lockDate desc";
+			preparedStatement=connection.prepareStatement(sql);
+			preparedStatement.setInt(1, siteId);
+			resultSet=preparedStatement.executeQuery();
+			while(resultSet.next()){
+				siteLock=new SiteLock();
+				siteLock.setClearDate(resultSet.getString("clearDate"));
+				siteLock.setClearUser(resultSet.getString("clearUser"));
+				siteLock.setId(resultSet.getInt("id"));
+				siteLock.setIsForceClear(resultSet.getInt("IsForceClear"));
+				siteLock.setLockDate(resultSet.getString("lockDate"));
+				siteLock.setLockStatus(resultSet.getInt("lockStatus"));
+				siteLock.setLockType(resultSet.getString("locktype"));
+				siteLock.setLockUser(resultSet.getString("lockUser"));
+				siteLock.setSiteId(resultSet.getInt("siteId"));
+				siteLockList.add(siteLock);
+			}
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		}finally{
+			if (resultSet != null) {
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				resultSet = null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+			siteLock=null;
+		}
+		return siteLockList;
+	}
+
+}

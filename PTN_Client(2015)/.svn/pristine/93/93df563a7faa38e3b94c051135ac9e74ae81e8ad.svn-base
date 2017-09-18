@@ -1,0 +1,10 @@
+#Tunnel信息#######################################################
+Field=Field
+siteName=MSITE
+#oam信息########################################################
+WorkIps=WorkIps
+workIp1=workIp1
+workIp2=workIp2
+workIp3=workIp3
+
+

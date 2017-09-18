@@ -1,0 +1,473 @@
+package com.nms.db.dao.ptn.ecn;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.nms.db.bean.ptn.ecn.OSPFInterface;
+/**
+ * OSPF  DAO类
+ * @author Administrator
+ *
+ */
+public class OSPFInterfaceDao {
+	private final String SQL_INSERT = "insert into ecn_interface(neId,interfaceName,area,type,hello_interval,dead_interval,retransmit_interval,transmit_delay,passive,cost,prioriy,authentication_type,activeStatus) " + " values(?,?,?,?,?,?,?,?,?,?,?,?,?)";
+	private final String SQL_SELECTBYID = "SELECT * from ecn_interface WHERE neId = ?";
+	private final String SQL_DELETEBYID = "DELETE from ecn_interface WHERE id = ?";
+	private final String SQL_UPDATE = "UPDATE ecn_interface SET area = ? , type = ? , hello_interval = ?, dead_interval = ? ,retransmit_interval = ?,transmit_delay = ?,passive = ?,cost = ?,prioriy = ?,authentication_type = ?,activeStatus=? WHERE id = ?";
+	private final String SQL_SELECTBYIDANDNAME = "SELECT * from ecn_interface WHERE neId = ? and interfaceName = ?";
+	private final String SQL_UPDATEACTIVESTATUS = "UPDATE ecn_interface SET activeStatus = ?  WHERE Neid = ?";
+
+	/**
+	 * 新建
+	 * @param ospfInterface	
+	 * 				ospfInterface
+	 * @param connection
+	 * @return
+	 * @throws Exception
+	 */
+	public int insert(OSPFInterface ospfInterface, Connection connection) throws Exception {
+		if (null == ospfInterface) {
+			throw new Exception("ospfInterface is null");
+		}
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+		PreparedStatement preparedStatement = null;
+		int result = 0;
+		ResultSet resultSet = null;
+		try {
+			preparedStatement = connection.prepareStatement(SQL_INSERT, Statement.RETURN_GENERATED_KEYS);
+			preparedStatement.setString(1, ospfInterface.getNeId());
+			preparedStatement.setString(2, ospfInterface.getInterfaceName());
+			preparedStatement.setString(3, ospfInterface.getArea());
+			preparedStatement.setString(4, ospfInterface.getType());
+			preparedStatement.setInt(5, ospfInterface.getHello_interval());
+			preparedStatement.setInt(6, ospfInterface.getDead_interval());
+			preparedStatement.setInt(7, ospfInterface.getRetransmit_interval());
+			preparedStatement.setInt(8, ospfInterface.getTransmit_delay());
+			preparedStatement.setBoolean(9, ospfInterface.isPassive());
+			preparedStatement.setInt(10, ospfInterface.getCost());
+			preparedStatement.setInt(11, ospfInterface.getPrioriy());
+			preparedStatement.setString(12, ospfInterface.getAuthentication_type());
+			preparedStatement.setInt(13, ospfInterface.getActiveStatus());
+			preparedStatement.executeUpdate();
+			resultSet = preparedStatement.getGeneratedKeys();
+			if (resultSet.next()) {
+				result = resultSet.getInt(1);
+			}
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if(null!=resultSet){
+				try {
+					resultSet.close();
+				} catch (Exception e2) {
+					throw e2;
+				}
+				resultSet=null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e2) {
+					throw e2;
+				}
+				preparedStatement=null;
+			}
+		}
+		return result;
+	}
+	
+	/**
+	 * 查询通过网元ID
+	 * @param NeID
+	 * @return
+	 * @throws Exception
+	 */
+	public List<OSPFInterface> queryByNeID(String NeID, Connection connection) throws Exception {
+		if (null == NeID) {
+			throw new Exception("NeID is null");
+		}
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+		List<OSPFInterface> ospfInterfaceList = null;
+		OSPFInterface ospfInterface = null;
+		try {
+			preparedStatement = connection.prepareStatement(SQL_SELECTBYID);
+			preparedStatement.setInt(1, Integer.valueOf(NeID));//
+			resultSet = preparedStatement.executeQuery();
+			ospfInterfaceList = new ArrayList<OSPFInterface>();
+			while (resultSet.next()) {
+				ospfInterface = new OSPFInterface();
+				ospfInterface.setId(resultSet.getInt(1));
+				ospfInterface.setNeId(resultSet.getString(2));
+				ospfInterface.setInterfaceName(resultSet.getString(3));
+				ospfInterface.setArea(resultSet.getString(4));
+				ospfInterface.setType(resultSet.getString(5));
+				ospfInterface.setHello_interval(resultSet.getInt(6));
+				ospfInterface.setDead_interval(resultSet.getInt(7));
+				ospfInterface.setRetransmit_interval(resultSet.getInt(8));
+				ospfInterface.setTransmit_delay(resultSet.getInt(9));
+				ospfInterface.setPassive(resultSet.getBoolean(10));
+				ospfInterface.setCost(resultSet.getInt(11));
+				ospfInterface.setPrioriy(resultSet.getInt(12));
+				ospfInterface.setAuthentication_type(resultSet.getString(13));
+				ospfInterface.setActiveStatus(resultSet.getInt(14));
+				ospfInterfaceList.add(ospfInterface);
+			}
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if(null!=resultSet){
+				try {
+					resultSet.close();
+				} catch (Exception e2) {
+					throw e2;
+				}
+				resultSet=null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e2) {
+					throw e2;
+				}
+				preparedStatement=null;
+			}
+		}
+		return ospfInterfaceList;
+	}
+
+	/**
+	 * 通过网元ID和名字查询
+	 * @param NeID
+	 * 			网元ID
+	 * @param name
+	 * 			名字
+	 * @return
+	 * @throws Exception
+	 */
+	public int queryByNeIDAndName(String NeID, String name, Connection connection) throws Exception {
+		if (null == NeID) {
+			throw new Exception("NeID is null");
+		}
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+		if (null == name) {
+			throw new Exception("name is null");
+		}
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+		int i = 0;
+		try {
+			preparedStatement = connection.prepareStatement(SQL_SELECTBYIDANDNAME);
+			preparedStatement.setInt(1, Integer.valueOf(NeID));//
+			preparedStatement.setString(2, name);
+			resultSet = preparedStatement.executeQuery();
+			while (resultSet.next()) {
+				i++;
+			}
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if(null!=resultSet){
+				try {
+					resultSet.close();
+				} catch (Exception e2) {
+					throw e2;
+				}
+				resultSet=null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e2) {
+					throw e2;
+				}
+				preparedStatement=null;
+			}
+		}
+		return i;
+	}
+
+	/**
+	 * 通过ID删除
+	 * @param id
+	 * 			id
+	 * @param connection
+	 * @return
+	 * @throws Exception
+	 */
+	public int deleteById(String id, Connection connection) throws Exception {
+		if (null == id) {
+			throw new Exception("id is null");
+		}
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+		PreparedStatement preparedStatement = null;
+		int result = 0;
+		try {
+			preparedStatement = connection.prepareStatement(SQL_DELETEBYID);
+			preparedStatement.setInt(1, Integer.valueOf(id));
+			preparedStatement.executeUpdate();
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+		}
+		return result;
+	}
+
+	/**
+	 * 修改
+	 * @param ospfInterface
+	 * 					ospfInterface
+	 * @param connection
+	 * 				connection
+	 * @return
+	 * @throws Exception
+	 */
+	public int update(OSPFInterface ospfInterface, Connection connection) throws Exception {
+		if (null == ospfInterface) {
+			
+			throw new Exception("ospfInterface is null");
+		}
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+		PreparedStatement preparedStatement = null;
+		int result = 0;
+
+		try {
+			preparedStatement = connection.prepareStatement(SQL_UPDATE);
+			preparedStatement.setString(1, ospfInterface.getArea());
+			preparedStatement.setString(2, ospfInterface.getType());
+			preparedStatement.setInt(3, ospfInterface.getHello_interval());
+			preparedStatement.setInt(4, ospfInterface.getDead_interval());
+			preparedStatement.setInt(5, ospfInterface.getRetransmit_interval());
+			preparedStatement.setInt(6, ospfInterface.getTransmit_delay());
+			preparedStatement.setBoolean(7, ospfInterface.isPassive());
+			preparedStatement.setInt(8, ospfInterface.getCost());
+			preparedStatement.setInt(9, ospfInterface.getPrioriy());
+			preparedStatement.setString(10, ospfInterface.getAuthentication_type());
+			preparedStatement.setInt(11, ospfInterface.getActiveStatus());
+			preparedStatement.setInt(12, ospfInterface.getId());
+			
+
+			result = preparedStatement.executeUpdate();
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e2) {
+					throw e2;
+				}
+				preparedStatement=null;
+			}
+		}
+		return result;
+	}
+	
+	/**
+	 * 通过条件查询
+	 * @param ospfInterface
+	 * 					OSPF对象
+	 * @return
+	 * @throws Exception
+	 */
+	public List<OSPFInterface> queryByCondition(OSPFInterface condition, Connection connection) throws Exception {
+		if (null == condition) {
+			throw new Exception("condition is null");
+		}
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+		OSPFInterface ospfInterface;
+		List<OSPFInterface> ospfInterfaceList = new ArrayList<OSPFInterface>();
+		String sql;
+		try {
+			sql = "SELECT * from ecn_interface WHERE 1=1";
+			if(0!=condition.getId()){
+				sql += " and id = "+condition.getId();
+			}
+			preparedStatement = connection.prepareStatement(sql);
+			resultSet = preparedStatement.executeQuery();
+			while (resultSet.next()) {
+				ospfInterface = new OSPFInterface();
+				ospfInterface.setId(resultSet.getInt(1));
+				ospfInterface.setNeId(resultSet.getString(2));
+				ospfInterface.setInterfaceName(resultSet.getString(3));
+				ospfInterface.setArea(resultSet.getString(4));
+				ospfInterface.setType(resultSet.getString(5));
+				ospfInterface.setHello_interval(resultSet.getInt(6));
+				ospfInterface.setDead_interval(resultSet.getInt(7));
+				ospfInterface.setRetransmit_interval(resultSet.getInt(8));
+				ospfInterface.setTransmit_delay(resultSet.getInt(9));
+				ospfInterface.setPassive(resultSet.getBoolean(10));
+				ospfInterface.setCost(resultSet.getInt(11));
+				ospfInterface.setPrioriy(resultSet.getInt(12));
+				ospfInterface.setAuthentication_type(resultSet.getString(13));
+				ospfInterface.setActiveStatus(resultSet.getInt(14));
+				ospfInterfaceList.add(ospfInterface);
+			}
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if(null!=resultSet){
+				try {
+					resultSet.close();
+				} catch (Exception e2) {
+					throw e2;
+				}
+				resultSet=null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e2) {
+					throw e2;
+				}
+				preparedStatement=null;
+			}
+		}
+		return ospfInterfaceList;
+	}
+
+	public int updateActiveStatus(int siteId, int value, Connection connection) throws Exception {
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+		PreparedStatement preparedStatement = null;
+		int result = 0;
+
+		try {
+			preparedStatement = connection.prepareStatement(SQL_UPDATEACTIVESTATUS);
+			preparedStatement.setInt(1, value);
+			preparedStatement.setInt(2, siteId);
+			result = preparedStatement.executeUpdate();
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e2) {
+					throw e2;
+				}
+				preparedStatement=null;
+			}
+		}
+		return result;
+	}
+
+	/**
+	 * 修改  激活状态
+	 * @param ospfInterface
+	 * 					ospfInterface
+	 * @param connection
+	 * 				connection
+	 * @return
+	 * @throws Exception
+	 */
+	public int updateStatus(OSPFInterface ospfInterface, Connection connection) throws Exception {
+		if (null == ospfInterface) {
+			throw new Exception("ospfInterface is null");
+		}
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+		PreparedStatement preparedStatement = null;
+		int result = 0;
+		String sql="UPDATE ecn_interface SET activeStatus="+ospfInterface.getActiveStatus()+
+				" WHERE neId = "+ospfInterface.getNeId()+" and interfaceName= '"+ospfInterface.getInterfaceName()+"'";
+		try {
+			preparedStatement = connection.prepareStatement(sql);
+//			preparedStatement.setString(3, DButil.toSingleMark(ospfInterface.getInterfaceName()));
+//			preparedStatement.setInt(1, ospfInterface.getActiveStatus());
+//			preparedStatement.setString(2, DButil.toSingleMark(ospfInterface.getNeId()));
+			
+
+			result = preparedStatement.executeUpdate();
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e2) {
+					throw e2;
+				}
+				preparedStatement=null;
+			}
+		}
+		return result;
+	}
+}
+//if (null == ospfInterface) {
+//	throw new Exception("ospfInterface is null");
+//}
+//if (null == connection) {
+//	throw new Exception("connection is null");
+//}
+//PreparedStatement preparedStatement = null;
+//int result = 0;
+//ResultSet resultSet=null;
+//String sql= "UPDATE ecn_interface SET area = ? , type = ? , hello_interval = ?, dead_interval = ? ,retransmit_interval = ?,transmit_delay = ?,passive = ?,cost = ?,prioriy = ?,authentication_type = ?,activeStatus=? WHERE neId = ? and interfaceName=?";
+//try {
+//	preparedStatement = connection.prepareStatement(sql,Statement.RETURN_GENERATED_KEYS);
+//	preparedStatement.setString(1, ospfInterface.getArea());
+//	preparedStatement.setString(2, ospfInterface.getType());
+//	preparedStatement.setInt(3, ospfInterface.getHello_interval());
+//	preparedStatement.setInt(4, ospfInterface.getDead_interval());
+//	preparedStatement.setInt(5, ospfInterface.getRetransmit_interval());
+//	preparedStatement.setInt(6, ospfInterface.getTransmit_delay());
+//	preparedStatement.setBoolean(7, ospfInterface.isPassive());
+//	preparedStatement.setInt(8, ospfInterface.getCost());
+//	preparedStatement.setInt(9, ospfInterface.getPrioriy());
+//	preparedStatement.setString(10, ospfInterface.getAuthentication_type());
+//	preparedStatement.setInt(11, ospfInterface.getActiveStatus());	
+//	//DButil.toSingleMark
+//	preparedStatement.setString(12, DButil.toSingleMark(ospfInterface.getInterfaceName()));
+//
+//	preparedStatement.setString(13, (ospfInterface.getNeId()));
+//	
+//
+//	preparedStatement.executeUpdate();
+//	resultSet = preparedStatement.getGeneratedKeys();
+//	if (resultSet.next()) {
+//		result = resultSet.getInt(1);
+//	}
+//} catch (Exception e) {
+//	throw e;
+//} finally {
+//	if(resultSet!=null){
+//		resultSet.close();
+//		resultSet=null;
+//	}
+//	if (preparedStatement != null) {
+//		preparedStatement.close();
+//		preparedStatement=null;
+//	}
+//}
+//return result;

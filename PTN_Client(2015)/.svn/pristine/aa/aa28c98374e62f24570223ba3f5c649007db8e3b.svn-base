@@ -1,0 +1,48 @@
+package com.nms.model.alarm;
+
+import java.sql.Connection;
+import java.util.List;
+
+import com.nms.db.bean.alarm.TCAAlarm;
+import com.nms.db.dao.alarm.TCAAlarmDao;
+import com.nms.model.util.ObjectService;
+
+/**
+ * TCA告警业务层
+ * @author kk
+ *
+ */
+public class TCAAlarmService extends ObjectService {
+	public void setConnection(Connection connection) {
+		super.connection = connection;
+	}
+
+	public void setPtnuser(String ptnuser) {
+		super.ptnuser = ptnuser;
+	}
+	
+	private TCAAlarmDao tcaAlarmDao=new TCAAlarmDao();
+	
+	/**
+	 * 查询全部
+	 * @return
+	 * @throws Exception 
+	 */
+	public List<TCAAlarm> selectAll() throws Exception{
+		
+		return this.tcaAlarmDao.query(new TCAAlarm(), super.connection);
+		
+	}
+	
+	/**
+	 * 根据条件查询
+	 * @return
+	 * @throws Exception 
+	 */
+	public List<TCAAlarm> select(TCAAlarm tcaAlarm) throws Exception{
+		
+		return this.tcaAlarmDao.query(tcaAlarm, super.connection);
+		
+	}
+	
+}

@@ -1,0 +1,142 @@
+package com.nms.model.ptn.ecn;
+
+import java.sql.Connection;
+import java.util.List;
+
+import com.nms.db.bean.ptn.ecn.MCN;
+import com.nms.db.dao.ptn.ecn.MCNDao;
+import com.nms.db.enums.EActionType;
+import com.nms.db.enums.EServiceType;
+import com.nms.model.util.ObjectService;
+import com.nms.ui.manager.ExceptionManage;
+
+public class MCNService extends ObjectService {
+	public void setConnection(Connection connection) {
+		super.connection = connection;
+	}
+
+	public void setPtnuser(String ptnuser) {
+		super.ptnuser = ptnuser;
+	}
+
+	private MCNDao mcnDao = new MCNDao();
+
+	/**
+	 * 通过网元ID查询
+	 * @param NeID
+	 * 			网元ID
+	 * @return
+	 * @throws Exception
+	 */
+	public List<MCN> queryByNeID(String NeID) throws Exception {
+		if (NeID == null) {
+			throw new Exception("NeID is null");
+		}
+		List<MCN> mcnList = null;
+		try {
+			mcnList = this.mcnDao.queryByNeID(NeID, connection);
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		}
+		return mcnList;
+	}
+
+	/**
+	 * 更新
+	 * @param mcn
+	 * 		 	MCN
+	 * @return
+	 * @throws Exception
+	 */
+	public int update(MCN mcn) throws Exception {
+		if (mcn == null) {
+			throw new Exception("mcn is null");
+		}
+		int ospfId = 0;
+		try {
+			connection.setAutoCommit(false);
+			ospfId = this.mcnDao.update(mcn, connection);
+			super.dateDownLoad(Integer.parseInt(mcn.getNeId()), Integer.parseInt(mcn.getNeId()), EServiceType.MCN.getValue(), EActionType.UPDATE.getValue());
+			if(!connection.getAutoCommit()){
+				connection.commit();
+			}
+		} catch (Exception e) {
+			connection.rollback();
+			ExceptionManage.dispose(e,this.getClass());
+		} finally {
+			connection.setAutoCommit(true);
+		}
+		return ospfId;
+	}
+
+	/**
+	 * 添加MCN
+	 * @param neId
+	 * @return
+	 * @throws Exception
+	 */
+	public int insertMcn(int neId) throws Exception {
+		if (neId == 0) {
+			throw new Exception("neId is 0");
+		}
+		int information = 0;
+		try {
+			information = this.mcnDao.insert(neId, connection);
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		} finally {
+		}
+		return information;
+	}
+	/**
+	 * 
+	
+	* queryBySiteIdAndIp通过siteid查询mcn 
+	
+	* @author wangwf
+	
+	* @param   siteid,ip
+	
+	* @return 
+	
+	* @Exception 异常对象
+	 */
+	public List<MCN> queryBySiteId(int siteid) throws Exception {
+		
+		List<MCN> mcnList = null;
+		try {
+			mcnList = this.mcnDao.queryByNeID(siteid+"",connection);
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		}
+		return mcnList;
+	}
+	
+	/**
+	 * 添加MCN
+	 * @param mcn
+	 * 			mcn
+	 * @return
+	 * @throws Exception
+	 */
+	public int insert(MCN mcn) throws Exception {
+		if (null == mcn) {
+			throw new Exception("mcn is null");
+		}
+		int information = 0;
+		try {
+			connection.setAutoCommit(false);
+			information = this.mcnDao.insert(mcn, connection);
+			if(!connection.getAutoCommit()){
+				connection.commit();
+			}
+		} catch (Exception e) {
+			connection.rollback();
+			ExceptionManage.dispose(e,this.getClass());
+		} finally {
+			connection.setAutoCommit(true);
+		}
+		return information;
+	}
+	
+}

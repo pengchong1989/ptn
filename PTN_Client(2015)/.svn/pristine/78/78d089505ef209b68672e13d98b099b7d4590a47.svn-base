@@ -1,0 +1,118 @@
+package com.nms.model.ptn.path.eth;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.ibatis.session.SqlSession;
+
+import com.nms.db.bean.ptn.path.eth.DualInfo;
+import com.nms.db.bean.ptn.path.protect.PwProtect;
+import com.nms.db.dao.ptn.path.eth.DualInfoMapper;
+import com.nms.model.ptn.path.protect.PwProtectService_MB;
+import com.nms.model.util.ObjectService_Mybatis;
+import com.nms.model.util.ServiceFactory;
+import com.nms.model.util.Services;
+import com.nms.ui.manager.ConstantUtil;
+import com.nms.ui.manager.ExceptionManage;
+import com.nms.util.DBManager;
+import com.nms.util.Mybatis_DBManager;
+
+public class DualInfoService_MB extends ObjectService_Mybatis{
+	public void setPtnuser(String ptnuser) {
+		super.ptnuser = ptnuser;
+	}
+
+	public void setSqlSession(SqlSession sqlSession) {
+		super.sqlSession = sqlSession;
+	}
+	private DualInfoMapper dualInfoMapper;
+	
+	public DualInfoMapper getDualInfoMapper() {
+		return dualInfoMapper;
+	}
+
+	public void setDualInfoMapper(DualInfoMapper dualInfoMapper) {
+		this.dualInfoMapper = dualInfoMapper;
+	}
+	
+	/**
+	 * 查询某一条dual业务(可能包含多条pw)
+	 */
+	public List<DualInfo> select(DualInfo dualInfo) throws Exception {
+		List<DualInfo> dualInfoList = null;
+		PwProtect pwProtect = null;
+		PwProtectService_MB pwProtetcServiceMB = null;
+		try {
+			pwProtetcServiceMB = (PwProtectService_MB) ConstantUtil.serviceFactory.newService_MB(Services.PWPROTECT, this.sqlSession);
+			dualInfoList = this.dualInfoMapper.queryByCondition(dualInfo);
+			for(DualInfo info : dualInfoList){//查找对应pw保护
+				if(info.getBranchMainSite()>0){
+					pwProtect = new PwProtect();
+					pwProtect.setServiceId(info.getId());
+					pwProtect = pwProtetcServiceMB.select(pwProtect).get(0);
+					info.setPwProtect(pwProtect);
+				}
+			}
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		}
+		return dualInfoList;
+	}
+	
+	/**
+	 * 查询所有的双归保护业务(每一条可能包含多条业务)
+	 * @param label(0:代表网络侧; 1:代表单站测) 判断是查询网络侧还是查询单站侧的
+	 */
+	public Map<Integer, List<DualInfo>> select(int label,int siteId) throws Exception {
+		Map<Integer, List<DualInfo>> dualInfoMap = new HashMap<Integer, List<DualInfo>>();
+		List<DualInfo> dualInfoServiceList = null;
+		PwProtect pwProtect = null;
+		PwProtectService_MB pwProtetcServiceMB = null;
+		List<PwProtect> pwProtectList = null;
+		try {
+			dualInfoServiceList = this.dualInfoMapper.queryAll(label,siteId);
+			pwProtetcServiceMB = (PwProtectService_MB) ConstantUtil.serviceFactory.newService_MB(Services.PWPROTECT, this.sqlSession);
+			for (DualInfo dualInfo : dualInfoServiceList) {
+				if(dualInfo.getBranchProtectSite() >0||dualInfo.getBranchMainSite()>0 ||(dualInfo.getBranchMainSite() == 0&&dualInfo.getBranchProtectSite() ==0 && dualInfo.getIsSingle() ==1)){
+					pwProtect = new PwProtect();
+					pwProtect.setServiceId(dualInfo.getId());
+					pwProtectList = pwProtetcServiceMB.select(pwProtect);
+					if(pwProtectList != null && pwProtectList.size() >0)
+					{
+						pwProtect = pwProtectList.get(0);
+						dualInfo.setPwProtect(pwProtect);
+					}
+				}
+				int serviceId = dualInfo.getServiceId();
+				if (dualInfoMap.get(serviceId) == null) {
+					List<DualInfo> dualInfoList = new ArrayList<DualInfo>();
+					for (DualInfo info : dualInfoServiceList) {
+						if (info.getServiceId() == serviceId) {
+							dualInfoList.add(info);
+						}
+					}
+					dualInfoMap.put(serviceId, dualInfoList);
+				}
+
+			}
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		} finally {
+//			UiUtil.closeService(pwProtetcService);
+			 pwProtect = null;
+			 pwProtectList = null;
+			 dualInfoServiceList = null;
+		}
+		return dualInfoMap;
+	}
+	
+	public static void main(String[] args) throws Exception {
+		DBManager.init("10.18.1.10");
+		Mybatis_DBManager.init("10.18.1.10");
+		ConstantUtil.serviceFactory = new ServiceFactory();
+		DualInfoService_MB dualInfoServiceMB = (DualInfoService_MB) ConstantUtil.serviceFactory.newService_MB(Services.DUALINFO);
+		dualInfoServiceMB.select(0, 0);
+	}
+}

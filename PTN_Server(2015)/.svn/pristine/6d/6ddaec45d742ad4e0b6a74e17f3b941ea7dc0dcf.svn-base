@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xml-body>
+	<qosModel typeName="PHB_EXP" type="1" tableName="表" xmlPath="config/topo/equipment/equipment_b.xml" imagePath="/com/nms/ui/images/topo/b/" >
+	</qosModel>
+	<EXP_PHB typeName="EXP_PHB" type="2" tableName="表" xmlPath="config/topo/equipment/equipment_d.xml" imagePath="/com/nms/ui/images/topo/d/" >
+	</EXP_PHB>
+	<!--  
+	<PHB_PRI typeName="PHB_PRI" type="3" tableName="表" xmlPath="config/topo/equipment/equipment_d.xml" imagePath="/com/nms/ui/images/topo/d/" >
+	</PHB_PRI>
+	-->
+</xml-body>

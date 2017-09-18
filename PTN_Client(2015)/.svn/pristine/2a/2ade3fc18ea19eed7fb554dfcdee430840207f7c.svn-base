@@ -1,0 +1,81 @@
+package com.nms.ui.ptn.safety.controller;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import com.nms.db.bean.equipment.shelf.SiteInst;
+import com.nms.db.bean.system.SiteLock;
+import com.nms.model.equipment.shlef.SiteService;
+import com.nms.model.system.SiteLockService;
+import com.nms.model.util.Services;
+import com.nms.ui.frame.AbstractController;
+import com.nms.ui.manager.ConstantUtil;
+import com.nms.ui.manager.ExceptionManage;
+import com.nms.ui.manager.UiUtil;
+import com.nms.ui.ptn.safety.SiteLockInfoPanel;
+
+public class SiteLockPanelController extends AbstractController {
+	private SiteLockInfoPanel siteLockInfoPanel;
+
+	public SiteLockPanelController(SiteLockInfoPanel siteLockInfoPanel) {
+		this.siteLockInfoPanel = siteLockInfoPanel;
+	}
+
+	@Override
+	/**
+	 * 刷新数据
+	 */
+	public void refresh() throws Exception {
+		SiteService siteService = null;
+		List<SiteInst> siteInsts = null;
+		try {
+			siteInsts = new ArrayList<SiteInst>();
+			siteService = (SiteService) ConstantUtil.serviceFactory.newService(Services.SITE);
+			
+			siteInsts = siteService.select();
+			
+			this.siteLockInfoPanel.clear();
+			this.siteLockInfoPanel.getSiteLockTable().clear();
+			this.siteLockInfoPanel.initData(siteInsts);
+			this.siteLockInfoPanel.updateUI();
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		} finally{
+			UiUtil.closeService(siteService);
+		}
+
+	}
+	
+	/**
+	 * 选中一条记录后，查看详细信息
+	 */
+	@Override
+	public void initDetailInfo() {
+		try {
+			initSiteLockInfos();
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		}
+	}
+
+	private void initSiteLockInfos() throws Exception {
+		SiteLockService lockService = null;
+		SiteInst siteInst = null;
+		List<SiteLock> locks = null;
+		try {
+			int selectSiteId = this.siteLockInfoPanel.getTable().getSelect().getSite_Inst_Id();
+			siteInst = new SiteInst();
+			siteInst.setSite_Inst_Id(selectSiteId);
+			lockService = (SiteLockService) ConstantUtil.serviceFactory.newService(Services.SITELOCK);
+			locks = lockService.selectBySiteId(siteInst);
+			this.siteLockInfoPanel.getSiteLockTable().clear();
+			this.siteLockInfoPanel.getSiteLockTable().initData(locks);
+			this.siteLockInfoPanel.updateUI();
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		} finally {
+			UiUtil.closeService(lockService);
+		}
+	}
+
+}

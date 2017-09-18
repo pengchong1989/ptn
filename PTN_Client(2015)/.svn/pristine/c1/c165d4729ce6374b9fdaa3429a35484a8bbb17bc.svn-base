@@ -1,0 +1,142 @@
+package com.nms.model.ptn.clock;
+
+import java.sql.Connection;
+import java.util.List;
+
+import com.nms.db.bean.ptn.clock.TimeManageInfo;
+import com.nms.db.dao.ptn.clock.TimeManageInfoDao;
+import com.nms.db.enums.EActionType;
+import com.nms.db.enums.EServiceType;
+import com.nms.model.util.ObjectService;
+import com.nms.ui.manager.ExceptionManage;
+/**
+ * 
+ * @author zhangkun 
+ *
+ */
+public class TimeManageInfoService extends ObjectService{
+	public void setConnection(Connection connection) {
+		super.connection = connection;
+	}
+
+	public void setPtnuser(String prnuser) {
+		super.ptnuser = prnuser;
+	}
+
+	private TimeManageInfoDao timeManageInfoDao = new TimeManageInfoDao();
+
+	/**
+	 *添加数据
+	 *
+	 * @param timeManageInfo 实体
+	 * @return 只要不是0就是插入成功
+	 * @throws Exception
+	 */
+	public int insertTimeManageInfo(TimeManageInfo timeManageInfo) throws Exception {
+		if (null == timeManageInfo) {
+			throw new Exception("frequencyInfo_neClock is null");
+		}
+		int information = 0;
+		try {
+			connection.setAutoCommit(false);
+			information = timeManageInfoDao.insert(timeManageInfo, connection);
+			if(!connection.getAutoCommit()){
+				connection.commit();
+			}
+		} catch (Exception e) {
+			connection.rollback();
+			ExceptionManage.dispose(e,this.getClass());
+		} finally {
+			connection.setAutoCommit(true);
+		}
+		return information;
+	}
+
+	/**
+	 * function:删除相关联数据
+	 * 
+	 * @param timeManageInfo
+	 *            实体
+	 * @return
+	 * @throws Exception
+	 */
+	public int delete(TimeManageInfo timeManageInfo)
+			throws Exception {
+		if (null == timeManageInfo) {
+			throw new Exception("timeManageInfo is null");
+		}
+		int information = 0;
+		try {
+			connection.setAutoCommit(false);
+			information = timeManageInfoDao.delete(timeManageInfo, connection);
+			if(!connection.getAutoCommit()){
+				connection.commit();
+			}
+		} catch (Exception e) {
+			connection.rollback();
+			ExceptionManage.dispose(e,this.getClass());
+		} finally {
+			connection.setAutoCommit(true);
+		}
+		return information;
+	}
+
+	/**
+	 * 查询相关信息
+	 * 
+	 * @return List<TimeManageInfo>
+	 * @throws Exception
+	 */
+
+	public TimeManageInfo select(int id) throws Exception {
+		TimeManageInfo timeManageInfo = null;
+		try {
+			timeManageInfo = new TimeManageInfo();
+			timeManageInfo = timeManageInfoDao.select(connection,id);
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		}
+		return timeManageInfo;
+	}
+
+	/**
+	 * 删除相关的数据
+	 * 
+	 * @param timeManageInfo
+	 *            实体
+	 * @return int 1:成功，0不成功
+	 * @throws Exception
+	 */
+	public int update(TimeManageInfo timeManageInfo)throws Exception {
+		if (null == timeManageInfo) {
+			throw new Exception("timeManageInfo is null");
+		}
+		int isOK = 0;
+		try {
+			connection.setAutoCommit(false);
+			isOK = timeManageInfoDao.update(timeManageInfo,connection);
+			//离线网元数据下载
+			super.dateDownLoad(timeManageInfo.getSiteId(),timeManageInfo.getId(), EServiceType.PTPCONFIG.getValue(), EActionType.UPDATE.getValue());
+			if(!connection.getAutoCommit()){
+				connection.commit();
+			}
+		} catch (Exception e) {
+			connection.rollback();
+			ExceptionManage.dispose(e,this.getClass());
+		} finally {
+			connection.setAutoCommit(true);
+		}
+		return isOK;
+	}
+
+	public List<TimeManageInfo> select(TimeManageInfo timeManageInfo) {
+		List<TimeManageInfo> timeManageInfoList = null;
+		try {
+			timeManageInfoList  = timeManageInfoDao.select(connection,timeManageInfo);
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		}
+		return timeManageInfoList;
+	}
+
+}

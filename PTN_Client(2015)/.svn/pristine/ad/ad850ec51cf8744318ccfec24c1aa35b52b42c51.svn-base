@@ -1,0 +1,746 @@
+﻿package com.nms.model.alarm;
+
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import com.nms.db.bean.alarm.CurrentAlarmInfo;
+import com.nms.db.bean.alarm.WarningLevel;
+import com.nms.db.bean.equipment.shelf.SiteInst;
+import com.nms.db.bean.equipment.slot.SlotInst;
+import com.nms.db.dao.alarm.CurAlarmDao;
+import com.nms.model.equipment.shlef.SiteService;
+import com.nms.model.util.ObjectService;
+import com.nms.model.util.Services;
+import com.nms.ui.manager.ConstantUtil;
+import com.nms.ui.manager.ExceptionManage;
+import com.nms.ui.manager.ListingFilter;
+import com.nms.ui.ptn.alarm.AlarmTools;
+import com.nms.ui.ptn.alarm.model.CurrentAlarm;
+import com.nms.ui.ptn.alarm.model.CurrentAlarmFilter;
+
+public class CurAlarmService extends ObjectService {
+	private CurAlarmDao curDao = new CurAlarmDao();
+
+	public void setConnection(Connection connection) {
+		super.connection = connection;
+	}
+
+	public void setPtnuser(String ptnuser) {
+		super.ptnuser = ptnuser;
+	}
+
+	/**
+	 * @param PortInst
+	 *            portInst 实体
+	 * @return 执行成功的记录数
+	 * @throws Exception
+	 */
+	public boolean select(int siteId, String name, int number) throws Exception {
+		if (name == null) {
+			throw new Exception("name is null");
+		}
+		boolean fals = false;
+		try {
+			fals = this.curDao.select(siteId, name, number, connection);
+		} catch (Exception e) {
+			ExceptionManage.dispose(e, this.getClass());
+		}
+		return fals;
+	}
+
+	/**
+	 * 插入或者修改当前告警数据
+	 * 
+	 * @param curInfo
+	 *            当前告警数据实体
+	 * @return
+	 * @throws Exception
+	 */
+	public int saveOrUpdate(CurrentAlarmInfo curInfo) throws Exception {
+		if (curInfo == null) {
+			throw new Exception("taskInfo is null");
+		}
+		int resultcesId = 0;
+		SiteInst siteInst = null;
+		List<WarningLevel> warnList = null;
+		WarningLevel warningLevel = null;
+		WarningLevelService warningLevelService = null;
+		SiteService siteService = null;
+		try {
+			warningLevelService = (WarningLevelService) ConstantUtil.serviceFactory.newService(Services.WarningLevel, this.connection);
+			siteService = (SiteService) ConstantUtil.serviceFactory.newService(Services.SITE, this.connection);
+			siteInst = new SiteInst();
+			if(curInfo.getSiteId() > 0)
+			{
+				siteInst = siteService.select(curInfo.getSiteId());
+			}
+			warningLevel = new WarningLevel();
+			warningLevel.setWarningcode(curInfo.getAlarmCode());
+			warningLevel.setWarninglevel(curInfo.getAlarmLevel());
+			curInfo.setWarningLevel(warningLevel);
+			if (siteInst.getManufacturer() == 0) {
+				warningLevel.setManufacturer(1); // 1表示武汉
+			} else {
+				warningLevel.setManufacturer(2); // 2表示晨晓
+			}
+
+			warnList = warningLevelService.select(warningLevel);
+			if (warnList != null && warnList.size() > 0) {
+				curInfo.setWarningLevel_temp(warnList.get(0).getWarninglevel_temp());
+				curInfo.setWarningLevel(warnList.get(0));
+			}
+
+			if (curInfo.getId() != 0) {
+				resultcesId = this.curDao.update(curInfo, connection);
+			} else {
+				resultcesId = this.curDao.insert(curInfo, connection);
+				curInfo.setId(resultcesId);
+			}
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			//UiUtil.closeService(warningLevelService);
+			//UiUtil.closeService(siteService);
+		}
+		return resultcesId;
+	}
+
+	/**
+	 * 根据当前告警数据主键id，删除数据
+	 * 
+	 * @param curId
+	 *            主键id
+	 * @return
+	 * @throws Exception
+	 */
+	public int delete(int curId) throws Exception {
+		if (curId == 0) {
+			throw new Exception("curId is null");
+		}
+		int resultcesId = 0;
+		try {
+			resultcesId = this.curDao.delete(curId, connection);
+		} catch (Exception e) {
+			throw e;
+		}
+		return resultcesId;
+	}
+
+	/**
+	 * 获取所有当前告警数据
+	 * 
+	 * @return
+	 * @throws Exception
+	 */
+	public List<CurrentAlarmInfo> select() throws Exception {
+		List<CurrentAlarmInfo> curInfoList = null;
+		try {
+			curInfoList = this.curDao.query_join(new CurrentAlarmInfo(), connection);
+			
+			
+		} catch (Exception e) {
+			throw e;
+		}
+		return curInfoList;
+	}
+
+	/**
+	 * 根据查询条件，获取当前告警数据
+	 * 
+	 * @return
+	 * @throws Exception
+	 */
+	public List<CurrentAlarmInfo> select(CurrentAlarmInfo condition) throws Exception {
+		List<CurrentAlarmInfo> curInfoList = null;
+		try {
+			curInfoList = curDao.query_join(condition, connection);
+		} catch (Exception e) {
+			throw e;
+		}
+		return curInfoList;
+	}
+
+	/**
+	 * 根据告警主键集合，批量删除
+	 * 
+	 * @param idList
+	 * @return
+	 * @throws Exception
+	 */
+	public int delete(List<Integer> idList) throws Exception {
+		int result = 0;
+		try {
+			if (idList == null || idList.size() == 0) {
+				return 0;
+			}
+			result = curDao.delete(idList, connection);
+		} catch (Exception e) {
+			throw e;
+		}
+		return result;
+	}
+
+	/**
+	 * 根据网元id集合，查询当前告警
+	 * 
+	 * @return
+	 */
+	public List<CurrentAlarmInfo> queryCurBySites(List<Integer> siteIds) throws Exception {
+		List<CurrentAlarmInfo> curInfoList = new ArrayList<CurrentAlarmInfo>();
+		try {			
+			curInfoList = curDao.queryCurBySites(siteIds, connection);				
+			wrapCurAlarmInfo(curInfoList);		
+		} catch (Exception e) {
+			throw e;
+		}
+		return curInfoList;
+	}
+
+	/**
+	 * 封装当前告警对象
+	 */
+	private void wrapCurAlarmInfo(List<CurrentAlarmInfo> curInfoList) throws Exception {
+		SiteInst siteInst = null;
+		List<WarningLevel> warnList = null;
+		AlarmTools alarmTools=new AlarmTools();
+		WarningLevelService warningLevelService = null;
+		SiteService siteService = null;
+		try {
+			warningLevelService = (WarningLevelService) ConstantUtil.serviceFactory.newService(Services.WarningLevel, this.connection);
+			siteService = (SiteService) ConstantUtil.serviceFactory.newService(Services.SITE, this.connection);
+			for (CurrentAlarmInfo curInfo : curInfoList) {
+				// 封装网元信息
+				siteInst = new SiteInst();
+				siteInst = siteService.select(curInfo.getSiteId());
+				curInfo.setSiteName(siteInst.getCellId() + "");
+				// 封装告警数据
+				WarningLevel warningLevel = curInfo.getWarningLevel();
+				if (siteInst.getManufacturer() == 0) {
+					warningLevel.setManufacturer(1); // 1表示武汉
+				} else {
+					warningLevel.setManufacturer(2); // 2表示晨晓
+				}
+				warnList = warningLevelService.select(warningLevel);
+				if (warnList != null && warnList.size() > 0) {
+					warningLevel = warnList.get(0);
+					curInfo.setWarningLevel(warningLevel);
+					// if(UiUtil.getManufacturer(siteInst.getSite_Inst_Id()) == EManufacturer.valueOf("WUHAN").getValue()){
+					// curInfo.setAlarmSeverity(AlarmTools.getWHAlarmSeverity(curInfo.getWarningLevel().getWarninglevel())); //1表示武汉
+					// }else {
+					curInfo.setAlarmSeverity(alarmTools.getAlarmSeverity(curInfo.getWarningLevel().getWarninglevel_temp())); // 2表示晨晓
+					// }
+					curInfo.setAlarmDesc(warningLevel.getWarningdescribe());
+				}
+				if (curInfo.getAckTime() != null && !"".equals(curInfo.getAckTime())) {
+					curInfo.setAcked(true);
+				} else {
+					curInfo.setAcked(false);
+				}
+				if (curInfo.getClearedTime() != null && !"".equals(curInfo.getClearedTime())) {
+					curInfo.setCleared(true);
+				} else {
+					curInfo.setCleared(false);
+				}
+			}
+		} catch (Exception e) {
+
+			throw e;
+		} finally {
+//			UiUtil.closeService(warningLevelService);
+//			UiUtil.closeService(siteService);
+		}
+
+	}
+
+	/**
+	 * 根据网元id+槽位id集合，查询当前告警
+	 * 
+	 * @return
+	 */
+	public List<CurrentAlarmInfo> queryCurBySlots(Integer siteId, List<Integer> slotIds) throws Exception {
+		List<CurrentAlarmInfo> curInfoList = new ArrayList<CurrentAlarmInfo>();
+		WarningLevel warningLevel = null;
+		AlarmTools alarmTools=new AlarmTools();
+		WarningLevelService warningLevelService = null;
+		try {
+			curInfoList = curDao.queryCurBySlots(siteId, slotIds, connection);
+			warningLevelService = (WarningLevelService) ConstantUtil.serviceFactory.newService(Services.WarningLevel, this.connection);
+			for (CurrentAlarmInfo curInfo : curInfoList) {
+				// 封装告警数据
+				warningLevel = curInfo.getWarningLevel();
+				warningLevel = warningLevelService.select(warningLevel).get(0);
+				curInfo.setWarningLevel(warningLevel);
+				curInfo.setAlarmSeverity(alarmTools.getAlarmSeverity(curInfo.getWarningLevel().getWarninglevel_temp()));
+				if (curInfo.getAckTime() != null && !"".equals(curInfo.getAckTime())) {
+					curInfo.setAcked(true);
+				} else {
+					curInfo.setAcked(false);
+				}
+				if (curInfo.getClearedTime() != null && !"".equals(curInfo.getClearedTime())) {
+					curInfo.setCleared(true);
+				} else {
+					curInfo.setCleared(false);
+				}
+			}
+		} catch (Exception e) {
+
+			throw e;
+		} finally {
+//			UiUtil.closeService(warningLevelService);
+		}
+		return curInfoList;
+	}
+
+	public List<CurrentAlarm> querySiteid()throws Exception{
+		List<CurrentAlarm> siteId=null;
+		siteId=new ArrayList<CurrentAlarm>();		
+		siteId=this.curDao.querySiteid(connection);		
+		return siteId;
+	}
+	
+	/**
+	 * 根据网元id集合，查询当前告警
+	 * 
+	 * @param siteIds
+	 * @return
+	 * @throws Exception
+	 */
+	public List<CurrentAlarmInfo> queryCurrBySites(List<Integer> siteIds) throws Exception {
+		List<CurrentAlarmInfo> curInfoList = new ArrayList<CurrentAlarmInfo>();
+		CurrentAlarmInfo info = null;
+		WarningLevelService warningLevelService = null;
+		try {
+			for (Integer id : siteIds) {
+				info = curDao.queryCurrBySites(id, connection);
+				if (info != null) {
+					curInfoList.add(info);
+				}
+			}
+			warningLevelService = (WarningLevelService) ConstantUtil.serviceFactory.newService(Services.WarningLevel, this.connection);
+			for (CurrentAlarmInfo curInfo : curInfoList) {
+				// 封装告警数据
+				WarningLevel warningLevel = curInfo.getWarningLevel();
+				warningLevel = warningLevelService.select(warningLevel).get(0);
+				curInfo.setWarningLevel(warningLevel);
+			}
+		} catch (Exception e) {
+
+			throw e;
+		} finally {
+//			UiUtil.closeService(warningLevelService);
+		}
+		return curInfoList;
+	}
+
+	/**
+	 * 根据槽位，查询当前告警
+	 * 
+	 * @param siteId
+	 *            网元id
+	 * @param slotIds
+	 *            槽位id集合
+	 * @return
+	 * @throws Exception
+	 */
+	public List<CurrentAlarmInfo> queryCurrBySlots(Integer siteId, List<Integer> slotIds) throws Exception {
+		List<CurrentAlarmInfo> curInfoList = new ArrayList<CurrentAlarmInfo>();
+		CurrentAlarmInfo info = null;
+		WarningLevelService warningLevelService = null;
+		try {
+			for (Integer id : slotIds) {
+				info = curDao.queryCurrBySlot(siteId, id, connection);
+				if (info != null) {
+					curInfoList.add(info);
+				}
+			}
+			warningLevelService = (WarningLevelService) ConstantUtil.serviceFactory.newService(Services.WarningLevel, this.connection);
+			for (CurrentAlarmInfo curInfo : curInfoList) {
+				// 封装历史性能数据
+				WarningLevel warningLevel = curInfo.getWarningLevel();
+				warningLevel = warningLevelService.select(warningLevel).get(0);
+				curInfo.setWarningLevel(warningLevel);
+			}
+		} catch (Exception e) {
+
+			throw e;
+		} finally {
+//			UiUtil.closeService(warningLevelService);
+		}
+		return curInfoList;
+	}
+
+	/**
+	 * 条件删除当前告警
+	 * 
+	 * @param currentAlarmInfo
+	 * @return
+	 * @throws Exception
+	 */
+	public int deleteCurrentAlarmInfo(CurrentAlarmInfo currentAlarmInfo) throws Exception {
+		if (currentAlarmInfo == null) {
+			throw new Exception("currentAlarmInfo is null");
+		}
+		int resultcesId = 0;
+		try {
+			resultcesId = this.curDao.deleteCurrentAlarmInfo(currentAlarmInfo, connection);
+		} catch (Exception e) {
+
+			throw e;
+		}
+		return resultcesId;
+	}
+
+	/**
+	 * 根据类型和id集合查询
+	 * 
+	 * @author kk
+	 * @param siteId 
+	 * 
+	 * @param
+	 * 
+	 * @return
+	 * @throws Exception
+	 * @throws Exception
+	 * 
+	 * @Exception 异常对象
+	 */
+	public List<CurrentAlarmInfo> select_type_id(int objectType, List<Integer> objectIdList, int siteId) throws Exception {
+
+		List<CurrentAlarmInfo> currentAlarmInfoList = null;
+		try {
+			currentAlarmInfoList = this.curDao.query_type_id(objectType, objectIdList, siteId, connection);
+			wrapCurAlarmInfo(currentAlarmInfoList);
+		} catch (Exception e) {
+			throw e;
+		}
+		return currentAlarmInfoList;
+	}
+
+	/**
+	 * 获取告警数量
+	 * 
+	 * @author kk
+	 * @return
+	 * @throws Exception
+	 */
+	public int selectCount() throws Exception {
+
+		return this.curDao.queryByCondition(new CurrentAlarmInfo(), connection).size();
+
+	}
+
+	/**
+	 * 获取告警的最大id号
+	 * 
+	 * @author kk
+	 * @return
+	 * @throws Exception
+	 */
+	public int selectMaxId() throws Exception {
+		return this.curDao.queryMaxId(connection);
+	}
+
+	/**
+	 * 查询所有
+	 * 
+	 * @return key为网元主键 value为此网元的所有告警
+	 * @throws Exception
+	 */
+	public Map<Integer, List<CurrentAlarmInfo>> selectAll() throws Exception {
+
+		Map<Integer, List<CurrentAlarmInfo>> map = null;
+		List<CurrentAlarmInfo> currentAlarmInfoList = null;
+		List<CurrentAlarmInfo> currentAlarmInfoList_site = null;
+		try {
+			map = new HashMap<Integer, List<CurrentAlarmInfo>>();
+
+			currentAlarmInfoList = this.curDao.query_join(new CurrentAlarmInfo(), connection);
+
+			for (CurrentAlarmInfo currentAlarmInfo : currentAlarmInfoList) {
+
+				if (null == map.get(currentAlarmInfo.getSiteId())) {
+					currentAlarmInfoList_site = new ArrayList<CurrentAlarmInfo>();
+					currentAlarmInfoList_site.add(currentAlarmInfo);
+					map.put(currentAlarmInfo.getSiteId(), currentAlarmInfoList_site);
+				} else {
+					map.get(currentAlarmInfo.getSiteId()).add(currentAlarmInfo);
+				}
+
+			}
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			currentAlarmInfoList = null;
+			currentAlarmInfoList_site = null;
+		}
+		return map;
+
+	}
+
+	/**
+	 * 查询某时间段产生的当前告警
+	 * 
+	 * @param startTime
+	 *            ：起始时间
+	 * @param endTime
+	 *            ：结束时间
+	 * @return currentAlarmInfos
+	 */
+	public List<CurrentAlarmInfo> selectByStartTimeAndEndTime(String startTime, String endTime) {
+		List<CurrentAlarmInfo> currentAlarmInfos = null;
+		try {
+			currentAlarmInfos = this.curDao.queryByTime_join(startTime, endTime, connection);
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		}
+		return currentAlarmInfos;
+	}
+
+	/**
+	 * 获取槽位下 最高告警等级
+	 * @param slotInst		槽位
+	 * @return -1为未查询到结果
+	 */
+	public int queryTopAlarm(SlotInst slotInst) {
+		List<CurrentAlarmInfo> list;
+		try {
+			list = this.curDao.queryBySlot(slotInst, connection);
+			if(null!=list && list.size()>0)
+				return	list.get(0).getAlarmLevel();
+		} catch (Exception e) {
+			ExceptionManage.dispose(e, getClass());
+		}
+		return -1;
+	}	
+
+	public List<CurrentAlarmInfo> selectCurrentAlarmByCond(String startTime,
+			String endTime, List<String> siteIdList,
+			List<Integer> alarmSeverityList, List<Integer> alarmTypeList, String[] inludeProbCauseList) {
+		List<CurrentAlarmInfo> currentAlarmInfos = null;
+		try {
+			currentAlarmInfos = this.curDao.selectCurrentAlarmByCond(startTime,
+					endTime, siteIdList, alarmSeverityList, alarmTypeList,inludeProbCauseList, connection);
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		}
+		return currentAlarmInfos;
+	}
+	
+	/**
+	 * 批量插入当前告警(武汉处理轮询告警)
+	 * @param currentAlarmInfos
+	 * @throws SQLException 
+	 */
+	public void insertList(List<CurrentAlarmInfo> currentAlarmInfos,int siteId){
+		SiteInst siteInst = null;
+		WarningLevel warningLevel = null;
+		WarningLevelService warningLevelService = null;
+		SiteService siteService = null;
+		Map<String, WarningLevel> map = null;
+		try {
+			this.connection.setAutoCommit(false);
+			warningLevelService = (WarningLevelService) ConstantUtil.serviceFactory.newService(Services.WarningLevel, this.connection);
+			siteService = (SiteService) ConstantUtil.serviceFactory.newService(Services.SITE, this.connection);
+			siteInst = new SiteInst();
+			//插入前，先删除该网元下的所有当前告警
+			CurrentAlarmInfo alarmInfo = new  CurrentAlarmInfo();
+			alarmInfo.setSiteId(siteId);
+			this.deleteCurrentAlarmInfo(alarmInfo);
+			if(currentAlarmInfos != null && currentAlarmInfos.size()>0){
+				
+				//获取告警级别map
+				List<WarningLevel> warningLevels = warningLevelService.select();
+				map = new HashMap<String, WarningLevel>();
+				for(WarningLevel level:warningLevels){
+					map.put(level.getManufacturer()+":"+level.getWarningcode()+":"+level.getWarninglevel(), level);
+				}
+				
+				//厂商信息
+				siteInst = siteService.select(currentAlarmInfos.get(0).getSiteId());
+			}
+			for(CurrentAlarmInfo curInfo: currentAlarmInfos){
+				if (siteInst.getManufacturer() == 0) {
+					warningLevel = map.get("1:"+curInfo.getAlarmCode()+":"+curInfo.getAlarmLevel()); // 1表示武汉
+				} else {
+					warningLevel = map.get("2:"+curInfo.getAlarmCode()+":"+curInfo.getAlarmLevel());// 2表示晨晓
+				}
+				if (warningLevel != null ) {
+					//告警级别赋值
+					curInfo.setWarningLevel_temp(warningLevel.getWarninglevel_temp());
+					curInfo.setWarningLevel(warningLevel);
+				}
+				this.curDao.insert(curInfo, connection);
+			} 
+			this.connection.commit();
+		}catch (Exception e) {
+			try {
+				connection.rollback();
+			} catch (SQLException e1) {
+				ExceptionManage.dispose(e1, this.getClass());
+			}
+			ExceptionManage.dispose(e, this.getClass());
+		}finally{
+			try {
+				this.connection.setAutoCommit(true);
+			} catch (SQLException e) {
+				ExceptionManage.dispose(e, this.getClass());
+			}
+		}
+	}
+	/**
+	 * 根据告警级别查询告警的相应数目
+	 * 
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	public int queryCurByAlarmlevel(int alarmlevel) throws Exception {
+		int count = 0;
+		CurrentAlarmInfo currentAlarmInfo = null;
+		List<CurrentAlarmInfo> currentAlarmInfoList = null;
+		ListingFilter listingFilter = null;
+		List<Object> objectList = null;
+		try {
+			currentAlarmInfoList = new ArrayList<CurrentAlarmInfo>();
+			// 根据网元等级查询
+			currentAlarmInfo = new CurrentAlarmInfo();
+			currentAlarmInfo.setWarningLevel_temp(alarmlevel);
+			currentAlarmInfoList.addAll(curDao.query_join(currentAlarmInfo, connection));
+			//等级为2时 才去查询登录而产生的告警
+			if(alarmlevel ==2){
+				currentAlarmInfoList.addAll(curDao.queryByClent(connection));
+			}
+			// 查询后过滤没有权限的网元
+			listingFilter = new ListingFilter();
+			objectList = (List<Object>) listingFilter.filterList(currentAlarmInfoList);
+			count = objectList.size();
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			currentAlarmInfo = null;
+			currentAlarmInfoList = null;
+			listingFilter = null;
+			objectList = null;
+		}
+		return count;
+	}
+
+	/**
+	 * 查询非设备的告警
+	 * @return
+	 */
+	public List<CurrentAlarmInfo> alarmByAlarmLevel()throws Exception{
+		List<CurrentAlarmInfo> currentAlarmInfoList = null;
+		try {
+			currentAlarmInfoList = new ArrayList<CurrentAlarmInfo>();
+			currentAlarmInfoList = curDao.queryByClent(connection);
+		} catch (Exception e) {
+			throw e;
+		}
+		return currentAlarmInfoList;
+	}
+	
+	/**
+	 * 查询非设备的告警
+	 * @return
+	 */
+	public List<CurrentAlarmInfo> alarmByAlarmLevel(int level)throws Exception{
+		List<CurrentAlarmInfo> currentAlarmInfoList = null;
+		try {
+			currentAlarmInfoList = new ArrayList<CurrentAlarmInfo>();
+			currentAlarmInfoList = curDao.queryByClent(level,connection);
+		} catch (Exception e) {
+			throw e;
+		}
+		return currentAlarmInfoList;
+	}
+	
+	/**
+	 * 根据告警级别查询告警的相应数目
+	 * 
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	public int queryCurrAlarmBylevel(int alarmlevel) throws Exception {
+		int count = 0;
+		CurrentAlarmInfo currentAlarmInfo = null;
+		List<CurrentAlarmInfo> currentAlarmInfoList = null;
+		ListingFilter listingFilter = null;
+		List<Object> objectList = null;
+		try {
+			currentAlarmInfoList = new ArrayList<CurrentAlarmInfo>();
+			// 根据网元等级查询
+			currentAlarmInfo = new CurrentAlarmInfo();
+			currentAlarmInfo.setWarningLevel_temp(alarmlevel);
+			currentAlarmInfoList.addAll(curDao.queryByCondition(currentAlarmInfo, connection));
+			// 查询后过滤没有权限的网元
+			listingFilter = new ListingFilter();
+			objectList = (List<Object>) listingFilter.filterList(currentAlarmInfoList);
+			count = objectList.size();
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			currentAlarmInfo = null;
+			currentAlarmInfoList = null;
+			listingFilter = null;
+			objectList = null;
+		}
+		return count;
+	}
+	
+	/**
+	 * 查询指定的非设备的告警
+	 * 
+	 * @return
+	 * @throws Exception
+	 */
+	public List<CurrentAlarmInfo> queryClientAlarm(int alarmCode,int level)throws Exception {
+	  List<CurrentAlarmInfo> currentAlarmInfoList = new ArrayList<CurrentAlarmInfo>();
+	  try {
+		  currentAlarmInfoList = curDao.queryByClentAlarm(alarmCode,level,connection);
+	} catch (Exception e) {
+		throw e;
+	}
+	return currentAlarmInfoList;
+  }
+  
+	/**
+	 * 查询指定的非设备的告警
+	 * 
+	 * @return
+	 * @throws Exception
+	 */
+	public List<CurrentAlarmInfo> queryClientDISCAlarm(int alarmCode,int level,String objectName)throws Exception {
+	  List<CurrentAlarmInfo> currentAlarmInfoList = new ArrayList<CurrentAlarmInfo>();
+	  try {
+		  currentAlarmInfoList = curDao.queryByClentAlarm(alarmCode,level,connection,objectName);
+	} catch (Exception e) {
+		throw e;
+	}
+	return currentAlarmInfoList;
+}
+
+	public int selectCount(CurrentAlarmFilter filter, List<Integer> siteIdList) throws Exception {
+		return this.curDao.selectAlarmCount(filter, siteIdList, connection);
+	}
+
+	public List<CurrentAlarmInfo> selectByPage(int direction, int id, CurrentAlarmFilter filter,
+			List<Integer> siteIdList, int pageCount) throws Exception {
+		List<CurrentAlarmInfo> currfoList = new ArrayList<CurrentAlarmInfo>();
+		try {
+			currfoList = this.curDao.selectByPage(direction, id, filter, siteIdList, connection, pageCount);
+			this.wrapCurAlarmInfo(currfoList);
+		} catch (Exception e) {
+			ExceptionManage.dispose(e, this.getClass());
+		}
+		return currfoList;
+	}
+
+	public List<Integer> selectCurrAlarmId(CurrentAlarmFilter filter,List<Integer> siteIdList) throws SQLException{
+		return this.curDao.selectAllIdList(filter, siteIdList, connection);
+	}
+}

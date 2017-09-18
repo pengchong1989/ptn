@@ -1,0 +1,17 @@
+package com.nms.db.dao.ptn.port;
+
+import com.nms.db.bean.ptn.port.AcPortInfo;
+
+public interface AcPortInfoMapper {
+    int deleteByPrimaryKey(Integer id);
+
+    int insert(AcPortInfo record);
+
+    int insertSelective(AcPortInfo record);
+
+    AcPortInfo selectByPrimaryKey(Integer id);
+
+    int updateByPrimaryKeySelective(AcPortInfo record);
+
+    int updateByPrimaryKey(AcPortInfo record);
+}

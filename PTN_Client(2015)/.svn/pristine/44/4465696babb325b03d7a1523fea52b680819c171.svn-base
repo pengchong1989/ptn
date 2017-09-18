@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nms.db.dao.ptn.clock.LineClockInterfaceMapper" >
+  <resultMap id="BaseResultMap" type="LineClockInterface" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="siteId" property="siteId" jdbcType="INTEGER" />
+    <result column="port" property="port" jdbcType="INTEGER" />
+    <result column="rate" property="rate" jdbcType="VARCHAR" />
+    <result column="ssmSendingEnabled" property="ssmSendingEnabled" jdbcType="INTEGER" />
+    <result column="dnuGroup" property="dnuGroup" jdbcType="VARCHAR" />
+    <result column="portName" property="portName" jdbcType="VARCHAR" />
+  </resultMap>
+
+  <sql id="Base_Column_List" >
+    id, siteId, port, rate, ssmSendingEnabled, dnuGroup, portName
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from timeclockinterfac
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from timeclockinterfac
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="LineClockInterface" >
+    insert into timeclockinterfac (id, siteId, port, 
+      rate, ssmSendingEnabled, dnuGroup, 
+      portName)
+    values (#{id,jdbcType=INTEGER}, #{siteid,jdbcType=INTEGER}, #{port,jdbcType=INTEGER}, 
+      #{rate,jdbcType=VARCHAR}, #{ssmsendingenabled,jdbcType=INTEGER}, #{dnugroup,jdbcType=VARCHAR}, 
+      #{portname,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="LineClockInterface" >
+    insert into timeclockinterfac
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="siteid != null" >
+        siteId,
+      </if>
+      <if test="port != null" >
+        port,
+      </if>
+      <if test="rate != null" >
+        rate,
+      </if>
+      <if test="ssmsendingenabled != null" >
+        ssmSendingEnabled,
+      </if>
+      <if test="dnugroup != null" >
+        dnuGroup,
+      </if>
+      <if test="portname != null" >
+        portName,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="siteid != null" >
+        #{siteid,jdbcType=INTEGER},
+      </if>
+      <if test="port != null" >
+        #{port,jdbcType=INTEGER},
+      </if>
+      <if test="rate != null" >
+        #{rate,jdbcType=VARCHAR},
+      </if>
+      <if test="ssmsendingenabled != null" >
+        #{ssmsendingenabled,jdbcType=INTEGER},
+      </if>
+      <if test="dnugroup != null" >
+        #{dnugroup,jdbcType=VARCHAR},
+      </if>
+      <if test="portname != null" >
+        #{portname,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="LineClockInterface" >
+    update timeclockinterfac
+    <set >
+      <if test="siteid != null" >
+        siteId = #{siteid,jdbcType=INTEGER},
+      </if>
+      <if test="port != null" >
+        port = #{port,jdbcType=INTEGER},
+      </if>
+      <if test="rate != null" >
+        rate = #{rate,jdbcType=VARCHAR},
+      </if>
+      <if test="ssmsendingenabled != null" >
+        ssmSendingEnabled = #{ssmsendingenabled,jdbcType=INTEGER},
+      </if>
+      <if test="dnugroup != null" >
+        dnuGroup = #{dnugroup,jdbcType=VARCHAR},
+      </if>
+      <if test="portname != null" >
+        portName = #{portname,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="LineClockInterface" >
+    update timeclockinterfac
+    set siteId = #{siteid,jdbcType=INTEGER},
+      port = #{port,jdbcType=INTEGER},
+      rate = #{rate,jdbcType=VARCHAR},
+      ssmSendingEnabled = #{ssmsendingenabled,jdbcType=INTEGER},
+      dnuGroup = #{dnugroup,jdbcType=VARCHAR},
+      portName = #{portname,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  
+  <select id="select" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from timeclockinterfac
+    where siteId = #{siteId,jdbcType=INTEGER}
+  </select>
+</mapper>

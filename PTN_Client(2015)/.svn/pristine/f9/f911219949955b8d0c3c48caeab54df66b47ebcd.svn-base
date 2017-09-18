@@ -1,0 +1,387 @@
+package com.nms.db.dao.system;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.nms.db.bean.system.UdaAttr;
+import com.nms.ui.manager.ExceptionManage;
+import com.nms.ui.manager.ResourceUtil;
+
+public class UdaAttrDao {
+
+	/**
+	 * 新增udaattr
+	 * 
+	 * @param udaattr
+	 *            实体
+	 * @param connection
+	 *            数据库连接
+	 * @return 插入的记录数
+	 * @throws Exception
+	 */
+	public int insert(UdaAttr udaattr, Connection connection) throws Exception {
+
+		if (null == udaattr) {
+			throw new Exception("udaattr is null");
+		}
+
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		int result = 0;
+
+		try {
+			sql = "insert into udaattr(groupId,attrName,attrType,isNeedText,codeGroupId,defaultValue,width,height,distanceLeft,distanceTop,isTableShow,isMustFill) values(?,?,?,?,?,?,?,?,?,?,?,?)";
+			preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.setInt(1, udaattr.getGroupId());
+			preparedStatement.setString(2, udaattr.getAttrName());
+			preparedStatement.setString(3, udaattr.getAttrType());
+			preparedStatement.setString(4, udaattr.getIsNeedText());
+			preparedStatement.setString(5, udaattr.getCodeGroupId());
+			preparedStatement.setString(6, udaattr.getDefaultValue());
+			preparedStatement.setInt(7, udaattr.getWidth());
+			preparedStatement.setInt(8, udaattr.getHeight());
+			preparedStatement.setInt(9, udaattr.getDistanceLeft());
+			preparedStatement.setInt(10, udaattr.getDistanceTop());
+			preparedStatement.setString(11, udaattr.getIsTableShow());
+			preparedStatement.setString(12, udaattr.getIsMustFill());
+			result = preparedStatement.executeUpdate();
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+
+			sql = null;
+		}
+
+		return result;
+	}
+
+	/**
+	 * 修改udaattr
+	 * 
+	 * @param udaattr
+	 *            实体
+	 * @param connection
+	 *            数据库连接
+	 * @return 插入记录数
+	 * @throws Exception
+	 */
+	public int update(UdaAttr udaattr, Connection connection) throws Exception {
+		if (null == udaattr) {
+			throw new Exception("udaattr is null");
+		}
+
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		int result = 0;
+
+		try {
+			sql = "update udaattr set groupId=?,attrName=?,attrType=?,isNeedText=?,codeGroupId=?,defaultValue=?,width=?,height=?,distanceLeft=?,distanceTop=?,isTableShow=?,isMustFill=? where id=?";
+			preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.setInt(1, udaattr.getGroupId());
+			preparedStatement.setString(2, udaattr.getAttrName());
+			preparedStatement.setString(3, udaattr.getAttrType());
+			preparedStatement.setString(4, udaattr.getIsNeedText());
+			preparedStatement.setString(5, udaattr.getCodeGroupId());
+			preparedStatement.setString(6, udaattr.getDefaultValue());
+			preparedStatement.setInt(7, udaattr.getWidth());
+			preparedStatement.setInt(8, udaattr.getHeight());
+			preparedStatement.setInt(9, udaattr.getDistanceLeft());
+			preparedStatement.setInt(10, udaattr.getDistanceTop());
+			preparedStatement.setString(11, udaattr.getIsTableShow());
+			preparedStatement.setString(12, udaattr.getIsMustFill());
+			preparedStatement.setInt(13, udaattr.getId());
+
+			result = preparedStatement.executeUpdate();
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+
+		return result;
+	}
+
+	/**
+	 * 通过主键删除udaattr对象
+	 * 
+	 * @param id
+	 *            主键
+	 * @param connection
+	 *            数据库连接
+	 * @return 删除的记录数
+	 * @throws Exception
+	 */
+	public int delete(int id, Connection connection) throws Exception {
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		int result = 0;
+
+		try {
+			sql = "delete from udaattr where id=?";
+			preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.setInt(1, id);
+
+			result = preparedStatement.executeUpdate();
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+
+		return result;
+	}
+
+	/**
+	 * 根据GroupId删除udaattr对象
+	 * 
+	 * @param GroupId
+	 * @param connection
+	 * @return
+	 * @throws Exception
+	 */
+	public int deleteByGroupId(int GroupId, Connection connection)
+			throws Exception {
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		int result = 0;
+
+		try {
+			sql = "delete from udaattr where GroupId=?";
+			preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.setInt(1, GroupId);
+
+			result = preparedStatement.executeUpdate();
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+
+		return result;
+	}
+	
+    /**
+     * 根据条件查询udaattr对象
+     * @param udaattrCondition  查询条件
+     * @param connection  数据库连接
+     * @return  UdaAttr集合
+     * @throws Exception
+     */
+	public List<UdaAttr> queryByCondition(UdaAttr udaattrCondition,
+			Connection connection) throws Exception {
+
+		if (null == udaattrCondition) {
+			throw new Exception("udaattrCondition is null");
+		}
+
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		List<UdaAttr> udaattrList = null;
+		String sql = null;
+		ResultSet resultSet = null;
+		PreparedStatement preparedStatement = null;
+		UdaAttr udaAttr = null;
+
+		try {
+			udaattrList = new ArrayList<UdaAttr>();
+			sql = "select attrENName,id,groupId,attrName,attrType,isNeedText,codeGroupId,defaultValue,width,height,distanceLeft,distanceTop,isTableShow,isMustFill from udaattr where 1=1";
+
+			if (udaattrCondition.getId() > 0) {
+				sql += " and id=" + udaattrCondition.getId();
+			}
+
+			if (udaattrCondition.getGroupId() > 0) {
+				sql += " and groupId=" + udaattrCondition.getGroupId();
+			}
+
+
+			preparedStatement = connection.prepareStatement(sql);
+			resultSet = preparedStatement.executeQuery();
+
+			while (resultSet.next()) {
+				udaAttr = new UdaAttr();
+				udaAttr.setId(resultSet.getInt("id"));
+				udaAttr.setGroupId(resultSet.getInt("groupId"));
+				if ("en_US".equals(ResourceUtil.language)) {
+					udaAttr.setAttrName(resultSet.getString("attrENName"));
+				} else {
+					udaAttr.setAttrName(resultSet.getString("attrName"));;
+				}
+				udaAttr.setAttrType(resultSet.getString("attrType"));
+				udaAttr.setIsNeedText(resultSet.getString("isNeedText"));
+				udaAttr.setCodeGroupId(resultSet.getString("codeGroupId"));
+				udaAttr.setDefaultValue(resultSet.getString("defaultValue"));
+				udaAttr.setWidth(resultSet.getInt("width"));
+				udaAttr.setHeight(resultSet.getInt("height"));
+				udaAttr.setDistanceLeft(resultSet.getInt("distanceLeft"));
+				udaAttr.setDistanceTop(resultSet.getInt("distanceTop"));
+				udaAttr.setIsTableShow(resultSet.getString("isTableShow"));
+				udaAttr.setIsMustFill(resultSet.getString("isMustFill"));
+				udaattrList.add(udaAttr);
+			}
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (resultSet != null) {
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				resultSet = null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+			udaAttr = null;
+		}
+
+		return udaattrList;
+
+	}
+	
+	/**
+	 * 根据组ID查询在table显示的记录
+	 * @param parentId 组ID
+	 * @param connection 数据库连接
+	 * @return  List<UdaAttr>  udaAttr集合
+	 * @throws Exception
+	 */
+	public List<UdaAttr> queryByPatentId(int parentId,Connection connection) throws Exception {
+
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		List<UdaAttr> udaattrList = null;
+		String sql = null;
+		ResultSet resultSet = null;
+		PreparedStatement preparedStatement = null;
+		UdaAttr udaAttr = null;
+
+		try {
+			udaattrList = new ArrayList<UdaAttr>();
+			sql = "SELECT ua.* from udaattr ua , udagroup ug where ua.groupId=ug.id and ua.isTableShow='true' and ug.parentId=?";
+
+			preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.setInt(1, parentId);
+			
+			resultSet = preparedStatement.executeQuery();
+
+			while (resultSet.next()) {
+				udaAttr = new UdaAttr();
+				udaAttr.setId(resultSet.getInt("id"));
+				udaAttr.setGroupId(resultSet.getInt("groupId"));
+				if ("en_US".equals(ResourceUtil.language)) {
+					udaAttr.setAttrName(resultSet.getString("attrENName"));
+				} else {
+					udaAttr.setAttrName(resultSet.getString("attrName"));;
+				}
+				udaAttr.setAttrType(resultSet.getString("attrType"));
+				udaAttr.setIsNeedText(resultSet.getString("isNeedText"));
+				udaAttr.setCodeGroupId(resultSet.getString("codeGroupId"));
+				udaAttr.setDefaultValue(resultSet.getString("defaultValue"));
+				udaAttr.setWidth(resultSet.getInt("width"));
+				udaAttr.setHeight(resultSet.getInt("height"));
+				udaAttr.setDistanceLeft(resultSet.getInt("distanceLeft"));
+				udaAttr.setDistanceTop(resultSet.getInt("distanceTop"));
+				udaAttr.setIsTableShow(resultSet.getString("isTableShow"));
+				udaAttr.setIsMustFill(resultSet.getString("isMustFill"));
+				udaattrList.add(udaAttr);
+			}
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (resultSet != null) {
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				resultSet = null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+			udaAttr = null;
+		}
+
+		return udaattrList;
+
+	}
+}

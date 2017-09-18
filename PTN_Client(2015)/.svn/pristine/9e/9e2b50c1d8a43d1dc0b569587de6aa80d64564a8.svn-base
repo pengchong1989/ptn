@@ -1,0 +1,314 @@
+package com.nms.db.dao.equipment.port;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.nms.db.bean.equipment.port.PortStm;
+import com.nms.ui.manager.ExceptionManage;
+
+public class PortStmDao {
+
+	private  final String SQL_INSERT = "insert into port_stm(portid,jobwavelength,sfpexpect,sfpreality,sfpvender,siteid) " + " values(?,?,?,?,?,?)";
+	private  final String SQL_SELECT = "SELECT *  from port_stm  ps , port_inst p WHERE p.portId = ps.portid and ps.siteId = ?";
+	private  final String SQL_SELECTBYSITEID_AND_PORTID = "SELECT *  from port_stm  ps WHERE ps.siteId = ? and ps.portId = ?";
+	private  final String SQL_SELECTBYID = "SELECT *  from port_stm  ps , port_inst p WHERE p.portId = ps.portid";
+	private  final String SQL_UPDATE = "UPDATE port_stm SET jobwavelength = ? , sfpexpect = ? , sfpreality = ? , sfpvender = ?   WHERE portid = ?";
+	private final String DELETE_BY_SITE="delete from port_stm where siteid=?";
+	
+	public int insert(PortStm portStm, Connection connection) throws Exception {
+
+		PreparedStatement preparedStatement = null;
+		int result = 0;
+		ResultSet resultSet = null;
+
+		try {
+
+			preparedStatement = connection.prepareStatement(SQL_INSERT, Statement.RETURN_GENERATED_KEYS);
+			preparedStatement.setInt(1, portStm.getPortid());
+			preparedStatement.setInt(2, portStm.getJobwavelength());
+			preparedStatement.setString(3, portStm.getSfpexpect());
+			preparedStatement.setString(4, portStm.getSfpreality());
+			preparedStatement.setString(5, portStm.getSfpvender());
+			preparedStatement.setInt(6, portStm.getSiteid());
+
+			preparedStatement.executeUpdate();
+			resultSet = preparedStatement.getGeneratedKeys();
+			if (resultSet.next()) {
+				result = resultSet.getInt(1);
+			}
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (resultSet != null) {
+				try {
+					resultSet.close();
+				} catch (Exception e2) {
+					throw e2;
+				}
+				resultSet=null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e2) {
+					throw e2;
+				}
+				preparedStatement=null;
+			}
+			
+		}
+		return result;
+	}
+
+	public List<PortStm> quertyBySite(int siteId, Connection connection) throws Exception {
+
+		PreparedStatement preparedStatement = null;
+		List<PortStm> list=null;
+		try {
+			preparedStatement = connection.prepareStatement(SQL_SELECT);
+			preparedStatement.setInt(1, siteId);
+
+			list = this.exextueQuery(preparedStatement);
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+		}
+		return list;
+	}
+	public List<PortStm> queryBySiteIdAndPortId(int siteId, int portId, Connection connection) throws Exception {
+		
+		PreparedStatement preparedStatement = null;
+		List<PortStm> list=null;
+		try {
+			preparedStatement = connection.prepareStatement(SQL_SELECTBYSITEID_AND_PORTID);
+			preparedStatement.setInt(1, siteId);
+			preparedStatement.setInt(2, portId);
+			
+			list = this.exextueQueryPortStm(preparedStatement);
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+		}
+		return list;
+	}
+	
+	public PortStm queryById(int id , Connection connection) throws Exception{
+		PreparedStatement preparedStatement=null;
+		PortStm portStm=null;
+		try {
+			preparedStatement=connection.prepareStatement(SQL_SELECTBYID);
+			preparedStatement.setInt(1, id);
+			
+			portStm = this.exextueQuery(preparedStatement).get(0);
+		} catch (Exception e) {
+			throw e;
+		} finally{
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+		}
+		return portStm;
+	}
+	
+	
+	public List<PortStm> exextueQuery(PreparedStatement preparedStatement) throws Exception{
+		List<PortStm> portStms = null;
+		ResultSet resultSet=null;
+		PortStm portstm=null;
+		try {
+			portStms = new ArrayList<PortStm>();
+			resultSet=preparedStatement.executeQuery();
+			while(resultSet.next()){
+				portstm=new PortStm();
+				portstm.setId(resultSet.getInt("id"));
+				portstm.setPortid(resultSet.getInt("portid"));
+				portstm.setJobwavelength(resultSet.getInt("jobwavelength"));
+				portstm.setSfpexpect(resultSet.getString("sfpexpect"));
+				portstm.setSfpreality(resultSet.getString("sfpreality"));
+				portstm.setSfpvender(resultSet.getString("sfpvender"));
+				portstm.setStatus(resultSet.getInt("isEnabled_code"));
+				portstm.setType(resultSet.getString("portType"));
+				portstm.setName(resultSet.getString("portName"));
+				portstm.setJobstatus(resultSet.getString("jobStatus"));
+				portstm.setSiteid(resultSet.getInt("siteId"));
+				
+				portStms.add(portstm);
+			}
+			
+		} catch (Exception e) {
+			throw e;
+		} finally{
+			if (resultSet != null) {
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				resultSet = null;
+			}
+			portstm=null;
+		}
+		return portStms;
+		
+	}
+	
+	public List<PortStm> exextueQueryPortStm(PreparedStatement preparedStatement) throws Exception{
+		List<PortStm> portStms = null;
+		ResultSet resultSet=null;
+		PortStm portstm=null;
+		try {
+			portStms = new ArrayList<PortStm>();
+			resultSet=preparedStatement.executeQuery();
+			while(resultSet.next()){
+				portstm=new PortStm();
+				portstm.setId(resultSet.getInt("id"));
+				portstm.setPortid(resultSet.getInt("portid"));
+				portstm.setJobwavelength(resultSet.getInt("jobwavelength"));
+				portstm.setSfpexpect(resultSet.getString("sfpexpect"));
+				portstm.setSfpreality(resultSet.getString("sfpreality"));
+				portstm.setSfpvender(resultSet.getString("sfpvender"));
+				portstm.setSiteid(resultSet.getInt("siteId"));
+				
+				portStms.add(portstm);
+			}
+			
+		} catch (Exception e) {
+			throw e;
+		} finally{
+			if (resultSet != null) {
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				resultSet = null;
+			}
+			portstm=null;
+		}
+		return portStms;
+		
+	}
+	
+	
+	public int update(PortStm portStm , Connection connection) throws Exception{
+		PreparedStatement preparedStatement=null;
+		int result = 0;
+		try {
+			preparedStatement=connection.prepareStatement(SQL_UPDATE);
+			preparedStatement.setInt(1, portStm.getJobwavelength());
+			preparedStatement.setString(2, portStm.getSfpexpect());
+			preparedStatement.setString(3, portStm.getSfpreality());
+			preparedStatement.setString(4, portStm.getSfpvender());
+			preparedStatement.setInt(5, portStm.getPortid());
+			
+			result = preparedStatement.executeUpdate();
+		} catch (Exception e) {
+			throw e;
+		} finally{
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+		}
+		return result;
+	}
+	
+	/**
+	 * 根据网元ID删除
+	 * 
+	 * @author kk
+	 * 
+	 * @param siteid
+	 *            网元id
+	 * @param connection
+	 *            数据库连接
+	 * 
+	 * @return
+	 * @throws Exception 
+	 * @throws Exception
+	 * 
+	 * @Exception 异常对象
+	 */
+	public void deleteBySite(int siteId, Connection connection) throws Exception {
+		if(null==connection){
+			throw new Exception("connection is null");
+		}
+		
+		PreparedStatement preparedStatement=null;
+		try {
+			preparedStatement=connection.prepareStatement(this.DELETE_BY_SITE);
+			preparedStatement.setInt(1, siteId);
+			preparedStatement.executeUpdate();
+			
+		} catch (Exception e) {
+			throw e;
+		} finally{
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+		}
+	}
+	public List<PortStm> queryByCondition(PortStm condition , Connection connection) throws Exception{
+		PreparedStatement preparedStatement=null;
+		List<PortStm> list = null;
+		String sql ;
+		try {
+			list = new ArrayList<PortStm>();
+			sql = "SELECT *  from port_stm  ps , port_inst p WHERE p.portId = ps.portid ";
+			if(0!=condition.getId()){
+				sql += " and id = " +condition.getId();
+			}
+			preparedStatement=connection.prepareStatement(sql);
+			list = exextueQuery(preparedStatement);
+
+		} catch (Exception e) {
+			throw e;
+		} finally{
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+			sql=null;
+		}
+		return list;
+	}
+}

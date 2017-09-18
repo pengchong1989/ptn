@@ -1,0 +1,235 @@
+package com.nms.db.dao.system;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+
+import com.nms.db.bean.system.WorkIps;
+import com.nms.ui.manager.ExceptionManage;
+
+public class WorkIpsDao {
+	
+	/**
+	 * 
+	 * @param workIps
+	 * @param connection
+	 * @return
+	 * @throws Exception
+	 */
+	public int insert(WorkIps workIps, Connection connection) throws Exception {
+
+		if (null == workIps) {
+			throw new Exception("field is null");
+		}
+
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		int result = 0;
+
+		try {
+			sql = "insert into `workips`(fileId,workIP1,workIP2,workIP3,workIP4,workIP5,workIP6) values(?,?,?,?,?,?,?)";
+			preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.setInt(1, workIps.getField());
+			preparedStatement.setString(2, workIps.getWorkIp1());
+			preparedStatement.setString(3, workIps.getWorkIp2());
+			preparedStatement.setString(4, workIps.getWorkIp3());
+			preparedStatement.setString(5, workIps.getWorkIp4());
+			preparedStatement.setString(6, workIps.getWorkIp5());
+			preparedStatement.setString(7, workIps.getWorkIp6());
+
+			result = preparedStatement.executeUpdate();
+
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		} finally {
+
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+
+			sql = null;
+		}
+
+		return result;
+	}
+
+	/**
+	 * 修改workIps
+	 * 
+	 * @param workIps
+	 *            实体
+	 * @param connection
+	 *            数据库连接
+	 * @return 记录数
+	 * @throws Exception
+	 */
+	public int update(WorkIps workIps, Connection connection) throws Exception {
+		if (null == workIps) {
+			throw new Exception("field is null");
+		}
+
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		int result = 0;
+
+		try {
+			sql = "update `workips` set workIp1=?,workIp2=? ,workIp3=? ,workIp4=?,workIp5=? ,workIp6=?  where id=? and fileId=?";
+			preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.setString(1, workIps.getWorkIp1());
+			preparedStatement.setString(2, workIps.getWorkIp2());
+			preparedStatement.setString(3, workIps.getWorkIp3());
+			preparedStatement.setString(4, workIps.getWorkIp4());
+			preparedStatement.setString(5, workIps.getWorkIp5());
+			preparedStatement.setString(6, workIps.getWorkIp6());
+			preparedStatement.setInt(7, workIps.getId());
+			preparedStatement.setInt(8, workIps.getField());
+			result = preparedStatement.executeUpdate();
+
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		} finally {
+
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+
+		return result;
+	}
+
+	/**
+	 * 通过主键删除workIps
+	 * 
+	 * @param id
+	 *            主键
+	 * @param connection
+	 *            数据库连接
+	 * @return 删除记录数
+	 * @throws Exception
+	 */
+	public int delete(int id, Connection connection) throws Exception {
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		int result = 0;
+
+		try {
+			sql = "delete from `workips` where id=?";
+			preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.setInt(1, id);
+
+			result = preparedStatement.executeUpdate();
+
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		} finally {
+
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+
+		return result;
+	}
+
+	/**
+	 * 通过条件查询
+	 * 
+	 * @param workIps
+	 *            查询条件
+	 * @param connection
+	 *            数据库连接
+	 * @return List<Field>集合
+	 * @throws Exception
+	 */
+	public WorkIps queryByCondition(WorkIps workIps, Connection connection) throws Exception {
+
+		if (null == workIps) {
+			throw new Exception("workIps is null");
+		}
+
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		String sql = null;
+		ResultSet resultSet = null;
+		PreparedStatement preparedStatement = null;
+		WorkIps ips = null;
+		try {
+			sql = "select id,fileId,workIp1,workIp2,workIp3,workIp4,workIp5,workIp6 from workips where 1=1 ";
+
+			if (workIps.getId() > 0) {
+				sql += " and id=" + workIps.getId();
+			}
+			if(workIps.getField()>0){
+				sql += "and fileId=" +workIps.getField();
+			}
+
+			preparedStatement = connection.prepareStatement(sql);
+			resultSet = preparedStatement.executeQuery();
+
+			while (resultSet.next()) {
+				ips = new WorkIps();
+				ips.setId(resultSet.getInt("id"));
+				ips.setField(resultSet.getInt("fileId"));
+				ips.setWorkIp1(resultSet.getString("workIp1"));
+				ips.setWorkIp2(resultSet.getString("workIp2"));
+				ips.setWorkIp3(resultSet.getString("workIp3"));
+				ips.setWorkIp4(resultSet.getString("workIp4"));
+				ips.setWorkIp5(resultSet.getString("workIp5"));
+				ips.setWorkIp6(resultSet.getString("workIp6"));
+			}
+
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		} finally {
+			if (resultSet != null) {
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				resultSet = null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+		return ips;
+	}
+}

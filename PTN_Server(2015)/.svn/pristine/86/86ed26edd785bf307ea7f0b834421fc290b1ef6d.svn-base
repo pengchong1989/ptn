@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- SS8P32板卡下所有端口配置 (70B的SS8P32卡) -->
+<xml-boby>
+
+<card cardName="SS8P32" cardType="" imagePath="/com/nms/ui/images/topo/SS8P32Card.png" x="152" y="56" >
+	<port portName="stm1" seq="1" portType="STM1" bandWidth="" imagePath="/com/nms/ui/images/topo/port_b_a.png" x="411" y="20" number="1" module="(e)"></port>
+	<port portName="stm1" seq="2" portType="STM1" bandWidth="" imagePath="/com/nms/ui/images/topo/port_b_a.png" x="440" y="20" number="2" module="(e)"></port>
+    <port portName="stm1" seq="3" portType="STM1" bandWidth="" imagePath="/com/nms/ui/images/topo/port_b_a.png" x="469" y="20" number="3" module="(e)"></port>
+    <port portName="stm1" seq="4" portType="STM1" bandWidth="" imagePath="/com/nms/ui/images/topo/port_b_a.png" x="497" y="20" number="4" module="(e)"></port>
+    <port portName="stm1" seq="5" portType="STM1" bandWidth="" imagePath="/com/nms/ui/images/topo/port_b_a.png" x="532" y="20" number="5" module="(e)"></port>
+    <port portName="stm1" seq="6" portType="STM1" bandWidth="" imagePath="/com/nms/ui/images/topo/port_b_a.png" x="561" y="20" number="6" module="(e)"></port>
+    <port portName="stm1" seq="7" portType="STM1" bandWidth="" imagePath="/com/nms/ui/images/topo/port_b_a.png" x="590" y="20" number="7" module="(e)"></port>
+    <port portName="stm1" seq="8" portType="STM1" bandWidth="" imagePath="/com/nms/ui/images/topo/port_b_a.png" x="618" y="20" number="8" module="(e)"></port>
+</card>
+
+</xml-boby>

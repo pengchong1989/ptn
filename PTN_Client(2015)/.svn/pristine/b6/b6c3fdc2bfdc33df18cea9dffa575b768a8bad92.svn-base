@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xml-boby>
+
+<card cardName="XCTS1" cardType="" imagePath="/com/nms/ui/images/topo/soz/yixun_card_mc2.png" x="226" y="128" >
+    <port portName="F1" seq="" portType="system" bandWidth="" imagePath="/com/nms/ui/images/topo/soz/port_e.png" x="168" y="14" number=""  module="(o)"></port>
+   	<port portName="F2" seq="" portType="system" bandWidth="" imagePath="/com/nms/ui/images/topo/soz/port_e.png" x="196" y="14" number=""  module="(o)"></port>
+    <port portName="TNT/CON" seq="" portType="system" bandWidth="" imagePath="/com/nms/ui/images/topo/soz/port_e.png" x="224" y="14" number=""  module="(o)"></port>
+    <port portName="ALM" seq="" portType="system" bandWidth="" imagePath="/com/nms/ui/images/topo/soz/port_e.png" x="252" y="14" number=""  module="(o)"></port>
+    
+    <port portName="CLK" seq="" portType="system" bandWidth="" imagePath="/com/nms/ui/images/topo/soz/port_e.png" x="290" y="14" number=""  module="(o)"></port>
+    <port portName="TOD" seq="" portType="system" bandWidth="" imagePath="/com/nms/ui/images/topo/soz/port_e.png" x="318" y="14" number=""  module="(o)"></port>
+   
+    <port portName="ge" seq="1" portType="NONE" bandWidth="" imagePath="/com/nms/ui/images/topo/soz/port_l.png" x="379" y="20" number="1"  module="(e)"></port>
+    <port portName="ge" seq="2" portType="NONE" bandWidth="" imagePath="/com/nms/ui/images/topo/soz/port_l.png" x="407" y="20" number="2"  module="(e)"></port>
+    <port portName="ge" seq="3" portType="NONE" bandWidth="" imagePath="/com/nms/ui/images/topo/soz/port_l.png" x="433" y="20" number="3"  module="(e)"></port>
+    <port portName="ge" seq="4" portType="NONE" bandWidth="" imagePath="/com/nms/ui/images/topo/soz/port_l.png" x="460" y="20" number="4"  module="(e)"></port>
+   
+    <port portName="ge" seq="5" portType="NONE" bandWidth="" imagePath="/com/nms/ui/images/topo/soz/port_l.png" x="494" y="20" number="5"  module="(e)"></port>
+    <port portName="ge" seq="6" portType="NONE" bandWidth="" imagePath="/com/nms/ui/images/topo/soz/port_l.png" x="521" y="20" number="6"  module="(e)"></port>
+    
+    <port portName="ge" seq="7" portType="NONE" bandWidth="" imagePath="/com/nms/ui/images/topo/soz/port_l.png" x="568" y="20" number="7"  module="(o)"></port>
+    <port portName="ge" seq="8" portType="NONE" bandWidth="" imagePath="/com/nms/ui/images/topo/soz/port_l.png" x="596" y="20" number="8"  module="(o)"></port>
+    <port portName="ge" seq="9" portType="NONE" bandWidth="" imagePath="/com/nms/ui/images/topo/soz/port_l.png" x="624" y="20" number="9"  module="(o)"></port>
+    <port portName="ge" seq="10" portType="NONE" bandWidth="" imagePath="/com/nms/ui/images/topo/soz/port_l.png" x="652" y="20" number="10"  module="(o)"></port>
+</card>
+
+</xml-boby>

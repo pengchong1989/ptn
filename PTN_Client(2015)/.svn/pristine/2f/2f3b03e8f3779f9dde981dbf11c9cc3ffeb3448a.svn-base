@@ -1,0 +1,18 @@
+package com.nms.db.dao.equipment.port;
+
+import com.nms.db.bean.equipment.port.E1Info;
+
+
+public interface E1InfoMapper {
+    int deleteByPrimaryKey(Integer id);
+
+    int insert(E1Info record);
+
+    int insertSelective(E1Info record);
+
+    E1Info selectByPrimaryKey(Integer id);
+
+    int updateByPrimaryKeySelective(E1Info record);
+
+    int updateByPrimaryKey(E1Info record);
+}

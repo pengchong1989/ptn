@@ -1,0 +1,299 @@
+package com.nms.db.dao.ptn.clock;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.nms.db.bean.ptn.clock.FrequencyInfoNeClock;
+import com.nms.ui.manager.ExceptionManage;
+
+/**
+ * 
+ * @author zhangkun
+ *
+ */
+public class FrequencyInfoNeClockDao {
+	/**
+	 * @param frequencyInfo_neClock
+	 *            实体
+	 * @param conection
+	 *            数据库连接
+	 * @return 判断是否插入成功 返回的ID号 只要不是0就是插入成功
+	 * @throws Exception
+	 * 插入数据
+	 */
+	public int insert(FrequencyInfoNeClock frequencyInfo_neClock,Connection conection) throws Exception {
+		if (null == frequencyInfo_neClock) {
+			throw new Exception("frequencyInfo_neClock is null");
+		}
+		if (null == conection) {
+			throw new Exception("connection is null");
+		}
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+		int result = 0;
+		try {
+			sql = "insert into frequencymanage_ne(siteId,startTreaty,oscillationLevel,systemRecoverTime,qualityLevel,exportRecoverTime,exportClockModel,handleModel,clockSuppress,systemJobStatus,systemSourcce,exportJobStatus,exportSourcce) value(?,?,?,?,?,?,?,?,?,?,?,?,?)";
+
+			preparedStatement = conection.prepareStatement(sql,Statement.RETURN_GENERATED_KEYS);
+			preparedStatement.setInt(1, frequencyInfo_neClock.getSiteId());
+			preparedStatement.setInt(2, frequencyInfo_neClock.getStartTreaty());
+			preparedStatement.setInt(3, frequencyInfo_neClock.getOscillationLevel());
+			preparedStatement.setInt(4, frequencyInfo_neClock.getSystemRecoverTime());
+			preparedStatement.setInt(5, frequencyInfo_neClock.getQualityLevel());
+			preparedStatement.setInt(6, frequencyInfo_neClock.getExportRecoverTime());
+			preparedStatement.setInt(7, frequencyInfo_neClock.getExportClockModel());
+			preparedStatement.setInt(8, frequencyInfo_neClock.getHandleModel());
+			preparedStatement.setInt(9, frequencyInfo_neClock.getClockSuppress());
+			preparedStatement.setString(10, frequencyInfo_neClock.getSystemJobStatus());
+			preparedStatement.setString(11, frequencyInfo_neClock.getSystemSourcce());
+			preparedStatement.setString(12, frequencyInfo_neClock.getExportJobStatus());
+			preparedStatement.setString(13, frequencyInfo_neClock.getExportSourcce());
+
+			preparedStatement.executeUpdate();
+			resultSet = preparedStatement.getGeneratedKeys();
+			if (resultSet.next()) {
+				result = resultSet.getInt(1);
+			}
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			sql = null;
+			if (resultSet != null) {
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				resultSet = null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+		}
+		return result;
+	}
+/**
+ * 
+ * @param frequencyInfo_neClock 实体
+ * @param connection 数据库连接
+ * @return 1删除成功，0不成功；
+ * @throws Exception
+ * function:通过关联网元表主键 来删除数据
+ */
+	public int delete(FrequencyInfoNeClock frequencyInfo_neClock,Connection connection) throws Exception {
+		if (null == frequencyInfo_neClock) {
+			throw new Exception("frequencyInfo_neClock is null");
+		}
+		if (connection == null) {
+			throw new Exception("connection is null");
+		}
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		int result=0;
+		try {
+			sql = "delete from frequencymanage_ne where siteId=?";
+            
+			preparedStatement = connection.prepareStatement(sql,Statement.RETURN_GENERATED_KEYS);
+			preparedStatement.setInt(1, frequencyInfo_neClock.getSiteId());
+			
+			result = preparedStatement.executeUpdate();
+		} catch (Exception e) {
+			throw e;
+		}finally{
+			sql=null;
+			if(preparedStatement!=null){
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement=null;
+			}
+		}
+		return result;
+	}
+	/**
+	 * function: 查找所有的所有网元时钟的状态和属性
+	 * @param conn 数据库连接
+	 * @return 所有网元时钟的状态和属性 集合
+	 * @throws Exception
+	 */
+public FrequencyInfoNeClock select(Connection conn,int id) throws Exception{
+	if(conn==null){
+		throw new Exception("connection is null");
+	}
+	String sql=null;
+	PreparedStatement pre=null;
+	ResultSet ste=null;
+	FrequencyInfoNeClock frequencyInfo_neClock=null;
+	try {
+		sql="select * from frequencymanage_ne where siteId=?";
+		pre=conn.prepareStatement(sql);
+		pre.setInt(1, id);
+		ste=pre.executeQuery();
+		while(ste.next()){
+			frequencyInfo_neClock=new FrequencyInfoNeClock();
+			frequencyInfo_neClock.setId(ste.getInt("id"));
+			frequencyInfo_neClock.setSiteId(ste.getInt("siteId"));
+			frequencyInfo_neClock.setStartTreaty(ste.getInt("startTreaty"));
+			frequencyInfo_neClock.setOscillationLevel(ste.getInt("oscillationLevel"));
+			frequencyInfo_neClock.setSystemRecoverTime(ste.getInt("systemRecoverTime"));
+			frequencyInfo_neClock.setQualityLevel(ste.getInt("qualityLevel"));
+			frequencyInfo_neClock.setExportRecoverTime(ste.getInt("exportRecoverTime"));
+			frequencyInfo_neClock.setExportClockModel(ste.getInt("exportClockModel"));
+			frequencyInfo_neClock.setHandleModel(ste.getInt("handleModel"));
+			frequencyInfo_neClock.setClockSuppress(ste.getInt("clockSuppress"));
+			frequencyInfo_neClock.setSystemJobStatus(ste.getString("systemJobStatus"));
+			frequencyInfo_neClock.setSystemSourcce(ste.getString("systemSourcce"));
+			frequencyInfo_neClock.setExportJobStatus(ste.getString("exportJobStatus"));
+			frequencyInfo_neClock.setExportSourcce(ste.getString("exportSourcce"));
+		}
+		
+	} catch (Exception e) {
+		throw e;
+	}finally{
+		sql=null;
+		if (ste != null) {
+			try {
+				ste.close();
+			} catch (Exception e) {
+				ExceptionManage.dispose(e,this.getClass());
+			}
+			ste = null;
+		}
+		if (pre != null) {
+			try {
+				pre.close();
+			} catch (Exception e) {
+				ExceptionManage.dispose(e,this.getClass());
+			}
+			pre = null;
+		}
+	}
+	return frequencyInfo_neClock;
+	}
+	/**
+	 * 
+	 * @param frequencyInfo_neClock 实体
+	 * @param conn 数据库连接
+	 * @return 1成功，0不成功
+	 * @throws Exception
+	 * function:根新数据
+	 */
+public int update(FrequencyInfoNeClock frequencyInfo_neClock,Connection conn)throws Exception{
+	if(frequencyInfo_neClock==null){
+		throw new Exception("frequencyInfo_neClock is null");
+	}
+	if(conn==null){
+		throw new Exception("conn is null");
+	}
+	StringBuffer sql=null;;
+	PreparedStatement pre=null;
+	int result=0;
+	try {
+		sql=new StringBuffer();
+		sql.append("update frequencymanage_ne set startTreaty=?,oscillationLevel=?,systemRecoverTime=?,qualityLevel=?,");
+	    sql.append("exportRecoverTime=?,exportClockModel=?,handleModel=?,clockSuppress=?,systemJobStatus=?,systemSourcce=?,");
+	    sql.append("exportJobStatus=?,exportSourcce=? where siteId=?");
+	    
+	    pre=conn.prepareStatement(sql.toString());
+	    pre.setInt(1, frequencyInfo_neClock.getStartTreaty());
+	    pre.setInt(2, frequencyInfo_neClock.getOscillationLevel());
+	    pre.setInt(3, frequencyInfo_neClock.getSystemRecoverTime());
+	    pre.setInt(4, frequencyInfo_neClock.getQualityLevel());
+	    pre.setInt(5, frequencyInfo_neClock.getExportRecoverTime());
+	    pre.setInt(6, frequencyInfo_neClock.getExportClockModel());
+	    pre.setInt(7, frequencyInfo_neClock.getHandleModel());
+	    pre.setInt(8, frequencyInfo_neClock.getClockSuppress());
+	    pre.setString(9, frequencyInfo_neClock.getSystemJobStatus());
+	    pre.setString(10, frequencyInfo_neClock.getSystemSourcce());
+	    pre.setString(11, frequencyInfo_neClock.getExportJobStatus());
+	    pre.setString(12, frequencyInfo_neClock.getExportSourcce());
+	    pre.setInt(13, frequencyInfo_neClock.getSiteId());
+	    result=pre.executeUpdate();
+	    
+	} catch (Exception e) {
+		throw e;
+	}finally{
+		sql=null;
+		if (pre != null) {
+			try {
+				pre.close();
+			} catch (Exception e) {
+				ExceptionManage.dispose(e,this.getClass());
+			}
+			pre = null;
+		}
+	}
+	return result;
+}
+	public List<FrequencyInfoNeClock> select(Connection conn,FrequencyInfoNeClock condition) throws Exception{
+		if(conn==null){
+			throw new Exception("connection is null");
+		}
+		String sql=null;
+		PreparedStatement pre=null;
+		ResultSet ste=null;
+		FrequencyInfoNeClock frequencyInfo_neClock=null;
+		List<FrequencyInfoNeClock> frequencyInfoNeClockList =null;
+		try {
+			frequencyInfoNeClockList = new ArrayList<FrequencyInfoNeClock>();
+			sql="select * from frequencymanage_ne where 1=1";
+			if(0!=condition.getId()){
+				sql += " and id = " +condition.getId();
+			}
+			pre=conn.prepareStatement(sql);
+			ste=pre.executeQuery();
+			while(ste.next()){
+				frequencyInfo_neClock=new FrequencyInfoNeClock();
+				frequencyInfo_neClock.setId(ste.getInt("id"));
+				frequencyInfo_neClock.setSiteId(ste.getInt("siteId"));
+				frequencyInfo_neClock.setStartTreaty(ste.getInt("startTreaty"));
+				frequencyInfo_neClock.setOscillationLevel(ste.getInt("oscillationLevel"));
+				frequencyInfo_neClock.setSystemRecoverTime(ste.getInt("systemRecoverTime"));
+				frequencyInfo_neClock.setQualityLevel(ste.getInt("qualityLevel"));
+				frequencyInfo_neClock.setExportRecoverTime(ste.getInt("exportRecoverTime"));
+				frequencyInfo_neClock.setExportClockModel(ste.getInt("exportClockModel"));
+				frequencyInfo_neClock.setHandleModel(ste.getInt("handleModel"));
+				frequencyInfo_neClock.setClockSuppress(ste.getInt("clockSuppress"));
+				frequencyInfo_neClock.setSystemJobStatus(ste.getString("systemJobStatus"));
+				frequencyInfo_neClock.setSystemSourcce(ste.getString("systemSourcce"));
+				frequencyInfo_neClock.setExportJobStatus(ste.getString("exportJobStatus"));
+				frequencyInfo_neClock.setExportSourcce(ste.getString("exportSourcce"));
+				frequencyInfoNeClockList.add(frequencyInfo_neClock);
+			}
+			
+		} catch (Exception e) {
+			throw e;
+		}finally{
+			sql=null;
+			if (ste != null) {
+				try {
+					ste.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				ste = null;
+			}
+			if (pre != null) {
+				try {
+					pre.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				pre = null;
+			}
+		}
+		return frequencyInfoNeClockList;
+	}
+}

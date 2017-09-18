@@ -1,0 +1,101 @@
+package com.nms.model.alarm;
+
+import java.text.SimpleDateFormat;
+import java.util.List;
+
+import org.apache.ibatis.session.SqlSession;
+import com.nms.db.bean.alarm.HisAlarmInfo;
+import com.nms.db.bean.alarm.WarningLevel;
+import com.nms.db.bean.equipment.shelf.SiteInst;
+import com.nms.db.bean.alarm.HisAlarmInfo;
+import com.nms.db.bean.alarm.WarningLevel;
+import com.nms.db.bean.equipment.shelf.SiteInst;
+import com.nms.db.dao.alarm.HisAlarmInfoMapper;
+import com.nms.model.equipment.shlef.SiteService_MB;
+import com.nms.model.util.ObjectService_Mybatis;
+import com.nms.model.util.Services;
+import com.nms.ui.manager.ConstantUtil;
+import com.nms.ui.manager.ResourceUtil;
+import com.nms.ui.manager.keys.StringKeysTip;
+
+public class HisAlarmService_MB extends ObjectService_Mybatis {
+	private HisAlarmInfoMapper mapper = null;
+	
+	public void setPtnuser(String ptnuser) {
+		super.ptnuser = ptnuser;
+	}
+
+	public void setSqlSession(SqlSession sqlSession) {
+		super.sqlSession = sqlSession;
+	}
+	public HisAlarmInfoMapper getMapper() {
+		return mapper;
+	}
+	public void setMapper(HisAlarmInfoMapper mapper) {
+		this.mapper = mapper;
+	}
+
+	public int saveOrUpdate(HisAlarmInfo hisInfo) throws Exception {
+		if (hisInfo == null) {
+			throw new Exception("taskInfo is null");
+		}
+		int resultcesId = 0;
+		SiteInst siteInst = null;
+		WarningLevel warningLevel = null;
+		List<WarningLevel> warnList = null;
+		SiteService_MB siteService = null;
+		WarningLevelService_MB warningLevelService = null;
+		try {
+			warningLevelService = (WarningLevelService_MB) ConstantUtil.serviceFactory.newService_MB(Services.WarningLevel, this.sqlSession);
+			siteService = (SiteService_MB) ConstantUtil.serviceFactory.newService_MB(Services.SITE, this.sqlSession);
+			siteInst = new SiteInst();
+			siteInst = siteService.select(hisInfo.getSiteId());
+			warningLevel = new WarningLevel();
+			warningLevel.setWarningcode(hisInfo.getAlarmCode());
+			warningLevel.setWarninglevel(hisInfo.getAlarmLevel());
+			if (siteInst.getManufacturer()==0) {
+				warningLevel.setManufacturer(1); // 1表示武汉
+			} else {
+				warningLevel.setManufacturer(2); // 2表示晨晓
+			}
+		
+			warnList = warningLevelService.select(warningLevel);
+			if(warnList != null && warnList.size() > 0){
+				hisInfo.setWarningLevel_temp(warnList.get(0).getWarninglevel_temp());
+			}
+			this.bean2Db(hisInfo);
+			if (hisInfo.getId() != 0) {
+				resultcesId = this.mapper.update(hisInfo);
+			} else {
+				resultcesId = this.mapper.insert(hisInfo);
+			}
+		} catch (Exception e) {
+			throw e;
+		}
+		return resultcesId;
+	}
+	
+	/**
+	 * 条件查询或者新增，修改操作时
+	 * 需要将数据类型做转换
+	 * @param hisInfo
+	 */
+	private void bean2Db(HisAlarmInfo hisInfo) {
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		if(hisInfo.getObjectType() != null){
+			hisInfo.setObjectType_db(hisInfo.getObjectType().getValue());
+		}
+		if (hisInfo.getRaisedTime() != null) {
+			hisInfo.setHappenedtime(sdf.format(hisInfo.getRaisedTime()));
+		}
+		if (hisInfo.getAckTime() != null ) {
+			hisInfo.setConfirmtime(sdf.format(hisInfo.getAckTime()));
+		}
+		if (hisInfo.getClearedTime() != null) {
+			hisInfo.setCleanTime(sdf.format(hisInfo.getClearedTime()));
+		}
+		if(hisInfo.getIsCleared()!=null && hisInfo.getIsCleared().equals(ResourceUtil.srcStr(StringKeysTip.TIP_CLEARED))){
+			hisInfo.setIsClear(1);
+		}
+	}
+}

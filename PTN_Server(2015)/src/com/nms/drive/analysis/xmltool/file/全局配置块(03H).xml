@@ -1,0 +1,38 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<driveRoot  xmlns="http://drive.bean.com">
+	<attribute length="1" description="单卡MAC地址1" value="0" mapping="(00)"/>
+	<attribute length="1" description="单卡MAC地址2" value="0" mapping="(00)"/>
+	<attribute length="1" description="单卡MAC地址3" value="0" mapping="(00)"/>
+	<attribute length="1" description="单卡MAC地址4" value="0" mapping="(00)"/>
+	<attribute length="1" description="单卡MAC地址5" value="0" mapping="(00)"/>
+	<attribute length="1" description="单卡MAC地址6" value="1" mapping="(01)"/>
+	<attribute length="1" description="地址学习模式" value="0" mapping="(0)/1=(独立)/共享"/>
+	<attribute length="1" description="地址老化开关" value="0" mapping="(0)/1=(关)/开"/>
+	<attribute length="2" description="MAC地址老化时间" value="300" mapping="(300)"/>
+	<attribute length="1" description="丢包率统计时间间隔" value="1" mapping="(1)"/>
+	<attribute length="1" description="FDI帧" value="0" mapping="位"/>
+	<attribute length="1" description="APS等待恢复时间" value="0" mapping="(5)"/>
+	<attribute length="1" description="APS模式" value="0" mapping="(5)"/>
+	<attribute length="1" description="LACP协议开关" value="0" mapping="(5)"/>
+	<attribute length="2" description="设备优先级" value="0" mapping="(5)"/>
+	<attribute length="1" description="DHCP模式" value="0" mapping="(5)"/>
+	<attribute length="1" description="环路检测发包开关" value="0" mapping="(5)"/>
+	<attribute length="1" description="SSM帧模式" value="0" mapping="(5)"/>
+	<attribute length="1" description="二层功能模式开关" value="0" mapping="(5)"/>
+	<attribute length="1" description="掉电告警上联模式" value="0" mapping="(5)"/>
+	<attribute length="1" description="掉电告警上联端口" value="0" mapping="(5)"/>
+	<attribute length="1" description="环路避免功能开关" value="0" mapping="(5)"/>
+	<attribute length="12" description="备用" value="0" mapping="(5)"/>
+	<attribute length="1" description="镜像模式" value="0" mapping="(0)/1/2/3=(关)/入端口镜像/出端口镜像/双向镜像"/>
+	<attribute length="1" description="被镜像端口" value="0" mapping="(0)/1/2/3/4/5/6/7/8/9/10/11H=(无)/LAN1/LAN2/LAN3/LAN4/LAN5/LAN6/LAN7/LAN8/LAN9/LAN10/LAN11/LAN12/E1/WAN1/WAN2/WAN3/WAN4"/>
+	<attribute length="1" description="镜像端口" value="0" mapping="(0)/1/2/3/4/5/6/7/8/9/10/11H=(无)/LAN1/LAN2/LAN3/LAN4/LAN5/LAN6/LAN7/LAN8/LAN9/LAN10/LAN11/LAN12/E1/WAN1/WAN2/WAN3/WAN4"/>
+	<attribute length="1" description="MPLS-TP控制字使能" value="0" mapping="(0)/1=(不使能)/使能"/>
+	<attribute length="2" description="Channel Type" value="32762" mapping="(7FFA)"/>  
+	<attribute length="1" description="TMC FDI帧" value="32762" mapping="(7FFA)"/>  
+	<attribute length="1" description="环路检测功能" value="32762" mapping="(7FFA)"/>  
+	<attribute length="1" description="基于vlan的MAC学习限制" value="32762" mapping="(7FFA)"/>  
+	<attribute length="2" description="MAC学习限制基于vlan值" value="32762" mapping="(7FFA)"/>  
+	<attribute length="2" description="MAC地址学习限制数目" value="32762" mapping="(7FFA)"/>  
+	<attribute length="1" description="备用" value="0" mapping="(5)"/>
+	<attribute length="11" description="校验码" value="0" mapping="(00)"/>
+</driveRoot>

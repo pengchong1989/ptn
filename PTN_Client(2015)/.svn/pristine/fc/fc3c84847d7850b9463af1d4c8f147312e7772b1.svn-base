@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nms.db.dao.system.OperationLogMapper" >
+  <resultMap id="BaseResultMap" type="OperationLog" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="user_id" property="user_id" jdbcType="INTEGER" />
+    <result column="startTime" property="startTime" jdbcType="VARCHAR" />
+    <result column="overTime" property="overTime" jdbcType="VARCHAR" />
+    <result column="operationType" property="operationType" jdbcType="INTEGER" />
+    <result column="operationResult" property="operationResult" jdbcType="INTEGER" />
+    <result column="IP" property="IP" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, user_id, startTime, overTime, operationType, operationResult, IP
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from operation_log
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from operation_log
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="OperationLog" >
+    insert into operation_log (id, user_id, startTime, 
+      overTime, operationType, operationResult, 
+      IP)
+    values (#{id,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER}, #{starttime,jdbcType=VARCHAR}, 
+      #{overtime,jdbcType=VARCHAR}, #{operationtype,jdbcType=INTEGER}, #{operationresult,jdbcType=INTEGER}, 
+      #{ip,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="OperationLog" >
+    insert into operation_log
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="userId != null" >
+        user_id,
+      </if>
+      <if test="starttime != null" >
+        startTime,
+      </if>
+      <if test="overtime != null" >
+        overTime,
+      </if>
+      <if test="operationtype != null" >
+        operationType,
+      </if>
+      <if test="operationresult != null" >
+        operationResult,
+      </if>
+      <if test="ip != null" >
+        IP,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="userId != null" >
+        #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="starttime != null" >
+        #{starttime,jdbcType=VARCHAR},
+      </if>
+      <if test="overtime != null" >
+        #{overtime,jdbcType=VARCHAR},
+      </if>
+      <if test="operationtype != null" >
+        #{operationtype,jdbcType=INTEGER},
+      </if>
+      <if test="operationresult != null" >
+        #{operationresult,jdbcType=INTEGER},
+      </if>
+      <if test="ip != null" >
+        #{ip,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="OperationLog" >
+    update operation_log
+    <set >
+      <if test="userId != null" >
+        user_id = #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="starttime != null" >
+        startTime = #{starttime,jdbcType=VARCHAR},
+      </if>
+      <if test="overtime != null" >
+        overTime = #{overtime,jdbcType=VARCHAR},
+      </if>
+      <if test="operationtype != null" >
+        operationType = #{operationtype,jdbcType=INTEGER},
+      </if>
+      <if test="operationresult != null" >
+        operationResult = #{operationresult,jdbcType=INTEGER},
+      </if>
+      <if test="ip != null" >
+        IP = #{ip,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="OperationLog" >
+    update operation_log
+    set user_id = #{userId,jdbcType=INTEGER},
+      startTime = #{starttime,jdbcType=VARCHAR},
+      overTime = #{overtime,jdbcType=VARCHAR},
+      operationType = #{operationtype,jdbcType=INTEGER},
+      operationResult = #{operationresult,jdbcType=INTEGER},
+      IP = #{ip,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

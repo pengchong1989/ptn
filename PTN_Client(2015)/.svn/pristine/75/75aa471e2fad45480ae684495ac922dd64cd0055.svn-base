@@ -1,0 +1,32 @@
+package com.nms.db.dao.ptn;
+
+import org.apache.ibatis.annotations.Param;
+
+import com.nms.db.bean.ptn.Businessid;
+
+
+public interface BusinessidMapper {
+    int deleteByPrimaryKey(Integer id);
+
+    
+
+    int insertSelective(Businessid record);
+
+    Businessid selectByPrimaryKey(Integer id);
+
+    int updateByPrimaryKeySelective(Businessid record);
+
+    int updateByPrimaryKey(Businessid record);
+
+	public Businessid query(Businessid condition);
+
+	public void update(Businessid condition);
+	
+	public int insert(@Param("businessId")Integer siteId,@Param("type")String type,@Param("i")Integer i,@Param("idstatus")Integer idstatus);
+
+	/**
+	 * 通过网元id删除
+	 * @param siteId
+	 */
+	void delete(int siteId);
+}

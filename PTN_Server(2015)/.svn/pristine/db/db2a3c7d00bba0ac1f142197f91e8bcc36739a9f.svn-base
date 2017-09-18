@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<driveRoot  xmlns="http://drive.bean.com">
+	<attribute length="1" description="(WAN1)VS OAM使能" value="0" mapping="(0)/1=(不使能)/使能"/>
+	<attribute length="1" description="(WAN1)MEG ICC" value="1" mapping="(123456)"/>
+	<attribute length="1" description="(WAN1)MEG ICC" value="2" mapping="(123456)"/>
+	<attribute length="1" description="(WAN1)MEG ICC" value="3" mapping="(123456)"/>
+	<attribute length="1" description="(WAN1)MEG ICC" value="4" mapping="(123456)"/>
+	<attribute length="1" description="(WAN1)MEG ICC" value="5" mapping="(123456)"/>
+	<attribute length="1" description="(WAN1)MEG ICC" value="6" mapping="(123456)"/>
+	<attribute length="1" description="(WAN1)MEG UMC" value="7" mapping="(789ABC)"/>
+	<attribute length="1" description="(WAN1)MEG UMC" value="8" mapping="(789ABC)"/>
+	<attribute length="1" description="(WAN1)MEG UMC" value="9" mapping="(789ABC)"/>
+	<attribute length="1" description="(WAN1)MEG UMC" value="10" mapping="(789ABC)"/>
+	<attribute length="1" description="(WAN1)MEG UMC" value="11" mapping="(789ABC)"/>
+	<attribute length="1" description="(WAN1)MEG UMC" value="12" mapping="(789ABC)"/>
+	<attribute length="1" description="(WAN1)备用" value="0" mapping="(00)"/>
+	<attribute length="2" description="(WAN1)源MEP ID" value="1" mapping="(1)"/>
+	<attribute length="2" description="(WAN1)对等MEP ID" value="1" mapping="(1)"/>
+	<attribute length="1" description="(WAN1)CV帧" value="16" mapping="(16)"/>
+	<attribute length="1" description="(WAN1)MEL" value="7" mapping="(7)"/>
+	<attribute length="30" description="(WAN1)备用" value="0" mapping="(0)"/>
+	<attribute length="1" description="(WAN2)VS OAM使能" value="" mapping="(0)/1=(不使能)/使能"/>
+	<attribute length="6" description="(WAN2)MEG ICC" value="" mapping="(123456)"/>       
+	<attribute length="6" description="(WAN2)MEG UMC" value="" mapping="(789ABC)"/>       
+	<attribute length="1" description="(WAN2)备用" value="" mapping=""/>                    
+	<attribute length="2" description="(WAN2)源MEP ID" value="" mapping="(1)"/>            
+	<attribute length="2" description="(WAN2)对等MEP ID" value="" mapping=""/>              
+	<attribute length="1" description="(WAN2)CV帧" value="" mapping=""/>                   
+	<attribute length="1" description="(WAN2)MEL" value="" mapping="(7)"/>                
+	<attribute length="30" description="(WAN2)备用" value="" mapping=""/>
+	<attribute length="1" description="(WAN3)VS OAM使能" value="" mapping="(0)/1=(不使能)/使能"/>
+	<attribute length="6" description="(WAN3)MEG ICC" value="" mapping="(123456)"/>       
+	<attribute length="6" description="(WAN3)MEG UMC" value="" mapping="(789ABC)"/>       
+	<attribute length="1" description="(WAN3)备用" value="" mapping=""/>                    
+	<attribute length="2" description="(WAN3)源MEP ID" value="" mapping="(1)"/>            
+	<attribute length="2" description="(WAN3)对等MEP ID" value="" mapping=""/>              
+	<attribute length="1" description="(WAN3)CV帧" value="" mapping=""/>                   
+	<attribute length="1" description="(WAN3)MEL" value="" mapping="(7)"/>                
+	<attribute length="30" description="(WAN3)备用" value="" mapping=""/>
+	<attribute length="1" description="(WAN4)VS OAM使能" value="0" mapping="(0)/1=(不使能)/使能"/>
+	<attribute length="1" description="(WAN4)MEG ICC" value="1" mapping="(123456)"/>
+	<attribute length="1" description="(WAN4)MEG ICC" value="2" mapping="(123456)"/>
+	<attribute length="1" description="(WAN4)MEG ICC" value="3" mapping="(123456)"/>
+	<attribute length="1" description="(WAN4)MEG ICC" value="4" mapping="(123456)"/>
+	<attribute length="1" description="(WAN4)MEG ICC" value="5" mapping="(123456)"/>
+	<attribute length="1" description="(WAN4)MEG ICC" value="6" mapping="(123456)"/>
+	<attribute length="1" description="(WAN4)MEG UMC" value="7" mapping="(789ABC)"/>
+	<attribute length="1" description="(WAN4)MEG UMC" value="8" mapping="(789ABC)"/>
+	<attribute length="1" description="(WAN4)MEG UMC" value="9" mapping="(789ABC)"/>
+	<attribute length="1" description="(WAN4)MEG UMC" value="10" mapping="(789ABC)"/>
+	<attribute length="1" description="(WAN4)MEG UMC" value="11" mapping="(789ABC)"/>
+	<attribute length="1" description="(WAN4)MEG UMC" value="12" mapping="(789ABC)"/>
+	<attribute length="1" description="(WAN4)备用" value="0" mapping="(00)"/>
+	<attribute length="2" description="(WAN4)源MEP ID" value="1" mapping="(1)"/>
+	<attribute length="2" description="(WAN4)对等MEP ID" value="1" mapping="(1)"/>
+	<attribute length="1" description="(WAN4)CV帧" value="16" mapping="(16)"/>
+	<attribute length="1" description="(WAN4)MEL" value="7" mapping="(7)"/>
+	<attribute length="30" description="(WAN4)备用" value="0" mapping="(0)"/>
+</driveRoot>

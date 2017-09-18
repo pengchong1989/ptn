@@ -1,0 +1,219 @@
+package com.nms.db.dao.ptn;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.nms.db.bean.ptn.L2cpInfo;
+
+/**
+ * L2CP配置块的数据库操作
+ * @author Administrator
+ *
+ */
+public class L2CPDao {
+	
+	/**
+	 * 通过网元更新数据
+	 * @param l2cpInfo
+	 * @param connection
+	 * @return
+	 * @throws Exception
+	 */
+	public int update(L2cpInfo l2cpInfo,Connection connection) throws Exception{
+		
+		if(null == l2cpInfo){
+			throw new Exception("l2cpInfo is null");
+		}
+		if(null == connection){
+			throw new Exception("connection is null");
+		}
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		int result = 0;
+		try {
+			sql = "update l2cp_inst set l2cpEnable=?, bpduTreaty=?,lldpTreaty=?,lacpTreaty=?,ieeeTreaty=?,macAddress=?,treatyNumber=? where siteid=?";
+			preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.setInt(1,l2cpInfo.getL2cpEnable());
+			preparedStatement.setInt(2, l2cpInfo.getBpduTreaty());
+			preparedStatement.setInt(3, l2cpInfo.getLldpTreaty());
+			preparedStatement.setInt(4, l2cpInfo.getLacpTreaty());
+			preparedStatement.setInt(5, l2cpInfo.getIeeeTreaty());
+			preparedStatement.setString(6, l2cpInfo.getMacAddress());
+			preparedStatement.setString(7,l2cpInfo.getTreatyNumber());
+			preparedStatement.setInt(8,l2cpInfo.getSiteId());
+			result = preparedStatement.executeUpdate();
+			
+		} catch (Exception e) {
+			throw e;
+		}finally{
+			if(preparedStatement != null){
+				try {
+					preparedStatement.close();
+				} catch (Exception e2) {
+					throw e2;
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+		return result;
+	}
+	
+	/**
+	 * 通过网元ID来获取全部的L2CP数据
+	 * @param siteId 网元Id
+	 * @param connection
+	 * @return
+	 * @throws Exception
+	 */
+	public List<L2cpInfo> queryByCondition(int siteId,Connection connection)throws Exception{
+		
+		if(null == connection){
+			throw new Exception("connection is null");
+		}
+		List<L2cpInfo> l2cpInfoList = null;
+		String sql = null;
+		ResultSet resultSet = null;
+		PreparedStatement preparedStatement = null;
+		L2cpInfo info = null;
+		
+		try{
+			l2cpInfoList = new ArrayList<L2cpInfo>();
+			sql = "select *from l2cp_inst where siteid=?";
+			preparedStatement =  connection.prepareStatement(sql);
+			preparedStatement.setInt(1, siteId);
+			resultSet  = preparedStatement.executeQuery();
+			while(resultSet.next()){
+				info = new L2cpInfo();
+				info.setId(resultSet.getInt("id"));
+				info.setSiteId(resultSet.getInt("siteid"));
+				info.setL2cpEnable(resultSet.getInt("l2cpEnable"));
+				info.setBpduTreaty(resultSet.getInt("bpduTreaty"));
+				info.setLldpTreaty(resultSet.getInt("lldpTreaty"));
+				info.setLacpTreaty(resultSet.getInt("lacpTreaty"));
+				info.setIeeeTreaty(resultSet.getInt("ieeeTreaty"));
+				info.setMacAddress(resultSet.getString("macAddress"));
+				info.setTreatyNumber(resultSet.getString("treatyNumber"));
+				l2cpInfoList.add(info);
+			}
+		}catch(Exception e){
+			throw e;
+		}finally{
+			if(resultSet != null){
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				resultSet = null;
+			}
+			if(preparedStatement != null){
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+			info = null;
+		}
+		return l2cpInfoList;
+	}
+
+	/**
+	 * 插入一条数据
+	 * @param info
+	 * @param connection
+	 * @return
+	 * @throws Exception
+	 */
+	public int insert(L2cpInfo info,Connection connection) throws Exception{
+		if (null == info) {
+			throw new Exception("L2cpInfo is null");
+		}
+
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+		String sql = null;
+		int result = 0;
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null; 
+		try {
+			sql = "insert into l2cp_inst (siteid,l2cpEnable,bpduTreaty,lldpTreaty,lacpTreaty,ieeeTreaty,macAddress,treatyNumber) values(?,?,?,?,?,?,?,?)";
+			preparedStatement = connection.prepareStatement(sql,Statement.RETURN_GENERATED_KEYS);
+			preparedStatement.setInt(1, info.getSiteId());
+			preparedStatement.setInt(2, info.getL2cpEnable());
+			preparedStatement.setInt(3, info.getBpduTreaty());
+			preparedStatement.setInt(4, info.getLldpTreaty());
+			preparedStatement.setInt(5, info.getLacpTreaty());
+			preparedStatement.setInt(6, info.getIeeeTreaty());
+			preparedStatement.setString(7, info.getMacAddress());
+			preparedStatement.setString(8, info.getTreatyNumber());
+			preparedStatement.executeUpdate();
+			resultSet = preparedStatement.getGeneratedKeys();
+			if(resultSet.next()){
+				result = resultSet.getInt(1);
+            }
+		} catch (Exception e) {
+			e.printStackTrace();
+		}finally{
+			if (resultSet != null) {
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				resultSet = null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+		return result;
+	}
+	
+	/**
+	 * 删除一条数据
+	 * @param siteId
+	 * @param connection
+	 * @throws Exception
+	 */
+	public void delete(int siteId, Connection connection) throws Exception {
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+		
+		PreparedStatement preparedStatement = null;
+		String sql = null;
+		try {
+			sql = "delete from l2cp_inst where siteId = ?";
+			preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.setInt(1, siteId);
+			preparedStatement.executeUpdate();
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+	}
+}

@@ -1,0 +1,247 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nms.db.dao.equipment.slot.SlotInstMapper" >
+  <resultMap id="BaseResultMap" type="SlotInst" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="siteId" property="siteid" jdbcType="INTEGER" />
+    <result column="equipId" property="equipid" jdbcType="INTEGER" />
+    <result column="cardId" property="cardid" jdbcType="INTEGER" />
+    <result column="imagePath" property="imagepath" jdbcType="VARCHAR" />
+    <result column="slotType" property="slottype" jdbcType="VARCHAR" />
+    <result column="slotx" property="slotx" jdbcType="INTEGER" />
+    <result column="sloty" property="sloty" jdbcType="INTEGER" />
+    <result column="bestCardName" property="bestcardname" jdbcType="VARCHAR" />
+    <result column="number" property="number" jdbcType="VARCHAR" />
+    <result column="masterCardAddress" property="mastercardaddress" jdbcType="VARCHAR" />
+    <result column="snmpName" property="snmpname" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, siteId, equipId, cardId, imagePath, slotType, slotx, sloty, bestCardName, number, 
+    masterCardAddress, snmpName
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from slot_inst
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from slot_inst
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+ 
+  <insert id="insertSelective" parameterType="SlotInst" >
+    insert into slot_inst
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="siteid != null" >
+        siteId,
+      </if>
+      <if test="equipid != null" >
+        equipId,
+      </if>
+      <if test="cardid != null" >
+        cardId,
+      </if>
+      <if test="imagepath != null" >
+        imagePath,
+      </if>
+      <if test="slottype != null" >
+        slotType,
+      </if>
+      <if test="slotx != null" >
+        slotx,
+      </if>
+      <if test="sloty != null" >
+        sloty,
+      </if>
+      <if test="bestcardname != null" >
+        bestCardName,
+      </if>
+      <if test="number != null" >
+        number,
+      </if>
+      <if test="mastercardaddress != null" >
+        masterCardAddress,
+      </if>
+      <if test="snmpname != null" >
+        snmpName,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="siteid != null" >
+        #{siteid,jdbcType=INTEGER},
+      </if>
+      <if test="equipid != null" >
+        #{equipid,jdbcType=INTEGER},
+      </if>
+      <if test="cardid != null" >
+        #{cardid,jdbcType=INTEGER},
+      </if>
+      <if test="imagepath != null" >
+        #{imagepath,jdbcType=VARCHAR},
+      </if>
+      <if test="slottype != null" >
+        #{slottype,jdbcType=VARCHAR},
+      </if>
+      <if test="slotx != null" >
+        #{slotx,jdbcType=INTEGER},
+      </if>
+      <if test="sloty != null" >
+        #{sloty,jdbcType=INTEGER},
+      </if>
+      <if test="bestcardname != null" >
+        #{bestcardname,jdbcType=VARCHAR},
+      </if>
+      <if test="number != null" >
+        #{number,jdbcType=VARCHAR},
+      </if>
+      <if test="mastercardaddress != null" >
+        #{mastercardaddress,jdbcType=VARCHAR},
+      </if>
+      <if test="snmpname != null" >
+        #{snmpname,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="SlotInst" >
+    update slot_inst
+    <set >
+      <if test="siteid != null" >
+        siteId = #{siteid,jdbcType=INTEGER},
+      </if>
+      <if test="equipid != null" >
+        equipId = #{equipid,jdbcType=INTEGER},
+      </if>
+      <if test="cardid != null" >
+        cardId = #{cardid,jdbcType=INTEGER},
+      </if>
+      <if test="imagepath != null" >
+        imagePath = #{imagepath,jdbcType=VARCHAR},
+      </if>
+      <if test="slottype != null" >
+        slotType = #{slottype,jdbcType=VARCHAR},
+      </if>
+      <if test="slotx != null" >
+        slotx = #{slotx,jdbcType=INTEGER},
+      </if>
+      <if test="sloty != null" >
+        sloty = #{sloty,jdbcType=INTEGER},
+      </if>
+      <if test="bestcardname != null" >
+        bestCardName = #{bestcardname,jdbcType=VARCHAR},
+      </if>
+      <if test="number != null" >
+        number = #{number,jdbcType=VARCHAR},
+      </if>
+      <if test="mastercardaddress != null" >
+        masterCardAddress = #{mastercardaddress,jdbcType=VARCHAR},
+      </if>
+      <if test="snmpname != null" >
+        snmpName = #{snmpname,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="SlotInst" >
+    update slot_inst
+    set siteId = #{siteid,jdbcType=INTEGER},
+      equipId = #{equipid,jdbcType=INTEGER},
+      cardId = #{cardid,jdbcType=INTEGER},
+      imagePath = #{imagepath,jdbcType=VARCHAR},
+      slotType = #{slottype,jdbcType=VARCHAR},
+      slotx = #{slotx,jdbcType=INTEGER},
+      sloty = #{sloty,jdbcType=INTEGER},
+      bestCardName = #{bestcardname,jdbcType=VARCHAR},
+      number = #{number,jdbcType=VARCHAR},
+      masterCardAddress = #{mastercardaddress,jdbcType=VARCHAR},
+      snmpName = #{snmpname,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  
+   <select id="queryByCondition" resultType="SlotInst" parameterType="SlotInst" >
+    select 
+    <include refid="Base_Column_List" />
+       from slot_inst 
+       <where>
+         1=1
+         <if test="slotInst.id>0">
+         and id=#{slotInst.id}
+         </if>
+         <if test="slotInst.siteId>0">
+         and siteId=#{slotInst.siteId}
+         </if>
+         <if test="slotInst.equipId>0">
+         and equipId=#{slotInst.equipId}
+         </if>
+         <if test="slotInst.cardId>0">
+         and cardId=#{slotInst.cardId}
+         </if>
+         <if test="slotInst.number>0">
+         and number=#{slotInst.number}
+         </if>
+          <if test="slotInst.masterCardAddress!=null and slotInst.masterCardAddress!='' ">
+         and masterCardAddress=#{slotInst.masterCardAddress}
+         </if>
+       </where>
+  </select>
+  
+   <insert id="insert" parameterType="SlotInst"  useGeneratedKeys="true" keyProperty="slotInst.id">
+    insert into slot_inst (siteId, equipId, 
+      cardId, imagePath, slotType, 
+      slotx, sloty, bestCardName, 
+      number, masterCardAddress, snmpName
+      )
+    values (#{slotInst.siteId,jdbcType=INTEGER}, #{slotInst.equipId,jdbcType=INTEGER}, 
+      #{slotInst.cardId,jdbcType=INTEGER}, #{slotInst.imagePath,jdbcType=VARCHAR}, #{slotInst.slotType,jdbcType=VARCHAR}, 
+      #{slotInst.slotx,jdbcType=INTEGER}, #{slotInst.sloty,jdbcType=INTEGER}, #{slotInst.bestCardName,jdbcType=VARCHAR}, 
+      #{slotInst.number,jdbcType=VARCHAR}, #{slotInst.masterCardAddress,jdbcType=VARCHAR}, #{slotInst.snmpName,jdbcType=VARCHAR}
+      )
+  </insert>
+  
+   <update id="update" parameterType="SlotInst" >
+    update slot_inst 
+    set 
+    siteId=#{slotInst.siteId},equipId=#{slotInst.equipId},cardId=#{slotInst.cardId},imagePath=#{slotInst.imagePath},
+    slotType=#{slotInst.slotType},slotx=#{slotInst.slotx} ,sloty=#{slotInst.sloty} , bestCardName=#{slotInst.bestCardName} , 
+    number=#{slotInst.number},masterCardAddress=#{slotInst.masterCardAddress},
+    snmpName=#{slotInst.snmpName} where id=#{slotInst.id}
+  </update>
+  
+ <select id="queryStatistics" resultMap="StatisticMap" >
+   select c.siteId,s2.CellId, s1.number,s1.masterCardAddress, 
+   c.cardName  from Slot_inst s1, Card_inst c, Site_inst s2 
+   where s1.cardId = c.id and c.siteId = s2.site_inst_id
+ </select>
+ 
+ <select id="queryByPortId" resultType="SlotInst" parameterType="java.lang.Integer">
+ select * from slot_inst s where s.cardid=(select p.cardId FROM port_inst p where p.portid=#{0})
+ </select>
+ 
+ <resultMap id="StatisticMap" type="SlotInst" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="siteId" property="siteId" jdbcType="INTEGER" />
+    <result column="CellId" property="cellid" jdbcType="VARCHAR" />
+    <result column="number" property="number" jdbcType="INTEGER" />
+    <result column="cardName" property="cardname" jdbcType="VARCHAR" />
+    <result column="masterCardAddress" property="masterCardAddress" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  
+   <select id="querryByType" resultType="java.lang.Integer" parameterType="map">
+ select number from slot_inst where siteId=#{siteId} and id=#{slotId}
+ </select>
+ 
+  <delete id="deleteBySiteId" parameterType="java.lang.Integer" >
+    delete from slot_inst where siteId=#{siteId}
+  </delete>
+  
+    <update id="updateMasterAddress" parameterType="SlotInst" >
+    update slot_inst set masterCardAddress=#{masterCardAddress} where id=#{id}
+  </update>
+</mapper>

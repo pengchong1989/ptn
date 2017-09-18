@@ -1,0 +1,317 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nms.db.dao.report.StaticsticsMapper" >
+
+  <select id="queryCard" resultMap="SsCardMap" >
+   select c.cardName as CardId,s.CellType,c.installedSerialNumber,s.cellId,s.versions ,s.hardversion from card_inst c,site_inst s where c.siteId = s.site_inst_id
+  </select>
+  <resultMap id="SsCardMap" type="SSCard" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="cardName" property="CardId" jdbcType="VARCHAR" />
+    <result column="CellType" property="CardType" jdbcType="VARCHAR" />
+    <result column="installedSerialNumber" property="installedSerialNumber" jdbcType="VARCHAR" />
+    <result column="cellId" property="SiteName" jdbcType="VARCHAR" />
+    <result column="versions" property="Version" jdbcType="VARCHAR" />
+    <result column="hardversion" property="hardversion" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  
+  <select id="queryByCountAlarmLevel" resultMap="SSAlarmMap" >  
+    SELECT s.CellId as sitename,s.site_inst_id as siteId,(SELECT COUNT(id) FROM 
+	(SELECT id,siteid,slotId,objectid,objecttype,objectname,alarmcode,alarmlevel_temp FROM history_alarm 
+	UNION ALL select id,siteid,slotId,objectid,objecttype,objectname,alarmcode,alarmlevel_temp from current_alarm) 
+	AS alarm WHERE alarm.alarmlevel_temp=5 AND alarm.siteid=s.site_inst_id) AS instancy,
+				
+	SELECT COUNT(id) FROM 
+	(SELECT id,siteid,slotId,objectid,objecttype,objectname,alarmcode,alarmlevel_temp FROM history_alarm UNION ALL 
+	 select id,siteid,slotId,objectid,objecttype,objectname,alarmcode,alarmlevel_temp from current_alarm) AS alarm WHERE alarm.alarmlevel_temp=4 AND alarm.siteid=s.site_inst_id) AS mostly ,
+				
+	(SELECT COUNT(id) FROM 
+	(SELECT id,siteid,slotId,objectid,objecttype,objectname,alarmcode,alarmlevel_temp FROM history_alarm UNION ALL 
+	select id,siteid,slotId,objectid,objecttype,objectname,alarmcode,alarmlevel_temp from current_alarm) AS alarm WHERE alarm.alarmlevel_temp=3 AND alarm.siteid=s.site_inst_id) AS subordination ,
+				
+	(SELECT COUNT(id) FROM (SELECT id,siteid,slotId,objectid,objecttype,objectname,alarmcode,alarmlevel_temp FROM history_alarm 
+	 UNION ALL select id,siteid,slotId,objectid,objecttype,objectname,alarmcode,alarmlevel_temp from current_alarm) AS alarm WHERE alarm.alarmlevel_temp=2 AND alarm.siteid=s.site_inst_id) 
+	 AS clew , 
+				
+	(SELECT COUNT(id) FROM (SELECT id,siteid,slotId,objectid,objecttype,objectname,alarmcode,alarmlevel_temp FROM history_alarm 
+	UNION ALL select id,siteid,slotId,objectid,objecttype,objectname,alarmcode,alarmlevel_temp from current_alarm) AS alarm WHERE alarm.alarmlevel_temp=1 AND alarm.siteid=s.site_inst_id) 
+	AS unknow FROM site_inst s
+  
+  </select>
+  
+   <resultMap id="SSAlarmMap" type="SSAlarm" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="sitename" property="name" jdbcType="VARCHAR" />
+    <result column="instancy" property="instancy" jdbcType="INTEGER" />
+    <result column="mostly" property="mostly" jdbcType="INTEGER" />
+    <result column="subordination" property="subordination" jdbcType="INTEGER" />
+    <result column="clew" property="clew" jdbcType="INTEGER" />
+    <result column="unknow" property="Unknow" jdbcType="INTEGER" />   
+    <result column="siteId" property="siteid" jdbcType="INTEGER" />
+  </resultMap>
+  
+ <select id="queryBusinessOfTunnelList" resultMap="professMap" >
+  SELECT list.`name` ,'1' AS direction , list.aneName,list.aportname,list.znename,list.zportname,list.atunnelbusinessid,
+  list.ztunnelbusinessid,list.type,list.aSiteId,list.zSiteId,(SELECT COUNT(id) FROM current_alarm alarm 
+  WHERE (alarm.objecttype=3 and list.type = 185 and ( (alarm.objectid=list.atunnelbusinessid and alarm.siteid=list.aSiteId ) 
+  or( alarm.objectid=list.ztunnelbusinessid and alarm.siteid=list.zSiteId))) or(alarm.objecttype=6 and list.type = 185 
+  and ( (alarm.objectid=list.atunnelbusinessid and alarm.siteid=list.aSiteId) or (alarm.objectid=list.ztunnelbusinessid 
+  and alarm.siteid=list.zSiteId))) ) AS alarmCount,list.activeStatus,list.createTime,list.clientName FROM 
+  (SELECT  t.tunnelName as name , t.tunnelType as type, t.tunnelStatus as activeStatus,t.createTime as createTime, 
+  t.createUser as clientName, sa.CellId AS aneName, sz.CellId AS znename, pa.portName AS aPortName, pz.portName AS zPortName ,
+  l.atunnelbusinessid as atunnelbusinessid,l.ztunnelbusinessid as ztunnelbusinessid,sa.site_inst_id as aSiteId,
+  sz.site_inst_id as zSiteId FROM site_inst sa, site_inst sz, port_inst pa, port_inst pz, tunnel t,lspinfo l 
+  WHERE t.aSiteId = sa.site_inst_id AND t.zSiteId = sz.site_inst_id AND t.aPortId = pa.portId  AND t.zPortId = pz.portId  
+  AND t.tunnelId = l.tunnelId  and t.tunnelType!='0' and t.isSingle=0 group by t.tunnelId)as list
+ </select>
+  
+ <select id="queryBusinessOfPwList" resultMap="professMap" >
+  SELECT list.`name` ,'1' AS direction ,'7' as rate, list.aneName,list.aportname,list.znename,list.zportname,list.apwServiceId,list.zpwServiceId,
+  list.aSiteId,list.zSiteId,(SELECT COUNT(id) FROM current_alarm alarm WHERE (alarm.objecttype=4 and ((alarm.objectid=list.apwServiceId and 
+  alarm.siteid=list.aSiteId)or (alarm.objectid=list.zpwServiceId and alarm.siteid=list.zSiteId)))) AS alarmCount,list.activeStatus,
+  list.createTime,list.clientName FROM (SELECT p.pwId , p.pwName as name, p.pwStatus as activeStatus,p.apwServiceId as apwServiceId ,
+  p.zpwServiceId as zpwServiceId,sa.CellId AS aneName, sz.CellId AS zneName,   p.createTime as createTime, pa.portName AS aPortName,pz.portName AS zPortName,
+  p.createUser as clientName,sa.site_inst_id as aSiteId,sz.site_inst_id as zSiteId FROM pwinfo p, site_inst sa, port_inst pa, port_inst pz, site_inst sz ,
+  tunnel t WHERE t.tunnelId=p.tunnelId and p.aSiteId = sa.site_inst_id AND p.zSiteId = sz.site_inst_id and ((p.aSiteId =t.aSiteId and p.zSiteId =t.zSiteId 
+  and t.aPortId = pa.portId AND t.zPortId = pz.portId) or(p.aSiteId =t.zSiteId and p.zSiteId =t.aSiteId and t.zPortId = pa.portId AND t.aPortId = pz.portId)) 
+  and p.isSingle=0 group by p.pwName order by p.pwId) as list 
+ </select>
+  
+ <select id="queryBusinessOfMsPwList" resultMap="professMap" >
+  SELECT list.`name` ,list.id,'1' AS direction ,'7' as rate, list.aneName,list.znename,list.apwServiceId,list.zpwServiceId,list.aSiteId,list.zSiteId,
+  (SELECT COUNT(id) FROM current_alarm alarm WHERE (alarm.objecttype=17 and  ( (alarm.objectid=list.apwServiceId and alarm.siteid=list.aSiteId) or 
+  (alarm.objectid=list.zpwServiceId and alarm.siteid=list.zSiteId))) ) AS alarmCount,list.activeStatus,list.createTime,list.clientName FROM 
+  (SELECT p.pwId as id, p.pwName as name, p.pwStatus as activeStatus,p.apwServiceId as apwServiceId ,p.zpwServiceId as zpwServiceId,sa.CellId AS aneName, 
+  sz.CellId AS zneName,   p.createTime as createTime, p.createUser as clientName,sa.site_inst_id as aSiteId,sz.site_inst_id as zSiteId FROM pwinfo p, 
+  site_inst sa,  site_inst sz ,tunnel t WHERE p.tunnelId=0 and p.aSiteId = sa.site_inst_id AND p.zSiteId = sz.site_inst_id and p.isSingle=0 group by p.pwName 
+  order by p.pwId) as list
+ </select>
+  
+ <select id="queryBusinessOfElineAndCesList" resultMap="professMap" >
+  SELECT list.`name` ,'1' AS direction , (CASE WHEN list.serviceType=0  THEN '1' ELSE '2' END) AS rate , list.aneName,list.aportname,list.znename,list.zportname,
+  list.serviceType,(SELECT COUNT(id) FROM current_alarm alarm WHERE alarm.objecttype=9 AND alarm.objectid=list.id) AS alarmCount,	list.activeStatus,list.createTime,
+  (SELECT `name` FROM client WHERE id=list.clientid) AS clientName from ( SELECT s.*,a.CellId AS aNeName,z.CellId AS zNeName,aport.`portName` AS aPortname , 
+  zport.`portName` AS zportname FROM serviceinfo s,site_inst a,site_inst z ,acinfo aac,acinfo zac,port_inst aport,port_inst zport  WHERE s.asiteid=a.site_inst_id  
+  AND s.zsiteid=z.site_inst_id AND s.aacid=aac.id AND s.zacid=zac.id and aac.portId=aport.portId and zac.portId=zport.portId AND s.isSingle= 0 AND s.serviceType=1 
+  group by s.id ,s.serviceType  UNION ALL SELECT s.*,a.CellId AS aNeName,z.CellId AS zNeName,CASE WHEN (s.cestype=2 OR s.cestype=4) 
+  THEN (SELECT p.portName FROM port_inst p WHERE s.aAcId=p.portid) WHEN (s.cestype=3 OR s.cestype=5) THEN (SELECT ps.timeslotnumber FROM port_stm_timeslot ps 
+  WHERE s.aAcId=ps.id)END AS aportName, CASE WHEN (s.cestype=2 OR s.cestype=5) THEN (SELECT p.portName FROM port_inst p WHERE s.zAcId=p.portid) 
+  WHEN (s.cestype=3 OR s.cestype=4) THEN (SELECT ps.timeslotnumber FROM port_stm_timeslot ps WHERE s.zAcId=ps.id) END AS zportName FROM serviceinfo s,site_inst a,
+  site_inst z WHERE s.asiteid=a.site_inst_id  AND s.zsiteid=z.site_inst_id AND s.isSingle= 0 AND s.serviceType=0  group by s.id ,s.serviceType)as list
+ </select>
+  
+ <select id="queryBusinessOfEtreeList" resultMap="professMap" >
+  SELECT list.`name` ,'1' AS direction , (CASE WHEN list.serviceType=0  THEN '1' ELSE '2' END) AS rate , list.serviceType,
+  (SELECT COUNT(id) FROM current_alarm alarm WHERE alarm.objecttype=10 AND alarm.objectid=list.id) AS alarmCount,	list.activeStatus,
+  list.createTime,(SELECT `name` FROM client WHERE id=list.clientid) AS clientName from ( SELECT s.*  FROM serviceinfo s WHERE   s.isSingle= 0 
+  AND (s.serviceType=2  or s.serviceType=3 or s.serviceType =40) group by s.serviceId ,s.serviceType)as list
+ </select>
+  
+   <resultMap id="professMap" type="SSProfess" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="direction" property="direction" jdbcType="INTEGER" />
+    <result column="aneName" property="aSiteName" jdbcType="VARCHAR" />
+    <result column="zneName" property="zSiteName" jdbcType="VARCHAR" />
+    <result column="alarmCount" property="alarmCount" jdbcType="INTEGER" />
+    <result column="activeStatus" property="activeStatus" jdbcType="INTEGER" />
+    <result column="createTime" property="createTime" jdbcType="VARCHAR" />   
+    <result column="clientName" property="clientName" jdbcType="VARCHAR" /> 
+    <result column="type" property="serviceType" jdbcType="INTEGER" /> 
+   </resultMap>
+  	
+  <select id="SSBusinessByPortId" resultMap="professMap" parameterType="map">
+  	<if test="type=='TUNNEL' ">
+  	SELECT list.`name` ,'1' AS direction , list.aneName,list.aportname,list.znename,list.zportname,list.atunnelbusinessid,list.ztunnelbusinessid,
+    list.type,list.aSiteId,list.zSiteId,(SELECT COUNT(id) FROM current_alarm alarm WHERE (alarm.objecttype=3 and list.type = 185 and 
+    ((alarm.objectid=list.atunnelbusinessid and alarm.siteid = list.aSiteId )or (alarm.objectid=list.ztunnelbusinessid and alarm.siteid = list.zSiteId ))) 
+    or(alarm.objecttype=6 and list.type = 185 and ((alarm.objectid=list.atunnelbusinessid and alarm.siteid = list.aSiteId )or (alarm.objectid=list.ztunnelbusinessid 
+    and alarm.siteid = list.zSiteId)))) AS alarmCount,list.activeStatus,list.createTime,list.clientName FROM (SELECT  t.tunnelName as name , 
+    t.tunnelType as type, t.tunnelStatus as activeStatus,t.createTime as createTime, t.createUser as clientName, sa.CellId AS aneName, sz.CellId AS znename, 
+    pa.portName AS aPortName, pz.portName AS zPortName ,l.atunnelbusinessid as atunnelbusinessid,l.ztunnelbusinessid as ztunnelbusinessid,sa.site_inst_id as aSiteId,
+    sz.site_inst_id as zSiteId FROM site_inst sa, site_inst sz, port_inst pa, port_inst pz, tunnel t,lspinfo l WHERE t.aSiteId = sa.site_inst_id AND 
+    t.zSiteId = sz.site_inst_id AND t.aPortId = pa.portId AND t.zPortId = pz.portId  AND t.tunnelId in (SELECT tunnelId FROM lspinfo WHERE  lspinfo.aPortId=#{portId} 
+    OR lspinfo.zPortId=#{portId})  and tunneltype!='0' and t.isSingle=0 group by t.tunnelId)as list
+  	</if>
+  	
+  	<if test="type=='PW' ">
+  	SELECT list.`name` ,'1' AS direction ,'7' as rate, list.aneName,list.aportname,list.znename,list.zportname,list.apwServiceId,list.zpwServiceId,list.aSiteId,
+    list.zSiteId,(SELECT COUNT(id) FROM current_alarm alarm WHERE (alarm.objecttype=4 and  ( (alarm.objectid=list.apwServiceId and alarm.siteid=list.aSiteId )or 
+    (alarm.objectid=list.zpwServiceId and alarm.siteid=list.aSiteId ))) ) AS alarmCount,list.activeStatus,list.createTime,list.clientName,list.aSiteId,list.zSiteId 
+    FROM (SELECT p.pwId, p.pwName as name, p.pwStatus as activeStatus,p.apwServiceId as apwServiceId ,p.zpwServiceId as zpwServiceId,sa.CellId AS aneName, 
+    sz.CellId AS zneName,   p.createTime as createTime, pa.portName AS aPortName,pz.portName AS zPortName,p.createUser as clientName, sa.site_inst_id as aSiteId,
+    sz.site_inst_id as zSiteId  FROM pwinfo p, site_inst sa, port_inst pa, port_inst pz, site_inst sz ,tunnel t WHERE 1=1 and t.tunnelId=p.tunnelId  and 
+    p.aSiteId = sa.site_inst_id AND p.zSiteId = sz.site_inst_id  and ((p.aSiteId =t.aSiteId and p.zSiteId =t.zSiteId and t.aPortId = pa.portId AND t.zPortId = pz.portId 
+    and (t.aPortId=#{portId} or t.zPortId=#{portId})) or(p.aSiteId =t.zSiteId and p.zSiteId =t.aSiteId and t.zPortId = pa.portId AND t.aPortId = pz.portId and (t.aPortId=#{portId} or 
+    t.zPortId=#{portId}))) and p.isSingle=0 group by p.pwId order by p.pwId) as list
+  	</if>
+  	
+  	<if test="type=='MSPW' ">
+  	SELECT list.`name` ,list.id,'1' AS direction ,'7' as rate, list.aneName,list.znename,list.apwServiceId,list.zpwServiceId,
+    list.aSiteId,list.zSiteId,(SELECT COUNT(id) FROM current_alarm alarm WHERE (alarm.objecttype=17 and  ((alarm.objectid=list.apwServiceId 
+    and alarm.siteid=list.aSiteId )or (alarm.objectid=list.zpwServiceId and alarm.siteid=list.zSiteId))) ) AS alarmCount,list.activeStatus,
+    list.createTime,list.clientName,list.aSiteId,list.zSiteId  FROM (SELECT p.pwId as id, p.pwName as name, p.pwStatus as activeStatus,
+    p.apwServiceId as apwServiceId ,p.zpwServiceId as zpwServiceId,sa.CellId AS aneName, sz.CellId AS zneName,   p.createTime as createTime, 
+    p.createUser as clientName,sa.site_inst_id as aSiteId,sz.site_inst_id as zSiteId FROM pwinfo p, site_inst sa,  site_inst sz ,tunnel t 
+    WHERE p.tunnelId=0 and p.aSiteId = sa.site_inst_id AND p.zSiteId = sz.site_inst_id and p.isSingle=0 
+    group by p.pwName order by p.pwId) as list
+  	</if>
+  	
+  	<if test="type=='CES' ">
+  	SELECT list.`name` ,'1' AS direction , (CASE WHEN list.serviceType=0  THEN '1' ELSE '2' END) AS rate , 
+    list.aneName,list.aportname,list.znename,list.zportname,list.serviceType,(SELECT COUNT(id) FROM 
+    current_alarm alarm WHERE alarm.objecttype=9 AND alarm.objectid=list.id) AS alarmCount,	list.activeStatus,
+    list.createTime,(SELECT `name` FROM client WHERE id=list.clientid) AS clientName from (SELECT s.*,a.CellId AS aNeName,
+    z.CellId AS zNeName,CASE WHEN (s.cestype=2 OR s.cestype=4) THEN (SELECT p.portName FROM port_inst p WHERE s.aAcId=p.portid 
+    and (s.aAcId=#{portId} or s.zAcId=#{portId})) WHEN (s.cestype=3 OR s.cestype=5) THEN (SELECT ps.timeslotnumber FROM port_stm_timeslot ps 
+    WHERE s.aAcId=ps.id and (s.aAcId=#{portId} or s.zAcId=#{portId}))END AS aportName, CASE WHEN (s.cestype=2 OR s.cestype=5) THEN 
+    (SELECT p.portName FROM port_inst p WHERE s.zAcId=p.portid and (s.aAcId=#{portId} or s.zAcId=#{portId}))WHEN (s.cestype=3 OR s.cestype=4) 
+    THEN (SELECT ps.timeslotnumber FROM port_stm_timeslot ps WHERE s.zAcId=ps.id and (s.aAcId=#{portId} or s.zAcId=#{portId})) END AS zportName 
+    FROM serviceinfo s,site_inst a,site_inst z WHERE s.asiteid=a.site_inst_id  AND s.zsiteid=z.site_inst_id AND s.isSingle= 0 
+    AND s.serviceType=0  group by s.id ,s.serviceType)as list
+  	</if>
+ </select>
+  	
+ <select id="SSBusinessEthByPortId" resultMap="professEthMap" parameterType="java.lang.Integer">
+  	SELECT list.`name` ,'1' AS direction , (CASE WHEN list.serviceType=0  THEN '1' ELSE '2' END) AS rate , list.serviceType,
+    (SELECT COUNT(id) FROM current_alarm alarm WHERE (alarm.objecttype=9 and (list.serviceType=1 or list.serviceType=0) AND 
+    alarm.objectid=list.id) or(alarm.objecttype=10 and (list.serviceType=2 or list.serviceType=3) AND alarm.objectid=list.id)) AS alarmCount,	
+    list.activeStatus,list.createTime,list.aPortname,list.zPortname,list.aNeName,list.zNeName,list.aAcId,list.zAcId,
+    (SELECT `name` FROM client WHERE id=list.clientid) AS clientName from ( SELECT s.*,s.aSiteId as aNeName,s.zSiteId as zNeName, 
+    s.amostAcIds as aPortname,s.zmostAcIds as zPortname  FROM serviceinfo s WHERE   s.isSingle= 0 AND (s.serviceType=2  or s.serviceType=3 ) 
+    group by s.serviceId ,s.serviceType UNION ALL  SELECT s.*,s.aSiteId as aNeName,s.zSiteId as zNeName,s.aAcId as aPortname,s.zAcId as zPortname 
+    FROM serviceinfo s WHERE   s.isSingle= 0 AND  s.serviceType =40  group by s.serviceId ,s.serviceType UNION ALL  SELECT s.*,a.CellId AS aNeName,
+    z.CellId AS zNeName,aport.`portName` AS aPortname , zport.`portName` AS zportname FROM serviceinfo s,site_inst a,site_inst z ,acinfo aac,acinfo zac,
+    port_inst aport,port_inst zport  WHERE s.asiteid=a.site_inst_id  AND s.zsiteid=z.site_inst_id AND s.aacid=aac.id AND s.zacid=zac.id and 
+    aac.portId=aport.portId and zac.portId=zport.portId  AND s.isSingle= 0 AND s.serviceType=1  group by s.id ,s.serviceType ) as list
+ </select>
+  	
+  <resultMap id="professEthMap" type="SSProfess" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="direction" property="direction" jdbcType="INTEGER" />
+    <result column="aneName" property="aSiteName" jdbcType="VARCHAR" />
+    <result column="zneName" property="zSiteName" jdbcType="VARCHAR" />
+    <result column="alarmCount" property="alarmCount" jdbcType="INTEGER" />
+    <result column="activeStatus" property="activeStatus" jdbcType="INTEGER" />
+    <result column="createTime" property="createTime" jdbcType="VARCHAR" />   
+    <result column="clientName" property="clientName" jdbcType="VARCHAR" /> 
+    <result column="type" property="serviceType" jdbcType="INTEGER" /> 
+    <result column="aAcId" property="aACId" jdbcType="INTEGER" /> 
+    <result column="zAcId" property="zACId" jdbcType="INTEGER" /> 
+  </resultMap>
+  	
+  	
+  <select id="queryPwPortName" resultMap="portInstMap" parameterType="map">
+  	select p.portName as portName ,p.portId as portId from tunnel t ,port_inst p ,site_inst s WHERE t.tunnelId=#{tunnelId} 
+  	and p.siteId=s.site_inst_id and s.cellId=#{siteName} and (s.site_inst_id=t.aSiteId or s.site_inst_id=t.zSiteId  ) 
+  	and(p.portId=t.aPortId or p.portId=t.zPortId) and (t.aSiteId = s.site_inst_id or t.zSiteId = s.site_inst_id)
+  </select>
+  <resultMap id="portInstMap" type="PortInst" >
+    <id column="portId" property="portId" jdbcType="INTEGER" />
+    <result column="portName" property="portName" jdbcType="VARCHAR" />
+    <result column="portId" property="portId" jdbcType="INTEGER" />
+  </resultMap>
+    
+  <select id="queryPortName" resultMap="portMap" parameterType="java.lang.String">
+  	select p.portName as portName  from acinfo a ,port_inst p WHERE a.portId=p.portId and a.id=#{acId}
+  </select>
+  <resultMap id="portMap" type="PortInst" >
+    <id column="portId" property="portId" jdbcType="INTEGER" />
+    <result column="portName" property="portName" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  
+    
+  <select id="queryCanUsedLabel" resultMap="SsLabelMap" >
+   select s.CellId as sitename, s.site_inst_id AS siteid, COUNT(*) AS LspCanUsed,l.type AS type 
+   from labelinfo l, site_inst s WHERE l.siteid=s.site_inst_id AND labelstatus=1 GROUP BY siteid, l.type
+  </select>
+  
+ <select id="queryCountLabel" resultMap="SsLabelMaps" >
+  SELECT count(*) as labelCount, siteid, type from labelinfo GROUP BY siteid, type
+ </select>
+  
+  <resultMap id="SsLabelMap" type="SSLabel" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="sitename" property="SiteName" jdbcType="VARCHAR" />
+    <result column="siteid" property="siteId" jdbcType="INTEGER" />
+    <result column="LspCanUsed" property="lspCanUsed" jdbcType="VARCHAR" />
+    <result column="type" property="labelType" jdbcType="VARCHAR" />
+  </resultMap>
+
+ <resultMap id="SsLabelMaps" type="SSLabel" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="siteid" property="siteId" jdbcType="INTEGER" />
+    <result column="labelCount" property="lspCount" jdbcType="VARCHAR" />
+    <result column="type" property="labelType" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  <select id="querySSPort" resultMap="SsPortMap" >
+  SELECT s.CellId SiteName, s.CellType SiteType, s.site_inst_id, PortType, PortCount, PortUsed, PortUnUsed, UsedRate FROM 
+  (SELECT siteId, PortType, sum(PortCount) PortCount,sum(PortUsed) PortUsed, sum(PortUnUsed) PortUnUsed, round( sum(PortUsed) * 100 / sum(PortCount), 2 ) UsedRate FROM
+  (SELECT siteId, 'ETH' PortType, count(1) PortCount, 0 PortUsed, 0 PortUnUsed FROM port_inst p WHERE p.portType IN ('UNI', 'NONE', 'NNI') 
+   GROUP BY siteId UNION ALL SELECT siteId, 'ETH' PortType, 0 PortCount, count(1) PortUsed, 0 PortUnUsed FROM port_inst p WHERE p.portType IN 
+  ('UNI', 'NONE', 'NNI') AND (( SELECT COUNT(*) FROM lspinfo l WHERE l.aportId = p.portId OR l.zportid = p.portId ) > 0 OR ( SELECT COUNT(*) 
+  FROM acinfo a WHERE a.portid = p.portid ) > 0 ) GROUP BY siteId UNION ALL SELECT siteId, 'ETH' PortType, 0 PortCount, 0 PortUsed, count(1) PortUnUsed 
+  FROM port_inst p WHERE p.portType IN ('UNI', 'NONE', 'NNI') AND ( SELECT COUNT(*) FROM lspinfo l WHERE l.aportId = p.portId OR l.zportid = p.portId ) = 0 
+  AND ( SELECT COUNT(*) FROM acinfo a WHERE a.portid = p.portid ) = 0 GROUP BY siteId ) p GROUP BY siteId, PortType UNION ALL SELECT siteId, PortType, 
+  sum(PortCount) PortCount, sum(PortUsed) PortUsed, sum(PortUnUsed) PortUnUsed, round( sum(PortUsed) * 100 / sum(PortCount), 2 ) UsedRate FROM 
+  (SELECT siteId, 'PDH' PortType, count(1) PortCount, 0 PortUsed, 0 PortUnUsed FROM port_inst p WHERE p.portType IN ('E1') GROUP BY siteId 
+  UNION ALL SELECT siteId, 'PDH' PortType, 0 PortCount, count(1) PortUsed, 0 PortUnUsed FROM port_inst p WHERE p.portType IN ('E1') AND 
+ (SELECT COUNT(*) FROM serviceinfo s WHERE s.servicetype = 0 AND ( CASE s.cestype WHEN 2 THEN s.aacid = p.portid OR s.zacid = p.portid WHEN 5 
+ THEN s.zacid = p.portid WHEN 4 THEN s.aacid = p.portid END )) > 0 GROUP BY siteId UNION ALL SELECT siteId, 'PDH' PortType, 0 PortCount, 0 PortUsed, 
+ count(1) PortUnUsed FROM port_inst p WHERE p.portType IN ('E1') AND ( SELECT COUNT(*) FROM serviceinfo s WHERE s.servicetype = 0 AND 
+ (CASE s.cestype WHEN 2 THEN s.aacid = p.portid OR s.zacid = p.portid WHEN 5 THEN s.zacid = p.portid WHEN 4 THEN s.aacid = p.portid END )) = 0 GROUP BY siteId ) 
+ p GROUP BY siteId, PortType UNION ALL SELECT siteId, PortType, sum(PortCount) PortCount, sum(PortUsed) PortUsed, sum(PortUnUsed) PortUnUsed,
+ round( sum(PortUsed) * 100 / sum(PortCount), 2 ) UsedRate FROM ( SELECT siteId, 'SDH' PortType, count(1) PortCount, 0 PortUsed, 0 PortUnUsed 
+ FROM port_stm_timeslot p GROUP BY siteId UNION ALL SELECT siteId, 'SDH' PortType, 0 PortCount, count(1) PortUsed, 0 PortUnUsed FROM port_stm_timeslot p 
+ WHERE ( SELECT COUNT(*) FROM serviceinfo s WHERE s.servicetype = 0 AND ( CASE s.cestype WHEN 3 THEN s.aacid = p.id OR s.zacid = p.id WHEN 4 THEN s.zacid = p.id 
+ WHEN 5 THEN s.aacid = p.id END )) > 0 GROUP BY siteId UNION ALL SELECT siteId, 'SDH' PortType, 0 PortCount, 0 PortUsed, count(1) PortUnUsed FROM port_stm_timeslot p
+ WHERE ( SELECT COUNT(*) FROM serviceinfo s WHERE s.servicetype = 0 AND ( CASE s.cestype WHEN 3 THEN s.aacid = p.id OR s.zacid = p.id WHEN 4 THEN s.zacid = p.id 
+ WHEN 5 THEN s.aacid = p.id END )) = 0 GROUP BY siteId ) p GROUP BY siteId, PortType ) pp, site_inst s WHERE pp.siteId = s.site_inst_id ORDER BY siteId, PortType
+ </select>
+ <resultMap id="SsPortMap" type="SSPort" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="SiteType" property="NeType" jdbcType="VARCHAR" />
+    <result column="site_inst_id" property="siteId" jdbcType="INTEGER" />
+    <result column="SiteName" property="SiteName" jdbcType="VARCHAR" />
+    <result column="PortType" property="PortType" jdbcType="VARCHAR" />    
+    <result column="PortCount" property="PortCount" jdbcType="VARCHAR" />
+    <result column="PortUsed" property="PortUsed" jdbcType="VARCHAR" />    
+    <result column="PortUnUsed" property="PortUnUsed" jdbcType="VARCHAR" />
+    <result column="UsedRate" property="UsedRate" jdbcType="VARCHAR" />
+  </resultMap>
+
+  <select id="queryPathCount" resultMap="SsPathMap" >
+  SELECT 'Tunnel' as type,tunnelCount.amount , tunnelCount.used,(tunnelCount.amount-tunnelCount.used) as usable FROM (SELECT (SELECT COUNT(t.tunnelId) 
+  FROM tunnel t WHERE t.isSingle=0) as amount,(SELECT COUNT(t.tunnelId) FROM tunnel t WHERE t.isSingle=0 AND t.tunnelId IN (SELECT p.tunnelId FROM pwinfo p)) as used)
+  tunnelCount UNION ALL SELECT 'PW' as type,pwCount.amount , pwCount.used,(pwCount.amount-pwCount.used) as usable FROM (SELECT (SELECT COUNT(p.pwId) FROM pwinfo p 
+  WHERE p.isSingle=0) as amount,(SELECT COUNT(p.pwId) FROM pwinfo p WHERE p.isSingle=0 AND p.rserviceId>0) AS used) pwCount
+  </select>
+ <resultMap id="SsPathMap" type="SSPath" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="type" property="PathType" jdbcType="VARCHAR" />
+    <result column="amount" property="PathCount" jdbcType="VARCHAR" />
+    <result column="used" property="PathUsed" jdbcType="VARCHAR" />
+    <result column="usable" property="PathUnUsed" jdbcType="VARCHAR" />    
+  </resultMap>
+
+  <select id="queryPathCount_site" resultMap="SsPathMaps" >
+  SELECT * FROM ( SELECT tunnelCount.neName,'Tunnel' AS type,tunnelCount.amount,tunnelCount.used,tunnelCount.amount-tunnelCount.used AS usable FROM 
+  (select s.cellid AS neName,  (SELECT COUNT(t.tunnelid) from tunnel t WHERE t.tunnelid in (select l.tunnelid FROM lspinfo l WHERE l.asiteid=s.site_inst_id 
+   OR l.zsiteId=s.site_inst_id)) AS amount, (SELECT COUNT(t.tunnelid) from tunnel t WHERE t.tunnelid in (select l.tunnelid FROM lspinfo l 
+   WHERE l.asiteid=s.site_inst_id OR l.zsiteId=s.site_inst_id) AND t.tunnelid IN (SELECT p.tunnelId FROM pwinfo p)) AS used from site_inst s) tunnelCount 
+   UNION ALL SELECT pwCount.neName,'PW' AS type,pwCount.amount,pwCount.used,pwCount.amount-pwCount.used AS usable FROM (select s.cellid AS neName, 
+   (SELECT COUNT(p.pwid) FROM pwinfo p where p.asiteid=s.site_inst_id OR p.zsiteid=s.site_inst_id) AS amount, (SELECT COUNT(p.pwid) FROM pwinfo p 
+   where (p.asiteid=s.site_inst_id OR p.zsiteid=s.site_inst_id) AND p.rserviceId>0) AS used from site_inst s) pwCount) AS countTable ORDER BY countTable.neName 
+  </select>
+
+ <resultMap id="SsPathMaps" type="SSPath" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="neName" property="SiteName" jdbcType="VARCHAR" />
+    <result column="type" property="PathType" jdbcType="VARCHAR" />
+    <result column="amount" property="PathCount" jdbcType="VARCHAR" />
+    <result column="used" property="PathUsed" jdbcType="VARCHAR" />
+    <result column="usable" property="PathUnUsed" jdbcType="VARCHAR" />    
+  </resultMap>
+</mapper>

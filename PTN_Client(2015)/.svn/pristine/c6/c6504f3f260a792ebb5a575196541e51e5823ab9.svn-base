@@ -1,0 +1,77 @@
+package com.nms.model.ptn.qos;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.ibatis.session.SqlSession;
+
+import com.nms.db.bean.ptn.qos.QosInfo;
+import com.nms.db.bean.ptn.qos.QosRelevance;
+import com.nms.db.dao.ptn.qos.QosInfoMapper;
+import com.nms.model.util.ObjectService_Mybatis;
+import com.nms.model.util.Services;
+import com.nms.ui.manager.ConstantUtil;
+
+public class QosInfoService_MB extends ObjectService_Mybatis{
+	public void setPtnuser(String ptnuser) {
+		super.ptnuser = ptnuser;
+	}
+
+	public void setSqlSession(SqlSession sqlSession) {
+		super.sqlSession = sqlSession;
+	}
+	
+	private QosInfoMapper qosInfoMapper;
+
+	public QosInfoMapper getQosInfoMapper() {
+		return qosInfoMapper;
+	}
+
+	public void setQosInfoMapper(QosInfoMapper qosInfoMapper) {
+		this.qosInfoMapper = qosInfoMapper;
+	}
+
+	/**
+	 * 查询业务关联的qos集合
+	 * 
+	 * @param objtype
+	 *            业务类型
+	 * @param objId
+	 *            业务主键
+	 * @return
+	 * @throws Exception
+	 */
+	public List<QosInfo> getQosByObj(String objtype, int objId) throws Exception {
+		QosRelevanceService_MB qosRelevanceService = null;
+		QosRelevance qosRelevance = null;
+		List<QosRelevance> qosRelevanceList = null;
+		List<QosInfo> qosInfoList = null;
+		QosInfo qosInfo = null;
+		try {
+
+			qosRelevanceService = (QosRelevanceService_MB) ConstantUtil.serviceFactory.newService_MB(Services.QOSRELEVANCE, this.sqlSession);
+			qosRelevance = new QosRelevance();
+			qosRelevance.setObjId(objId);
+			qosRelevance.setObjType(objtype);
+			qosRelevanceList = new ArrayList<QosRelevance>();
+			qosRelevanceList = qosRelevanceService.select(qosRelevance);
+
+			if (null != qosRelevanceList && qosRelevanceList.size() > 0) {
+				qosInfo = new QosInfo();
+				qosInfo.setGroupId(qosRelevanceList.get(0).getQosGroupId());
+				qosInfoList = new ArrayList<QosInfo>();
+				qosInfoList = this.qosInfoMapper.queryByCondition(qosInfo);
+			}
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+//			UiUtil.closeService(qosRelevanceService);
+		}
+		return qosInfoList;
+	}
+	
+	public List<QosInfo> selectByCondition(String objType, List<Integer> objectIdList) throws Exception {
+		return this.qosInfoMapper.selectByCondition(objType, objectIdList);
+	}
+}

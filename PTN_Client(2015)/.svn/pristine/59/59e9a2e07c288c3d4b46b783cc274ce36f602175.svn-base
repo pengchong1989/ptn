@@ -1,0 +1,268 @@
+package com.nms.db.dao.ptn.clock;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.nms.db.bean.ptn.clock.ExternalClockInterface;
+import com.nms.ui.manager.ExceptionManage;
+
+
+public class ExternalClockInterfaceDao {
+	/**
+	 * @param externalClockInterface
+	 *            实体
+	 * @param conection
+	 *            数据库连接
+	 * @return 判断是否插入成功 返回的ID号 只要不是0就是插入成功
+	 * @throws Exception
+	 * 插入数据
+	 */
+	public int insert(ExternalClockInterface externalClockInterface,Connection conection) throws Exception {
+		if (null == externalClockInterface) {
+			throw new Exception("externalClockInterface is null");
+		}
+		if (null == conection) {
+			throw new Exception("connection is null");
+		}
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+		int result = 0;
+		try {
+			sql = "insert into externalclockinterface(siteId,interfaceName,managingStatus,workingStatus," +
+					"interfaceMode,inputImpedance,sanBits,timeOffsetCompensation,activeStatus )value(?,?,?,?,?,?,?,?,?)";
+			preparedStatement = conection.prepareStatement(sql,Statement.RETURN_GENERATED_KEYS);
+			preparedStatement.setInt(1, externalClockInterface.getSiteId());
+			preparedStatement.setString(2, externalClockInterface.getInterfaceName());
+			preparedStatement.setInt(3, externalClockInterface.getManagingStatus());
+			preparedStatement.setString(4, externalClockInterface.getWorkingStatus());
+			preparedStatement.setInt(5, externalClockInterface.getInterfaceMode());
+			preparedStatement.setInt(6, externalClockInterface.getInputImpedance());
+			preparedStatement.setInt(7, externalClockInterface.getSanBits());
+			preparedStatement.setString(8, externalClockInterface.getTimeOffsetCompensation());
+			preparedStatement.setInt(9, externalClockInterface.getActiveStatus());
+			preparedStatement.executeUpdate();
+			resultSet = preparedStatement.getGeneratedKeys();
+			if (resultSet.next()) {
+				result = resultSet.getInt(1);
+			}
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			sql = null;
+			if (resultSet != null) {
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				resultSet = null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+		}
+		return result;
+	}
+/**
+ * 
+ * @param externalclockinterface 实体
+ * @param connection 数据库连接
+ * @return 1删除成功，0不成功；
+ * @throws Exception
+ * function:通过关联网元表主键 来删除数据
+ */
+	public int delete(ExternalClockInterface externalClockInterface,Connection connection) throws Exception {
+		if(externalClockInterface==null){
+			throw new Exception("externalClockInterface is null");
+		}
+		if (connection == null) {
+			throw new Exception("connection is null");
+		}
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		int result=0;
+		try {
+			sql = "delete from externalclockinterface where interfaceName=?";
+            
+			preparedStatement = connection.prepareStatement(sql,Statement.RETURN_GENERATED_KEYS);
+			preparedStatement.setString(1, externalClockInterface.getInterfaceName());
+			
+			result = preparedStatement.executeUpdate();
+		} catch (Exception e) {
+			throw e;
+		}finally{
+			sql=null;
+			if(preparedStatement!=null){
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement=null;
+			}
+		}
+		return result;
+	}
+	/**
+	 * function: 查找单个的网元时钟的状态和属性
+	 * @param conn 数据库连接
+	 * @return 所有网元时钟的状态和属性 集合
+	 * @throws Exception
+	 */
+public List<ExternalClockInterface> select(Connection conn,ExternalClockInterface externalClockInterfaceObject) throws Exception{
+	if(conn==null){
+		throw new Exception("connection is null");
+	}
+	String sql=null;
+	PreparedStatement pre=null;
+	ResultSet ste=null;
+	List<ExternalClockInterface> lists=null;
+	ExternalClockInterface externalClockInterface=null;
+	try {
+		lists=new ArrayList<ExternalClockInterface>();
+		sql="select * from externalclockinterface where 1=1";
+		if(0!=externalClockInterfaceObject.getSiteId()){
+			sql += " and siteid = " +externalClockInterfaceObject.getSiteId();
+		}
+		if(null!=externalClockInterfaceObject.getInterfaceName()&&!"".equals(externalClockInterfaceObject.getInterfaceName())){
+			sql += " and InterfaceName = '"+externalClockInterfaceObject.getInterfaceName()+"'";
+		}
+		if(0!=externalClockInterfaceObject.getId()){
+			sql += " and id = " +externalClockInterfaceObject.getId();
+		}
+		
+		pre=conn.prepareStatement(sql);
+		ste=pre.executeQuery();
+		
+		while(ste.next()){
+			externalClockInterface=new ExternalClockInterface();
+			externalClockInterface.setId(ste.getInt("id"));
+			externalClockInterface.setSiteId(ste.getInt("siteId"));
+			externalClockInterface.setInterfaceName(ste.getString("interfaceName"));
+			externalClockInterface.setManagingStatus(ste.getInt("managingStatus"));
+			externalClockInterface.setWorkingStatus(ste.getString("workingStatus"));
+			externalClockInterface.setInterfaceMode(ste.getInt("interfaceMode"));
+			externalClockInterface.setInputImpedance(ste.getInt("inputImpedance"));
+			externalClockInterface.setSanBits(ste.getInt("sanBits"));
+			externalClockInterface.setTimeOffsetCompensation(ste.getString("timeOffsetCompensation"));
+			externalClockInterface.setActiveStatus(ste.getInt("activeStatus"));
+			lists.add(externalClockInterface);
+		}
+	} catch (Exception e) {
+		throw e;
+	}finally{
+		sql=null;
+		if (ste != null) {
+			try {
+				ste.close();
+			} catch (Exception e) {
+				ExceptionManage.dispose(e,this.getClass());
+			}
+			ste = null;
+		}
+		if (pre != null) {
+			try {
+				pre.close();
+			} catch (Exception e) {
+				ExceptionManage.dispose(e,this.getClass());
+			}
+			pre = null;
+		}
+	}
+	return lists;
+	}
+	/**
+	 * 
+	 * @param externalClockInterface 实体
+	 * @param conn 数据库连接
+	 * @return 1成功，0不成功
+	 * @throws Exception
+	 * function:根新数据
+	 */
+public int update(ExternalClockInterface externalClockInterface,Connection conn)throws Exception{
+	if(externalClockInterface==null){
+		throw new Exception("externalClockInterface is null");
+	}
+	if(conn==null){
+		throw new Exception("conn is null");
+	}
+	StringBuffer sql=null;;
+	PreparedStatement pre=null;
+	int result=0;
+	try {
+		sql=new StringBuffer();
+
+		sql.append("update externalclockinterface set interfaceName=?, " +
+				"managingStatus=?,workingStatus=?,interfaceMode=?," +
+				"inputImpedance=?,sanBits=?,timeOffsetCompensation=? ,activeStatus = ? where id=?");
+	    
+	    pre=conn.prepareStatement(sql.toString());
+	    pre.setString(1,externalClockInterface.getInterfaceName());
+	    pre.setInt(2, externalClockInterface.getManagingStatus());
+	    pre.setString(3, externalClockInterface.getWorkingStatus());
+	    pre.setInt(4, externalClockInterface.getInterfaceMode());
+	    pre.setInt(5, externalClockInterface.getInputImpedance());
+	    pre.setInt(6, externalClockInterface.getSanBits());
+	    pre.setString(7, externalClockInterface.getTimeOffsetCompensation());
+	    pre.setInt(8, externalClockInterface.getActiveStatus());
+	    pre.setInt(9, externalClockInterface.getId());
+	   
+	    
+	    result=pre.executeUpdate();
+	    
+	} catch (Exception e) {
+		throw e;
+	}finally{
+		sql=null;
+		if (pre != null) {
+			try {
+				pre.close();
+			} catch (Exception e) {
+				ExceptionManage.dispose(e,this.getClass());
+			}
+			pre = null;
+		}
+	}
+	return result;
+}
+	public void updateActiveStatus(int siteId, int value, Connection connection) throws Exception {
+		if(siteId==0){
+			throw new Exception("siteId is null");
+		}
+		StringBuffer sql=null;;
+		PreparedStatement pre=null;
+		try {
+			sql=new StringBuffer();
+
+			sql.append("update externalclockinterface set activeStatus=? where siteId=?");
+		    
+		    pre=connection.prepareStatement(sql.toString());
+		    pre.setInt(1,value);
+		    pre.setInt(2, siteId);
+		    pre.executeUpdate();
+		    
+		} catch (Exception e) {
+			throw e;
+		}finally{
+			sql=null;
+			if (pre != null) {
+				try {
+					pre.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				pre = null;
+			}
+		}
+	}
+}

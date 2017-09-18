@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nms.db.dao.ptn.clock.ClockSourceMapper" >
+  <resultMap id="BaseResultMap" type="ClockSource" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="siteId" property="siteId" jdbcType="INTEGER" />
+    <result column="port" property="port" jdbcType="INTEGER" />
+    <result column="clockType" property="clockType" jdbcType="INTEGER" />
+    <result column="systemPriorLevel" property="systemPriorLevel" jdbcType="INTEGER" />
+    <result column="exportPriorLevel" property="exportPriorLevel" jdbcType="INTEGER" />
+    <result column="physicsState" property="physicsState" jdbcType="VARCHAR" />
+    <result column="logicState" property="logicState" jdbcType="VARCHAR" />
+    <result column="receiveSSMValue" property="receiveSSMValue" jdbcType="INTEGER" />
+    <result column="receiveSSMRealityValue" property="receiveSSMRealityValue" jdbcType="INTEGER" />
+    <result column="SSMSend" property="SSMSend" jdbcType="INTEGER" />
+    <result column="selectQuelityLevel" property="selectQuelityLevel" jdbcType="VARCHAR" />
+    <result column="DNUGroup" property="DNUGroup" jdbcType="INTEGER" />
+    <result column="recoverModel" property="recoverModel" jdbcType="INTEGER" />
+    <result column="externalOrder" property="externalOrder" jdbcType="VARCHAR" />
+    <result column="manageState" property="manageState" jdbcType="VARCHAR" />
+    <result column="jobState" property="jobState" jdbcType="VARCHAR" />
+  </resultMap>
+
+  <sql id="Base_Column_List" >
+    id, siteId, port, clockType, systemPriorLevel, exportPriorLevel, physicsState, logicState, 
+    receiveSSMValue, receiveSSMRealityValue, SSMSend, selectQuelityLevel, DNUGroup, recoverModel, 
+    externalOrder, manageState, jobState
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from frequencymanageclock
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from frequencymanageclock
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="ClockSource" >
+    insert into frequencymanageclock (id, siteId, port, 
+      clockType, systemPriorLevel, exportPriorLevel, 
+      physicsState, logicState, receiveSSMValue, 
+      receiveSSMRealityValue, SSMSend, selectQuelityLevel, 
+      DNUGroup, recoverModel, externalOrder, 
+      manageState, jobState)
+    values (#{id,jdbcType=INTEGER}, #{siteid,jdbcType=INTEGER}, #{port,jdbcType=INTEGER}, 
+      #{clocktype,jdbcType=INTEGER}, #{systempriorlevel,jdbcType=INTEGER}, #{exportpriorlevel,jdbcType=INTEGER}, 
+      #{physicsstate,jdbcType=VARCHAR}, #{logicstate,jdbcType=VARCHAR}, #{receivessmvalue,jdbcType=INTEGER}, 
+      #{receivessmrealityvalue,jdbcType=INTEGER}, #{ssmsend,jdbcType=INTEGER}, #{selectquelitylevel,jdbcType=VARCHAR}, 
+      #{dnugroup,jdbcType=INTEGER}, #{recovermodel,jdbcType=INTEGER}, #{externalorder,jdbcType=VARCHAR}, 
+      #{managestate,jdbcType=VARCHAR}, #{jobstate,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="ClockSource" >
+    insert into frequencymanageclock
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="siteid != null" >
+        siteId,
+      </if>
+      <if test="port != null" >
+        port,
+      </if>
+      <if test="clocktype != null" >
+        clockType,
+      </if>
+      <if test="systempriorlevel != null" >
+        systemPriorLevel,
+      </if>
+      <if test="exportpriorlevel != null" >
+        exportPriorLevel,
+      </if>
+      <if test="physicsstate != null" >
+        physicsState,
+      </if>
+      <if test="logicstate != null" >
+        logicState,
+      </if>
+      <if test="receivessmvalue != null" >
+        receiveSSMValue,
+      </if>
+      <if test="receivessmrealityvalue != null" >
+        receiveSSMRealityValue,
+      </if>
+      <if test="ssmsend != null" >
+        SSMSend,
+      </if>
+      <if test="selectquelitylevel != null" >
+        selectQuelityLevel,
+      </if>
+      <if test="dnugroup != null" >
+        DNUGroup,
+      </if>
+      <if test="recovermodel != null" >
+        recoverModel,
+      </if>
+      <if test="externalorder != null" >
+        externalOrder,
+      </if>
+      <if test="managestate != null" >
+        manageState,
+      </if>
+      <if test="jobstate != null" >
+        jobState,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="siteid != null" >
+        #{siteid,jdbcType=INTEGER},
+      </if>
+      <if test="port != null" >
+        #{port,jdbcType=INTEGER},
+      </if>
+      <if test="clocktype != null" >
+        #{clocktype,jdbcType=INTEGER},
+      </if>
+      <if test="systempriorlevel != null" >
+        #{systempriorlevel,jdbcType=INTEGER},
+      </if>
+      <if test="exportpriorlevel != null" >
+        #{exportpriorlevel,jdbcType=INTEGER},
+      </if>
+      <if test="physicsstate != null" >
+        #{physicsstate,jdbcType=VARCHAR},
+      </if>
+      <if test="logicstate != null" >
+        #{logicstate,jdbcType=VARCHAR},
+      </if>
+      <if test="receivessmvalue != null" >
+        #{receivessmvalue,jdbcType=INTEGER},
+      </if>
+      <if test="receivessmrealityvalue != null" >
+        #{receivessmrealityvalue,jdbcType=INTEGER},
+      </if>
+      <if test="ssmsend != null" >
+        #{ssmsend,jdbcType=INTEGER},
+      </if>
+      <if test="selectquelitylevel != null" >
+        #{selectquelitylevel,jdbcType=VARCHAR},
+      </if>
+      <if test="dnugroup != null" >
+        #{dnugroup,jdbcType=INTEGER},
+      </if>
+      <if test="recovermodel != null" >
+        #{recovermodel,jdbcType=INTEGER},
+      </if>
+      <if test="externalorder != null" >
+        #{externalorder,jdbcType=VARCHAR},
+      </if>
+      <if test="managestate != null" >
+        #{managestate,jdbcType=VARCHAR},
+      </if>
+      <if test="jobstate != null" >
+        #{jobstate,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="ClockSource" >
+    update frequencymanageclock
+    <set >
+      <if test="siteid != null" >
+        siteId = #{siteid,jdbcType=INTEGER},
+      </if>
+      <if test="port != null" >
+        port = #{port,jdbcType=INTEGER},
+      </if>
+      <if test="clocktype != null" >
+        clockType = #{clocktype,jdbcType=INTEGER},
+      </if>
+      <if test="systempriorlevel != null" >
+        systemPriorLevel = #{systempriorlevel,jdbcType=INTEGER},
+      </if>
+      <if test="exportpriorlevel != null" >
+        exportPriorLevel = #{exportpriorlevel,jdbcType=INTEGER},
+      </if>
+      <if test="physicsstate != null" >
+        physicsState = #{physicsstate,jdbcType=VARCHAR},
+      </if>
+      <if test="logicstate != null" >
+        logicState = #{logicstate,jdbcType=VARCHAR},
+      </if>
+      <if test="receivessmvalue != null" >
+        receiveSSMValue = #{receivessmvalue,jdbcType=INTEGER},
+      </if>
+      <if test="receivessmrealityvalue != null" >
+        receiveSSMRealityValue = #{receivessmrealityvalue,jdbcType=INTEGER},
+      </if>
+      <if test="ssmsend != null" >
+        SSMSend = #{ssmsend,jdbcType=INTEGER},
+      </if>
+      <if test="selectquelitylevel != null" >
+        selectQuelityLevel = #{selectquelitylevel,jdbcType=VARCHAR},
+      </if>
+      <if test="dnugroup != null" >
+        DNUGroup = #{dnugroup,jdbcType=INTEGER},
+      </if>
+      <if test="recovermodel != null" >
+        recoverModel = #{recovermodel,jdbcType=INTEGER},
+      </if>
+      <if test="externalorder != null" >
+        externalOrder = #{externalorder,jdbcType=VARCHAR},
+      </if>
+      <if test="managestate != null" >
+        manageState = #{managestate,jdbcType=VARCHAR},
+      </if>
+      <if test="jobstate != null" >
+        jobState = #{jobstate,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="ClockSource" >
+    update frequencymanageclock
+    set siteId = #{siteid,jdbcType=INTEGER},
+      port = #{port,jdbcType=INTEGER},
+      clockType = #{clocktype,jdbcType=INTEGER},
+      systemPriorLevel = #{systempriorlevel,jdbcType=INTEGER},
+      exportPriorLevel = #{exportpriorlevel,jdbcType=INTEGER},
+      physicsState = #{physicsstate,jdbcType=VARCHAR},
+      logicState = #{logicstate,jdbcType=VARCHAR},
+      receiveSSMValue = #{receivessmvalue,jdbcType=INTEGER},
+      receiveSSMRealityValue = #{receivessmrealityvalue,jdbcType=INTEGER},
+      SSMSend = #{ssmsend,jdbcType=INTEGER},
+      selectQuelityLevel = #{selectquelitylevel,jdbcType=VARCHAR},
+      DNUGroup = #{dnugroup,jdbcType=INTEGER},
+      recoverModel = #{recovermodel,jdbcType=INTEGER},
+      externalOrder = #{externalorder,jdbcType=VARCHAR},
+      manageState = #{managestate,jdbcType=VARCHAR},
+      jobState = #{jobstate,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  
+    <select id="select" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from frequencymanageclock
+    where siteId = #{siteId,jdbcType=INTEGER}
+  </select>
+</mapper>

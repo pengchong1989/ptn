@@ -1,0 +1,10 @@
+<beaninfo>
+	<attribute 
+		businessProperty="true"
+		name="EMS" 
+		displayName="网管"/>	
+	<attribute 
+		businessProperty="true"
+		name="NE" 
+		displayName="网元"/>	
+</beaninfo>

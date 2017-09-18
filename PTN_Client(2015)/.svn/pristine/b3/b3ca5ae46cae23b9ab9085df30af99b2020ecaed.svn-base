@@ -1,0 +1,63 @@
+package com.nms.db.bean.ptn;
+
+import java.io.Serializable;
+import com.nms.db.enums.EClockQLType;
+import com.nms.ui.frame.ViewDataObj;
+
+
+public class CommonBean extends ViewDataObj implements Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -1318487589378511002L;
+	private String macAdd;
+	private String portName;
+	private String clockPortName;
+	private EClockQLType qlClock;
+	
+	
+	public EClockQLType getQlClock() {
+		return qlClock;
+	}
+
+	public void setQlClock(EClockQLType qlClock) {
+		this.qlClock = qlClock;
+	}
+
+	public String getClockPortName() {
+		return clockPortName;
+	}
+
+	public void setClockPortName(String clockPortName) {
+		this.clockPortName = clockPortName;
+	}
+
+	public String getPortName() {
+		return portName;
+	}
+
+	public void setPortName(String portName) {
+		this.portName = portName;
+	}
+	
+	public String getMacAdd() {
+		return macAdd;
+	}
+
+	public void setMacAdd(String macAdd) {
+		this.macAdd = macAdd;
+	}
+
+	@Override
+	public void putObjectProperty() {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+
+
+
+
+
+}

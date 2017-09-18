@@ -1,0 +1,41 @@
+package com.nms.model.ptn.oam;
+
+import java.sql.Connection;
+import java.util.List;
+
+import com.nms.db.bean.ptn.oam.OamEthernetInfo;
+import com.nms.db.dao.ptn.oam.OamEthernetDao;
+import com.nms.model.util.ObjectService;
+import com.nms.ui.manager.ExceptionManage;
+
+public class OamEthreNetService extends ObjectService {
+	public void setConnection(Connection connection) {
+		super.connection = connection;
+	}
+
+	public void setPtnuser(String ptnuser) {
+		super.ptnuser = ptnuser;
+	}
+
+	private OamEthernetDao oamEthernetDao = new OamEthernetDao();
+
+	/**
+	 * 查询
+	 * 
+	 * @param oamEthernetInfo 单查询
+	 * @return 
+	 * @throws Exception
+	 */
+	public List<OamEthernetInfo> queryByNeIDSide(OamEthernetInfo oamEthernetInfo) throws Exception {
+		if (oamEthernetInfo == null) {
+			throw new Exception("oamEthernetInfo is null");
+		}
+		List<OamEthernetInfo> ccnList = null;
+		try {
+			ccnList = this.oamEthernetDao.queryOamLinkInfoByConditionSide(oamEthernetInfo, connection);
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		}
+		return ccnList;
+	}  
+}

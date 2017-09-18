@@ -1,0 +1,19 @@
+package com.nms.db.dao.system;
+
+import com.nms.db.bean.system.SiteLock;
+
+
+
+public interface SiteLockMapper {
+    int deleteByPrimaryKey(Integer id);
+
+    int insert(SiteLock record);
+
+    int insertSelective(SiteLock record);
+
+    SiteLock selectByPrimaryKey(Integer id);
+
+    int updateByPrimaryKeySelective(SiteLock record);
+
+    int updateByPrimaryKey(SiteLock record);
+}

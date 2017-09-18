@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nms.db.dao.ptn.AclInstMapper" >
+  <resultMap id="BaseResultMap" type="AclInfo" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="siteid" property="siteId" jdbcType="INTEGER" />
+    <result column="act" property="act" jdbcType="INTEGER" />
+    <result column="direction" property="direction" jdbcType="INTEGER" />
+    <result column="portNumber" property="portNumber" jdbcType="INTEGER" />
+    <result column="vlanId" property="vlanId" jdbcType="INTEGER" />
+    <result column="isSourceMac" property="isSourceMac" jdbcType="INTEGER" />
+    <result column="sourceMac" property="sourceMac" jdbcType="VARCHAR" />
+    <result column="isPurposeMac" property="isPurposeMac" jdbcType="INTEGER" />
+    <result column="purposeMac" property="purposeMac" jdbcType="VARCHAR" />
+    <result column="isSourceIp" property="isSourceIp" jdbcType="INTEGER" />
+    <result column="sourceIp" property="sourceIp" jdbcType="VARCHAR" />
+    <result column="isPurposeIp" property="isPurposeIp" jdbcType="INTEGER" />
+    <result column="purposeIp" property="purposeIp" jdbcType="VARCHAR" />
+    <result column="isMatchCos" property="isMatchCos" jdbcType="INTEGER" />
+    <result column="cosValue" property="cosValue" jdbcType="INTEGER" />
+    <result column="isMatchDSCP" property="isMatchDSCP" jdbcType="INTEGER" />
+    <result column="dscpValue" property="dscpValue" jdbcType="INTEGER" />
+    <result column="isMatchTOS" property="isMatchTOS" jdbcType="INTEGER" />
+    <result column="tosValue" property="tosValue" jdbcType="INTEGER" />
+    <result column="isSourcePort" property="isSourcePort" jdbcType="INTEGER" />
+    <result column="sourcePort" property="sourcePort" jdbcType="INTEGER" />
+    <result column="isPurposePort" property="isPurposePort" jdbcType="INTEGER" />
+    <result column="purposePort" property="purposePort" jdbcType="INTEGER" />
+    <result column="ruleObject" property="ruleObject" jdbcType="INTEGER" />
+    <result column="treatyType" property="treaTytype" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, siteid, act, direction, portNumber, vlanId, isSourceMac, sourceMac, isPurposeMac, 
+    purposeMac, isSourceIp, sourceIp, isPurposeIp, purposeIp, isMatchCos, cosValue, isMatchDSCP, 
+    dscpValue, isMatchTOS, tosValue, isSourcePort, sourcePort, isPurposePort, purposePort, 
+    ruleObject, treatyType
+  </sql>
+  
+  <select id="queryBySiteId" resultType="AclInfo" parameterType="java.lang.Integer" >
+    select *from acl_inst where siteid=#{siteId}
+  </select>
+  
+  <delete id="delete" parameterType="AclInfo" >
+    delete from acl_inst where id=#{id} and siteId=#{siteId}
+  </delete>
+  
+  <delete id="deleteBySiteId" parameterType="AclInfo" >
+    delete from acl_inst where siteId=#{siteId}
+  </delete>
+  
+  <insert id="insert" parameterType="AclInfo"  useGeneratedKeys="true" keyProperty="id">
+   insert into acl_inst (siteid,act,direction,portNumber,vlanId,isSourceMac
+   ,sourceMac,isPurposeMac,purposeMac,isSourceIp,sourceIp,isPurposeIp,purposeIp,
+   isMatchCos,cosValue,isMatchDSCP,dscpValue,isMatchTOS,tosValue,isSourcePort,
+   sourcePort,isPurposePort,purposePort,ruleObject,treatyType) 
+   values(#{siteId},#{act},#{direction},#{portNumber},#{vlanId},#{isSourceMac},
+   #{sourceMac},#{isPurposeMac},#{purposeMac},#{isSourceIp},#{sourceIp},#{isPurposeIp},#{purposeIp},#{isMatchCos},
+   #{cosValue},#{isMatchDSCP},#{dscpValue},#{isMatchTOS},#{tosValue},#{isSourcePort},
+   #{sourcePort},#{isPurposePort},#{purposePort},#{ruleObject},#{treatyType})              
+  </insert>
+  
+  <update id="update" parameterType="AclInfo" >
+    update acl_inst
+    set act = #{act,jdbcType=INTEGER},
+      direction = #{direction,jdbcType=INTEGER},
+      portNumber = #{portNumber,jdbcType=INTEGER},
+      vlanId = #{vlanId,jdbcType=INTEGER},
+      isSourceMac = #{isSourceMac,jdbcType=INTEGER},
+      sourceMac = #{sourceMac,jdbcType=VARCHAR},
+      isPurposeMac = #{isPurposeMac,jdbcType=INTEGER},
+      purposeMac = #{purposeMac,jdbcType=VARCHAR},
+      isSourceIp = #{isSourceIp,jdbcType=INTEGER},
+      sourceIp = #{sourceIp,jdbcType=VARCHAR},
+      isPurposeIp = #{isPurposeIp,jdbcType=INTEGER},
+      purposeIp = #{purposeIp,jdbcType=VARCHAR},
+      isMatchCos = #{isMatchCos,jdbcType=INTEGER},
+      cosValue = #{cosValue,jdbcType=INTEGER},
+      isMatchDSCP = #{isMatchDSCP,jdbcType=INTEGER},
+      dscpValue = #{dscpValue,jdbcType=INTEGER},
+      isMatchTOS = #{isMatchTOS,jdbcType=INTEGER},
+      tosValue = #{tosValue,jdbcType=INTEGER},
+      isSourcePort = #{isSourcePort,jdbcType=INTEGER},
+      sourcePort = #{sourcePort,jdbcType=INTEGER},
+      isPurposePort = #{isPurposePort,jdbcType=INTEGER},
+      purposePort = #{purposePort,jdbcType=INTEGER},
+      ruleObject = #{ruleObject,jdbcType=INTEGER},
+      treatyType = #{treatyType,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER} and siteid = #{siteId,jdbcType=INTEGER}
+  </update>
+</mapper>

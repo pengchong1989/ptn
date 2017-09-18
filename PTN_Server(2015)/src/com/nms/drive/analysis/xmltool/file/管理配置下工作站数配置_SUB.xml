@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<driveRoot  xmlns="http://drive.bean.com">
+	<attribute length="1" description="工作站号" value="" mapping=""/>
+	<attribute length="1" description="工作站IP地址1" value="1" mapping=""/>
+	<attribute length="1" description="工作站IP地址2" value="1" mapping=""/>
+	<attribute length="1" description="工作站IP地址3" value="1" mapping=""/>
+	<attribute length="1" description="工作站IP地址4" value="1" mapping=""/>
+	<attribute length="1" description="工作站的用户数" value="" mapping="">
+		<listRoot file="com/nms/drive/analysis/xmltool/file/管理配置下工作站数配置的工作站的用户配置 _SUB_SUB.xml"/>
+	</attribute>
+</driveRoot>

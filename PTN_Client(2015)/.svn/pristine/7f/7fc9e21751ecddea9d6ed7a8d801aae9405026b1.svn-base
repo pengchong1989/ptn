@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nms.db.dao.ptn.BfdInfoMapper" >
+ 
+ <select id="queryBfdId" resultType="java.lang.Integer" parameterType="java.lang.Integer" >
+    select bfdId from bfd_ipv4 where siteId=#{siteId}
+ </select>
+ 
+ <select id="queryMySid" resultType="java.lang.Integer" parameterType="java.lang.Integer" >
+    select mySid from bfd_ipv4 where siteId=#{siteId}
+ </select>
+ 
+ <select id="queryPeerSid" resultType="java.lang.Integer" parameterType="java.lang.Integer" >
+    select peerSid from bfd_ipv4 where siteId=#{siteId}
+ </select>
+ 
+ <select id="selectByCondtion" resultType="BfdInfo" parameterType="BfdInfo" >
+   select * from bfd_ipv4 where siteId=#{siteId}
+   <if test="id>0"> and id=#{id}</if>
+ </select>
+ 
+ <select id="queryPwIds" resultType="java.lang.Integer" parameterType="map" >
+   select pwId  from bfd_ipv4 where siteId=#{siteId} and bfdMessageSendType=#{type}
+ </select>
+ 
+ <select id="queryLspIds" resultType="java.lang.Integer" parameterType="map" >
+   select lspId  from bfd_ipv4 where siteId=#{siteId} and bfdMessageSendType=#{type}
+ </select>
+</mapper>

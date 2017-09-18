@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<config> 
+   <ICorbaServant managerName="EMS" className="com.nms.corba.ninterface.impl.resource.EMSMgr_Impl"/>
+   <ICorbaServant managerName="ManagedElement" className="com.nms.corba.ninterface.impl.resource.ManagedElementMgr_Impl"/>
+   <ICorbaServant managerName="EquipmentInventory" className="com.nms.corba.ninterface.impl.resource.EquipmentInventoryMgr_Impl"/>
+   <ICorbaServant managerName="FlowDomain" className="com.nms.corba.ninterface.impl.service.FlowDomainMgr_Impl"/>
+   <ICorbaServant managerName="PerformanceManagement" className="com.nms.corba.ninterface.impl.performance.PerformanceManagementMgr_Impl"/>
+   <ICorbaServant managerName="Protection" className="com.nms.corba.ninterface.impl.protection.ProtectionMgr_Impl"/>
+   <ICorbaServant managerName="TrailNtwProtection" className="com.nms.corba.ninterface.impl.protection.TrailNtwProtMgr_Impl"/>
+   <ICorbaServant managerName="HeartBeat" className="com.nms.corba.ninterface.impl.security.HeartbeatMgr_Impl"/>
+   <ICorbaServant managerName="Security" className="com.nms.corba.ninterface.impl.security.SecurityMgr_Impl"/>
+   <ICorbaServant managerName="Time" className="com.nms.corba.ninterface.impl.resource.TimeMgr_Impl"/>
+   <ICorbaServant managerName="TransmissionDescriptor" className="com.nms.corba.ninterface.impl.security.TransmissionDescriptorMgr_Impl"/>
+   <ICorbaServant managerName="MultiLayerSubnetwork" className="com.nms.corba.ninterface.impl.service.MultiLayerSubnetworkMgr_Impl"/>
+   <ICorbaServant managerName="Maintenance" className="com.nms.corba.ninterface.impl.service.MaintenanceMgr_Impl"/>
+   <ICorbaServant managerName="FileTransfer" className="com.nms.corba.ninterface.impl.system.FileTransferMgr_Impl"/>
+   <ICorbaServant managerName="ClockSource" className="com.nms.corba.ninterface.impl.resource.ClockSource_Impl"/>
+   <ICorbaServant managerName="EMSSubscription" className="com.nms.corba.ninterface.impl.notification.EMSSubscriptionMgr_Impl"/>
+</config>
+  

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xml-body>
+<equipment imagePath="/com/nms/ui/images/topo/soz/rack.png" x="50" y="50">
+	<slot imagePath="/com/nms/ui/images/topo/soz/slot_e1.png" x="72" y="55" type="710_left"  bestCardName="PWR" number="5" masterCardAddress="257"></slot>
+	<slot imagePath="/com/nms/ui/images/topo/soz/slot_e1.png" x="72" y="125" type="710_left"  bestCardName="PWR" number="6" masterCardAddress="257"></slot>
+	<slot imagePath="/com/nms/ui/images/topo/soz/slot_e.png" x="150" y="55" type="710_fengshan"  bestCardName="FAN" number="4" masterCardAddress="257"></slot>
+	<slot imagePath="/com/nms/ui/images/topo/soz/slot_t.png" x="226" y="56" type="710_reserve"  bestCardName="GET1" number="2" masterCardAddress="257"></slot>
+	<slot imagePath="/com/nms/ui/images/topo/soz/slot_t.png" x="576" y="56" type="710_reserve"  bestCardName="GEX1" number="3" masterCardAddress="257"></slot>
+	<slot imagePath="/com/nms/ui/images/topo/soz/slot_b.png" x="226" y="127" type="710b_main"  bestCardName="MCU" number="1" masterCardAddress="257"></slot>
+</equipment>
+</xml-body>

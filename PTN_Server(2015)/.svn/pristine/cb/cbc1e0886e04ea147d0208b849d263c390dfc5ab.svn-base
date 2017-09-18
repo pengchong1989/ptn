@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 700B设备槽位对应的图片途径和-->
+<xml-body>
+
+<equipment imagePath="/com/nms/ui/images/topo/szt1a/rack.png" x="50" y="50">
+	<slot imagePath="/com/nms/ui/images/topo/szt1a/slot.png" x="72" y="56" type="ZXCTN 605-FE124"  bestCardName="ZXCTN 605-FE124_CARD" number="1" masterCardAddress="257"></slot>
+</equipment>
+
+</xml-body>

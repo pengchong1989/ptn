@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<driveRoot  xmlns="http://drive.bean.com">
+	<attribute length="2" description="TUNNEL ID" value="0" mapping="(0)/1=(不关联)/关联"/>
+	<attribute length="1" description="节点类型" value="0" mapping="(0)/1=(不关联)/关联"/>
+	<attribute length="2" description="LSP ID" value="0" mapping="(0)/1=(不关联)/关联"/>
+	<attribute length="1" description="入端口号" value="0" mapping="(0)/1=(不关联)/关联"/>
+	<attribute length="4" description="入标签" value="0" mapping="(0)/1=(不关联)/关联"/>
+	<attribute length="1" description="出端口号" value="0" mapping="(0)/1=(不关联)/关联"/>
+	<attribute length="4" description="出标签" value="0" mapping="(0)/1=(不关联)/关联"/>
+</driveRoot>

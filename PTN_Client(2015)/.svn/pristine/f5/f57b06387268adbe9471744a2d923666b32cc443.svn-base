@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nms.db.dao.system.PtndbInstPathMapper" >
+  <resultMap id="BaseResultMap" type="DbInfoTask" >
+    <id column="ptnDb_instPath_id" property="id" jdbcType="INTEGER" />
+    <result column="mointorType" property="mointorType" jdbcType="VARCHAR" />
+    <result column="mointorTypeDB" property="mointorTypeDb" jdbcType="VARCHAR" />
+    <result column="mointorTotalDB" property="isMointorTotal" jdbcType="VARCHAR" />
+    <result column="mointorCycle" property="miintorCycle" jdbcType="VARCHAR" />
+    <result column="totalSize" property="totalDbSpace" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ptnDb_instPath_id, mointorType, mointorTypeDB, mointorTotalDB, mointorCycle, totalSize
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from ptndb_instpath
+    where ptnDb_instPath_id = #{ptndbInstpathId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from ptndb_instpath
+    where ptnDb_instPath_id = #{ptndbInstpathId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="DbInfoTask" >
+    insert into ptndb_instpath (ptnDb_instPath_id, mointorType, mointorTypeDB, 
+      mointorTotalDB, mointorCycle, totalSize
+      )
+    values (#{ptndbInstpathId,jdbcType=INTEGER}, #{mointortype,jdbcType=VARCHAR}, #{mointortypedb,jdbcType=VARCHAR}, 
+      #{mointortotaldb,jdbcType=VARCHAR}, #{mointorcycle,jdbcType=VARCHAR}, #{totalsize,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="DbInfoTask" >
+    insert into ptndb_instpath
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="ptndbInstpathId != null" >
+        ptnDb_instPath_id,
+      </if>
+      <if test="mointortype != null" >
+        mointorType,
+      </if>
+      <if test="mointortypedb != null" >
+        mointorTypeDB,
+      </if>
+      <if test="mointortotaldb != null" >
+        mointorTotalDB,
+      </if>
+      <if test="mointorcycle != null" >
+        mointorCycle,
+      </if>
+      <if test="totalsize != null" >
+        totalSize,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="ptndbInstpathId != null" >
+        #{ptndbInstpathId,jdbcType=INTEGER},
+      </if>
+      <if test="mointortype != null" >
+        #{mointortype,jdbcType=VARCHAR},
+      </if>
+      <if test="mointortypedb != null" >
+        #{mointortypedb,jdbcType=VARCHAR},
+      </if>
+      <if test="mointortotaldb != null" >
+        #{mointortotaldb,jdbcType=VARCHAR},
+      </if>
+      <if test="mointorcycle != null" >
+        #{mointorcycle,jdbcType=VARCHAR},
+      </if>
+      <if test="totalsize != null" >
+        #{totalsize,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="DbInfoTask" >
+    update ptndb_instpath
+    <set >
+      <if test="mointortype != null" >
+        mointorType = #{mointortype,jdbcType=VARCHAR},
+      </if>
+      <if test="mointortypedb != null" >
+        mointorTypeDB = #{mointortypedb,jdbcType=VARCHAR},
+      </if>
+      <if test="mointortotaldb != null" >
+        mointorTotalDB = #{mointortotaldb,jdbcType=VARCHAR},
+      </if>
+      <if test="mointorcycle != null" >
+        mointorCycle = #{mointorcycle,jdbcType=VARCHAR},
+      </if>
+      <if test="totalsize != null" >
+        totalSize = #{totalsize,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ptnDb_instPath_id = #{ptndbInstpathId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="DbInfoTask" >
+    update ptndb_instpath
+    set mointorType = #{mointortype,jdbcType=VARCHAR},
+      mointorTypeDB = #{mointortypedb,jdbcType=VARCHAR},
+      mointorTotalDB = #{mointortotaldb,jdbcType=VARCHAR},
+      mointorCycle = #{mointorcycle,jdbcType=VARCHAR},
+      totalSize = #{totalsize,jdbcType=VARCHAR}
+    where ptnDb_instPath_id = #{ptndbInstpathId,jdbcType=INTEGER}
+  </update>
+</mapper>

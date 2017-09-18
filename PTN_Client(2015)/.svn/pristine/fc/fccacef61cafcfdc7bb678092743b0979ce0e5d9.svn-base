@@ -1,0 +1,141 @@
+﻿package com.nms.model.ptn.path;
+
+import java.sql.Connection;
+import java.util.List;
+
+import com.nms.db.bean.ptn.path.StaticUnicastInfo;
+import com.nms.db.dao.ptn.path.SingelSpreadDao;
+import com.nms.model.util.ObjectService;
+import com.nms.ui.manager.ExceptionManage;
+
+public class SingelSpreadService extends ObjectService{
+	public void setConnection(Connection connection) {
+		super.connection = connection;	
+	}
+
+	public void setPtnuser(String ptnuser) {
+		super.ptnuser = ptnuser;
+	}
+	
+	private SingelSpreadDao singelSpreadDao = new SingelSpreadDao();
+	
+	/**
+	 * 修改
+	 * @param info
+	 * @throws Exception
+	 */
+	public void update(StaticUnicastInfo info) throws Exception {
+		try {
+			connection.setAutoCommit(false);
+			this.singelSpreadDao.update(info, connection);
+			if(!connection.getAutoCommit()){
+				connection.commit();
+			}
+		} catch (Exception e) {
+			connection.rollback();
+			ExceptionManage.dispose(e,this.getClass());
+		} finally {
+			connection.setAutoCommit(true);
+		}
+
+	}
+	
+	/**
+	 * 根据网元Id 查询 
+	 * @param siteId
+	 * @return FrequencyInfo List
+	 * @throws Exception
+	 */
+	public List<StaticUnicastInfo> query(int siteId) throws Exception {
+		List<StaticUnicastInfo> infoList = null;
+		try {
+			infoList = this.singelSpreadDao.queryByCondition(siteId, connection);
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		}
+		return  infoList;
+	}
+	
+	public List<StaticUnicastInfo> querybyCondition(StaticUnicastInfo info) throws Exception {
+		List<StaticUnicastInfo> infoList = null;
+		try {
+			infoList = this.singelSpreadDao.queryByCondition(info, connection);
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		}
+		return  infoList;
+	}
+	/**
+	 * 根据网元Id 查询 单播条目数，以此来分配SUID
+	 * @param siteId
+	 * @return FrequencyInfo List
+	 * @throws Exception
+	 */
+	public List<Integer> querySuId(int siteId) throws Exception {
+		List<Integer> suIds = null;
+		try {
+			suIds = this.singelSpreadDao.querySuId(siteId, connection);
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		}
+		return  suIds;
+	}
+	/**
+	 * 添加
+	 * @return 
+	 */
+	public int insert(StaticUnicastInfo info) throws Exception {
+
+		if (connection == null) {
+			System.out.println("connection is null");
+		}
+		int result = 0;
+
+		try {
+			connection.setAutoCommit(false);
+			result = this.singelSpreadDao.insert(info, connection);
+			if(!connection.getAutoCommit()){
+				connection.commit();
+			}
+		} catch (Exception e) {
+			connection.rollback();
+			ExceptionManage.dispose(e,this.getClass());
+		} finally {
+			connection.setAutoCommit(true);
+		}
+		return result;
+	}
+	
+	public void delete(List<StaticUnicastInfo> uniInfoList) throws Exception {
+
+		if (connection == null) {
+			System.out.println("connection is null");
+		}
+
+		try {
+			connection.setAutoCommit(false);
+			for(StaticUnicastInfo staticUnicastInfo:uniInfoList){
+				this.singelSpreadDao.delete(staticUnicastInfo.getId(), connection);
+			}
+			if(!connection.getAutoCommit()){
+				connection.commit();
+			}
+		} catch (Exception e) {
+			connection.rollback();
+			ExceptionManage.dispose(e,this.getClass());
+		} finally {
+			connection.setAutoCommit(true);
+		}
+	}
+	
+	
+	public List<StaticUnicastInfo> selectByStaticUniInfo(StaticUnicastInfo info) throws Exception {
+		List<StaticUnicastInfo> infoList = null;
+		try {
+			infoList = this.singelSpreadDao.selectByStaticUniInfo(info, connection);
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		}
+		return  infoList;
+	}
+}

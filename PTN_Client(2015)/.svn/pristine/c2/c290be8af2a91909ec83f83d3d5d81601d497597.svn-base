@@ -1,0 +1,358 @@
+package com.nms.db.dao.equipment.card;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.nms.db.bean.equipment.card.CardInst;
+import com.nms.ui.manager.ExceptionManage;
+
+public class CardInstDao {
+
+	public int insert(CardInst cardinst, Connection connection)
+			throws Exception {
+
+		if (null == cardinst) {
+			throw new Exception("cardinst is null");
+		}
+
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		int result = 0;
+		ResultSet resultSet = null;
+
+		try {
+			sql = "insert into card_inst(siteId,equipId,slotId,cardName,cardType,imagePath,cardx,cardy,snmpName,installedSerialNumber) values(?,?,?,?,?,?,?,?,?,?)";
+			preparedStatement = connection.prepareStatement(sql,Statement.RETURN_GENERATED_KEYS);
+			preparedStatement.setInt(1, cardinst.getSiteId());
+			preparedStatement.setInt(2, cardinst.getEquipId());
+			preparedStatement.setInt(3, cardinst.getSlotId());
+			preparedStatement.setString(4, cardinst.getCardName());
+			preparedStatement.setString(5, cardinst.getCardType());
+			preparedStatement.setString(6, cardinst.getImagePath());
+			preparedStatement.setInt(7, cardinst.getCardx());
+			preparedStatement.setInt(8, cardinst.getCardy());
+			preparedStatement.setString(9, cardinst.getCardName());
+			preparedStatement.setString(10, cardinst.getInstalledSerialNumber());
+			preparedStatement.executeUpdate();
+			resultSet = preparedStatement.getGeneratedKeys();
+			if(resultSet.next()){
+				result = resultSet.getInt(1);
+            }
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if(null!=resultSet){
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				resultSet = null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+
+		return result;
+	}
+
+	/**
+	 * 修改cardinst
+	 * 
+	 * @param cardinst
+	 *            实体
+	 * @param connection
+	 *            数据库连接
+	 * @return 修改的记录数
+	 * @throws Exception
+	 */
+	public int update(CardInst cardinst, Connection connection)
+			throws Exception {
+		if (null == cardinst) {
+			throw new Exception("cardinst is null");
+		}
+
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		int result = 0;
+
+		try {
+			sql = "update card_inst set siteId=?,equipId=?,slotId=?,cardName=?,cardType=?,imagePath=?,cardx=?,cardy=?,snmpName=? where id=?";
+			preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.setInt(1, cardinst.getSiteId());
+			preparedStatement.setInt(2, cardinst.getEquipId());
+			preparedStatement.setInt(3, cardinst.getSlotId());
+			preparedStatement.setString(4, cardinst.getCardName());
+			preparedStatement.setString(5, cardinst.getCardType());
+			preparedStatement.setString(6, cardinst.getImagePath());
+			preparedStatement.setInt(7, cardinst.getCardx());
+			preparedStatement.setInt(8, cardinst.getCardy());
+			preparedStatement.setString(9, cardinst.getSnmpName());
+			preparedStatement.setInt(10, cardinst.getId());
+			result = preparedStatement.executeUpdate();
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+
+		return result;
+	}
+
+	/**
+	 * 根据主键删除
+	 * 
+	 * @param Card_Inst_Id
+	 * @param connection
+	 * @return
+	 * @throws Exception
+	 */
+	public int delete(int id, Connection connection) throws Exception {
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		int result = 0;
+
+		try {
+			sql = "delete from card_inst where id=?";
+			preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.setInt(1, id);
+
+			result = preparedStatement.executeUpdate();
+
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		} finally {
+
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+
+		return result;
+	}
+	
+	public int deleteBySiteId(int siteId, Connection connection) throws Exception {
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		int result = 0;
+
+		try {
+			sql = "delete from card_inst where siteId=?";
+			preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.setInt(1, siteId);
+
+			result = preparedStatement.executeUpdate();
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+
+		return result;
+	}
+
+	/**
+	 * 根据条件查询
+	 * @param cardinstCondition 查询条件
+	 * @param connection 数据库连接
+	 * @return List<CardInst> 集合
+	 * @throws Exception
+	 */
+	public List<CardInst> queryByCondition(CardInst cardinstCondition, Connection connection)
+			throws Exception {
+
+		if (null == cardinstCondition) {
+			throw new Exception("cardinstCondition is null");
+		}
+
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		List<CardInst> cardinstList = null;
+		String sql = null;
+		ResultSet resultSet = null;
+		PreparedStatement preparedStatement = null;
+		CardInst cardinst = null;
+
+		try {
+			cardinstList = new ArrayList<CardInst>();
+			sql = "select id,siteId,equipId , slotId,cardName,cardType,imagePath,cardx,cardy,snmpName,installedSerialNumber  from card_inst where 1=1";
+
+			if (cardinstCondition.getId() > 0) {
+				sql += " and id=" + cardinstCondition.getId();
+			}
+
+			if (cardinstCondition.getSiteId() > 0) {
+				sql += " and siteId=" + cardinstCondition.getSiteId();
+			}
+			
+			if (cardinstCondition.getEquipId() > 0) {
+				sql += " and equipId=" + cardinstCondition.getEquipId();
+			}
+			
+			if (cardinstCondition.getSlotId() > 0) {
+				sql += " and slotId=" + cardinstCondition.getSlotId();
+			}
+			if(cardinstCondition.getCardName() != null &&
+					!cardinstCondition.getCardName().equals("")){
+				sql += " and cardName='" + cardinstCondition.getCardName()+"'"; 
+			}
+
+			preparedStatement = connection.prepareStatement(sql);
+			resultSet = preparedStatement.executeQuery();
+
+			while (resultSet.next()) {
+				cardinst = new CardInst();
+				cardinst.setId(resultSet.getInt("id"));
+				cardinst.setSiteId(resultSet.getInt("siteId"));
+				cardinst.setEquipId(resultSet.getInt("equipId"));
+				cardinst.setSlotId(resultSet.getShort("slotId"));
+				cardinst.setCardName(resultSet.getString("cardName"));
+				cardinst.setCardType(resultSet.getString("cardType"));
+				cardinst.setImagePath(resultSet.getString("imagePath"));
+				cardinst.setCardx(resultSet.getInt("cardx"));
+				cardinst.setCardy(resultSet.getInt("cardy"));
+				cardinst.setSnmpName(resultSet.getString("snmpName"));
+				cardinst.setInstalledSerialNumber(resultSet.getString("installedSerialNumber"));
+				cardinstList.add(cardinst);
+			}
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (resultSet != null) {
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				resultSet = null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+			cardinst = null;
+		}
+
+		return cardinstList;
+
+	}
+
+	public List<Integer> querryByType(String cardName, int site_Inst_Id, Connection connection) throws Exception{
+		// TODO Auto-generated method stub
+		if (null == cardName) {
+			throw new Exception("cardName is null");
+		}		
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+		List<Integer> list=null;
+		String sql = null;
+		ResultSet resultSet = null;
+		PreparedStatement preparedStatement = null;
+
+		try {
+			sql = "select siteId ,slotid from card_inst where 1=1";
+			if(site_Inst_Id !=0){
+			    sql +=" and siteId="+site_Inst_Id;	
+			}
+            if(cardName.equals("E1支路卡")){
+            	sql +=" and (cardName='SP16' or cardName='E1T1')";
+            }else{
+            	sql +=" and (cardName='XCTO1' or cardName='XCTS1' or cardName like '%703%')";
+            }
+			preparedStatement = connection.prepareStatement(sql);
+			resultSet = preparedStatement.executeQuery();
+            list = new ArrayList<Integer>();
+			while (resultSet.next()) {
+			    list.add(resultSet.getInt("siteId"));
+			    list.add(resultSet.getInt("slotId"));
+			}
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (resultSet != null) {
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				resultSet = null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		
+		}			
+		return list;
+	}
+
+	
+}

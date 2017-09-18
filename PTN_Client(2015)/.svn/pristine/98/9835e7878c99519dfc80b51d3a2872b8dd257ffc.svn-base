@@ -1,0 +1,1937 @@
+package com.nms.model.ptn.path.eth;
+
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import com.nms.db.bean.equipment.shelf.SiteInst;
+import com.nms.db.bean.ptn.Businessid;
+import com.nms.db.bean.ptn.path.eth.ElanInfo;
+import com.nms.db.bean.ptn.path.pw.PwInfo;
+import com.nms.db.bean.ptn.path.pw.PwNniInfo;
+import com.nms.db.bean.ptn.port.AcPortInfo;
+import com.nms.db.dao.ptn.BusinessidDao;
+import com.nms.db.dao.ptn.path.eth.ElanDao;
+import com.nms.db.dao.ptn.port.AcDao;
+import com.nms.db.enums.EActionType;
+import com.nms.db.enums.EServiceType;
+import com.nms.model.equipment.shlef.SiteService;
+import com.nms.model.ptn.path.pw.PwInfoService;
+import com.nms.model.ptn.path.pw.PwNniBufferService;
+import com.nms.model.ptn.port.AcInfoService;
+import com.nms.model.util.ObjectService;
+import com.nms.model.util.Services;
+import com.nms.service.impl.util.SiteUtil;
+import com.nms.ui.manager.BusinessIdException;
+import com.nms.ui.manager.ConstantUtil;
+import com.nms.ui.manager.DateUtil;
+import com.nms.ui.manager.ExceptionManage;
+import com.nms.ui.manager.ResourceUtil;
+import com.nms.ui.manager.UiUtil;
+import com.nms.ui.manager.keys.StringKeysTip;
+
+public class ElanInfoService extends ObjectService {
+
+	public void setConnection(Connection connection) {
+		super.connection = connection;
+	}
+
+	public void setPtnuser(String ptnuser) {
+		super.ptnuser = ptnuser;
+	}
+
+	private AcDao acDao = new AcDao();
+	private ElanDao elanDao = new ElanDao();
+	private BusinessidDao businessidDao = new BusinessidDao();
+	private final static int ISUSEDSTATUS = 1;
+
+	public int insert(List<ElanInfo> elaninfos) throws Exception, BusinessIdException {
+
+		if (elaninfos == null) {
+			throw new Exception("elaninfo is null");
+		}
+		SiteService siteService = null;
+		PwInfoService pwService = null;
+		AcInfoService acService = null;
+		List<ElanInfo> DBElanList = null;
+		List<Integer> acIdList = null;
+		Set<Integer> acIdSet = null;
+		Set<Integer> siteIdSet = new HashSet<Integer>();
+		Map<Integer, Businessid> siteIdAndXcBusIdMap = new HashMap<Integer, Businessid>();
+		int result = 0;
+		int elanid = 0;
+		if (elaninfos.isEmpty()) {
+			return result;
+		}
+		try {
+			connection.setAutoCommit(false);
+			int elanServierId = this.elanDao.selectMaxServiceId(connection) + 1; // 得到etree业务Id
+		    siteService = (SiteService) ConstantUtil.serviceFactory.newService(Services.SITE, this.connection);
+			pwService = (PwInfoService) ConstantUtil.serviceFactory.newService(Services.PwInfo, this.connection);
+			acService = (AcInfoService) ConstantUtil.serviceFactory.newService(Services.AcInfo, this.connection);		
+			DBElanList = new ArrayList<ElanInfo>();
+			acIdList = new ArrayList<Integer>();
+			acIdSet = new HashSet<Integer>();
+			Businessid XCId = null;
+			for (ElanInfo info : elaninfos) {
+				if (info.getaSiteId() > 0 && info.getAxcId() == 0) {
+					siteIdSet.add(info.getaSiteId());
+				}
+				if (info.getzSiteId() > 0 && info.getZxcId() == 0) {
+					siteIdSet.add(info.getzSiteId());
+				}
+			}
+			for (Integer siteId : siteIdSet) {
+				XCId = businessidDao.query(siteId, "etree", connection);
+				if (null == XCId) {
+					throw new BusinessIdException(siteService.getSiteName(siteId) + ResourceUtil.srcStr(StringKeysTip.TIP_ELANID));
+				}
+
+				siteIdAndXcBusIdMap.put(siteId, XCId);
+				businessidDao.update(XCId.getId(), ISUSEDSTATUS, connection);
+			}
+			Businessid rootXCIdInfo = null;
+			for (ElanInfo e_info : elaninfos) {
+				if (null != siteIdAndXcBusIdMap.get(e_info.getaSiteId())) {
+					if (e_info.getAxcId() == 0) {
+						e_info.setAxcId(siteIdAndXcBusIdMap.get(e_info.getaSiteId()).getIdValue());
+					}
+				}else if(e_info.getAxcId()>0)
+				{
+					rootXCIdInfo = businessidDao.query(e_info.getAxcId(), e_info.getaSiteId(), "etree", connection);
+					 businessidDao.update(rootXCIdInfo.getId(), ISUSEDSTATUS, connection);
+				}
+				if (null != siteIdAndXcBusIdMap.get(e_info.getzSiteId())) {
+					if (e_info.getZxcId() == 0) {
+						e_info.setZxcId(siteIdAndXcBusIdMap.get(e_info.getzSiteId()).getIdValue());
+					}
+				}
+				else if(e_info.getZxcId() >0)
+				{
+					rootXCIdInfo = businessidDao.query(e_info.getZxcId(), e_info.getzSiteId(), "etree", connection);
+					businessidDao.update(rootXCIdInfo.getId(), ISUSEDSTATUS, connection);
+				}
+				// 给Elan业务赋值serviID（业务Id）
+				if (e_info.getId() == 0) {
+					e_info.setServiceId(elanServierId);
+				}
+				DBElanList.add(e_info);
+			}
+			// 设置pw与etree业务的关联关系
+			for (ElanInfo DBInfo : DBElanList) {
+				elanid = this.elanDao.insert(DBInfo, connection);
+				DBInfo.setId(elanid);
+				pwService.setUser(DBInfo.getPwId(), DBInfo);
+	/**************修改存在多AC情况下 2015-3-9 张坤******************************/
+				addAcIdList(DBInfo,acIdSet);
+	/*************************************************************************/
+			}
+			// 设置ac被使用
+			acIdList.addAll(acIdSet);
+			if(acIdList.size() >0)
+			{
+				List<AcPortInfo> acPortInfoList = acService.select(acIdList);
+				for (AcPortInfo acPort : acPortInfoList) {
+					acPort.setIsUser(1);
+					acService.updateUserType(acPort);
+				}
+			}
+              
+			// 离线网元数据下载
+			ElanInfo elanInfo = DBElanList.get(0);
+			if (0 != elanInfo.getaSiteId()) {
+				super.dateDownLoad(elanInfo.getaSiteId(), elanInfo.getServiceId(), EServiceType.ELAN.getValue(), EActionType.INSERT.getValue(), elanInfo.getServiceId() + "", null, 0, 0, null);
+			}
+			if (0 != elanInfo.getzSiteId()) {
+				super.dateDownLoad(elanInfo.getzSiteId(), elanInfo.getServiceId(), EServiceType.ELAN.getValue(), EActionType.INSERT.getValue(), elanInfo.getServiceId() + "", null, 0, 0, null);
+			}
+			if(!connection.getAutoCommit()){
+				connection.commit();
+			}
+			
+		} catch (BusinessIdException e) {
+			connection.rollback();
+			throw e;
+		} catch (Exception e) {
+			connection.rollback();
+			ExceptionManage.dispose(e, this.getClass());
+		} finally {
+			connection.setAutoCommit(true);
+		}
+		this.updateLanId(elaninfos);   
+		return result;
+	}
+
+	/**
+	 * 获取siteID集合
+	 * 
+	 * @param elanInfoList
+	 *            elan对象
+	 * @return siteID集合
+	 * @throws Exception
+	 */
+	private List<Integer> getSiteIds(List<ElanInfo> elanInfoList) throws Exception {
+		List<Integer> siteIds = null;
+		try {
+			siteIds = new ArrayList<Integer>();
+			SiteUtil siteUtil=new SiteUtil();
+			for (ElanInfo elan : elanInfoList) {
+				                                                                               
+					if (elan.getaSiteId()!=0 && !siteIds.contains(elan.getaSiteId())) {
+						siteIds.add(elan.getaSiteId());
+					}
+					if (elan.getzSiteId() !=0 && !siteIds.contains(elan.getzSiteId())) {
+						siteIds.add(elan.getzSiteId());
+					}
+
+			}
+		} catch (Exception e) {
+			throw e;
+		}
+		return siteIds;
+	}
+	
+	private void addAcIdList(ElanInfo dBInfo, Set<Integer> acIdSet) 
+	{
+		if(null != dBInfo.getAmostAcId()&& !"".equals(dBInfo.getAmostAcId()))
+		{
+			for(String acId : dBInfo.getAmostAcId().split(","))
+			{
+				acIdSet.add(Integer.parseInt(acId.trim()));
+			}
+		}
+		if(null != dBInfo.getZmostAcId()&& !"".equals(dBInfo.getZmostAcId()))
+		{
+			for(String acId : dBInfo.getZmostAcId().split(","))
+			{
+				acIdSet.add(Integer.parseInt(acId.trim()));
+			}
+		}
+	}
+
+	// 更新业务
+	public void update(List<ElanInfo> elanInfoList) throws Exception {
+		PwInfo pwInfo = null;
+		PwInfoService pwService = null;
+		AcInfoService acService = null;
+		Businessid businessId = null;
+		try {
+			super.connection.setAutoCommit(false);
+			pwService = (PwInfoService) ConstantUtil.serviceFactory.newService(Services.PwInfo, this.connection);
+			acService = (AcInfoService) ConstantUtil.serviceFactory.newService(Services.AcInfo, this.connection);
+			
+			for (ElanInfo info : elanInfoList) {
+				if(info.getAction() == 1)
+				{
+					//修改了PW
+					if(null != info.getBeforePw())
+					{
+						pwInfo = info.getBeforePw();
+						if(!isRelatedPW(pwInfo.getPwId()))
+						{
+							pwInfo.setRelatedServiceId(0);
+							pwInfo.setRelatedServiceType(0);
+							if(pwInfo.getPwId() > 0)
+							{
+								pwService.updateRelatedService(pwInfo);
+							}
+						}
+						pwService.setUser(info.getPwId(), info);
+					}
+					// 修改了端口
+					if (null != info.getBeforeAAcList()) {
+						// 释放之前的ac对象
+						for(AcPortInfo acportInst : info.getBeforeAAcList())
+						{
+							 
+							if(!isRelatedAC(acportInst.getId())){
+								acportInst.setIsUser(0);
+								acportInst.setLanId(0);
+								acService.updateUserType(acportInst);
+							}
+						}
+						// 关联新的AC
+						updateACState(info.getAmostAcId(),acService,1);
+					}
+					if (null != info.getBeforeZAcList()) {
+						// 释放之前的ac对象
+						for(AcPortInfo acportInst : info.getBeforeZAcList())
+						{
+							if(!isRelatedAC(acportInst.getId())){
+								acportInst.setIsUser(0);
+								acportInst.setLanId(0);
+								acService.updateUserType(acportInst);
+							}
+						}
+						// 关联新的AC
+						updateACState(info.getZmostAcId(),acService,1);
+					}
+				}else if(info.getAction() == 2)//新增
+				{
+//					SiteService	siteService = (SiteService) ConstantUtil.serviceFactory.newService(Services.SITE, this.connection);
+//					if(info.getzSiteId() != 0)
+//					{
+						setXCId(info.getZxcId(),info.getzSiteId(),info,1);
+						setXCId(info.getAxcId(),info.getaSiteId(),info,0);
+//						Businessid zElanXcId = null;
+//						if(info.getZxcId() == 0)
+//						{
+//							zElanXcId = businessidDao.query(info.getzSiteId(), "etree", connection);
+//						}else
+//						{
+//							zElanXcId = businessidDao.query(info.getZxcId(), info.getzSiteId(), "etree", connection);
+//						}
+//						if(zElanXcId == null)
+//						{
+//							throw new BusinessIdException(siteService.getSiteName(info.getzSiteId()) + ResourceUtil.srcStr(StringKeysTip.TIP_ELANID));
+//						}
+//						info.setZxcId(zElanXcId.getIdValue());
+//						businessidDao.update(zElanXcId.getId(), 1, connection);
+//					}
+					int elanId = this.elanDao.insert(info, connection);
+					info.setId(elanId);
+					// 关联新的pw
+					pwService.setUser(info.getPwId(), info);
+					//关联AC
+					updateACState(info.getZmostAcId(),acService,1);
+				}else if(info.getAction() == 3)//删除
+				{
+					//释放叶子的businessid
+					businessId = new Businessid();
+					businessId.setIdStatus(0);
+					businessId.setType("etree");
+					if(info.getSiteId() == info.getaSiteId())
+					{
+						businessId.setIdValue(info.getAxcId());
+						businessId.setSiteId(info.getaSiteId());
+						// 释放ac对象
+						updateACState(info.getAmostAcId(),acService,0);
+					}else if(info.getSiteId() == info.getzSiteId())
+					{
+						businessId.setIdValue(info.getZxcId());
+						businessId.setSiteId(info.getzSiteId());
+						// 释放ac对象
+						updateACState(info.getZmostAcId(),acService,0);
+					}
+					this.businessidDao.updateBusinessid(businessId, connection);
+					
+					// 释放pw
+					pwInfo = new PwInfo();
+					pwInfo.setPwId(info.getPwId());
+					if(!isRelatedPW(info.getPwId())){
+						pwInfo=pwService.queryByPwId(pwInfo);
+						pwInfo.setRelatedServiceId(0);
+						pwInfo.setRelatedServiceType(0);
+						if(pwInfo.getPwId() > 0)
+						{
+							pwService.updateRelatedService(pwInfo);
+						}
+					}
+//					// 释放ac对象
+//					updateACState(info.getZmostAcId(),acService,0);
+					//删除叶子数据
+					this.elanDao.deleteById(info.getId(), connection);
+				}
+				// 如果不是新增叶子、删除叶子 就修改etree数据
+				if(info.getAction()==1 || info.getAction()==0){
+					this.elanDao.update(info, super.connection);
+				}
+			 }
+			
+							
+			// 离线网元数据下载
+			ElanInfo elanInfo = elanInfoList.get(0);
+			if (0 != elanInfo.getaSiteId()) {
+				super.dateDownLoad(elanInfo.getaSiteId(), elanInfo.getServiceId(), EServiceType.ELAN.getValue(), EActionType.INSERT.getValue(), elanInfo.getServiceId() + "", null, 0, 0, null);
+			}
+			if (0 != elanInfo.getzSiteId()) {
+				super.dateDownLoad(elanInfo.getzSiteId(), elanInfo.getServiceId(), EServiceType.ELAN.getValue(), EActionType.INSERT.getValue(), elanInfo.getServiceId() + "", null, 0, 0, null);
+			}
+			if(!super.connection.getAutoCommit())
+			{
+				super.connection.commit();
+			}
+			
+		} catch (Exception e) {
+			super.connection.rollback();
+			ExceptionManage.dispose(e, getClass());
+		}finally
+		{
+			super.connection.setAutoCommit(true);
+		}
+		//给LAN ID赋值
+		this.updateLanId(elanInfoList);
+	}
+	
+	public void updateLanId(List<ElanInfo> elanInfoList) throws Exception {
+		UiUtil uiUtil = null;
+		AcInfoService acService = null;
+		PwNniBufferService pwNniBufferService=null;
+		try {
+			connection.setAutoCommit(false);
+			acService = (AcInfoService) ConstantUtil.serviceFactory.newService(Services.AcInfo, this.connection);
+			pwNniBufferService =(PwNniBufferService)ConstantUtil.serviceFactory.newService(Services.PwNniBuffer, this.connection);
+		    //修改LANID赋值
+	        List<ElanInfo>  elanInfoList1 = this.selectByServiceId(elanInfoList.get(0).getServiceId());
+		    List<Integer> siteIdList = null;			
+		    siteIdList = getSiteIds(elanInfoList1);
+		    uiUtil = new UiUtil(); 
+		    for(Integer siteId : siteIdList){
+			    int count=1;
+			    Set<Integer> acIdSet1 = new HashSet<Integer>();
+			    List<Integer> pwIdList = new ArrayList<Integer>();
+			    for (ElanInfo elanInfo : elanInfoList1) {
+				    if(elanInfo.getaSiteId() == siteId){
+				       acIdSet1.addAll(uiUtil.getAcIdSets(elanInfo.getAmostAcId()));
+				       pwIdList.add(elanInfo.getPwId());
+				    }else if(elanInfo.getzSiteId() == siteId){
+				       acIdSet1.addAll(uiUtil.getAcIdSets(elanInfo.getZmostAcId()));
+				       pwIdList.add(elanInfo.getPwId());
+				    }
+			     }
+			   // uni
+			   for (Integer acId : acIdSet1) {
+				    AcPortInfo acInfo = new AcPortInfo();   
+				    acInfo.setId(acId);
+				    acInfo.setLanId(count);				    
+				    acService.updateLanId(acInfo);
+				    count++;
+			   }
+			
+			   // nni
+			   PwNniInfo pwNNIInfo= null;
+			   List<PwNniInfo>	pwNNIInfoList = new ArrayList<PwNniInfo>();
+				for (Integer pwId : pwIdList) {
+					pwNNIInfo = new PwNniInfo();
+					pwNNIInfo.setSiteId(siteId);
+					pwNNIInfo.setPwId(pwId);
+					pwNNIInfoList.addAll(pwNniBufferService.select(pwNNIInfo));
+				}
+			    int cou = 11;
+				for (PwNniInfo pwNNI : pwNNIInfoList) {
+					PwNniInfo pwNni = new PwNniInfo();
+					pwNni.setId(pwNNI.getId());
+					pwNni.setLanId(cou);
+					pwNni.setSiteId(siteId);						
+					pwNniBufferService.updateLanId(pwNni);
+					cou++;
+				}					   					   								
+	        }
+		    if(!connection.getAutoCommit()){
+				connection.commit();
+			}
+		} catch (Exception e) {
+			connection.rollback();
+			ExceptionManage.dispose(e, this.getClass());
+		} finally {
+			connection.setAutoCommit(true);
+		}
+		
+	}
+	
+	public void clearLanId(List<ElanInfo> elanInfoList) throws Exception {
+		AcInfoService acInfoService = null;
+		PwNniBufferService pwNniBufferService = null;
+		UiUtil uiUtil = null;
+		try {	
+			connection.setAutoCommit(false);
+			acInfoService = (AcInfoService) ConstantUtil.serviceFactory.newService(Services.AcInfo, this.connection);
+			pwNniBufferService =(PwNniBufferService)ConstantUtil.serviceFactory.newService(Services.PwNniBuffer, this.connection);
+			//释放该条Elan所关联的AC和PW的LANID			
+	//		beforeelanInfoList = elanInfoService.select(this.elanInfo);
+			List<Integer> siteIdLists = null;			
+			siteIdLists = getSiteIds(elanInfoList);
+			uiUtil = new UiUtil();
+			for(Integer siteId : siteIdLists){
+				Set<Integer> acIdSet = new HashSet<Integer>();
+				List<Integer> pwIdList = new ArrayList<Integer>();
+				for (ElanInfo elan : elanInfoList) {													
+					 if(elan.getaSiteId() == siteId){
+					       acIdSet.addAll(uiUtil.getAcIdSets(elan.getAmostAcId()));
+					       pwIdList.add(elan.getPwId());
+					    }else if(elan.getzSiteId() == siteId){
+					       acIdSet.addAll(uiUtil.getAcIdSets(elan.getZmostAcId()));
+					       pwIdList.add(elan.getPwId());
+					    }
+					
+			   }
+				// uni
+				   for (Integer acId : acIdSet) {
+					    AcPortInfo acInfo = new AcPortInfo();   
+					    acInfo.setId(acId);
+					    acInfo.setLanId(0);
+					    acInfoService.updateLanId(acInfo);
+					    
+				   }
+				
+				// nni
+				   PwNniInfo pwNNIInfo= null;
+				   List<PwNniInfo>	pwNNIInfoList = new ArrayList<PwNniInfo>();
+					for (Integer pwId : pwIdList) {
+						pwNNIInfo = new PwNniInfo();
+						pwNNIInfo.setSiteId(siteId);
+						pwNNIInfo.setPwId(pwId);
+						pwNNIInfoList.addAll(pwNniBufferService.select(pwNNIInfo));
+					}
+					for (PwNniInfo pwNNI : pwNNIInfoList) {
+						PwNniInfo pwNni = new PwNniInfo();
+						pwNni.setId(pwNNI.getId());
+						pwNni.setLanId(0);
+						pwNni.setSiteId(siteId);						
+						pwNniBufferService.updateLanId(pwNni);
+					}
+				   
+								   								
+	        }
+									 
+			   if(!connection.getAutoCommit()){
+					connection.commit();
+				}
+		
+			} catch (Exception e) {
+				connection.rollback();
+				ExceptionManage.dispose(e, this.getClass());
+			} finally {
+				connection.setAutoCommit(true);
+			}
+			
+		
+	}
+	
+	private void setXCId(int xcId,int siteId,ElanInfo elanInfo,int label) throws Exception
+	{
+		SiteService	siteService = (SiteService) ConstantUtil.serviceFactory.newService(Services.SITE, this.connection);
+		if(siteId != 0)
+		{
+			Businessid elanXcId = null;
+			if(xcId == 0)
+			{
+				elanXcId = businessidDao.query(siteId, "etree", connection);
+			}else
+			{
+				elanXcId = businessidDao.query(xcId, siteId, "etree", connection);
+			}
+			if(elanXcId == null)
+			{
+				throw new BusinessIdException(siteService.getSiteName(siteId) + ResourceUtil.srcStr(StringKeysTip.TIP_ELANID));
+			}
+			if(label ==0 )
+			{
+				elanInfo.setAxcId(elanXcId.getIdValue());
+			}else
+			{
+				elanInfo.setZxcId(elanXcId.getIdValue());
+			}
+			businessidDao.update(elanXcId.getId(), 1, connection);
+		}
+		
+	}
+	
+	
+	private void analysisAC(ElanInfo info,AcInfoService acService) 
+	{
+		try {
+			updateAc(info.getBeforeAAcList(),acService);
+			updateAc(info.getBeforeZAcList(), acService);
+//			updateACState(info.getAmostAcId(),acService,1);
+//			updateACState(info.getAmostAcId(),acService,1);
+		} catch (Exception e) 
+		{
+			ExceptionManage.dispose(e, getClass());
+		}
+	}
+
+	
+	private void updateAc(List<AcPortInfo> acList,AcInfoService acService) throws Exception
+	{
+		if(null != acList && acList.size() >0)
+		{
+			for(AcPortInfo acPortInfo : acList)
+			{
+				if(!isRelatedAC(acPortInfo.getId())){
+					acPortInfo.setIsUser(0);
+					acService.updateUserType(acPortInfo);
+				}
+			}
+		}
+	}
+	
+	/**
+	 * 释放 和结合AC
+	 * @param amostIds
+	 * @param acService
+	 * @param label 0 表示释放  1 表示结合AC
+	 */
+	private void updateACState(String amostIds,AcInfoService acService,int label)
+	{
+		Set<Integer> acSet = new HashSet<Integer>();
+		UiUtil uiutil = new UiUtil();
+		try {
+			acSet = uiutil.getAcIdSets(amostIds);
+			if(acSet.size() >0)
+			{
+				for(Integer acId : acSet)
+				{
+					if(!isRelatedAC(acId))
+					{
+						analysisAc(acService,acId,label);
+					}	
+				}
+			}
+		} catch (Exception e) 
+		{
+			ExceptionManage.dispose(e, getClass());
+		}finally
+		{
+			acSet = null;
+			uiutil = null;
+		}
+	}
+	
+	private void analysisAc(AcInfoService acService,int acId,int label)
+	{
+		AcPortInfo acPortInfo;
+		try {
+			acPortInfo = acService.selectById(acId);
+			if(label == 0)
+			{
+				acPortInfo.setIsUser(0);
+			}else
+			{
+				acPortInfo.setIsUser(1);
+			}
+			acService.updateUserType(acPortInfo);	
+		} catch (Exception e) {
+			ExceptionManage.dispose(e, getClass());
+		}finally
+		{
+			acPortInfo = null;
+		}
+	}
+
+	public void updateService(List<ElanInfo> elanInfoList, List<ElanInfo> beforeelanInfoList) throws Exception {
+		List<Integer> setInfo = new ArrayList<Integer>();
+		List<Integer> setBeforeInfo = new ArrayList<Integer>();
+		List<Integer> setInfoRemoveList = new ArrayList<Integer>();
+		List<Integer> setBeforeRemoveList = new ArrayList<Integer>();
+		List<Integer> setInfoOther = new ArrayList<Integer>();
+
+		for (ElanInfo info : elanInfoList) {
+			setInfo.add(info.getaSiteId());
+			setInfo.add(info.getzSiteId());
+		}
+
+		// 同時也要释放不用的网元的业务ID/PW/ac
+		if (beforeelanInfoList != null) {
+			for (ElanInfo info : beforeelanInfoList) {
+				setBeforeInfo.add(info.getaSiteId());
+				setBeforeInfo.add(info.getzSiteId());
+			}
+			/* 过滤修改后重复的AZ siteid */
+			setInfoRemoveList.addAll(removeRepeatedType(setInfo));
+			/* 过滤修改之前重复的AZ siteid */
+			setBeforeRemoveList.addAll(removeRepeatedType(setBeforeInfo));
+			/* 过滤修改之前和之后重复的AZ siteid */
+			setInfoOther.addAll(removeRepeatedType(setInfoRemoveList, setBeforeRemoveList));
+
+			if (setInfoOther.size() != 0) {
+				for (Integer siteIds : setInfoOther) {
+					for (ElanInfo info : beforeelanInfoList) {
+						if (siteIds == info.getaSiteId()) {
+							updateNodeSession(info);
+						} else if (siteIds == info.getzSiteId()) {
+							updateNodeSessionZside(info);
+						}
+						elanDao.delete(info.getServiceId(), connection);
+					}
+				}
+			} else {
+				for (Integer siteIds : setInfo) {
+					for (ElanInfo info : beforeelanInfoList) {
+						if (siteIds == info.getaSiteId()) {
+							updateNodeSession(info);
+						} else if (siteIds == info.getzSiteId()) {
+							updateNodeSessionZside(info);
+						}
+						elanDao.delete(info.getServiceId(), connection);
+					}
+				}
+
+			}
+		}
+		// 重新插入数据库
+		this.insert(elanInfoList);
+	}
+
+	/**
+	 * 修改
+	 * 
+	 * @param elanInfoList
+	 *            修改后ELAN
+	 * @param beforeelanInfoList
+	 *            修改前ELAN
+	 * @throws Exception
+	 */
+	public void update(List<ElanInfo> elanInfoList, List<ElanInfo> beforeelanInfoList) throws Exception {
+		ElanInfo elanInfoNew;
+		AcPortInfo acPortInfo;
+		AcInfoService acService = (AcInfoService) ConstantUtil.serviceFactory.newService(Services.AcInfo, this.connection);
+		for (ElanInfo elanInfo : beforeelanInfoList) {
+			elanInfoNew = new ElanInfo();
+			for (ElanInfo elanInfoObj : elanInfoList) {
+				if (elanInfo.getPwId() == elanInfoObj.getPwId()) {
+					elanInfoNew = elanInfoObj;
+					break;
+				}
+			}
+			if (elanInfo.getaAcId() != elanInfoNew.getaAcId()) {
+				// 释放之前的ac对象
+				if(!isRelatedAC(elanInfo.getaAcId())){
+					acPortInfo = acService.selectById(elanInfo.getaAcId());
+					acPortInfo.setIsUser(0);
+					acService.updateUserType(acPortInfo);
+				}
+
+				// 关联新的AC
+				acPortInfo = acService.selectById(elanInfoNew.getaAcId());
+				acPortInfo.setIsUser(1);
+				acService.updateUserType(acPortInfo);
+			}
+			if (elanInfo.getzAcId() != elanInfoNew.getzAcId()) {
+				// 释放之前的ac对象
+				if(!isRelatedAC(elanInfo.getzAcId())){
+					acPortInfo = acService.selectById(elanInfo.getzAcId());
+					acPortInfo.setIsUser(0);
+					acService.updateUserType(acPortInfo);
+				}
+
+				// 关联新的AC
+				acPortInfo = acService.selectById(elanInfoNew.getzAcId());
+				acPortInfo.setIsUser(1);
+				acService.updateUserType(acPortInfo);
+			}
+			elanInfo.setName(elanInfoNew.getName());
+			elanInfo.setaAcId(elanInfoNew.getaAcId());
+			elanInfo.setzAcId(elanInfoNew.getzAcId());
+			elanInfo.setActiveStatus(elanInfoNew.getActiveStatus());
+			this.elanDao.update(elanInfo, connection);
+		}
+//		UiUtil.closeService(acService);
+		this.update(beforeelanInfoList);
+	}
+
+	private void updateNodeSession(ElanInfo info) {
+		Businessid businessId = null;
+		ElanInfo removeInfo = null;
+		PwInfoService pwService = null;
+//		AcInfoService acService = null;
+		try {
+			pwService = (PwInfoService) ConstantUtil.serviceFactory.newService(Services.PwInfo, this.connection);
+//			acService = (AcInfoService) ConstantUtil.serviceFactory.newService(Services.AcInfo, this.connection);
+			removeInfo = new ElanInfo();
+			removeInfo.setServiceId(0);
+			removeInfo.setServiceType(0);
+			// 释放PW
+			if(!isRelatedPW(info.getPwId())){
+				pwService.setUser(info.getPwId(), removeInfo);
+			}
+			if(!isRelatedAC(info.getaAcId())){
+				// 释放AC
+				acDao.setUser(info.getaAcId(), 0, connection);
+			}
+			// 释放业务ID
+			businessId = new Businessid();
+			businessId.setIdStatus(0);
+			businessId.setIdValue(info.getAxcId());
+			businessId.setSiteId(info.getaSiteId());
+			businessId.setType("etree");
+			businessidDao.updateBusinessid(businessId, connection);
+		} catch (Exception e) {
+		} finally {
+//			UiUtil.closeService(acService);
+//			UiUtil.closeService(pwService);
+		}
+	}
+
+	private void updateNodeSessionZside(ElanInfo info) {
+		Businessid businessId = null;
+		ElanInfo removeInfo = null;
+		PwInfoService pwService = null;
+//		AcInfoService acService = null;
+		try {
+			pwService = (PwInfoService) ConstantUtil.serviceFactory.newService(Services.PwInfo, this.connection);
+//			acService = (AcInfoService) ConstantUtil.serviceFactory.newService(Services.AcInfo, this.connection);
+			removeInfo = new ElanInfo();
+			removeInfo.setServiceId(0);
+			removeInfo.setServiceType(0);
+			// 释放PW
+			if(!isRelatedPW(info.getPwId())){
+				pwService.setUser(info.getPwId(), removeInfo);
+			}
+			if(!isRelatedAC(info.getzAcId())){
+				// 释放AC
+				acDao.setUser(info.getzAcId(), 0, connection);
+			}
+			// 释放业务ID
+			businessId = new Businessid();
+			businessId.setIdStatus(0);
+			businessId.setIdValue(info.getZxcId());
+			businessId.setSiteId(info.getzSiteId());
+			businessId.setType("etree");
+			businessidDao.updateBusinessid(businessId, connection);
+		} catch (Exception e) {
+		} finally {
+//			UiUtil.closeService(acService);
+//			UiUtil.closeService(pwService);
+		}
+
+	}
+
+	// 去除相同的项 两个集合
+	private List<Integer> removeRepeatedType(List<Integer> setInfo, List<Integer> setBeforeInfo) {
+		if (setInfo.size() < setBeforeInfo.size()) {
+
+			for (int i = 0; i < setInfo.size(); i++) {
+				for (int j = 0; j < setBeforeInfo.size(); j++) {
+					if (setBeforeInfo.get(j) == setInfo.get(i)) {
+						setBeforeInfo.remove(j);
+					}
+				}
+			}
+			return setBeforeInfo;
+
+		} else {
+			for (int i = 0; i < setBeforeInfo.size(); i++) {
+				for (int j = 0; j < setInfo.size(); j++) {
+					if (setInfo.get(j) == setBeforeInfo.get(i)) {
+						setInfo.remove(j);
+					}
+				}
+			}
+			return setInfo;
+
+		}
+	}
+
+	// 去除一个集合相同的项
+	private List<Integer> removeRepeatedType(List<Integer> setInfo) {
+
+		for (int i = 0; i < setInfo.size() - 1; i++) {
+			for (int j = setInfo.size() - 1; j > i; j--) {
+				if (setInfo.get(j) == setInfo.get(i)) {
+					setInfo.remove(j);
+				}
+			}
+		}
+		return setInfo;
+	}
+
+	/*
+	 * 查询所有的elan业务(每一条可能包含多条业务)
+	 */
+	public Map<Integer, List<ElanInfo>> select() throws Exception {
+		Map<Integer, List<ElanInfo>> elanInfoMap = new HashMap<Integer, List<ElanInfo>>();
+		List<ElanInfo> elanServiceList = null;
+
+		try {
+			elanServiceList = this.elanDao.queryAll(connection);
+			for (ElanInfo etreeInfo : elanServiceList) {
+				int serviceId = etreeInfo.getServiceId();
+				if (elanInfoMap.get(serviceId) == null) {
+					List<ElanInfo> elanInfoList = new ArrayList<ElanInfo>();
+					for (ElanInfo elan : elanServiceList) {
+						if (elan.getServiceId() == serviceId) {
+							elanInfoList.add(elan);
+						}
+					}
+					elanInfoMap.put(serviceId, elanInfoList);
+				}
+
+			}
+		} catch (Exception e) {
+			ExceptionManage.dispose(e, this.getClass());
+		}
+		return elanInfoMap;
+	}
+
+	/**
+	 * 删除一条elan业务
+	 * 
+	 * @param elanId
+	 * @return
+	 * @throws Exception
+	 */
+	public int delete(int elanId) throws Exception {
+		int result = 0;
+		PwInfo pwInfo = null;
+		List<ElanInfo> elanInfoList = null;
+		PwInfoService pwService = null;
+		AcInfoService acService = null;
+		try {
+			pwService = (PwInfoService) ConstantUtil.serviceFactory.newService(Services.PwInfo, this.connection);
+			acService = (AcInfoService) ConstantUtil.serviceFactory.newService(Services.AcInfo, this.connection);
+			elanInfoList = this.select(elanId);
+			for (ElanInfo info : elanInfoList) {
+				pwInfo = new PwInfo();
+				pwInfo.setPwId(info.getPwId());
+				if(!isRelatedPW(info.getPwId())){
+					pwInfo = pwService.selectBypwid_notjoin(pwInfo);
+					pwInfo.setRelatedServiceId(0);
+					pwInfo.setRelatedServiceType(0);
+					if(pwInfo.getPwId() >0)
+					{
+						pwService.updateRelatedService(pwInfo);
+					}
+				}
+                
+				// 释放ac  
+				updateACState(info.getAmostAcId(),acService,0);
+				updateACState(info.getZmostAcId(),acService,0);
+
+				// 释放id
+				Businessid businessId = new Businessid();
+				businessId.setIdStatus(0);
+				businessId.setIdValue(info.getAxcId());
+				if (info.getaSiteId() > 0) {
+					businessId.setType("etree");
+					businessId.setSiteId(info.getaSiteId());
+					businessidDao.updateBusinessid(businessId, connection);
+				}
+
+				if (info.getzSiteId() > 0) {
+					businessId.setType("etree");
+					businessId.setIdValue(info.getZxcId());
+					businessId.setSiteId(info.getzSiteId());
+					businessidDao.updateBusinessid(businessId, connection);
+				}
+				
+			}
+			this.clearLanId(elanInfoList);
+			// 离线网元操作
+			offLineAcion(elanInfoList, pwService, acService);						
+			result = elanDao.delete(elanId, connection);
+
+		} catch (Exception e) {
+			ExceptionManage.dispose(e, this.getClass());
+		} finally {
+			 pwInfo = null;
+			 elanInfoList = null;
+		}
+		return result;
+
+	}
+
+	public List<ElanInfo> select(int elanId) throws Exception {
+		List<ElanInfo> elaninfoList = null;
+
+		try {
+			ElanInfo elaninfo = new ElanInfo();
+			elaninfo.setServiceId(elanId);
+			elaninfoList = elanDao.queryByCondition(elaninfo, connection);
+		} catch (Exception e) {
+			ExceptionManage.dispose(e, this.getClass());
+		}
+		return elaninfoList;
+	}
+
+	public Map<Integer, List<ElanInfo>> selectAll() throws Exception {
+
+		Map<Integer, List<ElanInfo>> map = new HashMap<Integer, List<ElanInfo>>();
+		List<ElanInfo> infoList = null;
+		try {
+			infoList = elanDao.queryAll(connection);
+			int i, j;
+			for (i = 0; i < infoList.size(); i++) {
+				List<ElanInfo> temp = null;
+				if (map.get(infoList.get(i).getServiceId()) == null) {
+					temp = new ArrayList<ElanInfo>();
+				} else {
+					continue;
+				}
+				for (j = i; j < infoList.size(); j++) {
+					if (infoList.get(i).getServiceId() == infoList.get(j).getServiceId()) {
+						temp.add(infoList.get(j));
+					}
+				}
+				map.put(infoList.get(i).getServiceId(), temp);
+
+			}
+		} catch (Exception e) {
+			ExceptionManage.dispose(e, this.getClass());
+		}
+		return map;
+
+	}
+
+	public List<ElanInfo> select(ElanInfo elaninfo) throws Exception {
+		List<ElanInfo> infoList = null;
+
+		try {
+			infoList = elanDao.queryByCondition(elaninfo, connection);
+		} catch (Exception e) {
+			ExceptionManage.dispose(e, this.getClass());
+		}
+		return infoList;
+	}
+
+	public List<ElanInfo> selectElanbypwid(List<Integer> idList) throws Exception {
+		List<ElanInfo> infoList = null;
+
+		try {
+			infoList = elanDao.queryByElanIdCondition(idList, connection);
+		} catch (Exception e) {
+			ExceptionManage.dispose(e, this.getClass());
+		}
+		return infoList;
+	}
+
+	public void updateStatusActivate(List<Integer> idList, int status) throws Exception {
+		try {
+			this.elanDao.updateStatus(idList, status, connection);
+		} catch (Exception e) {
+			ExceptionManage.dispose(e, this.getClass());
+		}
+	}
+
+	public void updateStatusActivate(int siteId, int status) throws Exception {
+		try {
+			this.elanDao.updateStatus(siteId, status, connection);
+		} catch (Exception e) {
+			ExceptionManage.dispose(e, this.getClass());
+		}
+	}
+
+	public Map<String, List<ElanInfo>> selectSiteNodeBy(int siteid) throws Exception {
+
+		Map<String, List<ElanInfo>> map = new HashMap<String, List<ElanInfo>>();
+		List<ElanInfo> infoList = null;
+		try {
+			infoList = elanDao.queryNodeBySite(siteid, false, connection);
+			int i, j;
+			for (i = 0; i < infoList.size(); i++) {
+				List<ElanInfo> temp = null;
+				if (map.get(infoList.get(i).getServiceId() + "/" + infoList.get(i).getServiceType()) == null) {
+					temp = new ArrayList<ElanInfo>();
+				} else {
+					continue;
+				}
+				for (j = i; j < infoList.size(); j++) {
+					if (infoList.get(i).getServiceId() == infoList.get(j).getServiceId()) {
+						temp.add(infoList.get(j));
+					}
+				}
+				map.put(infoList.get(i).getServiceId() + "/" + infoList.get(i).getServiceType(), temp);
+			}
+		} catch (Exception e) {
+			ExceptionManage.dispose(e, this.getClass());
+		}
+		return map;
+
+	}
+
+	/**
+	 * 同步时查询elan方法
+	 * 
+	 * @author kk
+	 * 
+	 * @param elanInfo
+	 *            elan对象
+	 * 
+	 * @return
+	 * @throws Exception
+	 * 
+	 * @Exception 异常对象
+	 */
+	public List<ElanInfo> select_synchro(ElanInfo elanInfo) throws Exception {
+		return this.elanDao.query_synchro(elanInfo, connection);
+	}
+
+	/**
+	 * 验证名字是否重复
+	 * 
+	 * @author kk
+	 * 
+	 * @param afterName
+	 *            修改之后的名字
+	 * @param beforeName
+	 *            修改之前的名字
+	 * 
+	 * @return
+	 * @throws Exception
+	 * 
+	 * @Exception 异常对象
+	 */
+	public boolean nameRepetition(String afterName, String beforeName) throws Exception {
+
+		int result = this.elanDao.query_name(afterName, beforeName, connection);
+		if (0 == result) {
+			return false;
+		} else {
+			return true;
+		}
+
+	}
+
+	/**
+	 * 单网元名称验证
+	 * 
+	 * @param afterName
+	 * @param beforeName
+	 * @param siteId
+	 * @return
+	 * @throws Exception
+	 */
+	public boolean nameRepetitionBySingle(String afterName, String beforeName, int siteId) throws Exception {
+
+		int result = this.elanDao.query_nameBySingle(afterName, beforeName, connection, siteId);
+		if (0 == result) {
+			return false;
+		} else {
+			return true;
+		}
+
+	}
+
+	/**
+	 * 根据tunnelID集合查询pw的count
+	 * 
+	 * @param tunnelIds
+	 *            tunnel集合
+	 * @return count
+	 * @throws Exception
+	 * @throws Exception
+	 */
+	/*
+	 * public int selectCountByTunnelId(List<Integer> tunnelIds) throws Exception { try { return elanDao.queryByPwTunnelIdCondition(tunnelIds, connection).size(); } catch (Exception e) { ExceptionManage.dispose(e,this.getClass()); } }
+	 */
+
+	/*
+	 * public void testSaveOrUpdate() throws Exception{ getConnection(); List<PwInfo> pwinfos = new ArrayList<PwInfo>(); PwInfo pw1 = new PwInfo(); pw1.setPwId(21); // pw1.setAPortId(11); pw1.setApwServiceId(11); // pw1.setZPortId(12); pw1.setASiteId(1); pw1.setZpwServiceId(11); pw1.setZSiteId(2); pw1.setCreateTime(new Date().toLocaleString()); pw1.setCreateUser("admin"); pw1.setInlabelValue(40); pw1.setOutlabelValue(41); pw1.setPortInstList(new ArrayList<PortInst>()); pw1.setPwName("mt1"); pw1.setPwStatus(0);
+	 * 
+	 * PwInfo pw2 = new PwInfo(); pw2.setPwId(23); // pw2.setAPortId(13); pw2.setApwServiceId(13); // pw2.setZPortId(14); pw2.setASiteId(1); pw2.setZpwServiceId(13); pw2.setZSiteId(2); pw2.setCreateTime(new Date().toLocaleString()); pw2.setCreateUser("admin"); pw2.setInlabelValue(44); pw2.setOutlabelValue(45); pw2.setPortInstList(new ArrayList<PortInst>()); pw2.setPwName("mt12"); pw2.setPwStatus(0);
+	 * 
+	 * pwinfos.add(pw1); pwinfos.add(pw2);
+	 * 
+	 * List<ElanInfo> elaninfos = new ArrayList<ElanInfo>(); ElanInfo elan1 = new ElanInfo(); elan1.setId(19); elan1.setActiveStatus(2); elan1.setName("elan-5"); elan1.setServiceId(5); elan1.setServiceType(EServiceType.ELAN.getValue());
+	 * 
+	 * ElanInfo elan2 = new ElanInfo(); elan2.setId(20); elan2.setActiveStatus(2); elan2.setName("elan-5"); elan2.setServiceId(5); elan2.setServiceType(EServiceType.ELAN.getValue()); elaninfos.add(elan1); elaninfos.add(elan2);
+	 * 
+	 * saveOrUpdate(pwinfos, elaninfos);
+	 * 
+	 * }
+	 * 
+	 * public void testDelete(int elanId) throws Exception { delete(elanId); } void getConnection() throws Exception { connection = DBManager.getConnection(); }
+	 * 
+	 * public static void main(String[] args) throws Exception { ElanInfoService service = new ElanInfoService(); List<ElanInfo> info = service.select(2); for(ElanInfo elan : info) { System.out.println(elan.getPwId()); } service.testSaveOrUpdate(); // service.delete(3); Map<Integer, List<ElanInfo>> map = service.selectAll(); System.out.println(map.size()); }
+	 */
+
+	/**
+	 * 通过网元id初始化某网元所有elan
+	 */
+	public void initializtionSite(int siteId) throws SQLException {
+		Map<String, List<ElanInfo>> elanInfomaps = null;
+		List<ElanInfo> elanInfos = null;
+		List<ElanInfo> elanInfosList = null;
+		try {
+			elanInfomaps = this.selectSiteNodeBy(siteId);
+			for (String str : elanInfomaps.keySet()) {
+				elanInfos = elanInfomaps.get(str);// 一个key，对应一组elan
+				elanInfosList = this.selectByServiceId(elanInfos.get(0).getServiceId());
+				if (elanInfosList != null && elanInfosList.size() > 0) {
+					if (elanInfosList.get(0).getIsSingle() == 1) {// 判断是否是单网数据
+						this.delete(elanInfosList.get(0).getServiceId());
+					} else {
+						for (ElanInfo elanInfo : elanInfosList) {
+							if (elanInfo.getaSiteId() == siteId) {
+								elanInfo.setaSiteId(0);
+								elanInfo.setaAcId(0);
+								elanInfo.setAxcId(0);
+								elanInfo.setASiteName("");
+								elanInfo.setIsSingle(1);
+							} else if (elanInfo.getzSiteId() == siteId) {
+								elanInfo.setzSiteId(0);
+								elanInfo.setzAcId(0);
+								elanInfo.setZxcId(0);
+								elanInfo.setZSiteName("");
+								elanInfo.setIsSingle(1);
+							} else {
+								elanInfo.setIsSingle(1);
+							}
+						}
+					}
+				}
+				this.update(elanInfosList);
+			}
+
+		} catch (Exception e) {
+			ExceptionManage.dispose(e, this.getClass());
+		} finally {
+			elanInfomaps = null;
+			elanInfos = null;
+			elanInfosList = null;
+		}
+	}
+
+	/**
+	 * 通过acId,siteId查询line
+	 * 
+	 * @param acId
+	 * @return
+	 */
+	public List<ElanInfo> selectByAcIdAndSiteId(int acId, int siteId) {
+		List<ElanInfo> elanInfos = null;
+		List<ElanInfo> elanInsts = null;
+		UiUtil uiUtil = null;
+		try {
+			elanInfos = this.elanDao.queryByAcIdAndSiteIdCondition(acId, siteId, connection);
+			if(null != elanInfos && !elanInfos.isEmpty())
+			{
+				uiUtil = new UiUtil();
+				elanInsts = new ArrayList<ElanInfo>();
+				for(ElanInfo elanInfo : elanInfos)
+				{
+				 if((uiUtil.getAcIdSets(elanInfo.getAmostAcId()).contains(acId) && elanInfo.getaSiteId() == siteId) 
+					||(uiUtil.getAcIdSets(elanInfo.getZmostAcId()).contains(acId)&& elanInfo.getzSiteId() == siteId))
+				 {
+					 elanInsts.add(elanInfo);
+				 }
+				}
+			}
+		} catch (Exception e) {
+			ExceptionManage.dispose(e, getClass());
+		}finally
+		{
+			elanInfos = null;
+			uiUtil = null;
+		}
+		return elanInsts;
+	}
+
+	/**
+	 * 通过serviceId查询一组elan
+	 * 
+	 * @param serviceId
+	 * @return
+	 */
+	public List<ElanInfo> selectByServiceId(int serviceId) {
+		List<ElanInfo> elanInfos = null;
+		elanInfos = this.elanDao.queryByServiceIdCondition(serviceId, connection);
+		return elanInfos;
+	}
+
+	/**
+	 * 根据网元ID查出所有此单网元下的所有elan
+	 * 
+	 * @param siteId
+	 *            网元ID
+	 * @return key为serivceId 一组elan 为一条map
+	 * @throws Exception
+	 */
+	private Map<Integer, List<ElanInfo>> getMapBySite(int siteId) throws Exception {
+		List<ElanInfo> elanInfoList = null;
+		Map<Integer, List<ElanInfo>> map_result = null;
+		List<ElanInfo> elanInfoList_value = null;
+		try {
+			elanInfoList = this.elanDao.queryNodeBySite(siteId, true, connection);
+
+			map_result = new HashMap<Integer, List<ElanInfo>>();
+
+			for (ElanInfo elanInfo : elanInfoList) {
+				if (null == map_result.get(elanInfo.getServiceId())) {
+					elanInfoList_value = new ArrayList<ElanInfo>();
+					elanInfoList_value.add(elanInfo);
+					map_result.put(elanInfo.getServiceId(), elanInfoList_value);
+				} else {
+					map_result.get(elanInfo.getServiceId()).add(elanInfo);
+				}
+			}
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			elanInfoList = null;
+			elanInfoList_value = null;
+		}
+		return map_result;
+	}
+
+	/**
+	 * 验证serviceid在map中是否存在。
+	 * 
+	 * @param map_create
+	 *            要创建的map集合
+	 * @param serviceId
+	 *            要验证的serviceid
+	 * @return
+	 * @throws Exception
+	 */
+	private boolean serviceIdIsExist(Map<Integer, List<ElanInfo>> map_create, int serviceId) throws Exception {
+		boolean flag = false;
+		try {
+
+			for (int key : map_create.keySet()) {
+
+				for (ElanInfo elanInfo : map_create.get(key)) {
+					if (elanInfo.getServiceId() == serviceId) {
+						flag = true;
+						break;
+					}
+				}
+
+			}
+
+		} catch (Exception e) {
+			throw e;
+		}
+		return flag;
+	}
+
+	/**
+	 * 获取elan中的所有pwid
+	 * 
+	 * @param elanInfoList
+	 *            elan集合
+	 * @return
+	 * @throws Exception
+	 */
+	private List<Integer> getPwIds(List<ElanInfo> elanInfoList) throws Exception {
+		List<Integer> pwIds = null;
+		try {
+			pwIds = new ArrayList<Integer>();
+			for (ElanInfo elanInfo : elanInfoList) {
+				pwIds.add(elanInfo.getPwId());
+			}
+
+		} catch (Exception e) {
+			throw e;
+		}
+		return pwIds;
+	}
+
+	/**
+	 * 搜索单网元下的etree 组成网络数据
+	 * 
+	 * @param siteInstList
+	 *            网元集合
+	 * @throws Exception
+	 */
+	public void search(List<SiteInst> siteInstList) throws Exception {
+
+		List<Integer> siteIdList = null;
+		Map<Integer, List<ElanInfo>> map = null;
+		Map<Integer, List<ElanInfo>> map_create = null; // 要创建的map
+		int createKey = 1; // 创建的map中key标识
+		SiteService siteService = null;
+		try {
+			siteService = (SiteService) ConstantUtil.serviceFactory.newService(Services.SITE, this.connection);
+			siteIdList = siteService.getSiteIdList(siteInstList);
+			map_create = new HashMap<Integer, List<ElanInfo>>();
+
+			for (SiteInst siteInst : siteInstList) {
+				// 查出此网元所有elan信息
+				map = this.getMapBySite(siteInst.getSite_Inst_Id());
+
+				// 遍历每一组elan 找出与此elan相匹配的elan
+				for (int serviceId : map.keySet()) {
+					// 如果此serviceId不在要创建的map中，才去验证。防止重复
+//					if(map.get(serviceId).size()>1){
+						if (!this.serviceIdIsExist(map_create, serviceId)) {
+							this.putCrateMap(map_create, createKey, map.get(serviceId), siteIdList);
+							createKey++;
+						}
+//					}
+				}
+			}
+			
+
+			// 如果map中有值，就循环创建每一组elan。
+			if (map_create.keySet().size() > 0) {
+				for (int key : map_create.keySet()) {
+					this.createElan(map_create.get(key));
+				}
+			}
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			UiUtil.closeService(siteService);
+		}
+
+	}
+
+	/**
+	 * 根据elanInfoList，查询出对应的elan，验证叶是否在siteids集合中，如果在，把此组elan放到map中
+	 * 
+	 * @param map_create
+	 *            创建的map集合
+	 * @param key
+	 *            创建的map中key
+	 * @param elanInfoList
+	 *            要匹配的elan集合
+	 * @param siteIds
+	 *            网元集合
+	 * @throws Exception
+	 */
+	private void putCrateMap(Map<Integer, List<ElanInfo>> map_create, int key, List<ElanInfo> elanInfoList, List<Integer> siteIds) throws Exception {
+		List<ElanInfo> elanList = null;
+		boolean flag = true;
+		try {
+			elanList = this.selectElanbypwid(this.getPwIds(elanInfoList));
+
+			// 遍历查询出的elan集合
+			for (ElanInfo elanInfo : elanList) {
+				// 如果是此elan不在要匹配的elan集合中，并且 网元id不存在网元集合中，则不匹配此elan
+				if (!this.elanInfoIsExist(elanInfo, elanInfoList, "id")) {
+					if (!siteIds.contains(elanInfo.getaSiteId())) {
+						flag = false;
+						break;
+					} else {
+						elanInfoList.addAll(this.selectByServiceId(elanInfo.getServiceId()));
+					}
+				}
+			}
+			
+			ArrayList<ElanInfo> elanInfoLitst_create = new ArrayList<ElanInfo>();
+			for (ElanInfo elanInfo_element : elanInfoList) {
+				if (!this.elanInfoIsExist(elanInfo_element, elanInfoLitst_create, "pwid")) {
+					ElanInfo elanInfo = this.getElanByPw(elanInfo_element, elanInfoList);
+					if (null != elanInfo) {
+						elanInfoLitst_create.add(this.combination(elanInfo_element, elanInfo));
+					} else {
+						return;
+					}
+				}
+			}
+			
+			// 如果通过验证，可以合并，把此组elan数据放到map中，统一做合并
+			if (flag) {
+				map_create.put(key, elanInfoList);
+			}
+
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+
+	/**
+	 * 验证一个elan是否在集合中存在
+	 * 
+	 * @param elanInfo
+	 * @param elanInfoList
+	 * @param type
+	 *            id=比较ID，pwid=比较pwid
+	 * @return
+	 * @throws Exception
+	 */
+	private boolean elanInfoIsExist(ElanInfo elanInfo, List<ElanInfo> elanInfoList, String type) throws Exception {
+		boolean flag = false;
+		try {
+
+			for (ElanInfo elanInfo_element : elanInfoList) {
+				if ("id".equals(type)) {
+					if (elanInfo.getId() == elanInfo_element.getId()) {
+						flag = true;
+						break;
+					}
+				} else if ("pwid".equals(type)) {
+					if (elanInfo.getPwId() == elanInfo_element.getPwId()) {
+						flag = true;
+						break;
+					}
+				}
+			}
+
+		} catch (Exception e) {
+			throw e;
+		}
+		return flag;
+	}
+
+	/**
+	 * 搜索后，组合并且创建elan
+	 * 
+	 * @param elanInfoLitst
+	 * @throws Exception
+	 */
+	private void createElan(List<ElanInfo> elanInfoLitst) throws Exception {
+		List<ElanInfo> elanInfoLitst_create = null;
+		int serviceId = 0;
+		String elanName = null;
+		ElanInfo elanInfo = null;
+		PwInfoService pwService = null;
+		try {
+			elanInfoLitst_create = new ArrayList<ElanInfo>();
+			for (ElanInfo elanInfo_element : elanInfoLitst) {
+				if (!this.elanInfoIsExist(elanInfo_element, elanInfoLitst_create, "pwid")) {
+					elanInfo = this.getElanByPw(elanInfo_element, elanInfoLitst);
+					if (null != elanInfo) {
+						elanInfoLitst_create.add(this.combination(elanInfo_element, elanInfo));
+					} else {
+						return;
+					}
+				}
+			}
+
+			if (elanInfoLitst_create.size() > 0) {
+				pwService = (PwInfoService) ConstantUtil.serviceFactory.newService(Services.PwInfo, this.connection);
+				// 取serviceid
+				serviceId = this.elanDao.selectMaxServiceId(connection) + 1;
+				// 设置elan名称
+				elanName = "elan_" + new Date().getTime();
+				for (ElanInfo elanInfo_element : elanInfoLitst_create) {
+					elanInfo_element.setServiceId(serviceId);
+					elanInfo_element.setName(elanName);
+					// 插入
+					int elanId = this.elanDao.insert(elanInfo_element, connection);
+					elanInfo_element.setId(elanId);
+					// 修改pw关联
+					pwService.setUser(elanInfo_element.getPwId(), elanInfo_element);
+				}
+
+				// 删除原有的数据
+				for (ElanInfo elanInfo_element : elanInfoLitst) {
+					this.elanDao.delete(elanInfo_element.getServiceId(), connection);
+				}
+			}
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+//			UiUtil.closeService(pwService);
+		}
+	}
+
+	/**
+	 * 从集合中找出跟elanInfo相同pw的elan
+	 * 
+	 * @param elanInfo
+	 * @param elanInfoList
+	 * @return
+	 * @throws Exception
+	 */
+	private ElanInfo getElanByPw(ElanInfo elanInfo, List<ElanInfo> elanInfoList) throws Exception {
+
+		ElanInfo elanInfo_result = null;
+		try {
+
+			for (ElanInfo elanInfo_element : elanInfoList) {
+				if (elanInfo.getId() != elanInfo_element.getId() && elanInfo.getPwId() == elanInfo_element.getPwId()) {
+					elanInfo_result = elanInfo_element;
+					break;
+				}
+			}
+
+		} catch (Exception e) {
+			throw e;
+		}
+		return elanInfo_result;
+	}
+
+	/**
+	 * 组合两个elan为一条elan对象
+	 * 
+	 * @param elanInfo_a
+	 *            a对象
+	 * @param elanInfo_z
+	 *            z对象
+	 * @return
+	 * @throws Exception
+	 */
+	private ElanInfo combination(ElanInfo elanInfo_a, ElanInfo elanInfo_z) throws Exception {
+
+		ElanInfo elanInfo = new ElanInfo();
+		PwInfoService pwInfoService = null;
+		try {
+			pwInfoService = (PwInfoService) ConstantUtil.serviceFactory.newService(Services.PwInfo);
+			PwInfo pwInfo = pwInfoService.selectByPwId(elanInfo_a.getPwId());
+			if(pwInfo != null){
+				elanInfo.setServiceType(elanInfo_a.getServiceType());
+				elanInfo.setActiveStatus(elanInfo_a.getActiveStatus());
+				elanInfo.setPwId(elanInfo_a.getPwId());
+				elanInfo.setCreateUser(elanInfo_z.getCreateUser());
+				elanInfo.setCreateTime(DateUtil.getDate(DateUtil.FULLTIME));
+				elanInfo.setJobStatus(elanInfo_a.getJobStatus());
+				if(pwInfo.getASiteId() == elanInfo_a.getaSiteId()){
+					elanInfo.setAxcId(elanInfo_a.getAxcId());
+					elanInfo.setZxcId(elanInfo_z.getAxcId());
+					elanInfo.setaSiteId(elanInfo_a.getaSiteId());
+					elanInfo.setzSiteId(elanInfo_z.getaSiteId());
+					elanInfo.setaAcId(elanInfo_a.getaAcId());
+					elanInfo.setAmostAcId(elanInfo_a.getAmostAcId());
+					elanInfo.setzAcId(elanInfo_z.getaAcId());
+					elanInfo.setZmostAcId(elanInfo_z.getAmostAcId());
+				}else if(pwInfo.getASiteId() == elanInfo_z.getaSiteId()){
+					elanInfo.setAxcId(elanInfo_z.getAxcId());
+					elanInfo.setZxcId(elanInfo_a.getAxcId());
+					elanInfo.setaSiteId(elanInfo_z.getaSiteId());
+					elanInfo.setzSiteId(elanInfo_a.getaSiteId());
+					elanInfo.setaAcId(elanInfo_z.getaAcId());
+					elanInfo.setAmostAcId(elanInfo_z.getAmostAcId());
+					elanInfo.setzAcId(elanInfo_a.getaAcId());
+					elanInfo.setZmostAcId(elanInfo_a.getAmostAcId());
+				}
+			}
+		} catch (Exception e) {
+			throw e;
+		} finally{
+			UiUtil.closeService(pwInfoService);
+		}
+		return elanInfo;
+	}
+
+	/**
+	 * 离线网元操作
+	 * 
+	 * @param etreeInfoList
+	 * @param pwService
+	 * @throws Exception
+	 */
+	private void offLineAcion(List<ElanInfo> elanInfoList, PwInfoService pwService,
+								AcInfoService acService) throws Exception {
+		List<PwInfo> pwList = new ArrayList<PwInfo>();
+		List<AcPortInfo> acPortInfoList = new ArrayList<AcPortInfo>();
+		ElanInfo offLineAction = null;
+		AcPortInfo acPortInfo;
+		String aSitePws1 = "";
+		for (int i = 0; i < elanInfoList.size(); i++) {
+			offLineAction = elanInfoList.get(i);
+			aSitePws1 += offLineAction.getPwId() + ",";
+		}
+		aSitePws1 = (String) aSitePws1.subSequence(0, aSitePws1.length() - 1);
+		pwList = pwService.selectServiceIdsByPwIds(aSitePws1);
+		if (null != pwList && pwList.size() > 0) {
+			aSitePws1 = "";
+			for (PwInfo pwObj : pwList) {
+				aSitePws1 += pwObj.getApwServiceId() + ",";
+			}
+			aSitePws1 = aSitePws1.substring(0, aSitePws1.length() - 1);
+			// a段网元
+			if (0 != offLineAction.getaSiteId()) {
+				acPortInfo = new AcPortInfo();
+				acPortInfo.setId(offLineAction.getaAcId());
+				acPortInfoList = acService.selectByCondition(acPortInfo);
+				if (null != acPortInfoList && acPortInfoList.size() > 0) {
+					acPortInfo = acPortInfoList.get(0);
+					super.dateDownLoad(offLineAction.getaSiteId(), offLineAction.getServiceId(), EServiceType.ELAN.getValue(), EActionType.DELETE.getValue(), offLineAction.getAxcId() + "", aSitePws1, acPortInfo.getPortId(), acPortInfo.getAcBusinessId(), null);
+				}
+			}
+			// z段网元
+			if (0 != offLineAction.getzSiteId()) {
+				acPortInfo = new AcPortInfo();
+				acPortInfo.setId(offLineAction.getzAcId());
+				acPortInfoList = acService.selectByCondition(acPortInfo);
+				if (null != acPortInfoList && acPortInfoList.size() > 0) {
+					acPortInfo = acPortInfoList.get(0);
+					super.dateDownLoad(offLineAction.getzSiteId(), offLineAction.getServiceId(), EServiceType.ELAN.getValue(), EActionType.DELETE.getValue(), offLineAction.getZxcId() + "", aSitePws1, acPortInfo.getPortId(), acPortInfo.getAcBusinessId(), null);
+				}
+			}
+		}
+	}
+
+	/**
+	 * 通过elan主键ID 查询所有与此ID有关的elan数据（即： 与此ID相同的serviceID ）
+	 * 
+	 * @author sy
+	 * @param id
+	 * @return
+	 * @throws Exception
+	 */
+	public List<ElanInfo> selectById(int id) throws Exception {
+		ElanInfo elanInfo = null;
+		List<ElanInfo> elanInfoList = null;
+		try {
+			elanInfo = new ElanInfo();
+			elanInfo.setId(id);
+			elanInfoList = this.elanDao.select(elanInfo, connection);
+			if (elanInfoList != null && elanInfoList.size() == 1) {
+				elanInfo = elanInfoList.get(0);
+				elanInfoList = selectByServiceId(elanInfo.getServiceId());
+			}
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			elanInfo = null;
+		}
+		return elanInfoList;
+	}
+
+	/**
+	 * 通过elan主键ID 查询elan数据
+	 * 
+	 * @author sy
+	 * @param id
+	 * @return
+	 * @throws Exception
+	 */
+	public List<ElanInfo> selectBydBId(int id) throws Exception {
+		ElanInfo elanInfo = null;
+		List<ElanInfo> elanInfoList = null;
+		try {
+			elanInfo = new ElanInfo();
+			elanInfo.setId(id);
+			elanInfoList = this.elanDao.select(elanInfo, connection);
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			elanInfo = null;
+		}
+		return elanInfoList;
+	}
+
+	/**
+	 * 同步时查询elan方法
+	 * 
+	 * @author kk
+	 * 
+	 * @param elanInfo
+	 *            elan对象
+	 * 
+	 * @return
+	 * @throws Exception
+	 * 
+	 * @Exception 异常对象
+	 */
+	public List<ElanInfo> select_ElanInfo(int siteID, int xcID) throws Exception {
+		return this.elanDao.query_elanInfo(siteID, xcID, connection);
+	}
+
+	public List<ElanInfo> selectServiceInfoById(int id) throws Exception {
+		List<ElanInfo> elanList = new ArrayList<ElanInfo>();
+		try {
+			elanList = this.elanDao.selectServiceInfoById(id, connection);
+		} catch (Exception e) {
+			throw e;
+		}
+		return elanList;
+	}
+	
+	
+	/**
+	 * 根据网元查询此网元下所有单网元eline业务
+	 * @param siteId 网元主键
+	 * @return 
+	 * @throws Exception
+	 */
+	public Map<Integer, List<ElanInfo>> selectBySite_node(int siteId) throws Exception{
+		
+		return this.convertListToMap(this.elanDao.selectBySiteAndisSingle(siteId, 1, super.connection));
+	}
+	
+	/**
+	 * 根据网元查询此网元下所有网络eline业务
+	 * @param siteId 网元主键
+	 * @return 
+	 * @throws Exception
+	 */
+	public Map<Integer, List<ElanInfo>> selectBySite_network(int siteId) throws Exception{
+		return this.convertListToMap(this.elanDao.selectBySiteAndisSingle(siteId, 0, super.connection));
+	}
+	
+	/**
+	 * 把所有etree按组转为map 
+	 * @param etreeInfoList
+	 * @return key为组id  value为此组下的etree对象
+	 * @throws Exception
+	 */
+	private Map<Integer, List<ElanInfo>> convertListToMap(List<ElanInfo> elanInfoList) throws Exception{
+		
+		Map<Integer, List<ElanInfo>> elanInfoMap = new HashMap<Integer, List<ElanInfo>>();
+		List<ElanInfo> elanInfoList_map =null;
+		try {
+			if(null!=elanInfoList && elanInfoList.size()>0){
+				for (ElanInfo elanInfo : elanInfoList) {
+					int serviceId = elanInfo.getServiceId();
+					if (elanInfoMap.get(serviceId) == null) {
+						elanInfoList_map = new ArrayList<ElanInfo>();
+						elanInfoMap.put(serviceId, elanInfoList_map);
+					}
+					elanInfoMap.get(serviceId).add(elanInfo);
+				}
+			}
+		} catch (Exception e) {
+			throw e;
+		}
+		
+		return elanInfoMap;
+	}
+	
+	/**
+	 * 根据主键，查询此组全量的etree对象
+	 * @param id 其中一条的主键
+	 * @return
+	 * @throws Exception 
+	 */
+	public List<ElanInfo> selectById_all(int id) throws Exception{
+		return this.elanDao.queryById(id, connection);
+	}
+	
+	/**
+	 * 列表过滤查询
+	 * @param elanInfo 过滤条件
+	 * @return
+	 * @throws Exception
+	 */
+	public Map<Integer, List<ElanInfo>> filterSelect(ElanInfo elanInfo) throws Exception {
+		Map<Integer, List<ElanInfo>> elanInfoMap = new HashMap<Integer, List<ElanInfo>>();
+		List<ElanInfo> elanServiceList = null;
+		AcInfoService acService = null;
+		List<Integer> acIds = null;
+		try {
+			elanServiceList = this.elanDao.filterSelect(elanInfo, connection);
+			acService = (AcInfoService) ConstantUtil.serviceFactory.newService(Services.AcInfo,this.connection);
+			
+			if(elanInfo.getAportId() >0)
+			{
+				acIds = acService.acByPort(elanInfo.getAportId());
+			}
+			
+			for (ElanInfo elaninfor : elanServiceList) {
+				//存在通过端口查询
+				if(acIds != null)
+				{
+					if(!acIds.isEmpty())
+					{
+						if(acByFilter(acIds,elaninfor.getAmostAcId()) || acByFilter(acIds,elaninfor.getZmostAcId()))
+						{
+							etreeByFilter(elaninfor,elanInfoMap,elanServiceList);
+						}	
+					}
+				}else
+				{
+					etreeByFilter(elaninfor,elanInfoMap,elanServiceList);
+				}
+				
+//				int serviceId = elaninfor.getServiceId();
+//				if (elanInfoMap.get(serviceId) == null) {
+//					List<ElanInfo> elanInfoList = new ArrayList<ElanInfo>();
+//					for (ElanInfo elan : elanServiceList) {
+//						if (elan.getServiceId() == serviceId) {
+//							elanInfoList.add(elan);
+//						}
+//					}
+//					elanInfoMap.put(serviceId, elanInfoList);
+//				}
+			}
+		} catch (Exception e) {
+			ExceptionManage.dispose(e, this.getClass());
+		}
+		return elanInfoMap;
+	}
+	
+	private void etreeByFilter(ElanInfo elaninfor,Map<Integer, List<ElanInfo>> elanInfoMap,List<ElanInfo> elanServiceList)
+	{
+		int serviceId = elaninfor.getServiceId();
+		if (elanInfoMap.get(serviceId) == null) {
+			List<ElanInfo> elanInfoList = new ArrayList<ElanInfo>();
+			for (ElanInfo elan : elanServiceList) {
+				if (elan.getServiceId() == serviceId) {
+					elanInfoList.add(elan);
+				}
+			}
+			elanInfoMap.put(serviceId, elanInfoList);
+		}
+	}
+	
+	/**
+	 * 查询a/Z端是否满足查询条件
+	 * @param acIds
+	 * @param etreeInfo_result
+	 * @return
+	 */
+	private boolean acByFilter(List<Integer> acIds,String mostAcId)
+	{
+	 Set<Integer> acList = null;
+	 UiUtil uiutil  = null;
+		try {
+			uiutil = new UiUtil();
+			acList = uiutil.getAcIdSets(mostAcId);
+			for(Integer acId : acList)
+			{
+				if(acIds.contains(acId))
+				{
+					return true;
+				}
+			}
+			
+		} catch (Exception e) {
+			ExceptionManage.dispose(e, getClass());
+		}finally
+		{
+			acList = null;
+			uiutil = null;
+		}
+		return false;
+	}
+	
+	public Map<Integer, List<ElanInfo>> selectBySiteId(int siteId) throws Exception{
+		return this.convertListToMap(this.elanDao.selectBySiteId(siteId, super.connection));
+	}
+	
+	
+	/**
+	 * 在删除之前判断着PW是否存在其他的业务的关联
+	 * @param pwId
+	 * @return true存在 false 不存在
+	 */
+	private boolean isRelatedPW(int pwId){
+		try {
+			return  this.elanDao.isRelatedPW(pwId, connection);
+		} catch (Exception e) {
+			ExceptionManage.dispose(e, getClass());
+		}
+		return false;
+	}
+	
+	/**
+	 * 在删除之前判断着AC是否存在其他的业务的关联
+	 * @param AcId
+	 * @return true存在 false 不存在
+	 */
+	private boolean isRelatedAC(int acId){
+		
+		List<String> azAcIds = null;
+		Set<Integer> azAcSet = new HashSet<Integer>();
+		UiUtil uiUtil = new UiUtil();
+		boolean flag = false;
+		try {
+			flag = this.elanDao.isRelatedAc(acId,connection);
+			if(flag)
+			{
+				return true;
+			}else
+			{
+				azAcIds = this.elanDao.isRelatedAc(connection);
+				if(null != azAcIds && !azAcIds.isEmpty())
+				{
+					for(String acid : azAcIds)
+					{
+						azAcSet.addAll(uiUtil.getAcIdSets(acid));
+					}
+				}
+				if(azAcSet.contains(acId))
+				{
+					return true;
+				}	
+			}
+		} catch (Exception e) {
+			ExceptionManage.dispose(e, getClass());
+		}
+		return false;
+	}
+	public List<ElanInfo> selectElan(ElanInfo elaninfo) throws Exception {
+		List<ElanInfo> infoList = null;
+
+		try {
+			infoList = elanDao.queryElan(elaninfo, connection);
+		} catch (Exception e) {
+			ExceptionManage.dispose(e, this.getClass());
+		}
+		return infoList;
+	}
+}

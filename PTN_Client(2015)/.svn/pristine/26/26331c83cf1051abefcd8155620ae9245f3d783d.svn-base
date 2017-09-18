@@ -1,0 +1,295 @@
+﻿package com.nms.db.dao.ptn;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.nms.db.bean.ptn.AllConfigInfo;
+import com.nms.ui.manager.ExceptionManage;
+
+
+
+public class AllConfigInfoDao {
+	/**
+	 * 修改 FrequencyInfo
+	 * @param info  FrequencyInfo
+	 * @param conn  数据库连接
+	 * @return   记录数
+	 * @throws Exception
+	 */
+	public int update(AllConfigInfo info,Connection connection)throws Exception{
+		if (null == info) {
+			throw new Exception("WholeConfigInfo is null");
+		}
+
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+		
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		int result = 0;
+		
+		try {
+			sql = "update all_config set singleMACAddress=?,addressAgeSwitch=?,macAddressAgeDate=?,throwWrapDateGap=?,fdiStatus=?,fidMel=?," +
+					"apsRecoverTime=?,crcVerify=?,throwWrap=?,receiveBadWrap=?,align=?,mirrorModel=?," +
+					"mirrorByPort=?,mirrorPort=?,mplsTPControl=?,channelType=?,tmsWorsen=?,tmsLose=? ,tmcfdi=?,tmcmel=? ,apsModel=? ,roundEnable=?,vlanMAC=?,vlanValue=?,macNumber=?,lacp=?,equipmentPriority=?,dhcpModel=? ,loopCheck=?,ssmModel=?,twoLayer=?,alarmModel=?,alarmPort=?,loopAvoid=? where siteId=?";
+			preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.setString(1, info.getSingleMACAddress());
+			preparedStatement.setInt(2, info.getAddressAgeSwitch());
+			preparedStatement.setInt(3, info.getMacAddressAgeDate());
+			preparedStatement.setInt(4, info.getThrowWrapDateGap());
+			preparedStatement.setInt(5, info.getFdiBIT0());
+			preparedStatement.setInt(6, info.getFdiB1IT3());
+			preparedStatement.setInt(7, info.getApsRecoverTime());
+			preparedStatement.setInt(8, info.getCrcVerify());
+			preparedStatement.setInt(9, info.getThrowWrap());
+			preparedStatement.setInt(10, info.getReceiveBadWrap());
+			preparedStatement.setInt(11, info.getAlign());
+			preparedStatement.setInt(12, info.getMirrorModel());
+			preparedStatement.setInt(13, info.getMirrorByPort());
+			preparedStatement.setInt(14, info.getMirrorPort());
+			preparedStatement.setInt(15, info.getMplsTPControl());
+			preparedStatement.setInt(16, info.getChannelType());
+			preparedStatement.setInt(17, info.getTmsWorsen());
+			preparedStatement.setInt(18, info.getTmsLose());
+			preparedStatement.setInt(19, info.getTmcfdiBIT0());
+			preparedStatement.setInt(20, info.getTmcfdiB1IT3());
+			preparedStatement.setInt(21, info.getApsModel());
+			preparedStatement.setInt(22, info.getRoundEnable());
+			preparedStatement.setInt(23, info.getVlanMAC());
+			preparedStatement.setInt(24, info.getVlanValue());
+			preparedStatement.setInt(25, info.getMacNumber());
+			preparedStatement.setInt(26, info.getLacp());
+			preparedStatement.setInt(27, info.getEquipmentPriority());
+			preparedStatement.setInt(28, info.getDhcpModel());
+			preparedStatement.setInt(29, info.getLoopCheck());
+			preparedStatement.setInt(30, info.getSsmModel());
+			preparedStatement.setInt(31, info.getTwoLayer());
+			preparedStatement.setInt(32, info.getAlarmModel());
+			preparedStatement.setInt(33, info.getAlarmPort());
+			preparedStatement.setInt(34, info.getLoopAvoid());
+			preparedStatement.setInt(35, info.getSiteId());
+			result = preparedStatement.executeUpdate();
+		} catch (Exception e) {
+			throw e;
+		}finally{
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		
+		}
+		return result;
+	}
+	
+	/**
+	 * 查询全部
+	 * @param condition	查询条件
+	 * @param connection  数据库连接
+	 * @return	List<FrequencyInfo>
+	 * @throws Exception
+	 */
+	public List<AllConfigInfo> queryByCondition(int siteId,Connection connection)throws Exception{
+
+		if(connection == null){
+			throw new Exception("Connection is null");
+		}
+		List<AllConfigInfo> wholeConfigInfoList = null;
+		String sql = null;
+		ResultSet resultSet = null;
+		PreparedStatement preparedStatement = null;
+		AllConfigInfo info = null;
+		
+		try{
+			wholeConfigInfoList = new ArrayList<AllConfigInfo>();
+			sql = "select *from all_config where siteId=?";
+			preparedStatement =  connection.prepareStatement(sql);
+			preparedStatement.setInt(1, siteId);
+			resultSet  = preparedStatement.executeQuery();
+			while(resultSet.next()){
+				info = new AllConfigInfo();
+				info.setSingleMACAddress(resultSet.getString("singleMACAddress"));
+				info.setAddressAgeSwitch(resultSet.getInt("addressAgeSwitch"));
+				info.setMacAddressAgeDate(resultSet.getInt("macAddressAgeDate"));
+				info.setThrowWrapDateGap(resultSet.getInt("throwWrapDateGap"));
+				info.setFdiBIT0(resultSet.getInt("fdiStatus"));
+				info.setFdiB1IT3(resultSet.getInt("fidMel"));
+				info.setTmcfdiBIT0(resultSet.getInt("tmcfdi"));
+				info.setTmcfdiB1IT3(resultSet.getInt("tmcmel"));
+				info.setApsRecoverTime(resultSet.getInt("apsRecoverTime"));
+				info.setCrcVerify(resultSet.getInt("crcVerify"));
+				info.setThrowWrap(resultSet.getInt("throwWrap"));
+				info.setReceiveBadWrap(resultSet.getInt("receiveBadWrap"));
+				info.setAlign(resultSet.getInt("align"));
+				info.setMirrorModel(resultSet.getInt("mirrorModel"));
+				info.setMirrorByPort(resultSet.getInt("mirrorByPort"));
+				info.setMirrorPort(resultSet.getInt("mirrorPort"));
+				info.setMplsTPControl(resultSet.getInt("mplsTPControl"));
+				info.setChannelType(resultSet.getInt("channelType"));
+				info.setSiteId(resultSet.getInt("siteId"));
+				info.setTmsWorsen(resultSet.getInt("tmsWorsen"));
+				info.setTmsLose(resultSet.getInt("tmsLose"));
+				info.setApsModel(resultSet.getInt("apsModel"));
+				info.setRoundEnable(resultSet.getInt("roundEnable"));
+				info.setVlanMAC(resultSet.getInt("vlanMAC"));
+				info.setVlanValue(resultSet.getInt("vlanValue"));
+				info.setMacNumber(resultSet.getInt("macNumber"));
+				info.setLacp(resultSet.getInt("lacp"));
+				info.setEquipmentPriority(resultSet.getInt("equipmentPriority"));
+				info.setDhcpModel(resultSet.getInt("dhcpModel"));
+				info.setLoopCheck(resultSet.getInt("loopCheck"));
+				info.setSsmModel(resultSet.getInt("ssmModel"));
+				info.setTwoLayer(resultSet.getInt("twoLayer"));
+				info.setAlarmModel(resultSet.getInt("alarmModel"));
+				info.setAlarmPort(resultSet.getInt("alarmPort"));
+				info.setLoopAvoid(resultSet.getInt("loopAvoid"));
+				wholeConfigInfoList.add(info);
+			}
+		}catch(Exception e){
+			throw e;
+		}finally{
+			if(resultSet != null){
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				resultSet = null;
+			}
+			if(preparedStatement != null){
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+			info = null;
+		}
+		return wholeConfigInfoList;
+	}
+	/**
+	 * 添加 FrequencyInfo
+	 * @param info 
+	 * @param connection
+	 * @return
+	 * @throws Exception
+	 */
+	public int insert(AllConfigInfo info,Connection connection)throws Exception{
+		if (null == info) {
+			throw new Exception("WholeConfigInfo is null");
+		}
+
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+		String sql = null;
+		int result = 0;
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null; 
+		try {
+			sql = "insert into all_config (singleMACAddress,addressAgeSwitch,macAddressAgeDate,throwWrapDateGap,fdiStatus,fidMel," +
+					"apsRecoverTime,crcVerify,throwWrap,receiveBadWrap,align,mirrorModel," +
+					"mirrorByPort,mirrorPort,mplsTPControl,channelType,siteId,tmsWorsen,tmsLose,tmcfdi,tmcmel,apsModel,roundEnable,vlanMAC,vlanValue,macNumber,lacp,equipmentPriority,dhcpModel,loopCheck,ssmModel,twoLayer,alarmModel,alarmPort,loopAvoid) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+			preparedStatement = connection.prepareStatement(sql,Statement.RETURN_GENERATED_KEYS);
+			preparedStatement.setString(1, info.getSingleMACAddress());
+			preparedStatement.setInt(2, info.getAddressAgeSwitch());
+			preparedStatement.setInt(3, info.getMacAddressAgeDate());
+			preparedStatement.setInt(4, info.getThrowWrapDateGap());
+			preparedStatement.setInt(5, info.getFdiBIT0());
+			preparedStatement.setInt(6, info.getFdiB1IT3());
+			preparedStatement.setInt(7, info.getApsRecoverTime());
+			preparedStatement.setInt(8, info.getCrcVerify());
+			preparedStatement.setInt(9, info.getThrowWrap());
+			preparedStatement.setInt(10, info.getReceiveBadWrap());
+			preparedStatement.setInt(11, info.getAlign());
+			preparedStatement.setInt(12, info.getMirrorModel());
+			preparedStatement.setInt(13, info.getMirrorByPort());
+			preparedStatement.setInt(14, info.getMirrorPort());
+			preparedStatement.setInt(15, info.getMplsTPControl());
+			preparedStatement.setInt(16, info.getChannelType());
+			preparedStatement.setInt(17, info.getSiteId());
+			preparedStatement.setInt(18, info.getTmsWorsen());
+			preparedStatement.setInt(19, info.getTmsLose());
+			preparedStatement.setInt(20, info.getTmcfdiBIT0());
+			preparedStatement.setInt(21, info.getTmcfdiB1IT3());
+			preparedStatement.setInt(22, info.getApsModel());
+			preparedStatement.setInt(23, info.getRoundEnable());
+			preparedStatement.setInt(24, info.getVlanMAC());
+			preparedStatement.setInt(25, info.getVlanValue());
+			preparedStatement.setInt(26, info.getMacNumber());
+			preparedStatement.setInt(27, info.getLacp());
+			preparedStatement.setInt(28, info.getEquipmentPriority());
+			preparedStatement.setInt(29, info.getDhcpModel());
+			preparedStatement.setInt(30, info.getLoopCheck());
+			preparedStatement.setInt(31, info.getSsmModel());
+			preparedStatement.setInt(32, info.getTwoLayer());
+			preparedStatement.setInt(33, info.getAlarmModel());
+			preparedStatement.setInt(34, info.getAlarmPort());
+			preparedStatement.setInt(35, info.getLoopAvoid());
+			preparedStatement.executeUpdate();
+			resultSet = preparedStatement.getGeneratedKeys();
+			if(resultSet.next()){
+				result = resultSet.getInt(1);
+            }
+		} catch (Exception e) {
+			throw e;
+		}finally{
+			if(null != resultSet){
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				resultSet = null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+		return result;
+	}
+
+	public void delete(int siteId, Connection connection) throws Exception {
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+		
+		PreparedStatement preparedStatement = null;
+		String sql = null;
+		try {
+			sql = "delete from all_config where siteId = ?";
+			preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.setInt(1, siteId);
+			preparedStatement.executeUpdate();
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+	}
+}

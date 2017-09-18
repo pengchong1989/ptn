@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nms.db.dao.ptn.SiteRoateMapper" >
+  <resultMap id="BaseResultMap" type="SiteRoate" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="siteId" property="siteid" jdbcType="INTEGER" />
+    <result column="typeId" property="typeid" jdbcType="INTEGER" />
+    <result column="type" property="type" jdbcType="VARCHAR" />
+    <result column="roate" property="roate" jdbcType="INTEGER" />
+    <result column="siteRoate" property="siteroate" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, siteId, typeId, type, roate, siteRoate
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from site_roate
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from site_roate
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="SiteRoate" >
+    insert into site_roate (id, siteId, typeId, 
+      type, roate, siteRoate
+      )
+    values (#{id,jdbcType=INTEGER}, #{siteId,jdbcType=INTEGER}, #{typeId,jdbcType=INTEGER}, 
+      #{type,jdbcType=VARCHAR}, #{roate,jdbcType=INTEGER}, #{siteRoate,jdbcType=INTEGER}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="SiteRoate" >
+    insert into site_roate
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="siteid != null" >
+        siteId,
+      </if>
+      <if test="typeid != null" >
+        typeId,
+      </if>
+      <if test="type != null" >
+        type,
+      </if>
+      <if test="roate != null" >
+        roate,
+      </if>
+      <if test="siteroate != null" >
+        siteRoate,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="siteid != null" >
+        #{siteid,jdbcType=INTEGER},
+      </if>
+      <if test="typeid != null" >
+        #{typeid,jdbcType=INTEGER},
+      </if>
+      <if test="type != null" >
+        #{type,jdbcType=VARCHAR},
+      </if>
+      <if test="roate != null" >
+        #{roate,jdbcType=INTEGER},
+      </if>
+      <if test="siteroate != null" >
+        #{siteroate,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="SiteRoate" >
+    update site_roate
+    <set >
+      <if test="siteid != null" >
+        siteId = #{siteid,jdbcType=INTEGER},
+      </if>
+      <if test="typeid != null" >
+        typeId = #{typeid,jdbcType=INTEGER},
+      </if>
+      <if test="type != null" >
+        type = #{type,jdbcType=VARCHAR},
+      </if>
+      <if test="roate != null" >
+        roate = #{roate,jdbcType=INTEGER},
+      </if>
+      <if test="siteroate != null" >
+        siteRoate = #{siteroate,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="SiteRoate" >
+    update site_roate
+    set siteId = #{siteId,jdbcType=INTEGER},
+      typeId = #{typeId,jdbcType=INTEGER},
+      type = #{type,jdbcType=VARCHAR},
+      roate = #{roate,jdbcType=INTEGER},
+      siteRoate = #{siteRoate,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  
+  <delete id="delete" parameterType="SiteRoate" >
+    delete from site_roate
+    where 1=1
+     <if test="siteId >0" >
+       and  siteId = #{siteId,jdbcType=INTEGER}
+      </if>
+      <if test="typeId >0" >
+       and  typeId = #{typeId,jdbcType=INTEGER}
+      </if>
+      <if test="type != null and type != '' " >
+       and  type = #{type,jdbcType=VARCHAR}
+      </if>
+  </delete>
+  
+  <select id="select" resultType="SiteRoate" parameterType="SiteRoate" >
+    select * from site_roate where 1=1
+    <if test="siteId >0">
+    	and siteId=#{siteId}
+    </if>
+    <if test="typeId >0">
+    	and typeId=#{typeId}
+    </if>
+    <if test="type  != null and type != '' ">
+    	and type=#{type}
+    </if>
+    <if test="id >0">
+    	and id=#{id}
+    </if>
+    <if test="siteRoate >0">
+    	and siteRoate=#{siteRoate}
+    </if>
+  </select>
+  
+  <update id="update" parameterType="SiteRoate" >
+    update site_roate
+    set roate = #{roate,jdbcType=INTEGER},siteRoate=#{siteRoate} 
+    where typeId = #{typeId,jdbcType=INTEGER} and type = #{type,jdbcType=VARCHAR} and siteId = #{siteId,jdbcType=INTEGER}
+  </update>
+  
+</mapper>

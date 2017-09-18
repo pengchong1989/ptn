@@ -1,0 +1,20 @@
+#arp信息#######################################################
+#名称
+name=LBL_NAME
+#双规保护名称
+dualName=LBL_DUAL_NAME
+#源MAC
+sourceMac=LBL_SOURCE_MAC
+#vlan使能
+vlanEnabled=LBL_VLAN_ENABLED,Code,ENABLEDSTATUE|value
+#vlan Id
+vlanId=LBL_VLAN_ID
+#vlan Pri
+vlanPri=LBL_VLAN_PRI
+#源IP
+sourceIp=LBL_SOURCE_IP
+#终止IP
+targetIp=LBL_END_IP
+#使能状态
+enabled=LBL_ENABLED_STATUS,Code,ENABLEDSTATUE|value
+

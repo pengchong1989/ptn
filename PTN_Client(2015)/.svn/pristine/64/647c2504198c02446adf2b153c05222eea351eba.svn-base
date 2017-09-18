@@ -1,0 +1,892 @@
+package com.nms.model.ptn;
+
+import org.apache.ibatis.session.SqlSession;
+
+import com.nms.db.dao.ptn.CccInfoMapper;
+import com.nms.model.util.ObjectService_Mybatis;
+
+
+public class CccService_MB extends ObjectService_Mybatis {
+
+	    private CccInfoMapper mapper = null;
+		public void setPtnuser(String ptnuser) {
+			super.ptnuser = ptnuser;
+		}
+
+		public void setSqlSession(SqlSession sqlSession) {
+			super.sqlSession = sqlSession;
+		}
+		
+		public CccInfoMapper getMapper() {
+			return mapper;
+		}
+
+		public void setMapper(CccInfoMapper mapper) {
+			this.mapper = mapper;
+		}
+		
+//		private BusinessidMapper businessidMapper = this.sqlSession.getMapper(BusinessidMapper.class);
+//	private final static int ISUSEDSTATUS = 1;
+
+//	/*
+//	 * 保存ccc业务
+//	 */
+//	public List<Integer> insert(CccInfo cccInfo) throws Exception, BusinessIdException {
+//		
+//		if (cccInfo== null) {
+//			throw new Exception("cccinfo is null");
+//		}
+//		List<Integer> resultList = new ArrayList<Integer>();		
+//		int cccid = 0;
+//		List<CccInfo> DBcccList = null;
+//		int cccServierId = this.cccDao.selectMaxServiceId(connection) + 1;
+//		Businessid rootXCIdInfo = null;
+//		AcInfoService acService = null;
+//		SiteService siteService = null;
+//		
+//		try {
+//			connection.setAutoCommit(false);			
+//			acService = (AcInfoService) ConstantUtil.serviceFactory.newService(Services.AcInfo, this.connection);
+//			siteService = (SiteService) ConstantUtil.serviceFactory.newService(Services.SITE, this.connection);
+//				if (cccInfo.getaXcId() == 0) {
+//					rootXCIdInfo = businessidDao.query(cccInfo.getaSiteId(), "ccc", connection);
+//				} else {
+//					rootXCIdInfo = businessidDao.query(cccInfo.getaXcId(), cccInfo.getaSiteId(), "ccc", connection);
+//				}
+//				if (null == rootXCIdInfo) {
+//					throw new BusinessIdException(siteService.getSiteName(cccInfo.getaSiteId()) + ResourceUtil.srcStr(StringKeysTip.TIP_CCCID));
+//				}
+//				businessidDao.update(rootXCIdInfo.getId(), ISUSEDSTATUS, connection);
+//			
+//				DBcccList = new ArrayList<CccInfo>();
+//	
+//				//如果不等于空  axcId == 业务ID 否则为叶子节点 axcId == 0
+//				if (null != rootXCIdInfo) {
+//					cccInfo.setaXcId(rootXCIdInfo.getIdValue());
+//				}
+//				if (cccInfo.getId() == 0) {
+//					cccInfo.setServiceId(cccServierId);
+//				}							
+//				DBcccList.add(cccInfo);
+//			
+//			for (CccInfo DBInfo : DBcccList) {
+//				cccid = this.cccDao.insert(DBInfo, connection);
+//				DBInfo.setId(cccid);								
+//				// 被业务使用的acId列表
+//				analysisAC(DBInfo,acService);
+//			}
+//			
+//			// 离线网元数据下载
+//			for (CccInfo ccInfo : DBcccList) {
+//				if (0 != ccInfo.getaSiteId()) {
+//					super.dateDownLoad(ccInfo.getaSiteId(), ccInfo.getId(), EServiceType.CCC.getValue(), EActionType.INSERT.getValue(), cccInfo.getServiceId() + "", null, 0, 0, null);
+//				}
+//				
+//			}
+//			if(!connection.getAutoCommit()){
+//				connection.commit();
+//			}
+//		} catch (BusinessIdException e) {
+//			connection.rollback();
+//			throw e;
+//		} catch (Exception e) {
+//			ExceptionManage.dispose(e, this.getClass());
+//			connection.rollback();
+//		} finally {
+//			connection.setAutoCommit(true);
+//		}
+//		return resultList;
+//	}
+//
+//	private void analysisAC(CccInfo dBInfo, AcInfoService acService) 
+//	{
+//		try 
+//		{
+//			updateACState(dBInfo.getAmostAcId(),acService,1,true);			
+//		} catch (Exception e) 
+//		{
+//			ExceptionManage.dispose(e, getClass());
+//		}		
+//	}
+//	/**
+//	 * 释放 和结合AC
+//	 * @param amostIds
+//	 * @param acService
+//	 * @param label 0 表示释放  1 表示结合AC
+//	 */
+//	private void updateACState(String amostIds,AcInfoService acService,int label,boolean isRelateAc)
+//	{
+//		Set<Integer> acSet = new HashSet<Integer>();
+//		UiUtil uiutil = new UiUtil();
+//		try {
+//			acSet = uiutil.getAcIdSets(amostIds);
+//			if(acSet.size() >0)
+//			{
+//				for(Integer acId : acSet)
+//				{
+//					if(isRelateAc)
+//					{
+//						analysisAc(acService,acId,label);
+//					}else
+//					{
+//						if(!isRelatedAC(acId))
+//						{
+//							analysisAc(acService,acId,label);
+//						}
+//					}
+//				}
+//			}
+//		} catch (Exception e) 
+//		{
+//			ExceptionManage.dispose(e, getClass());
+//		}finally
+//		{
+//			acSet = null;
+//			uiutil = null;
+//		}
+//	}
+//	
+//	private void analysisAc(AcInfoService acService,int acId,int label)
+//	{
+//		AcPortInfo acPortInfo;
+//		try {
+//			acPortInfo = acService.selectById(acId);
+//			if(label == 0)
+//			{
+//				acPortInfo.setIsUser(0);
+//			}else
+//			{
+//				acPortInfo.setIsUser(1);
+//			}
+//			acService.updateUserType(acPortInfo);	
+//		} catch (Exception e) {
+//			ExceptionManage.dispose(e, getClass());
+//		}finally
+//		{
+//			acPortInfo = null;
+//		}
+//	}
+//
+//	// 更新业务
+//	public void update(CccInfo cccInfo) throws Exception {
+//
+//		if (null == cccInfo) {
+//			throw new Exception("cccinfo is null");
+//		}
+//		AcInfoService acService = null;
+//		try {
+//			super.connection.setAutoCommit(false);			
+//			acService = (AcInfoService) ConstantUtil.serviceFactory.newService(Services.AcInfo, this.connection);	
+//				// 修改了端口
+//				if (cccInfo.getAction() == 1) {				
+//					// 修改了端口
+//					if (null != cccInfo.getBeforeAAcList()) {
+//						// 释放之前的ac对象
+//						for(AcPortInfo acportInst : cccInfo.getBeforeAAcList())
+//						{
+//							if(!isRelatedAC(acportInst.getId())){
+//								acportInst.setIsUser(0);
+//								acService.updateUserType(acportInst);
+//							}
+//						}
+//						// 关联新的AC
+//						updateACState(cccInfo.getAmostAcId(),acService,1,false);
+//					}					
+//				} 
+//				if(cccInfo.getAction()==1 || cccInfo.getAction()==0){
+//					this.cccDao.update(cccInfo, super.connection);
+//				}
+//				 
+//
+//			// 离线网元数据下载		
+//			if (0 != cccInfo.getaSiteId()) {
+//				super.dateDownLoad(cccInfo.getaSiteId(), cccInfo.getServiceId(), EServiceType.CCC.getValue(), EActionType.UPDATE.getValue(), cccInfo.getServiceId() + "", null, 0, 0, null);
+//			}
+//			
+//			if(!super.connection.getAutoCommit()){
+//				super.connection.commit();
+//			}
+//		} catch (Exception e) {
+//			super.connection.rollback();
+//			throw e;
+//		} finally {
+//			super.connection.setAutoCommit(true);
+//		}
+//
+//	}
+//	
+//	
+//	/*
+//	 * 同一类型业务的serviceId不能相同
+//	 */
+//	public int checkServiceId() {
+//
+//		return 1;
+//	}
+//
+//	/*
+//	 * 删除一条ccc
+//	 */
+//	public int delete(int serviceId) throws Exception {
+//
+//		int etreeResult = 0;
+//		List<CccInfo> cccInfoList = null;
+//		CccInfo cccInfo = null;
+//		
+//		AcInfoService acService = null;
+//		try {
+//			acService = (AcInfoService) ConstantUtil.serviceFactory.newService(Services.AcInfo, this.connection);
+//
+//			// 解除与pw和ac引用关系
+//			cccInfo = new CccInfo();
+//			cccInfo.setServiceId(serviceId);
+//			cccInfo.setServiceType(EServiceType.CCC.getValue());
+//			cccInfoList = this.select(cccInfo);
+//			for (CccInfo info : cccInfoList) {							
+//				// 释放ac 之前判断这条AC是否被其他的业务所使用
+//				updateACState(info.getAmostAcId(),acService,0,false);				
+//				// 释放id
+//				Businessid businessId = new Businessid();
+//				businessId.setIdStatus(0);
+//				businessId.setIdValue(info.getaXcId());
+//				businessId.setType("ccc");
+//				businessId.setSiteId(info.getaSiteId());
+//				businessidDao.updateBusinessid(businessId, connection);	
+//
+//			}
+//			offLineAcion(cccInfoList, acService);
+//			etreeResult = this.cccDao.delete(serviceId, connection);
+//
+//		} catch (Exception e) {
+//			ExceptionManage.dispose(e, this.getClass());
+//		} finally {
+//		}
+//		return etreeResult;
+//
+//	}
+//
+//
+//
+//	/**
+//	 * 查询单网元下的所有ccc
+//	 * 
+//	 * @param siteId
+//	 *            网元id
+//	 * @return
+//	 * @throws Exception
+//	 */
+//	public List<CccInfo> selectNodeBySite(int siteId) throws Exception {
+//
+//		List<CccInfo> cccInfoList = null;
+//		
+//		try {			
+//			cccInfoList = this.cccDao.queryNodeBySite(siteId, connection);			
+//		} catch (Exception e) {
+//			ExceptionManage.dispose(e,this.getClass());
+//		} finally {
+////			UiUtil.closeService(oamInfoService);
+//		}
+//		return cccInfoList;
+//	}
+//
+//	/*
+//	 * 查询某一条ccc业务(可能包含多条pw)
+//	 */
+//	public List<CccInfo> select(CccInfo cccInfo) throws Exception {
+//		List<CccInfo> cccInfoList = null;
+//
+//		try {
+//			cccInfoList = this.cccDao.queryByCondition(cccInfo, connection);
+//		} catch (Exception e) {
+//			ExceptionManage.dispose(e, this.getClass());
+//		}
+//		return cccInfoList;
+//	}
+//
+//	
+//
+//	
+//
+//	public void updateStatusActivate(List<Integer> idList, int status) throws Exception {
+//		try {
+//			this.cccDao.updateStatus(idList, status, connection);
+//		} catch (Exception e) {
+//			ExceptionManage.dispose(e, this.getClass());
+//		}
+//	}
+//
+//	public void updateStatusActivate(int siteId, int status) throws Exception {
+//		try {
+//			this.cccDao.updateStatus(siteId, status, connection);
+//		} catch (Exception e) {
+//			ExceptionManage.dispose(e, this.getClass());
+//		}
+//	}
+//
+//	/**
+//	 * 
+//	 * 同步ccc查询方法
+//	 * @return
+//	 * @throws Exception
+//	 * 
+//	 * @Exception 异常对象
+//	 */
+//	public List<CccInfo> select_synchro(int siteId, int xcid) throws Exception {
+//
+//		List<CccInfo> cccInfoList = null;
+//		try {
+//			cccInfoList = this.cccDao.querySynchro(siteId, xcid, connection);
+//
+//		} catch (Exception e) {
+//			throw e;
+//		}
+//		return cccInfoList;
+//	}
+//
+//	/**
+//	 * 验证名字是否重复
+//	 * 
+//	 * @author kk
+//	 * 
+//	 * @param afterName
+//	 *            修改之后的名字
+//	 * @param beforeName
+//	 *            修改之前的名字
+//	 * 
+//	 * @return
+//	 * @throws Exception
+//	 * 
+//	 * @Exception 异常对象
+//	 */
+//	public boolean nameRepetition(String afterName, String beforeName) throws Exception {
+//
+//		int result = this.cccDao.query_name(afterName, beforeName, connection);
+//		if (0 == result) {
+//			return false;
+//		} else {
+//			return true;
+//		}
+//
+//	}
+//
+//	/**
+//	 * 单网元名称验证
+//	 * 
+//	 * @param afterName
+//	 * @param beforeName
+//	 * @param siteId
+//	 * @return
+//	 * @throws Exception
+//	 */
+//	public boolean nameRepetitionBySingle(String afterName, String beforeName, int siteId) throws Exception {
+//
+//		int result = this.cccDao.query_nameBySingle(afterName, beforeName, connection, siteId);
+//		if (0 == result) {
+//			return false;
+//		} else {
+//			return true;
+//		}
+//
+//	}
+//
+//	/*
+//	 * @SuppressWarnings("unchecked")
+//	 * 
+//	 * @Test public void testInsert() { try { connection = DBManager.getConnection();
+//	 * 
+//	 * List<PwInfo> pwInfoList = new ArrayList(); List<EtreeInfo> etreeInfoList = new ArrayList();
+//	 * 
+//	 * PwInfo pwInfo = new PwInfo(); pwInfo.setPwId(0); pwInfo.setPwStatus(1); pwInfo.setTunnelId(3); pwInfo.setInlabelValue(26); pwInfo.setOutlabelValue(27); // pwInfo.setAPortId(7); // pwInfo.setZPortId(40); pwInfo.setASiteId(1); pwInfo.setZSiteId(2); pwInfo.setCreateTime((new Date()).toLocaleString()); pwInfo.setCreateUser("admin"); pwInfo.setApwServiceId(2); pwInfo.setZpwServiceId(2); EtreeInfo etreeInfo = new EtreeInfo(); etreeInfo.setServiceId(2); etreeInfo.setPwId(pwInfo.getPwId()); etreeInfo.setName("etree-1"); etreeInfo.setServiceType(3); etreeInfo.setActiveStatus(1); etreeInfo.setRootSite(1); etreeInfo.setBranchSite(2); pwInfoList.add(pwInfo); etreeInfoList.add(etreeInfo);
+//	 * 
+//	 * pwInfo = new PwInfo(); pwInfo.setPwId(0); pwInfo.setPwStatus(1); pwInfo.setTunnelId(3); pwInfo.setInlabelValue(28); pwInfo.setOutlabelValue(29); // pwInfo.setAPortId(9); // pwInfo.setZPortId(43); pwInfo.setASiteId(1); pwInfo.setZSiteId(3); pwInfo.setCreateTime((new Date()).toLocaleString()); pwInfo.setCreateUser("admin"); pwInfo.setApwServiceId(3); pwInfo.setZpwServiceId(3); etreeInfo = new EtreeInfo(); etreeInfo.setServiceId(2); etreeInfo.setPwId(pwInfo.getPwId()); etreeInfo.setName("etree-1"); etreeInfo.setServiceType(3); etreeInfo.setActiveStatus(1); etreeInfo.setRootSite(1); etreeInfo.setBranchSite(3); pwInfoList.add(pwInfo); etreeInfoList.add(etreeInfo);
+//	 * 
+//	 * pwInfo = new PwInfo(); pwInfo.setPwId(0); pwInfo.setPwStatus(1); pwInfo.setTunnelId(3); pwInfo.setInlabelValue(30); pwInfo.setOutlabelValue(31); // pwInfo.setAPortId(11); // pwInfo.setZPortId(45); pwInfo.setASiteId(1); pwInfo.setZSiteId(2); pwInfo.setCreateTime((new Date()).toLocaleString()); pwInfo.setCreateUser("admin"); pwInfo.setApwServiceId(4); pwInfo.setZpwServiceId(4); etreeInfo = new EtreeInfo(); etreeInfo.setServiceId(3); etreeInfo.setPwId(pwInfo.getPwId()); etreeInfo.setName("etree-2"); etreeInfo.setServiceType(3); etreeInfo.setActiveStatus(1); etreeInfo.setRootSite(1); etreeInfo.setBranchSite(2); pwInfoList.add(pwInfo); etreeInfoList.add(etreeInfo); //插入 int i = saveOrUpdate(pwInfoList, etreeInfoList); System.out.println(i); //查询 Map<Integer, List> etreeInfoMap = new HashMap<Integer, List>(); etreeInfoMap = select(); List<Integer> list = new ArrayList(etreeInfoMap.keySet()); for (int s : list) { System.out.println( s +" " + etreeInfoMap.get(s)); } System.out.println(etreeInfoMap.size()); etreeInfo = new EtreeInfo(); etreeInfo.setServiceId(2); etreeInfo.setServiceType(3); etreeInfoList = new ArrayList(); etreeInfoList = select(etreeInfo); System.out.println(2 + " "+etreeInfoList.size()); //根据pw查询 List<Integer>pwIdList = new ArrayList<Integer>(); pwIdList.add(31); pwIdList.add(32); pwIdList.add(33); int count = selectCountByPwId(pwIdList); System.out.println("serviceid " + count); //删除 int suc = delete(2); System.out.println("delete " + suc); } catch (Exception e) { }
+//	 * 
+//	 * }
+//	 */
+//
+////	/**
+////	 * 通过网元id初始化某网元所有etree
+////	 */
+////	public void initializtionSite(int siteId) throws SQLException {
+////		Map<String, List<EtreeInfo>> etreeInfomaps = null;
+////		List<EtreeInfo> etreeInfos = null;
+////		List<EtreeInfo> etreeInfosList = null;
+////		try {
+////			etreeInfomaps = this.selectNodeBySite(siteId);
+////			for (String str : etreeInfomaps.keySet()) {
+////				etreeInfos = etreeInfomaps.get(str);// 一个key，对应一组etree
+////				etreeInfosList = this.selectByServiceId(etreeInfos.get(0).getServiceId());
+////				if (etreeInfosList != null && etreeInfosList.size() > 0) {
+////					if (etreeInfosList.get(0).getIsSingle() == 1) {// 判断是否是单网数据
+////						this.delete(etreeInfosList.get(0).getServiceId());
+////					} else {
+////						for (EtreeInfo etreeInfo : etreeInfosList) {
+////							if (etreeInfo.getRootSite() == siteId) {
+////								etreeInfo.setRootSite(0);
+////								etreeInfo.setaAcId(0);
+////								etreeInfo.setaXcId(0);
+////								etreeInfo.setASiteName("");
+////							} else if (etreeInfo.getBranchSite() == siteId) {
+////								etreeInfo.setBranchSite(0);
+////								etreeInfo.setzAcId(0);
+////								etreeInfo.setzXcId(0);
+////								etreeInfo.setZSiteName("");
+////								etreeInfo.setIsSingle(1);
+////							} else {
+////								etreeInfo.setIsSingle(1);
+////							}
+////						}
+////					}
+////
+////				}
+////				this.update(etreeInfosList);
+////			}
+////
+////		} catch (Exception e) {
+////			ExceptionManage.dispose(e, this.getClass());
+////		} finally {
+////			etreeInfomaps = null;
+////			etreeInfos = null;
+////			etreeInfosList = null;
+////		}
+////	}
+//
+//	/**
+//	 * 通过acId,siteId查询line
+//	 * 
+//	 * @param acId
+//	 * @return
+//	 */
+////	public List<EtreeInfo> selectByAcIdAndSiteId(int acId, int siteId) {
+////		List<EtreeInfo> etreeInfos = null;
+////		List<EtreeInfo> etreeInsts = null;
+////		UiUtil uiUtil = null;
+////		try {
+////			etreeInfos = this.cccDao.queryByAcIdAndSiteIdCondition(acId, siteId, connection);
+////			if(null != etreeInfos && !etreeInfos.isEmpty())
+////			{
+////				uiUtil = new UiUtil();
+////				etreeInsts = new ArrayList<EtreeInfo>();
+////				for(EtreeInfo etreeInfo : etreeInfos)
+////				{
+////				 if((uiUtil.getAcIdSets(etreeInfo.getAmostAcId()).contains(acId) && etreeInfo.getaSiteId() == siteId) 
+////					||(uiUtil.getAcIdSets(etreeInfo.getZmostAcId()).contains(acId)&& etreeInfo.getzSiteId() == siteId))
+////				 {
+////					 etreeInsts.add(etreeInfo);
+////				 }
+////				}
+////			}
+////		} catch (Exception e) {
+////			ExceptionManage.dispose(e, getClass());
+////		}finally
+////		{
+////			 etreeInfos = null;
+////			 uiUtil = null;
+////		}
+////		return etreeInsts;
+////	}
+//	
+//	
+//
+//	/**
+//	 * 通过serviceId查询一组etree业务
+//	 * 
+//	 * @param serviceId
+//	 * @return
+//	 */
+//	public List<CccInfo> selectByServiceId(int serviceId) {
+//		List<CccInfo> cccInfos = null;
+//		cccInfos = this.cccDao.queryByServiceId(serviceId, connection);
+//		return cccInfos;
+//	}
+//
+//	
+//	
+//
+//	
+//
+//	
+//
+//	
+//
+//	
+//
+//	/**
+//	 * 离线网元操作
+//	 * 
+//	 * @param etreeInfoList
+//	 * @param pwService
+//	 * @throws Exception
+//	 */
+//	private void offLineAcion(List<CccInfo> cccInfoList, AcInfoService acService) throws Exception {
+//		AcPortInfo acPortInfo;
+//		List<AcPortInfo> acPortInfoList;
+//		CccInfo offLineAction = cccInfoList.get(0);			
+//			if (0 != offLineAction.getaSiteId()) {
+//				acPortInfo = new AcPortInfo();
+//				acPortInfo.setId(offLineAction.getaAcId());
+//				acPortInfoList = acService.selectByCondition(acPortInfo);
+//				if (null != acPortInfoList && acPortInfoList.size() > 0) {
+//					acPortInfo = acPortInfoList.get(0);
+//					super.dateDownLoad(offLineAction.getaSiteId(), offLineAction.getServiceId(), EServiceType.ETREE.getValue(), EActionType.DELETE.getValue(), offLineAction.getaXcId() + "", "", acPortInfo.getPortId(), acPortInfo.getAcBusinessId(), TypeAndActionUtil.ACTION_ROOT);
+//				}
+//			}
+//			
+//		 
+//	}
+//	/**
+//	 * 通过etree主键ID 查询所有与此ID有关的etree数据（即： 与此ID相同的serviceID ）
+//	 * @author sy
+//	 * @param id
+//	 * @return
+//	 * @throws Exception
+//	 */
+////	public List<EtreeInfo> selectById(int id) throws Exception {
+////		List<EtreeInfo> etreeInfoList = null;
+////		EtreeInfo etreeInfo=null;
+////		try {
+////			etreeInfo=new EtreeInfo();
+////			etreeInfo.setId(id);
+////			etreeInfoList=this.cccDao.select(etreeInfo, connection);
+////			if(etreeInfoList!=null&&etreeInfoList.size()==1){
+////				etreeInfo=etreeInfoList.get(0);
+////				etreeInfoList = this.cccDao.queryByCondition(etreeInfo, connection);
+////			}
+////			
+////		} catch (Exception e) {
+////			ExceptionManage.dispose(e, this.getClass());
+////		}
+////		return etreeInfoList;
+////	}
+//	/**
+//	 * 通过etree主键ID 查询etree数据
+//	 * @author sy
+//	 * @param id
+//	 * @return
+//	 * @throws Exception
+//	 */
+//	public List<CccInfo> selectByDbId(int id) throws Exception {
+//		List<CccInfo> cccInfoList = null;
+//		CccInfo cccInfo=null;
+//		try {
+//			cccInfo=new CccInfo();
+//			cccInfo.setId(id);
+//			cccInfoList=this.cccDao.select(cccInfo, connection);
+//		} catch (Exception e) {
+//			ExceptionManage.dispose(e, this.getClass());
+//		}
+//		return cccInfoList;
+//	}
+//	/**
+//	 * @author kk
+//	 * 
+//	 * @param siteID 和 xcID
+//	 *            elan对象
+//	 * @return List<EtreeInfo>
+//	 * @throws Exception
+//	 * 
+//	 * @Exception 异常对象
+//	 */
+////	public List<EtreeInfo> select_etree(int siteID,int xcID) throws Exception {
+////		return this.cccDao.query_etreeInfo(siteID,xcID, connection);
+////	}
+////	
+////	public List<EtreeInfo> selectServiceInfoById(int id) {
+////		List<EtreeInfo> cesList = new ArrayList<EtreeInfo>();
+////		try {
+////			cesList = this.cccDao.selectServiceInfoById(id, connection);
+////		} catch (Exception e) {
+////			ExceptionManage.dispose(e,this.getClass());
+////		}
+////		return cesList;
+////	}
+//	
+//	/**
+//	 * 根据网元查询此网元下所有单网元eline业务
+//	 * @param siteId 网元主键
+//	 * @return 
+//	 * @throws Exception
+//	 */
+////	public Map<Integer, List<EtreeInfo>> selectBySite_node(int siteId) throws Exception{
+////		
+////		return this.convertListToMap(this.cccDao.selectBySiteAndisSingle(siteId, 1, super.connection));
+////	}
+//	
+//	/**
+//	 * 根据网元查询此网元下所有网络eline业务
+//	 * @param siteId 网元主键
+//	 * @return 
+//	 * @throws Exception
+//	 */
+////	public Map<Integer, List<EtreeInfo>> selectBySite_network(int siteId) throws Exception{
+////		return this.convertListToMap(this.cccDao.selectBySiteAndisSingle(siteId, 1, super.connection));
+////	}
+//	
+//	/**
+//	 * 把所有etree按组转为map 
+//	 * @param etreeInfoList
+//	 * @return key为组id  value为此组下的etree对象
+//	 * @throws Exception
+//	 */
+//	private Map<Integer, List<EtreeInfo>> convertListToMap(List<EtreeInfo> etreeInfoList) throws Exception{
+//		
+//		Map<Integer, List<EtreeInfo>> etreeInfoMap = new HashMap<Integer, List<EtreeInfo>>();
+//		try {
+//			if(null!=etreeInfoList && etreeInfoList.size()>0){
+//				for (EtreeInfo etreeInfo : etreeInfoList) {
+//					int serviceId = etreeInfo.getServiceId();
+//					if (etreeInfoMap.get(serviceId) == null) {
+//						List<EtreeInfo> etreeInfoList_map = new ArrayList<EtreeInfo>();
+//						etreeInfoMap.put(serviceId, etreeInfoList_map);
+//					}
+//					etreeInfoMap.get(serviceId).add(etreeInfo);
+//				}
+//			}
+//		} catch (Exception e) {
+//			throw e;
+//		}
+//		
+//		return etreeInfoMap;
+//	}
+//	
+//	/**
+//	 * 根据主键，查询此组全量的etree对象
+//	 * @param id 其中一条的主键
+//	 * @return
+//	 * @throws Exception 
+//	 */
+//	public List<CccInfo> selectById_all(int id) throws Exception{
+//		return this.cccDao.queryById(id, connection);
+//	}
+//	
+//	/**
+//	 * 界面过滤查询
+//	 * @param etreeInfo 查询条件
+//	 * @return
+//	 * @throws Exception
+//	 */
+//	public List<CccInfo> filterSelect(CccInfo cccInfo) throws Exception {		
+//		List<CccInfo> cccServiceList = null;
+//		List<CccInfo> cccList = new ArrayList<CccInfo>();
+//		AcInfoService acService = null;
+//		List<Integer> acIds = null;
+//		try {
+//			acService = (AcInfoService) ConstantUtil.serviceFactory.newService(Services.AcInfo,this.connection);
+//			cccServiceList = this.cccDao.filterSelect(cccInfo, connection);
+//			
+//			if(cccInfo.getAportId() >0)
+//			{
+//				acIds = acService.acByPort(cccInfo.getAportId());
+//			}
+//			
+//			for (CccInfo cccInfo_result : cccServiceList) {
+////				存在通过端口查询
+//				if(acIds != null)
+//				{
+//					if(!acIds.isEmpty())
+//					{
+//						if(acByFilter(acIds,cccInfo_result.getAmostAcId()) )
+//						{
+//							cccList.add(cccInfo_result);
+//						}	
+//					}
+//				}else
+//				{
+//					cccList.add(cccInfo_result);
+//				}
+//				
+//			}
+//		} catch (Exception e) {
+//			ExceptionManage.dispose(e, this.getClass());
+//		}finally
+//		{
+//			acIds = null;
+//		}
+//		return cccList;
+//	}
+//	
+//	
+//	
+//	/**
+//	 * 查询a/Z端是否满足查询条件
+//	 * @param acIds
+//	 * @param etreeInfo_result
+//	 * @return
+//	 */
+//	private boolean acByFilter(List<Integer> acIds,String mostAcId)
+//	{
+//	 Set<Integer> acList = null;
+//	 UiUtil uiutil  = null;
+//		try {
+//			uiutil = new UiUtil();
+//			acList = uiutil.getAcIdSets(mostAcId);
+//			for(Integer acId : acList)
+//			{
+//				if(acIds.contains(acId))
+//				{
+//					return true;
+//				}
+//			}
+//			
+//		} catch (Exception e) {
+//			ExceptionManage.dispose(e, getClass());
+//		}finally
+//		{
+//			acList = null;
+//			uiutil = null;
+//		}
+//		return false;
+//	}
+//	
+//	/**
+//	 * 
+//	 * 通过业务ID删除业务
+//	 * @param idList
+//	 */
+//	public void deleteById(List<Integer> idList){
+//		try {
+//			if(idList != null && idList.size() >0){
+//				for (Integer id : idList) {
+//					 this.cccDao.deleteById(id, connection);
+//				}
+//			}
+//		} catch (Exception e) {
+//			ExceptionManage.dispose(e, this.getClass());
+//		}
+//	}
+//	
+//	/**
+//	 * 在删除之前判断着PW是否存在其他的业务的关联
+//	 * @param pwId
+//	 * @return true存在 false 不存在
+//	 */
+//	private boolean isRelatedPW(int pwId){
+//		try {
+//			return  this.cccDao.isRelatedPW(pwId, connection);
+//		} catch (Exception e) {
+//			ExceptionManage.dispose(e, getClass());
+//		}
+//		return false;
+//	}
+//	
+//	/**
+//	 * 在删除之前判断着AC是否存在其他的业务的关联
+//	 * @param AcId
+//	 * @return true存在 false 不存在
+//	 */
+//	private boolean isRelatedAC(int acId){
+//		List<String> azAcIds = null;
+//		Set<Integer> azAcSet = new HashSet<Integer>();
+//		UiUtil uiUtil = new UiUtil();
+//		boolean isRelatedAc = false;
+//		try {
+//			isRelatedAc = this.cccDao.isRelatedAcByEline(acId, connection);
+//			if(isRelatedAc)
+//			{
+//				return true;
+//			}else
+//			{
+//				azAcIds = this.cccDao.isRelatedAc(connection);
+//				if(null != azAcIds && !azAcIds.isEmpty())
+//				{
+//					for(String acid : azAcIds)
+//					{
+//						azAcSet.addAll(uiUtil.getAcIdSets(acid));
+//					}
+//				}
+//				if(azAcSet.contains(acId))
+//				{
+//					return true;
+//				}
+//			}
+//		} catch (Exception e) {
+//			ExceptionManage.dispose(e, getClass());
+//		}finally
+//		{
+//			 azAcIds = null;
+//			 azAcSet = null;
+//			 uiUtil = null;
+//		}
+//		return false;
+//	}
+//	
+//	
+//	/**
+//	 * 查询所有业务
+//	 * 
+//	 * @param serviceId
+//	 * @return
+//	 */
+//	public List<CccInfo> selectAll(int serviceType,String name) {
+//		List<CccInfo> cccInfoList = null;
+//		try {
+//		   cccInfoList = this.cccDao.queryAllEtree(serviceType,name, connection);		
+//		} catch (SQLException e) {
+//			// TODO Auto-generated catch block
+//			ExceptionManage.dispose(e, getClass());
+//		}
+//		return cccInfoList;
+//	}
+//	
+//	
+//
+//	/**
+//	 * 查询所有业务
+//	 * 
+//	 * @param serviceId
+//	 * @return
+//	 */
+//	public List<CccInfo> selectAcIds(int serviceType,String name,int branchSite) {
+//		List<CccInfo> cccInfoList = null;    
+//		try {
+//		   cccInfoList = this.cccDao.queryAllEtrees(serviceType,name,branchSite, connection);		
+//		} catch (SQLException e) {
+//			ExceptionManage.dispose(e, getClass());
+//		}
+//		return cccInfoList;
+//	}
+//	
+//	
+//	public List<CccInfo> selectCccBySite(int siteId) {
+//		List<CccInfo> cccInfoList = new ArrayList<CccInfo>();
+//		AcInfoService acService = null;		
+//		try {
+//			acService = (AcInfoService) ConstantUtil.serviceFactory.newService(Services.AcInfo, this.connection);		
+//			cccInfoList = this.cccDao.queryNodeBySite(siteId, connection);
+//			for (CccInfo cccInfo : cccInfoList) {
+//				cccInfo.setNode(true);
+//				cccInfo.getAcPortList().addAll(this.getAcInfo(siteId, cccInfo, acService));
+//				
+//			}
+//		} catch (Exception e) {
+//			ExceptionManage.dispose(e,this.getClass());
+//		}
+//		return cccInfoList;
+//	}
+//	
+//	private List<AcPortInfo> getAcInfo(int siteId, CccInfo cccInfo, AcInfoService acService) throws Exception {
+//		UiUtil uiutil = null;
+//		Set<Integer> acIds = null;
+//		List<Integer> acIdList = null;
+//		try {
+//			acIds = new HashSet<Integer>();
+//			uiutil = new UiUtil();
+//			acIds.addAll(uiutil.getAcIdSets(cccInfo.getAmostAcId()));			
+//			if(acIds.size() > 0)
+//			{
+//				acIdList = new ArrayList<Integer>(acIds);
+//				return  acService.select(acIdList);
+//			}
+//		} catch (Exception e)
+//		{
+//			ExceptionManage.dispose(e, getClass());
+//		}finally
+//		{
+//			 uiutil = null;
+//			 acIds = null;
+//			 acIdList = null;
+//		}
+//		return null;
+//	}
+}

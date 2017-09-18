@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nms.db.dao.equipment.port.PortAttrMapper" >
+  <resultMap id="BaseResultMap" type="PortAttr" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="siteId" property="siteId" jdbcType="INTEGER" />
+    <result column="portId" property="portId" jdbcType="INTEGER" />
+    <result column="portSpeed" property="portSpeed" jdbcType="INTEGER" />
+    <result column="actualSpeed" property="actualSpeed" jdbcType="VARCHAR" />
+    <result column="workModel" property="workModel" jdbcType="INTEGER" />
+    <result column="maxFrameSize" property="maxFrameSize" jdbcType="VARCHAR" />
+    <result column="fluidControl" property="fluidControl" jdbcType="INTEGER" />
+    <result column="exitLimit" property="exitLimit" jdbcType="VARCHAR" />
+    <result column="entranceLimit" property="entranceLimit" jdbcType="VARCHAR" />
+    <result column="slowAgreement" property="slowAgreement" jdbcType="INTEGER" />
+    <result column="tenWan" property="tenWan" jdbcType="INTEGER" />
+    <result column="messageLoopback" property="messageLoopback" jdbcType="INTEGER" />
+    <result column="sfpExpectType" property="sfpExpectType" jdbcType="INTEGER" />
+    <result column="sfpActual" property="sfpActual" jdbcType="VARCHAR" />
+    <result column="workWavelength" property="workWavelength" jdbcType="VARCHAR" />
+    <result column="sfpVender" property="sfpVender" jdbcType="VARCHAR" />
+    <association property="portUniAttr" javaType="com.nms.db.bean.equipment.port.PortUniAttr">  
+         <result column="ethernetPackaging" property="ethernetPackaging" jdbcType="INTEGER" />
+	     <result column="vlanTpId" property="vlanTpId" jdbcType="INTEGER" />
+	     <result column="outerVlanTpId" property="outerVlanTpId" jdbcType="INTEGER" />
+	     <result column="vlanMode" property="vlanMode" jdbcType="INTEGER" />
+	     <result column="isBroadcast" property="isBroadcast" jdbcType="INTEGER" />
+	     <result column="broadcast" property="broadcast" jdbcType="VARCHAR" />
+	     <result column="isUnicast" property="isUnicast" jdbcType="INTEGER" />
+	     <result column="unicast" property="unicast" jdbcType="VARCHAR" />
+	     <result column="isMulticast" property="isMulticast" jdbcType="INTEGER" />
+	     <result column="multicast" property="multicast" jdbcType="VARCHAR" />
+	     <result column="vlanId" property="vlanId" jdbcType="VARCHAR" />
+	     <result column="vlanPri" property="vlanPri" jdbcType="VARCHAR" />
+	     <result column="vlanRelevance" property="vlanRelevance" jdbcType="INTEGER" />
+	     <result column="eightIpRelevance" property="eightIpRelevance" jdbcType="INTEGER" />
+	     <result column="sourceMacRelevance" property="sourceMacRelevance" jdbcType="INTEGER" />
+	     <result column="destinationMacRelevance" property="destinationMacRelevance" jdbcType="INTEGER" />
+	     <result column="sourceIpRelevance" property="sourceIpRelevance" jdbcType="INTEGER" />
+	     <result column="destinationIpRelevance" property="destinationIpRelevance" jdbcType="INTEGER" />
+	     <result column="pwRelevance" property="pwRelevance" jdbcType="INTEGER" />
+	     <result column="dscpRelevance" property="dscpRelevance" jdbcType="INTEGER" />
+	     <result column="mappingEnable" property="mappingEnable" jdbcType="INTEGER" />
+	     <result column="sourceTcpPortRelevance" property="sourceTcpPortRelevance" jdbcType="INTEGER" />
+         <result column="endTcpPortRelevance" property="endTcpPortRelevance" jdbcType="INTEGER" />
+         <result column="toSRelevance" property="tosRelevance" jdbcType="INTEGER" />
+    </association>  
+    <association property="portNniAttr" javaType="com.nms.db.bean.equipment.port.PortNniAttr" >
+        <result column="staticMac" property="staticMac" jdbcType="VARCHAR" />
+	    <result column="neighbourId" property="neighbourId" jdbcType="VARCHAR" />
+	    <result column="operMac" property="operMac" jdbcType="VARCHAR" />
+	    <result column="operId" property="operId" jdbcType="VARCHAR" />
+	    <result column="neighbourFind" property="neighbourFind" jdbcType="INTEGER" />
+	    <result column="ccnEnable" property="ccnEnable" jdbcType="INTEGER" />
+	    <result column="nniVlanid" property="nniVlanid" jdbcType="VARCHAR" />
+	    <result column="nniVlanpri" property="nniVlanpri" jdbcType="VARCHAR" />
+	    <result column="stat" property="stat" jdbcType="INTEGER" />
+    </association>
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, siteId, portId, portSpeed, actualSpeed, workModel, maxFrameSize, fluidControl, 
+    exitLimit, entranceLimit, slowAgreement, tenWan, messageLoopback, ethernetPackaging, 
+    vlanTpId, outerVlanTpId, vlanMode, isBroadcast, broadcast, isUnicast, unicast, isMulticast, 
+    multicast, vlanId, vlanPri, vlanRelevance, eightIpRelevance, sourceMacRelevance, 
+    destinationMacRelevance, sourceIpRelevance, destinationIpRelevance, pwRelevance, 
+    dscpRelevance, staticMac, neighbourId, operMac, operId, neighbourFind, ccnEnable, 
+    nniVlanid, nniVlanpri, sfpExpectType, sfpActual, workWavelength, sfpVender, mappingEnable, 
+    stat, sourceTcpPortRelevance, endTcpPortRelevance, toSRelevance
+  </sql>
+  <select id="queryByCondition" resultMap="BaseResultMap" parameterType="PortAttr">
+  	select * from portattr where 1=1
+  	<if test="id > 0">
+  	 and id = #{id}
+  	</if>
+  	<if test="portId > 0">
+  	 and portid = #{portId}
+  	</if>
+  </select>
+  <insert id="insert" parameterType="PortAttr" >
+    insert into portattr (siteId, portId, 
+      portSpeed, actualSpeed, workModel, 
+      maxFrameSize, fluidControl, exitLimit, 
+      entranceLimit, slowAgreement, tenWan, 
+      messageLoopback, ethernetPackaging, vlanTpId, 
+      outerVlanTpId, vlanMode, isBroadcast, 
+      broadcast, isUnicast, unicast, 
+      isMulticast, multicast, vlanId, 
+      vlanPri, vlanRelevance, eightIpRelevance, 
+      sourceMacRelevance, destinationMacRelevance, 
+      sourceIpRelevance, destinationIpRelevance, 
+      pwRelevance, dscpRelevance, staticMac, 
+      neighbourId, operMac, operId, 
+      neighbourFind, ccnEnable, nniVlanid, 
+      nniVlanpri, sfpExpectType, sfpActual, 
+      workWavelength, sfpVender, mappingEnable, 
+      stat, sourceTcpPortRelevance, endTcpPortRelevance, 
+      toSRelevance)
+    values (#{siteId,jdbcType=INTEGER}, #{portId,jdbcType=INTEGER}, 
+      #{portSpeed,jdbcType=INTEGER}, #{actualSpeed,jdbcType=VARCHAR}, #{workModel,jdbcType=INTEGER}, 
+      #{maxFrameSize,jdbcType=VARCHAR}, #{fluidControl,jdbcType=INTEGER}, #{exitLimit,jdbcType=VARCHAR}, 
+      #{entranceLimit,jdbcType=VARCHAR}, #{slowAgreement,jdbcType=INTEGER}, #{tenWan,jdbcType=INTEGER}, 
+      #{messageLoopback,jdbcType=INTEGER}, #{portUniAttr.ethernetPackaging,jdbcType=INTEGER}, #{portUniAttr.vlanTpId,jdbcType=INTEGER}, 
+      #{portUniAttr.outerVlanTpId,jdbcType=INTEGER}, #{portUniAttr.vlanMode,jdbcType=INTEGER}, #{portUniAttr.isBroadcast,jdbcType=INTEGER}, 
+      #{portUniAttr.broadcast,jdbcType=VARCHAR}, #{portUniAttr.isUnicast,jdbcType=INTEGER}, #{portUniAttr.unicast,jdbcType=VARCHAR}, 
+      #{portUniAttr.isMulticast,jdbcType=INTEGER}, #{portUniAttr.multicast,jdbcType=VARCHAR}, #{portUniAttr.vlanId,jdbcType=VARCHAR}, 
+      #{portUniAttr.vlanPri,jdbcType=VARCHAR}, #{portUniAttr.vlanRelevance,jdbcType=INTEGER}, #{portUniAttr.eightIpRelevance,jdbcType=INTEGER}, 
+      #{portUniAttr.sourceMacRelevance,jdbcType=INTEGER}, #{portUniAttr.destinationMacRelevance,jdbcType=INTEGER}, 
+      #{portUniAttr.sourceIpRelevance,jdbcType=INTEGER}, #{portUniAttr.destinationIpRelevance,jdbcType=INTEGER}, 
+      #{portUniAttr.pwRelevance,jdbcType=INTEGER}, #{portUniAttr.dscpRelevance,jdbcType=INTEGER}, #{portNniAttr.staticMac,jdbcType=VARCHAR}, 
+      #{portNniAttr.neighbourId,jdbcType=VARCHAR}, #{portNniAttr.operMac,jdbcType=VARCHAR}, #{portNniAttr.operId,jdbcType=VARCHAR}, 
+      #{portNniAttr.neighbourFind,jdbcType=INTEGER}, #{portNniAttr.ccnEnable,jdbcType=INTEGER}, #{portNniAttr.nniVlanid,jdbcType=VARCHAR}, 
+      #{portNniAttr.nniVlanpri,jdbcType=VARCHAR}, #{sfpExpectType,jdbcType=INTEGER}, #{sfpActual,jdbcType=VARCHAR}, 
+      #{workWavelength,jdbcType=VARCHAR}, #{sfpVender,jdbcType=VARCHAR}, #{portUniAttr.mappingEnable,jdbcType=INTEGER}, 
+      #{portNniAttr.stat,jdbcType=INTEGER}, #{portUniAttr.sourceTcpPortRelevance,jdbcType=INTEGER}, #{portUniAttr.endTcpPortRelevance,jdbcType=INTEGER}, 
+      #{portUniAttr.tosRelevance,jdbcType=INTEGER})
+  </insert>
+  <update id="update" parameterType="PortAttr" >
+    update portattr
+    set siteId = #{siteId,jdbcType=INTEGER},
+      portId = #{portId,jdbcType=INTEGER},
+      portSpeed = #{portSpeed,jdbcType=INTEGER},
+      actualSpeed = #{actualSpeed,jdbcType=VARCHAR},
+      workModel = #{workModel,jdbcType=INTEGER},
+      maxFrameSize = #{maxFrameSize,jdbcType=VARCHAR},
+      fluidControl = #{fluidControl,jdbcType=INTEGER},
+      exitLimit = #{exitLimit,jdbcType=VARCHAR},
+      entranceLimit = #{entranceLimit,jdbcType=VARCHAR},
+      slowAgreement = #{slowAgreement,jdbcType=INTEGER},
+      tenWan = #{tenWan,jdbcType=INTEGER},
+      messageLoopback = #{messageLoopback,jdbcType=INTEGER},
+      ethernetPackaging = #{portUniAttr.ethernetPackaging,jdbcType=INTEGER},
+      vlanTpId = #{portUniAttr.vlanTpId,jdbcType=INTEGER},
+      outerVlanTpId = #{portUniAttr.outerVlanTpId,jdbcType=INTEGER},
+      vlanMode = #{portUniAttr.vlanMode,jdbcType=INTEGER},
+      isBroadcast = #{portUniAttr.isBroadcast,jdbcType=INTEGER},
+      broadcast = #{portUniAttr.broadcast,jdbcType=VARCHAR},
+      isUnicast = #{portUniAttr.isUnicast,jdbcType=INTEGER},
+      unicast = #{portUniAttr.unicast,jdbcType=VARCHAR},
+      isMulticast = #{portUniAttr.isMulticast,jdbcType=INTEGER},
+      multicast = #{portUniAttr.multicast,jdbcType=VARCHAR},
+      vlanId = #{portUniAttr.vlanId,jdbcType=VARCHAR},
+      vlanPri = #{portUniAttr.vlanPri,jdbcType=VARCHAR},
+      vlanRelevance = #{portUniAttr.vlanRelevance,jdbcType=INTEGER},
+      eightIpRelevance = #{portUniAttr.eightIpRelevance,jdbcType=INTEGER},
+      sourceMacRelevance = #{portUniAttr.sourceMacRelevance,jdbcType=INTEGER},
+      destinationMacRelevance = #{portUniAttr.destinationMacRelevance,jdbcType=INTEGER},
+      sourceIpRelevance = #{portUniAttr.sourceIpRelevance,jdbcType=INTEGER},
+      destinationIpRelevance = #{portUniAttr.destinationIpRelevance,jdbcType=INTEGER},
+      pwRelevance = #{portUniAttr.pwRelevance,jdbcType=INTEGER},
+      dscpRelevance = #{portUniAttr.dscpRelevance,jdbcType=INTEGER},
+      staticMac = #{portNniAttr.staticMac,jdbcType=VARCHAR},
+      neighbourId = #{portNniAttr.neighbourId,jdbcType=VARCHAR},
+      operMac = #{portNniAttr.operMac,jdbcType=VARCHAR},
+      operId = #{portNniAttr.operId,jdbcType=VARCHAR},
+      neighbourFind = #{portNniAttr.neighbourFind,jdbcType=INTEGER},
+      ccnEnable = #{portNniAttr.ccnEnable,jdbcType=INTEGER},
+      nniVlanid = #{portNniAttr.nniVlanid,jdbcType=VARCHAR},
+      nniVlanpri = #{portNniAttr.nniVlanpri,jdbcType=VARCHAR},
+      sfpExpectType = #{sfpExpectType,jdbcType=INTEGER},
+      sfpActual = #{sfpActual,jdbcType=VARCHAR},
+      workWavelength = #{workWavelength,jdbcType=VARCHAR},
+      sfpVender = #{sfpVender,jdbcType=VARCHAR},
+      mappingEnable = #{portUniAttr.mappingEnable,jdbcType=INTEGER},
+      stat = #{portNniAttr.stat,jdbcType=INTEGER},
+      sourceTcpPortRelevance = #{portUniAttr.sourceTcpPortRelevance,jdbcType=INTEGER},
+      endTcpPortRelevance = #{portUniAttr.endTcpPortRelevance,jdbcType=INTEGER},
+      toSRelevance = #{portUniAttr.tosRelevance,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <!-- nniVlanpri = #{portNniAttr.nniVlanpri,jdbcType=VARCHAR}, -->
+</mapper>

@@ -1,0 +1,25 @@
+package com.nms.db.dao.ptn;
+
+import java.util.List;
+
+import com.nms.db.bean.ptn.AclInfo;
+
+
+
+public interface AclInstMapper {
+    int deleteByPrimaryKey(Integer id);
+
+    public int insert(AclInfo acInfo);
+
+    int insertSelective(AclInfo record);
+
+    AclInfo selectByPrimaryKey(Integer id);
+
+    int updateByPrimaryKeySelective(AclInfo record);
+
+    int updateByPrimaryKey(AclInfo record);
+
+	public List<AclInfo> queryBySiteId(int siteId);
+
+	public void update(AclInfo aclInfo);
+}

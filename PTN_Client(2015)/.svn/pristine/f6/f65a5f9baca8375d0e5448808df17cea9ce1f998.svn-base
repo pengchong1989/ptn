@@ -1,0 +1,24 @@
+package com.nms.db.dao.ptn.qos;
+
+import java.util.List;
+
+import com.nms.db.bean.ptn.qos.QosQueue;
+
+
+public interface QosQueueMapper {
+    int deleteByPrimaryKey(Integer id);
+
+    int insert(QosQueue record);
+
+    int insertSelective(QosQueue record);
+
+    QosQueue selectByPrimaryKey(Integer id);
+
+    int updateByPrimaryKeySelective(QosQueue record);
+
+    int updateByPrimaryKey(QosQueue record);
+
+	public List<QosQueue> queryByCondition(QosQueue qos);
+
+	public void update(QosQueue qosQueue);
+}

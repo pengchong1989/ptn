@@ -1,0 +1,15 @@
+#二层静态MAC地址信息#######################################################
+SsMacStudy=SsMacStudy
+#端口号
+portNa=LBL_PORT_NUM
+#vlan值
+vlan=LBL_VLAN
+#MAC地址条目数
+macCount=LBL_MAC_NUM
+CommonBean=CommonBean
+#macAddress
+macAdd=LBL_MAC_ADDRESS
+
+
+
+

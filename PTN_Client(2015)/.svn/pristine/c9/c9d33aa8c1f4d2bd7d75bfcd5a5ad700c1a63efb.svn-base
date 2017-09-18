@@ -1,0 +1,353 @@
+package com.nms.db.dao.ptn.ecn;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.nms.db.bean.ptn.ecn.OspfRedistribute;
+
+
+public class OspfRedistributeDao {
+
+	private final String SQL_INSERT = "insert into ospf_redistribute(neId,redistribute_type,type,metrictype,metric,enable,status) " + " values(?,?,?,?,?,?,?)";
+	private final String SQL_SELECTBYID = "SELECT * from ospf_redistribute WHERE neId = ?";
+	private final String SQL_UPDATE = "UPDATE ospf_redistribute SET redistribute_type = ? , type = ? , metrictype = ?, metric = ?, enable = ? ,status=? WHERE neId = ? and redistribute_type = ?";
+	private final String SQL_DELETEBYIDANDTYPE = "DELETE from ospf_redistribute WHERE neId = ? and redistribute_type = ?";
+	private final String SQL_DELETEBYID = "DELETE from ospf_redistribute WHERE neId = ?";
+	private final String SQL_SELECTNAME = "SELECT * from ospf_redistribute WHERE neId = ? and redistribute_type = ?";
+	
+	public int insert(OspfRedistribute ospfRedistribute, Connection connection) throws Exception {
+		if (null == ospfRedistribute) {
+			throw new Exception("OSPFAREAInfo is null");
+		}
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+		PreparedStatement preparedStatement = null;
+		int result = 0;
+		ResultSet resultSet = null;
+
+		try {
+
+			preparedStatement = connection.prepareStatement(SQL_INSERT, Statement.RETURN_GENERATED_KEYS);
+			preparedStatement.setString(1, ospfRedistribute.getNeId());
+			preparedStatement.setString(2, ospfRedistribute.getRedistribute_type());
+			preparedStatement.setString(3, ospfRedistribute.getType());
+			preparedStatement.setString(4, ospfRedistribute.getMetrictype());
+			preparedStatement.setInt(5, ospfRedistribute.getMetric());
+			preparedStatement.setBoolean(6, ospfRedistribute.getEnable());
+			preparedStatement.setInt(7, ospfRedistribute.getStatus());
+
+			preparedStatement.executeUpdate();
+			resultSet = preparedStatement.getGeneratedKeys();
+			if (resultSet.next()) {
+				result = resultSet.getInt(1);
+			}
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if(null!=resultSet){
+				try {
+					resultSet.close();
+				} catch (Exception e2) {
+					throw e2;
+				}
+				resultSet=null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e2) {
+					throw e2;
+				}
+				preparedStatement=null;
+			}
+		}
+		return result;
+	}
+
+	public List<OspfRedistribute> queryByNeID(String NeID, Connection connection) throws Exception {
+		if (null == NeID) {
+			throw new Exception("NeID is null");
+		}
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+		List<OspfRedistribute> ospfRedistributeList = null;
+		OspfRedistribute ospfRedistribute = null;
+		try {
+			preparedStatement = connection.prepareStatement(SQL_SELECTBYID);
+			preparedStatement.setInt(1, Integer.valueOf(NeID));//
+			resultSet = preparedStatement.executeQuery();
+			ospfRedistributeList = new ArrayList<OspfRedistribute>();
+			while (resultSet.next()) {
+				ospfRedistribute = new OspfRedistribute();
+				ospfRedistribute.setId(resultSet.getString(1));
+				ospfRedistribute.setNeId(resultSet.getString(2));
+				ospfRedistribute.setRedistribute_type(resultSet.getString(3));
+				ospfRedistribute.setType(resultSet.getString(4));
+				ospfRedistribute.setMetrictype(resultSet.getString(5));
+				ospfRedistribute.setMetric(resultSet.getInt(6));
+				ospfRedistribute.setEnable(resultSet.getBoolean(7));
+				ospfRedistribute.setStatus(resultSet.getInt(8));
+				ospfRedistributeList.add(ospfRedistribute);
+			}
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if(null!=resultSet){
+				try {
+					resultSet.close();
+				} catch (Exception e2) {
+					throw e2;
+				}
+				resultSet=null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e2) {
+					throw e2;
+				}
+				preparedStatement=null;
+			}
+			ospfRedistribute = null;
+		}
+		return ospfRedistributeList;
+	}
+
+	public int update(OspfRedistribute ospfRedistribute, Connection connection) throws Exception {
+		if (null == ospfRedistribute) {
+			throw new Exception("ospfRedistribute is null");
+		}
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+		PreparedStatement preparedStatement = null;
+		int result = 0;
+
+		try {
+			preparedStatement = connection.prepareStatement(SQL_UPDATE);
+			preparedStatement.setString(1, ospfRedistribute.getRedistribute_type());
+			preparedStatement.setString(2, ospfRedistribute.getType());
+			preparedStatement.setString(3, ospfRedistribute.getMetrictype());
+			preparedStatement.setInt(4, ospfRedistribute.getMetric());
+			preparedStatement.setBoolean(5, ospfRedistribute.getEnable());
+			preparedStatement.setInt(6, ospfRedistribute.getStatus());
+			preparedStatement.setString(7, ospfRedistribute.getNeId());
+			preparedStatement.setString(8, ospfRedistribute.getRedistribute_type());
+
+			result = preparedStatement.executeUpdate();
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e2) {
+					throw e2;
+				}
+				preparedStatement=null;
+			}
+		}
+		return result;
+	}
+
+	public int deleteByNeIdAndType(OspfRedistribute ospfRedistribute, Connection connection) throws Exception {
+		if (null == ospfRedistribute) {
+			throw new Exception("ospfRedistribute is null");
+		}
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+		PreparedStatement preparedStatement = null;
+		int result = 0;
+		try {
+			preparedStatement = connection.prepareStatement(SQL_DELETEBYIDANDTYPE);
+			preparedStatement.setInt(1, Integer.valueOf(ospfRedistribute.getNeId()));
+			preparedStatement.setString(2, ospfRedistribute.getRedistribute_type());
+			result=preparedStatement.executeUpdate();
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+		}
+		return result;
+	}
+	
+	public int deleteByNeId(int id, Connection connection) throws Exception {
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+		PreparedStatement preparedStatement = null;
+		int result = 0;
+		try {
+			preparedStatement = connection.prepareStatement(SQL_DELETEBYID);
+			preparedStatement.setInt(1, Integer.valueOf(id));
+			preparedStatement.executeUpdate();
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+		}
+		return result;
+	}
+	
+	public int queryName(OspfRedistribute ospfRedistribute, Connection connection) throws Exception {
+		if (null == ospfRedistribute) {
+			throw new Exception("ospfRedistribute is null");
+		}
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+		int count = 0;
+		try {
+			preparedStatement = connection.prepareStatement(SQL_SELECTNAME);
+			preparedStatement.setInt(1, Integer.valueOf(ospfRedistribute.getNeId()));
+			preparedStatement.setString(2, ospfRedistribute.getRedistribute_type());
+			resultSet = preparedStatement.executeQuery();
+			while (resultSet.next()) {
+				count = resultSet.getInt(1);
+			}
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if(null!=resultSet){
+				try {
+					resultSet.close();
+				} catch (Exception e2) {
+					throw e2;
+				}
+				resultSet=null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e2) {
+					throw e2;
+				}
+				preparedStatement=null;
+			}
+		}
+		return count;
+	}
+	
+	public List<OspfRedistribute> queryByNeIdAndNameRedistributeType(String neID, String redistributeType, Connection connection) throws Exception {
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+		List<OspfRedistribute> ospfRedistributeList = null;
+		OspfRedistribute ospfRedistribute = null;
+		try {
+			preparedStatement = connection.prepareStatement(SQL_SELECTNAME);
+			preparedStatement.setString(1, neID);
+			preparedStatement.setString(2, redistributeType);
+			resultSet = preparedStatement.executeQuery();
+			ospfRedistributeList = new ArrayList<OspfRedistribute>();
+			while (resultSet.next()) {
+				ospfRedistribute = new OspfRedistribute();
+				
+				ospfRedistribute.setId(resultSet.getString(1));
+				ospfRedistribute.setNeId(resultSet.getString(2));
+				ospfRedistribute.setRedistribute_type(resultSet.getString(3));
+				ospfRedistribute.setType(resultSet.getString(4));
+				ospfRedistribute.setMetrictype(resultSet.getString(5));
+				ospfRedistribute.setMetric(resultSet.getInt(6));
+				ospfRedistribute.setEnable(resultSet.getBoolean(7));
+				ospfRedistribute.setStatus(resultSet.getInt(8));
+				ospfRedistributeList.add(ospfRedistribute);
+			}
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if(null!=resultSet){
+				try {
+					resultSet.close();
+				} catch (Exception e2) {
+					throw e2;
+				}
+				resultSet=null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e2) {
+					throw e2;
+				}
+				preparedStatement=null;
+			}
+			ospfRedistribute = null;
+		}
+		return ospfRedistributeList;
+	}
+	/**
+	 * 更改激活状态
+	 * @param ospfRedistribute
+	 * @param connection
+	 * @return
+	 * @throws Exception
+	 */
+	public int updateStatus(OspfRedistribute ospfRedistribute, Connection connection) throws Exception {
+		if (null == ospfRedistribute) {
+			throw new Exception("ospfRedistribute is null");
+		}
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+		PreparedStatement preparedStatement = null;
+		int result = 0;
+		String sql="update  ospf_redistribute set status=? where neId = ? ";
+		try {
+//			if(ospfRedistribute.getRedistribute_type()!=null&&!ospfRedistribute.getRedistribute_type().equals("")){
+//				sql +=" and redistribute_type = ? ";
+//				preparedStatement = connection.prepareStatement(sql);
+//				preparedStatement.setString(3, ospfRedistribute.getRedistribute_type());
+//			}else {
+				preparedStatement = connection.prepareStatement(sql);
+			//}
+			
+			preparedStatement.setInt(1, ospfRedistribute.getStatus());
+			preparedStatement.setInt(2, Integer.valueOf(ospfRedistribute.getNeId()));
+			result = preparedStatement.executeUpdate();
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e2) {
+					throw e2;
+				}
+				preparedStatement=null;
+			}
+		}
+		return result;
+	}
+
+}

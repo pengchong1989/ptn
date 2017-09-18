@@ -1,0 +1,499 @@
+package com.nms.db.dao.equipment.port;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.nms.db.bean.equipment.port.PortAttr;
+import com.nms.ui.manager.ExceptionManage;
+
+
+public class PortAttrDao {
+	/**
+	 * 新增sql语句
+	 */
+	private final String SQL_INSERT = "insert into portattr (portId,portSpeed,actualSpeed,workModel,maxFrameSize,fluidControl,exitLimit,entranceLimit,slowAgreement,tenWan,messageLoopback,ethernetPackaging,vlanTpId,outerVlanTpId,vlanMode,isBroadcast,broadcast,isUnicast,unicast,isMulticast,multicast,vlanId,vlanPri,vlanRelevance,eightIpRelevance,sourceMacRelevance,destinationMacRelevance,sourceIpRelevance,destinationIpRelevance,pwRelevance,dscpRelevance,staticMac,neighbourId,operMac,operId,neighbourFind,ccnEnable,nniVlanid,nniVlanpri,sfpExpectType,sfpActual,workWavelength,sfpVender,siteId,mappingEnable,stat,sourceTcpPortRelevance,endTcpPortRelevance,toSRelevance)" + " value (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+	/**
+	 * 修改sql语句
+	 */
+	private final String SQL_UPDATE = "update portattr set portId=?,portSpeed=?,actualSpeed=?,workModel=?,maxFrameSize=?,fluidControl=?,exitLimit=?,entranceLimit=?,slowAgreement=?,tenWan=?,messageLoopback=?,ethernetPackaging=?,vlanTpId=?,outerVlanTpId=?,vlanMode=?,isBroadcast=?,broadcast=?,isUnicast=?,unicast=?,isMulticast=?,multicast=?,vlanId=?,vlanPri=?,vlanRelevance=?,eightIpRelevance=?,sourceMacRelevance=?,destinationMacRelevance=?,sourceIpRelevance=?,destinationIpRelevance=?,pwRelevance=?,dscpRelevance=?,staticMac=?,neighbourId=?,operMac=?,operId=?,neighbourFind=?,ccnEnable=?,nniVlanid=?,nniVlanpri=?,sfpExpectType=?,sfpActual=?,workWavelength=?,sfpVender=?,mappingEnable=?,stat=?,sourceTcpPortRelevance=?,endTcpPortRelevance=?,toSRelevance=? where id = ?";
+
+	/**
+	 * 根据网元id删除的sql语句
+	 */
+	private final String SQL_DELETE_SITE="delete from portattr where siteId=?";
+	
+	/**
+	 * 新增portAttr
+	 * 
+	 * @param portAttr
+	 *            插入实体对象
+	 * @param connection
+	 *            数据库连接
+	 * @return 插入的记录数
+	 * @throws Exception
+	 */
+	public int insert(PortAttr portAttr, Connection connection) throws Exception {
+
+		if (null == portAttr) {
+			throw new Exception("portAttr is null");
+		}
+
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		PreparedStatement preparedStatement = null;
+		int result = 0;
+
+		try {
+			preparedStatement = connection.prepareStatement(this.SQL_INSERT);
+			preparedStatement.setInt(1, portAttr.getPortId());
+			preparedStatement.setInt(2, portAttr.getPortSpeed());
+			preparedStatement.setString(3, portAttr.getActualSpeed());
+			preparedStatement.setInt(4, portAttr.getWorkModel());
+			preparedStatement.setString(5, portAttr.getMaxFrameSize());
+			preparedStatement.setInt(6, portAttr.getFluidControl());
+			preparedStatement.setString(7, portAttr.getExitLimit());
+			preparedStatement.setString(8, portAttr.getEntranceLimit());
+			preparedStatement.setInt(9, portAttr.getSlowAgreement());
+			preparedStatement.setInt(10, portAttr.getTenWan());
+			preparedStatement.setInt(11, portAttr.getMessageLoopback());
+
+			preparedStatement.setInt(12, portAttr.getPortUniAttr().getEthernetPackaging());
+			preparedStatement.setInt(13, portAttr.getPortUniAttr().getVlanTpId());
+			preparedStatement.setInt(14, portAttr.getPortUniAttr().getOuterVlanTpId());
+			preparedStatement.setInt(15, portAttr.getPortUniAttr().getVlanMode());
+			preparedStatement.setInt(16, portAttr.getPortUniAttr().getIsBroadcast());
+			preparedStatement.setString(17, portAttr.getPortUniAttr().getBroadcast());
+			preparedStatement.setInt(18, portAttr.getPortUniAttr().getIsUnicast());
+			preparedStatement.setString(19, portAttr.getPortUniAttr().getUnicast());
+			preparedStatement.setInt(20, portAttr.getPortUniAttr().getIsMulticast());
+			preparedStatement.setString(21, portAttr.getPortUniAttr().getMulticast());
+			preparedStatement.setString(22, portAttr.getPortUniAttr().getVlanId());
+			preparedStatement.setString(23, portAttr.getPortUniAttr().getVlanPri());
+			preparedStatement.setInt(24, portAttr.getPortUniAttr().getVlanRelevance());
+			preparedStatement.setInt(25, portAttr.getPortUniAttr().getEightIpRelevance());
+			preparedStatement.setInt(26, portAttr.getPortUniAttr().getSourceMacRelevance());
+			preparedStatement.setInt(27, portAttr.getPortUniAttr().getDestinationMacRelevance());
+			preparedStatement.setInt(28, portAttr.getPortUniAttr().getSourceIpRelevance());
+			preparedStatement.setInt(29, portAttr.getPortUniAttr().getDestinationIpRelevance());
+			preparedStatement.setInt(30, portAttr.getPortUniAttr().getPwRelevance());
+			preparedStatement.setInt(31, portAttr.getPortUniAttr().getDscpRelevance());
+
+			preparedStatement.setString(32, portAttr.getPortNniAttr().getStaticMac());
+			preparedStatement.setString(33, portAttr.getPortNniAttr().getNeighbourId());
+			preparedStatement.setString(34, portAttr.getPortNniAttr().getOperMac());
+			preparedStatement.setString(35, portAttr.getPortNniAttr().getOperId());
+			preparedStatement.setInt(36, portAttr.getPortNniAttr().getNeighbourFind());
+			preparedStatement.setInt(37, portAttr.getPortNniAttr().getCcnEnable());
+			preparedStatement.setString(38, portAttr.getPortNniAttr().getNniVlanid());
+			preparedStatement.setString(39, portAttr.getPortNniAttr().getNniVlanpri());
+
+			preparedStatement.setInt(40, portAttr.getSfpExpectType());
+			preparedStatement.setString(41, portAttr.getSfpActual());
+			preparedStatement.setString(42, portAttr.getWorkWavelength());
+			preparedStatement.setString(43, portAttr.getSfpVender());
+			preparedStatement.setInt(44, portAttr.getSiteId());
+			preparedStatement.setInt(45, portAttr.getPortUniAttr().getMappingEnable());
+			preparedStatement.setInt(46, portAttr.getPortNniAttr().getStat());
+			preparedStatement.setInt(47, portAttr.getPortUniAttr().getSourceTcpPortRelevance());
+			preparedStatement.setInt(48, portAttr.getPortUniAttr().getEndTcpPortRelevance());
+			preparedStatement.setInt(49, portAttr.getPortUniAttr().getTosRelevance());
+			result = preparedStatement.executeUpdate();
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+		}
+
+		return result;
+	}
+
+	/**
+	 * 修改portAttr
+	 * 
+	 * @param portAttr
+	 *            插入实体对象
+	 * @param connection
+	 *            数据库连接
+	 * @return 插入的记录数
+	 * @throws Exception
+	 */
+	public int update(PortAttr portAttr, Connection connection) throws Exception {
+		if (null == portAttr) {
+			throw new Exception("portAttr is null");
+		}
+
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		PreparedStatement preparedStatement = null;
+		int result = 0;
+
+		try {
+			preparedStatement = connection.prepareStatement(this.SQL_UPDATE);
+			preparedStatement.setInt(1, portAttr.getPortId());
+			preparedStatement.setInt(2, portAttr.getPortSpeed());
+			preparedStatement.setString(3, portAttr.getActualSpeed());
+			preparedStatement.setInt(4, portAttr.getWorkModel());
+			preparedStatement.setString(5, portAttr.getMaxFrameSize());
+			preparedStatement.setInt(6, portAttr.getFluidControl());
+			preparedStatement.setString(7, portAttr.getExitLimit());
+			preparedStatement.setString(8, portAttr.getEntranceLimit());
+			preparedStatement.setInt(9, portAttr.getSlowAgreement());
+			preparedStatement.setInt(10, portAttr.getTenWan());
+			preparedStatement.setInt(11, portAttr.getMessageLoopback());
+
+			preparedStatement.setInt(12, portAttr.getPortUniAttr().getEthernetPackaging());
+			preparedStatement.setInt(13, portAttr.getPortUniAttr().getVlanTpId());
+			preparedStatement.setInt(14, portAttr.getPortUniAttr().getOuterVlanTpId());
+			preparedStatement.setInt(15, portAttr.getPortUniAttr().getVlanMode());
+			preparedStatement.setInt(16, portAttr.getPortUniAttr().getIsBroadcast());
+			preparedStatement.setString(17, portAttr.getPortUniAttr().getBroadcast());
+			preparedStatement.setInt(18, portAttr.getPortUniAttr().getIsUnicast());
+			preparedStatement.setString(19, portAttr.getPortUniAttr().getUnicast());
+			preparedStatement.setInt(20, portAttr.getPortUniAttr().getIsMulticast());
+			preparedStatement.setString(21, portAttr.getPortUniAttr().getMulticast());
+			preparedStatement.setString(22, portAttr.getPortUniAttr().getVlanId());
+			preparedStatement.setString(23, portAttr.getPortUniAttr().getVlanPri());
+			preparedStatement.setInt(24, portAttr.getPortUniAttr().getVlanRelevance());
+			preparedStatement.setInt(25, portAttr.getPortUniAttr().getEightIpRelevance());
+			preparedStatement.setInt(26, portAttr.getPortUniAttr().getSourceMacRelevance());
+			preparedStatement.setInt(27, portAttr.getPortUniAttr().getDestinationMacRelevance());
+			preparedStatement.setInt(28, portAttr.getPortUniAttr().getSourceIpRelevance());
+			preparedStatement.setInt(29, portAttr.getPortUniAttr().getDestinationIpRelevance());
+			preparedStatement.setInt(30, portAttr.getPortUniAttr().getPwRelevance());
+			preparedStatement.setInt(31, portAttr.getPortUniAttr().getDscpRelevance());
+
+			preparedStatement.setString(32, portAttr.getPortNniAttr().getStaticMac());
+			preparedStatement.setString(33, portAttr.getPortNniAttr().getNeighbourId());
+			preparedStatement.setString(34, portAttr.getPortNniAttr().getOperMac());
+			preparedStatement.setString(35, portAttr.getPortNniAttr().getOperId());
+			preparedStatement.setInt(36, portAttr.getPortNniAttr().getNeighbourFind());
+			preparedStatement.setInt(37, portAttr.getPortNniAttr().getCcnEnable());
+			preparedStatement.setString(38, portAttr.getPortNniAttr().getNniVlanid());
+			preparedStatement.setString(39, portAttr.getPortNniAttr().getNniVlanpri());
+
+			preparedStatement.setInt(40, portAttr.getSfpExpectType());
+			preparedStatement.setString(41, portAttr.getSfpActual());
+			preparedStatement.setString(42, portAttr.getWorkWavelength());
+			preparedStatement.setString(43, portAttr.getSfpVender());
+			preparedStatement.setInt(44, portAttr.getPortUniAttr().getMappingEnable());
+			preparedStatement.setInt(45, portAttr.getPortNniAttr().getStat());
+			preparedStatement.setInt(46, portAttr.getPortUniAttr().getSourceTcpPortRelevance());
+			preparedStatement.setInt(47, portAttr.getPortUniAttr().getEndTcpPortRelevance());
+			preparedStatement.setInt(48, portAttr.getPortUniAttr().getTosRelevance());
+			preparedStatement.setInt(49, portAttr.getId());
+
+			result = preparedStatement.executeUpdate();
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+		}
+
+		return result;
+	}
+
+	/**
+	 * 通过主键删除portAttr对象
+	 * 
+	 * @param id
+	 *            主键
+	 * @param connection
+	 *            数据库连接
+	 * @return 删除的记录数
+	 * @throws Exception
+	 */
+	public int delete(int id, Connection connection) throws Exception {
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		int result = 0;
+
+		try {
+			sql = "delete from portattr where id=?";
+			preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.setInt(1, id);
+
+			result = preparedStatement.executeUpdate();
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+
+		return result;
+	}
+
+	/**
+	 * 根据portId删除portAttr对象
+	 * 
+	 * @param portId
+	 * @param connection
+	 * @return
+	 * @throws Exception
+	 */
+	public int deleteByPortId(int portId, Connection connection) throws Exception {
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		int result = 0;
+
+		try {
+			sql = "DELETE from portattr where portid=?";
+			preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.setInt(1, portId);
+
+			result = preparedStatement.executeUpdate();
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+
+		return result;
+	}
+
+	/**
+	 * 根据条件查询portattr
+	 * 
+	 * @param portAttrCondition
+	 *            查询条件
+	 * @param connection
+	 *            数据库连接
+	 * @return portattr集合
+	 * @throws Exception
+	 */
+	public List<PortAttr> queryByCondition(PortAttr portAttrCondition, Connection connection) throws Exception {
+
+		if (null == portAttrCondition) {
+			throw new Exception("portAttr is null");
+		}
+
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		List<PortAttr> portAttrList = null;
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+
+		try {
+			portAttrList = new ArrayList<PortAttr>();
+			sql = "select * from portattr where 1=1";
+
+			if (portAttrCondition.getId() > 0) {
+				sql += " and id=" + portAttrCondition.getId();
+			}
+
+			if (portAttrCondition.getPortId() > 0) {
+				sql += " and portid=" + portAttrCondition.getPortId();
+			}
+
+			preparedStatement = connection.prepareStatement(sql);
+			portAttrList = this.executeQuery(preparedStatement);
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+
+		return portAttrList;
+
+	}
+
+	/**
+		根据网元ID删除记录
+	* @author kk
+	
+	* @param   
+	
+	* @return 
+	 * @throws Exception 
+	
+	* @Exception 异常对象
+	 */
+	public void deleteBySite(int siteId, Connection connection) throws Exception {
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		PreparedStatement preparedStatement = null;
+
+		try {
+			preparedStatement = connection.prepareStatement(this.SQL_DELETE_SITE);
+			preparedStatement.setInt(1, siteId);
+
+			preparedStatement.executeUpdate();
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+		}
+
+	}
+
+	/**
+	 * 执行查询方法
+	 * 
+	 * @author kk
+	 * 
+	 * @param
+	 * 
+	 * @return
+	 * @throws Exception
+	 * 
+	 * @Exception 异常对象
+	 */
+	private List<PortAttr> executeQuery(PreparedStatement preparedStatement) throws Exception {
+		ResultSet resultSet = null;
+		PortAttr portAttr = null;
+		List<PortAttr> portAttrList = null;
+		try {
+			portAttrList = new ArrayList<PortAttr>();
+
+			resultSet = preparedStatement.executeQuery();
+
+			while (resultSet.next()) {
+				portAttr = new PortAttr();
+				portAttr.setId(resultSet.getInt("Id"));
+				portAttr.setPortId(resultSet.getInt("PortId"));
+				portAttr.setPortSpeed(resultSet.getInt("PortSpeed"));
+				portAttr.setActualSpeed(resultSet.getString("ActualSpeed"));
+				portAttr.setWorkModel(resultSet.getInt("WorkModel"));
+				portAttr.setMaxFrameSize(resultSet.getString("MaxFrameSize"));
+				portAttr.setFluidControl(resultSet.getInt("FluidControl"));
+				portAttr.setExitLimit(resultSet.getString("ExitLimit"));
+				portAttr.setEntranceLimit(resultSet.getString("EntranceLimit"));
+				portAttr.setSlowAgreement(resultSet.getInt("SlowAgreement"));
+				portAttr.setTenWan(resultSet.getInt("TenWan"));
+				portAttr.setMessageLoopback(resultSet.getInt("MessageLoopback"));
+
+				portAttr.getPortUniAttr().setEthernetPackaging(resultSet.getInt("EthernetPackaging"));
+				portAttr.getPortUniAttr().setVlanTpId(resultSet.getInt("VlanTpId"));
+				portAttr.getPortUniAttr().setOuterVlanTpId(resultSet.getInt("OuterVlanTpId"));
+				portAttr.getPortUniAttr().setVlanMode(resultSet.getInt("VlanMode"));
+				portAttr.getPortUniAttr().setIsBroadcast(resultSet.getInt("IsBroadcast"));
+				portAttr.getPortUniAttr().setBroadcast(resultSet.getString("Broadcast"));
+				portAttr.getPortUniAttr().setIsUnicast(resultSet.getInt("IsUnicast"));
+				portAttr.getPortUniAttr().setUnicast(resultSet.getString("Unicast"));
+				portAttr.getPortUniAttr().setIsMulticast(resultSet.getInt("IsMulticast"));
+				portAttr.getPortUniAttr().setMulticast(resultSet.getString("Multicast"));
+				portAttr.getPortUniAttr().setVlanId(resultSet.getString("VlanId"));
+				portAttr.getPortUniAttr().setVlanPri(resultSet.getString("VlanPri"));
+				portAttr.getPortUniAttr().setVlanRelevance(resultSet.getInt("VlanRelevance"));
+				portAttr.getPortUniAttr().setEightIpRelevance(resultSet.getInt("EightIpRelevance"));
+				portAttr.getPortUniAttr().setSourceMacRelevance(resultSet.getInt("SourceMacRelevance"));
+				portAttr.getPortUniAttr().setDestinationMacRelevance(resultSet.getInt("DestinationMacRelevance"));
+				portAttr.getPortUniAttr().setSourceIpRelevance(resultSet.getInt("SourceIpRelevance"));
+				portAttr.getPortUniAttr().setDestinationIpRelevance(resultSet.getInt("DestinationIpRelevance"));
+				portAttr.getPortUniAttr().setPwRelevance(resultSet.getInt("PwRelevance"));
+				portAttr.getPortUniAttr().setDscpRelevance(resultSet.getInt("DscpRelevance"));
+
+				portAttr.getPortNniAttr().setStaticMac(resultSet.getString("StaticMac"));
+				portAttr.getPortNniAttr().setNeighbourId(resultSet.getString("NeighbourId"));
+				portAttr.getPortNniAttr().setOperMac(resultSet.getString("OperMac"));
+				portAttr.getPortNniAttr().setOperId(resultSet.getString("OperId"));
+				portAttr.getPortNniAttr().setNeighbourFind(resultSet.getInt("NeighbourFind"));
+				portAttr.getPortNniAttr().setCcnEnable(resultSet.getInt("CcnEnable"));
+				portAttr.getPortNniAttr().setNniVlanid(resultSet.getString("NniVlanid"));
+				portAttr.getPortNniAttr().setNniVlanpri(resultSet.getString("NniVlanpri"));
+
+				portAttr.setSfpExpectType(resultSet.getInt("SfpExpectType"));
+				portAttr.setSfpActual(resultSet.getString("SfpActual"));
+				portAttr.setWorkWavelength(resultSet.getString("WorkWavelength"));
+				portAttr.setSfpVender(resultSet.getString("SfpVender"));
+				portAttr.setSiteId(resultSet.getInt("siteId"));
+				portAttr.getPortUniAttr().setMappingEnable(resultSet.getInt("mappingEnable"));
+				portAttr.getPortNniAttr().setStat(resultSet.getInt("stat"));
+				portAttr.getPortUniAttr().setSourceTcpPortRelevance(resultSet.getInt("sourceTcpPortRelevance"));
+				portAttr.getPortUniAttr().setEndTcpPortRelevance(resultSet.getInt("endTcpPortRelevance"));
+				portAttr.getPortUniAttr().setTosRelevance(resultSet.getInt("toSRelevance"));
+				portAttrList.add(portAttr);
+			}
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (resultSet != null) {
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				resultSet = null;
+			}
+			portAttr = null;
+		}
+		return portAttrList;
+
+	}
+}

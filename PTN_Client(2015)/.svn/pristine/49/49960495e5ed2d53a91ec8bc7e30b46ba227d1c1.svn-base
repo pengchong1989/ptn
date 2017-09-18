@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 700B_LEFT板卡下所有端口配置 (70B的风扇卡) -->
+<xml-boby>
+
+<card cardName="IP32" cardType="" imagePath="/com/nms/ui/images/topo/szza/ip32.png" x="72" y="56" >
+    <port portName="e1"  seq="1" portType="e1" bandWidth="" imagePath="/com/nms/ui/images/topo/szza/port_a_top.png" x="20" y="126" number="1" module="(o)"></port>
+	<port portName="e1"  seq="3" portType="e1" bandWidth="" imagePath="/com/nms/ui/images/topo/szza/port_a_top.png" x="20" y="149" number="2" module="(o)"></port>
+	<port portName="e1"  seq="5" portType="e1" bandWidth="" imagePath="/com/nms/ui/images/topo/szza/port_a_top.png" x="20" y="172" number="3" module="(o)"></port>
+	<port portName="e1"  seq="7" portType="e1" bandWidth="" imagePath="/com/nms/ui/images/topo/szza/port_a_top.png" x="20" y="195" number="4" module="(o)"></port>
+	<port portName="e1"  seq="9" portType="e1" bandWidth="" imagePath="/com/nms/ui/images/topo/szza/port_a_top.png" x="20" y="230" number="5" module="(o)"></port>
+    <port portName="e1"  seq="11" portType="e1" bandWidth="" imagePath="/com/nms/ui/images/topo/szza/port_a_top.png" x="20" y="253" number="6" module="(o)"></port>
+	<port portName="e1"  seq="13" portType="e1" bandWidth="" imagePath="/com/nms/ui/images/topo/szza/port_a_top.png" x="20" y="276" number="7" module="(o)"></port>
+    <port portName="e1"  seq="15" portType="e1" bandWidth="" imagePath="/com/nms/ui/images/topo/szza/port_a_top.png" x="20" y="299" number="8" module="(o)"></port>
+	<port portName="e1"  seq="17" portType="e1" bandWidth="" imagePath="/com/nms/ui/images/topo/szza/port_a_top.png" x="20" y="334" number="9" module="(o)"></port>
+	<port portName="e1"  seq="19" portType="e1" bandWidth="" imagePath="/com/nms/ui/images/topo/szza/port_a_top.png" x="20" y="357" number="10" module="(o)"></port>
+	<port portName="e1"  seq="21" portType="e1" bandWidth="" imagePath="/com/nms/ui/images/topo/szza/port_a_top.png" x="20" y="380" number="11" module="(o)"></port>
+	<port portName="e1"  seq="23" portType="e1" bandWidth="" imagePath="/com/nms/ui/images/topo/szza/port_a_top.png" x="20" y="403" number="12" module="(o)"></port>
+	<port portName="e1"  seq="25" portType="e1" bandWidth="" imagePath="/com/nms/ui/images/topo/szza/port_a_top.png" x="20" y="438" number="13" module="(o)"></port>
+	<port portName="e1"  seq="27" portType="e1" bandWidth="" imagePath="/com/nms/ui/images/topo/szza/port_a_top.png" x="20" y="461" number="14" module="(o)"></port>
+	<port portName="e1"  seq="29" portType="e1" bandWidth="" imagePath="/com/nms/ui/images/topo/szza/port_a_top.png" x="20" y="484" number="15" module="(o)"></port>
+	<port portName="e1"  seq="31" portType="e1" bandWidth="" imagePath="/com/nms/ui/images/topo/szza/port_a_top.png" x="20" y="507" number="16" module="(o)"></port>
+</card>
+
+</xml-boby>

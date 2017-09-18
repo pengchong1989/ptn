@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nms.db.dao.ptn.path.protect.ProtectCorbaMapper" >
+	<select id="">
+		SELECT * FROM ( SELECT p.id AS 'id', p.`name` AS 'name', p.siteId AS 'siteId', s.CellId AS 'siteName', p.protectionGroupType AS 'protectionGroupType', 
+		p.reversionMode AS 'reversionMode', p.protectionSchemeState AS 'protectionSchemeState', p.alarmContinueTime AS 'alarmContinueTime', p.waitTime AS 
+		'waitTime', p.delaytime AS 'delaytime', p.portId AS 'portId_work', wp.portName AS 'portName_work', p.portId_pro AS 'portId_pro', pp.portName AS 
+		'portName_pro', p.objType AS 'objType', p.rotate AS 'rotate', p.rotatePosition AS 'rotatePosition', p.apsenable AS 'apsenable', p.sfApsenable AS 
+		'sfApsenable', p.sdApsenable AS 'sdApsenable', p.recoveryMode AS 'recoveryMode', p.protectType AS 'protectType' FROM ( SELECT t.tunnelId AS 'id', 
+		t.tunnelName AS 'name', t.aSiteId AS 'siteId', '1' AS 'protectionGroupType', '1' AS 'reversionMode', CASE WHEN t.tunnelId = pt.tunnelId THEN '0' 
+		ELSE ( CASE WHEN t.aPortId = pt.aPortId THEN '0' ELSE '2' END ) END AS 'protectionSchemeState', '' AS 'alarmContinueTime', t.waittime AS 'waitTime',
+		 t.delaytime AS 'delaytime', t.aPortId AS 'portId', pt.aPortId AS 'portId_pro', 'TUNNEL' AS 'objType', sr.roate AS 'rotate', CASE WHEN t.position = 1 
+		 THEN 0 ELSE 1 END AS 'rotatePosition', t.apsenable AS 'apsenable', '' AS 'sfApsenable', '' AS 'sdApsenable', '' AS 'recoveryMode', '0' AS 'protectType' 
+		 FROM tunnel t, tunnel pt, site_roate sr WHERE t.protectTunnelId = pt.tunnelId AND pt.tunnelId = sr.typeId AND sr.type = 'tunnel' AND t.tunnelType =
+		 '186' GROUP BY sr.typeId UNION ALL SELECT m.id AS 'id', m.`name` AS 'name', m.siteId AS 'siteId', CASE WHEN m.protectType = 1 THEN 0 ELSE 1 END AS
+		'protectionGroupType', '1' AS 'reversionMode', CASE WHEN m.NowWorkPortId = m.workPortId THEN 1 ELSE 2 END AS 'protectionSchemeState', '' AS 
+		'alarmContinueTime', m.WaitTime AS 'waitTime', m.delaytime AS 'delaytime', m.workPortId AS 'portId', m.ProtectPortId AS 'portId_pro', 'MSPPROTECT'
+	    AS 'objType', sr.roate AS 'rotate', CASE WHEN m.workPortId = m.NowWorkPortId THEN 0 ELSE 1 END AS 'rotatePosition', m.apsenable AS 'apsenable', 
+		m.sfPriority AS 'sfApsenable', m.sdPriority AS 'sdApsenable', m.recoveryMode AS 'recoveryMode', m.protectType AS 'protectType' FROM mspprotect m,
+		site_roate sr WHERE m.id = sr.typeId AND sr.type = 'msp' GROUP BY sr.typeId UNION ALL SELECT l.loopId AS 'id', l.`name` AS 'name', l.westNodeId 
+		AS 'siteId', '' AS 'protectionGroupType', '1' AS 'reversionMode', '0' AS 'protectionSchemeState', '' AS 'alarmContinueTime', l.waittime AS 
+		'waitTime', l.delaytime AS 'delaytime', l.westPort AS 'portId', l.eastPort AS 'portId_pro', 'LOOPPROTECT' AS 'objType', 0 AS 'rotate', 0 AS 
+		'rotatePosition', l.apsenable AS 'apsenable', '' AS 'sfApsenable', '' AS 'sdApsenable', '' AS 'recoveryMode', '0' AS 'protectType' FROM 
+		loop_protect l ) p, site_inst s, port_inst wp, port_inst pp WHERE p.siteId = s.site_inst_id AND p.portId = wp.portId AND p.portId_pro = 
+	    pp.portId ) t WHERE 1=1
+	    <if test="siteId >0">
+	    	and t.siteId = #{siteId}
+	    </if>
+	    <if test="id >0">
+	    	and t.id = #{id}
+	    </if>
+	    <if test="objType != null and objType !='' ">
+	    	and t.objType = #{objType}
+	    </if>
+	    
+	</select>
+</mapper>

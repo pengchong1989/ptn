@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nms.db.dao.ptn.clock.FrequencyInfoMapper" >
+  <resultMap id="BaseResultMap" type="FrequencyInfo" >
+    <id column="Id" property="id" jdbcType="INTEGER" />
+    <result column="siteId" property="siteId" jdbcType="INTEGER" />
+    <result column="workMode" property="clockWorkMode" jdbcType="INTEGER" />
+    <result column="qlEnable" property="qlEnable" jdbcType="INTEGER" />
+    <result column="clockPRI" property="clockPRIList" jdbcType="VARCHAR" />
+    <result column="outInselect" property="outerClockInSelect" jdbcType="INTEGER" />
+    <result column="outOutselect1" property="outerClockOutSelect1" jdbcType="INTEGER" />
+    <result column="outOutselect2" property="outerClockOutSelect2" jdbcType="INTEGER" />
+    <result column="outSelect" property="outSelectList" jdbcType="VARCHAR" />
+    <result column="smOuter" property="smOuter" jdbcType="INTEGER" />
+    <result column="smSystem" property="smSystem" jdbcType="INTEGER" />
+    <result column="qlIn" property="qlIn" jdbcType="INTEGER" />
+    <result column="qlOut" property="qlOut" jdbcType="INTEGER" />
+    <result column="inQLvalue" property="clockInQLValueList" jdbcType="VARCHAR" />
+    <result column="outQLvalue" property="clockOutQLValueList" jdbcType="VARCHAR" />
+    <result column="InResumeTime" property="clockInResumeTime" jdbcType="INTEGER" />
+    <result column="waitResumeTime" property="waitResumeTime" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    Id, siteId, workMode, qlEnable, clockPRI, outInselect, outOutselect1, outOutselect2, 
+    outSelect, smOuter, smSystem, qlIn, qlOut, inQLout, inQLvalue, outQLvalue, InResumeTime, 
+    waitResumeTime
+  </sql>
+  
+  
+  <delete id="delete" parameterType="java.lang.Integer" >
+    delete from clock_freque
+    where siteId = #{siteId,jdbcType=INTEGER}
+  </delete>
+  
+  <insert id="insert" parameterType="FrequencyInfo"  useGeneratedKeys="true" keyProperty="id">
+    insert into clock_freque (siteId, workMode, qlEnable, clockPRI, outInselect, outOutselect1, outOutselect2, outSelect, 
+      smOuter, smSystem, qlIn, qlOut, inQLvalue, outQLvalue, InResumeTime, waitResumeTime)
+    values (#{siteId,jdbcType=INTEGER}, #{clockWorkMode,jdbcType=INTEGER}, 
+      #{qlEnable,jdbcType=INTEGER}, #{clockPRIList,jdbcType=VARCHAR}, #{outerClockInSelect,jdbcType=INTEGER}, 
+      #{outerClockOutSelect1,jdbcType=INTEGER}, #{outerClockOutSelect2,jdbcType=INTEGER}, #{outSelectList,jdbcType=VARCHAR}, 
+      #{smOuter,jdbcType=INTEGER}, #{smSystem,jdbcType=INTEGER}, #{qlIn,jdbcType=INTEGER}, 
+      #{qlOut,jdbcType=INTEGER}, #{clockInQLValueList,jdbcType=VARCHAR}, 
+      #{clockOutQLValueList,jdbcType=VARCHAR}, #{clockInResumeTime,jdbcType=INTEGER}, #{waitResumeTime,jdbcType=VARCHAR}
+      )
+  </insert>
+ 
+  <update id="update" parameterType="FrequencyInfo" >
+    update clock_freque set
+      workMode = #{clockWorkMode,jdbcType=INTEGER},
+      qlEnable = #{qlEnable,jdbcType=INTEGER},
+      clockPRI = #{clockPRIList,jdbcType=VARCHAR},
+      outInselect = #{outerClockInSelect,jdbcType=INTEGER},
+      outOutselect1 = #{outerClockOutSelect1,jdbcType=INTEGER},
+      outOutselect2 = #{outerClockOutSelect2,jdbcType=INTEGER},
+      outSelect = #{outSelectList,jdbcType=VARCHAR},
+      smOuter = #{smOuter,jdbcType=INTEGER},
+      smSystem = #{smSystem,jdbcType=INTEGER},
+      qlIn = #{qlIn,jdbcType=INTEGER},
+      qlOut = #{qlOut,jdbcType=INTEGER},
+      inQLvalue = #{clockInQLValueList,jdbcType=VARCHAR},
+      outQLvalue = #{clockOutQLValueList,jdbcType=VARCHAR},
+      InResumeTime = #{clockInResumeTime,jdbcType=INTEGER},
+      waitResumeTime = #{waitResumeTime,jdbcType=VARCHAR}
+    where siteId = #{siteId,jdbcType=INTEGER}    
+  </update>
+ 
+   <select id="queryByCondition" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from clock_freque
+    where siteId=#{siteId}
+  </select>
+</mapper>

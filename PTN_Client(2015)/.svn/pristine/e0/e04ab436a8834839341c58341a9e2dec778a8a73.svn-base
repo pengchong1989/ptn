@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nms.db.dao.equipment.port.PortStmMapper" >
+  <resultMap id="BaseResultMap" type="PortStm" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="portid" property="portid" jdbcType="INTEGER" />
+    <result column="jobwavelength" property="jobwavelength" jdbcType="INTEGER" />
+    <result column="sfpexpect" property="sfpexpect" jdbcType="VARCHAR" />
+    <result column="sfpreality" property="sfpreality" jdbcType="VARCHAR" />
+    <result column="sfpvender" property="sfpvender" jdbcType="VARCHAR" />
+    <result column="siteid" property="siteid" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, portid, jobwavelength, sfpexpect, sfpreality, sfpvender, siteid
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from port_stm
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from port_stm
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="PortStm" >
+    insert into port_stm (id, portid, jobwavelength, 
+      sfpexpect, sfpreality, sfpvender, 
+      siteid)
+    values (#{id,jdbcType=INTEGER}, #{portid,jdbcType=INTEGER}, #{jobwavelength,jdbcType=INTEGER}, 
+      #{sfpexpect,jdbcType=VARCHAR}, #{sfpreality,jdbcType=VARCHAR}, #{sfpvender,jdbcType=VARCHAR}, 
+      #{siteid,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="PortStm" >
+    insert into port_stm
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="portid != null" >
+        portid,
+      </if>
+      <if test="jobwavelength != null" >
+        jobwavelength,
+      </if>
+      <if test="sfpexpect != null" >
+        sfpexpect,
+      </if>
+      <if test="sfpreality != null" >
+        sfpreality,
+      </if>
+      <if test="sfpvender != null" >
+        sfpvender,
+      </if>
+      <if test="siteid != null" >
+        siteid,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="portid != null" >
+        #{portid,jdbcType=INTEGER},
+      </if>
+      <if test="jobwavelength != null" >
+        #{jobwavelength,jdbcType=INTEGER},
+      </if>
+      <if test="sfpexpect != null" >
+        #{sfpexpect,jdbcType=VARCHAR},
+      </if>
+      <if test="sfpreality != null" >
+        #{sfpreality,jdbcType=VARCHAR},
+      </if>
+      <if test="sfpvender != null" >
+        #{sfpvender,jdbcType=VARCHAR},
+      </if>
+      <if test="siteid != null" >
+        #{siteid,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="PortStm" >
+    update port_stm
+    <set >
+      <if test="portid != null" >
+        portid = #{portid,jdbcType=INTEGER},
+      </if>
+      <if test="jobwavelength != null" >
+        jobwavelength = #{jobwavelength,jdbcType=INTEGER},
+      </if>
+      <if test="sfpexpect != null" >
+        sfpexpect = #{sfpexpect,jdbcType=VARCHAR},
+      </if>
+      <if test="sfpreality != null" >
+        sfpreality = #{sfpreality,jdbcType=VARCHAR},
+      </if>
+      <if test="sfpvender != null" >
+        sfpvender = #{sfpvender,jdbcType=VARCHAR},
+      </if>
+      <if test="siteid != null" >
+        siteid = #{siteid,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="PortStm" >
+    update port_stm
+    set portid = #{portid,jdbcType=INTEGER},
+      jobwavelength = #{jobwavelength,jdbcType=INTEGER},
+      sfpexpect = #{sfpexpect,jdbcType=VARCHAR},
+      sfpreality = #{sfpreality,jdbcType=VARCHAR},
+      sfpvender = #{sfpvender,jdbcType=VARCHAR},
+      siteid = #{siteid,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

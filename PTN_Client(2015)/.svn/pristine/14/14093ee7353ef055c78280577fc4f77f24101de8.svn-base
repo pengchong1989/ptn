@@ -1,0 +1,270 @@
+package com.nms.db.dao.system.user;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.nms.db.bean.system.LoginManager;
+import com.nms.ui.manager.ExceptionManage;
+
+public class LoginManagerDao {
+	
+//  查询 语句
+	private final String SQL_INSERT="select id,username,startip,endip ,ipdescrible ,userid from im_setting where 1=1";
+	
+	/*
+	 * *在线查询*
+	 */
+	
+	
+	
+
+	public List<LoginManager> queryByidCondition(LoginManager loginManager, Connection connection) throws Exception {
+
+		List<LoginManager> loginManagerList = null;
+		ResultSet resultSet = null;
+		PreparedStatement preparedStatement = null;
+		String sql = null;
+		try {
+			loginManagerList = new ArrayList<LoginManager>();
+			sql = "SELECT id,username,startIp,endIp,IpDescrible from im_setting ";
+			preparedStatement = connection.prepareStatement(sql);
+			resultSet = preparedStatement.executeQuery();
+			while (resultSet.next()) {
+				loginManager = new LoginManager();
+				
+				loginManager.setId(resultSet.getInt("id"));
+				loginManager.setUsername(resultSet.getString("username"));
+				loginManager.setStartIp(resultSet.getString("startIp"));
+				loginManager.setEndIp(resultSet.getString("endIp"));
+				loginManager.setIpDescrible(resultSet.getString("IpDescrible"));
+				loginManagerList.add(loginManager);
+				
+			}
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (resultSet != null) {
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e, getClass());
+				}
+				resultSet = null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e, getClass());
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+	
+		return loginManagerList;
+
+	}
+
+
+
+	public List<LoginManager> select(LoginManager loginManager, Connection connection) throws Exception {
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet=null;
+		List<LoginManager> LoginManagerList=null;
+		LoginManager Manager=null;
+		String sql=this.SQL_INSERT;
+		try {	
+			preparedStatement = connection.prepareStatement(sql);
+			resultSet= preparedStatement.executeQuery();
+			LoginManagerList=new ArrayList<LoginManager>();
+			while(resultSet.next()){
+				Manager=new LoginManager();
+				Manager.setId(resultSet.getInt("id"));
+				Manager.setUsername(resultSet.getString("username"));
+				Manager.setStartIp(resultSet.getString("startip"));
+				Manager.setEndIp(resultSet.getString("endip"));
+				Manager.setIpDescrible(resultSet.getString("ipdescrible"));
+				Manager.setUserid(resultSet.getInt("userid"));
+				LoginManagerList.add(Manager);
+				System.out.println(LoginManagerList.get(0).getUsername()+"ooooo");
+			}
+		
+		} catch (Exception e) {
+			throw e;
+		}finally {
+			if (resultSet != null) {
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				resultSet = null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+			Manager=null;
+		}
+		
+		return LoginManagerList;
+	}
+
+
+
+	public int delete(int id, Connection connection) throws Exception{		
+		// TODO Auto-generated method stub
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		int result = 0;
+
+		try {
+			sql = "delete from im_setting where id=?";
+			preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.setInt(1, id);
+
+			result = preparedStatement.executeUpdate();
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+
+		return result;
+		
+	}
+
+
+
+	public int insert(LoginManager loginManager, Connection connection)throws Exception{
+		// TODO Auto-generated method stub
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+		if(null==loginManager){
+			throw new Exception("loginManager is null");
+		}
+	
+		PreparedStatement preparedStatement = null;
+		 ResultSet resultSet=null;
+		 int result = 0;
+	   String	sql="insert into im_setting (startip,endip,username,userid) values (?,?,?,?)";
+		
+		try {
+			preparedStatement = connection.prepareStatement(sql,Statement.RETURN_GENERATED_KEYS);
+			preparedStatement.setString(1,loginManager.getStartIp());
+			preparedStatement.setString(2, loginManager.getEndIp());
+			preparedStatement.setString(3,loginManager.getUsername());
+			preparedStatement.setInt(4, loginManager.getUserid());
+			 preparedStatement.executeUpdate();
+			resultSet = preparedStatement.getGeneratedKeys();
+			if (resultSet.next()) {
+				result = resultSet.getInt(1);
+			}
+		
+		} catch (Exception e) {
+			throw e;
+		}finally {
+			if (resultSet != null) {
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				resultSet = null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+		}
+		return result;
+	}
+
+
+	public int update(LoginManager loginManager, Connection connection)throws Exception{
+		// TODO Auto-generated method stub
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+		if(null==loginManager){
+			throw new Exception("loginManager is null");
+		}
+	
+		PreparedStatement preparedStatement = null;
+		 ResultSet resultSet=null;
+		 int result = 0;
+	   String	sql="update im_setting set startip=?,endip=?,username=?,userid=? where id=?";
+		
+		try {
+			preparedStatement = connection.prepareStatement(sql,Statement.RETURN_GENERATED_KEYS);
+			preparedStatement.setString(1,loginManager.getStartIp());
+			preparedStatement.setString(2, loginManager.getEndIp());
+			preparedStatement.setString(3,loginManager.getUsername());
+			preparedStatement.setInt(4, loginManager.getUserid());
+			preparedStatement.setInt(5, loginManager.getId());
+			 preparedStatement.executeUpdate();
+			resultSet = preparedStatement.getGeneratedKeys();
+			if (resultSet.next()) {
+				result = resultSet.getInt(1);
+			}
+		
+		} catch (Exception e) {
+			throw e;
+		}finally {
+			if (resultSet != null) {
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				resultSet = null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+		}
+		return result;
+	}
+	
+	
+
+
+
+}

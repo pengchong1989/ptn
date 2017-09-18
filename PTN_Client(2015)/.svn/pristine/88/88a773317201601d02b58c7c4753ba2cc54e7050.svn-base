@@ -1,0 +1,209 @@
+package com.nms.db.dao.ptn.path;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.nms.db.bean.ptn.path.GroupSpreadInfo;
+import com.nms.ui.manager.ExceptionManage;
+
+public class GroupSpreadDao {
+	/**
+	 * 插入Sql
+	 */
+	private final static String INSERTSQL = "insert into group_spread(smId, vsId, portChoose, macAddress, siteId) values(?,?,?,?,?)";
+	/**
+	 * 更新Sql
+	 */
+	private final static String UPDATESQL = "update group_spread set smId=?, vsId=?, portChoose=?, macAddress=?, siteId=? where id=?";
+	/**
+	 * 查询Sql
+	 */
+	private final static String SELECTSQL = "select * from group_spread where 1=1";
+	/**
+	 * 删除Sql
+	 */
+	private final static String DELETESQL = "delete from group_spread where id=?";
+	
+	public int insert(GroupSpreadInfo groupInfo, Connection connection) throws Exception {
+		if(null == groupInfo){
+			throw new Exception("unicastInfo is null");
+		}
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		int result = 0;
+		ResultSet resultSet =null;
+		try {
+			sql = INSERTSQL;
+			preparedStatement = connection.prepareStatement(sql , java.sql.Statement.RETURN_GENERATED_KEYS);
+			preparedStatement.setInt(1, groupInfo.getSmId());
+			preparedStatement.setInt(2, groupInfo.getVpls_vs());
+			preparedStatement.setString(3, groupInfo.getPortChoice());
+			preparedStatement.setString(4, groupInfo.getMacAddress());
+			preparedStatement.setInt(5, groupInfo.getSiteId());
+			preparedStatement.executeUpdate();
+			resultSet = preparedStatement.getGeneratedKeys();
+			while(resultSet.next()) {
+				result = resultSet.getInt(1);
+			}
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		} finally {
+			if(null!=resultSet){
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				resultSet = null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+		return result;
+	}
+	
+	public int update(GroupSpreadInfo groupInfo, Connection connection) throws Exception {
+		if(null == groupInfo){
+			throw new Exception("groupInfo is null");
+		}
+		if(null == connection){
+			throw new Exception("connection is null");
+		}
+		
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		int result = 0;
+		try {
+			sql = UPDATESQL;
+			preparedStatement = connection.prepareStatement(sql, java.sql.Statement.RETURN_GENERATED_KEYS);
+			preparedStatement.setInt(1, groupInfo.getSmId());
+			preparedStatement.setInt(2, groupInfo.getVpls_vs());
+			preparedStatement.setString(3, groupInfo.getPortChoice());
+			preparedStatement.setString(4, groupInfo.getMacAddress());
+			preparedStatement.setInt(5, groupInfo.getSiteId());
+			preparedStatement.setInt(6, groupInfo.getId());
+			result = preparedStatement.executeUpdate();
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		} finally {
+			if(preparedStatement != null){
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+		return result;
+	}
+	
+	public int delete(int id, Connection connection) throws Exception {
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+		PreparedStatement preparedStatement = null;
+		int result = 0;
+		try {
+			preparedStatement = connection.prepareStatement(DELETESQL);
+			preparedStatement.setInt(1, id);
+			result = preparedStatement.executeUpdate();
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		} finally {
+			if(preparedStatement != null){
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+		}
+		return result;
+	}
+
+	public List<GroupSpreadInfo> queryByCondition(GroupSpreadInfo groupInfo,Connection connection) throws Exception {
+		if(null == groupInfo){
+			throw new Exception("groupInfo is null");
+		}
+		if(null == connection){
+			throw new Exception("connection is null");
+		}
+		String sql = null;
+		try {
+			sql = SELECTSQL;
+			if(groupInfo.getId() > 0){
+				sql += " and id=" + groupInfo.getId();
+			}
+			if(groupInfo.getSmId() > 0){
+				sql += " and smId=" + groupInfo.getSmId();
+			}if(groupInfo.getSiteId() > 0){
+				sql += " and siteId=" + groupInfo.getSiteId();
+			}
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		}
+		return this.excuteQuery(connection, sql);
+	}
+
+	private List<GroupSpreadInfo> excuteQuery(Connection connection, String sql) throws Exception {
+		List<GroupSpreadInfo> groupInfoList = null;
+		ResultSet resultSet = null;
+		PreparedStatement preparedStatement = null;
+		GroupSpreadInfo groupInfo = null;
+		
+		try {
+			groupInfoList = new ArrayList<GroupSpreadInfo>();
+			preparedStatement = connection.prepareStatement(sql);
+			resultSet = preparedStatement.executeQuery();
+			while(resultSet.next()){
+				groupInfo = new GroupSpreadInfo();
+				groupInfo.setId(resultSet.getInt("id"));
+				groupInfo.setSmId(resultSet.getInt("smId"));
+				groupInfo.setVpls_vs(resultSet.getInt("vsId"));
+				groupInfo.setPortChoice(resultSet.getString("portChoose"));
+				groupInfo.setMacAddress(resultSet.getString("macAddress"));
+				groupInfo.setSiteId(resultSet.getInt("siteId"));
+				groupInfoList.add(groupInfo);
+			}
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		} finally {
+			if (resultSet != null) {
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				resultSet = null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+			groupInfo = null;
+		}
+		return groupInfoList;
+	}
+
+}
+

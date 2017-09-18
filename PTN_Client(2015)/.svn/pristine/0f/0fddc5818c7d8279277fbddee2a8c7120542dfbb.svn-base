@@ -1,0 +1,1042 @@
+﻿package com.nms.db.dao.equipment.shelf;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.nms.db.bean.equipment.shelf.SiteInst;
+import com.nms.db.bean.system.user.UserInst;
+import com.nms.ui.manager.DateUtil;
+import com.nms.ui.manager.ExceptionManage;
+
+public class SiteInstDao {
+
+	/**
+	 * 根据登陆状态查询
+	 */
+
+	private final String SQL_SELECT_LOGIN = "select * from site_inst where loginstatus=?";
+	/**
+	 * 新增siteInst
+	 * 
+	 * @param siteInst
+	 *            实体
+	 * @param connection
+	 *            数据库连接
+	 * @return 插入的记录数
+	 * @throws Exception
+	 */
+	public int insert(SiteInst siteInst, Connection connection) throws Exception {
+
+		if (null == siteInst) {
+			throw new Exception("siteInst is null");
+		}
+
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		int result = 0;
+		ResultSet resultSet = null;
+		
+		try {
+			siteInst.setCreateTime(DateUtil.getDate(DateUtil.FULLTIME));
+			sql = "insert into site_inst(Site_Inst_Id,Site_Hum_Id,CellDescribe,CellId,CellType,CellEditon,CellIcccode,CellTPoam,CellTimeZone,CellTime,CellTimeServer,CellIdentifier,FieldID , SiteX , SiteY,Type,Swich,username,userpwd,loginstatus,isGateway ,siteType,manufacturer,versions,createTime,isCreateDiscardFlow,createUser,location,alarmReversalModel,sn,rootIP,isAlarmReversal,isDelayAlarmTrap,delayTime,rack,shelf,rebootTime,hardversion) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+			preparedStatement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+			siteInst.setCreateUser(siteInst.getCreateUser());//ConstantUtil.user.getUser_Name()
+			preparedStatement.setInt(1, siteInst.getSite_Inst_Id());
+			preparedStatement.setString(2, siteInst.getSite_Hum_Id());
+			preparedStatement.setString(3, siteInst.getCellDescribe());
+			preparedStatement.setString(4, siteInst.getCellId());
+			preparedStatement.setString(5, siteInst.getCellType());
+			preparedStatement.setString(6, siteInst.getCellEditon());
+			preparedStatement.setString(7, siteInst.getCellIcccode());
+			preparedStatement.setString(8, siteInst.getCellTPoam());
+			preparedStatement.setString(9, siteInst.getCellTimeZone());
+			preparedStatement.setString(10, siteInst.getCellTime());
+			preparedStatement.setString(11, siteInst.getCellTimeServer());
+			preparedStatement.setString(12, siteInst.getCellIdentifier());
+			preparedStatement.setInt(13, siteInst.getFieldID());
+			preparedStatement.setInt(14, siteInst.getSiteX());
+			preparedStatement.setInt(15, siteInst.getSiteY());
+			preparedStatement.setInt(16, siteInst.getType());
+			preparedStatement.setString(17, siteInst.getSwich());
+			preparedStatement.setString(18, siteInst.getUsername());
+			preparedStatement.setString(19, siteInst.getUserpwd());
+			preparedStatement.setInt(20, siteInst.getLoginstatus());
+			preparedStatement.setInt(21, siteInst.getIsGateway());
+			preparedStatement.setInt(22, siteInst.getSiteType());
+			preparedStatement.setInt(23, siteInst.getManufacturer());
+			preparedStatement.setString(24, siteInst.getVersions());
+			preparedStatement.setString(25, siteInst.getCreateTime());
+			preparedStatement.setInt(26,siteInst.getIsCreateDiscardFlow());
+			preparedStatement.setString(27,siteInst.getCreateUser());
+			preparedStatement.setString(28,siteInst.getSiteLocation());
+			preparedStatement.setInt(29,siteInst.getAlarmReversalModel());
+			preparedStatement.setString(30,siteInst.getSn());
+			preparedStatement.setString(31,siteInst.getRootIP());
+			preparedStatement.setInt(32,siteInst.getIsAlarmReversal());
+			preparedStatement.setInt(33,siteInst.getIsDelayAlarmTrap());
+			preparedStatement.setString(34,siteInst.getDelayTime());
+			preparedStatement.setInt(35,siteInst.getRack());
+			preparedStatement.setInt(36,siteInst.getShelf());
+			preparedStatement.setLong(37,siteInst.getL());
+			preparedStatement.setString(38,siteInst.getCardNumber());
+			preparedStatement.executeUpdate();
+			resultSet = preparedStatement.getGeneratedKeys();
+			if (resultSet.next()) {
+				result = resultSet.getInt(1);
+			}
+		} catch (Exception e) {
+			throw e;
+		} finally {
+
+			if (resultSet != null) {
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e, this.getClass());
+				}
+				resultSet = null;
+			}
+
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+
+		return result;
+	}
+
+	/**
+	 * 修改siteInst
+	 * 
+	 * @param siteInst
+	 *            实体
+	 * @param connection
+	 *            数据库连接
+	 * @return 记录数
+	 * @throws Exception
+	 */
+	public int update(SiteInst siteInst, Connection connection) throws Exception {
+		if (null == siteInst) {
+			throw new Exception("siteInst is null");
+		}
+
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		int result = 0;
+
+		try {
+			sql = "update site_inst set Site_Hum_Id=?,CellDescribe=?,CellId=?,CellType=?,CellEditon=?,CellIcccode=?,CellTPoam=?,CellTimeZone=?,CellTime=?,CellTimeServer=?,CellIdentifier=?,FieldID=?,SiteX=?,SiteY=?,Type=?,Swich=?,username=?,userpwd=?,loginstatus=?,versions=?,isGateway=?,siteType =? ,manufacturer=? ,isCreateDiscardFlow=?,location=?,alarmReversalModel=? ,sn=? ,rootIP=? ,isAlarmReversal=?,isDelayAlarmTrap=?,delayTime=? ,rack=?,shelf=? ,rebootTime=?,hardversion=? where site_inst_id=?";
+			preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.setString(1, siteInst.getSite_Hum_Id());
+			preparedStatement.setString(2, siteInst.getCellDescribe());
+			preparedStatement.setString(3, siteInst.getCellId());
+			preparedStatement.setString(4, siteInst.getCellType());
+			preparedStatement.setString(5, siteInst.getCellEditon());
+			preparedStatement.setString(6, siteInst.getCellIcccode());
+			preparedStatement.setString(7, siteInst.getCellTPoam());
+			preparedStatement.setString(8, siteInst.getCellTimeZone());
+			preparedStatement.setString(9, siteInst.getCellTime());
+			preparedStatement.setString(10, siteInst.getCellTimeServer());
+			preparedStatement.setString(11, siteInst.getCellIdentifier());
+			preparedStatement.setInt(12, siteInst.getFieldID());
+			preparedStatement.setInt(13, siteInst.getSiteX());
+			preparedStatement.setInt(14, siteInst.getSiteY());
+			preparedStatement.setInt(15, siteInst.getType());
+			preparedStatement.setString(16, siteInst.getSwich());
+			preparedStatement.setString(17, siteInst.getUsername());
+			preparedStatement.setString(18, siteInst.getUserpwd());
+			preparedStatement.setInt(19, siteInst.getLoginstatus());
+			preparedStatement.setString(20, siteInst.getVersions());
+			preparedStatement.setInt(21, siteInst.getIsGateway());
+			preparedStatement.setString(22, siteInst.getSiteType() + "");
+			preparedStatement.setInt(23, siteInst.getManufacturer());
+			preparedStatement.setInt(24, siteInst.getIsCreateDiscardFlow());
+			preparedStatement.setString(25, siteInst.getSiteLocation());
+			preparedStatement.setInt(26, siteInst.getAlarmReversalModel());
+			preparedStatement.setString(27, siteInst.getSn());
+			preparedStatement.setString(28, siteInst.getRootIP());
+			preparedStatement.setInt(29, siteInst.getIsAlarmReversal());
+			preparedStatement.setInt(30, siteInst.getIsDelayAlarmTrap());
+			preparedStatement.setString(31, siteInst.getDelayTime());
+			preparedStatement.setInt(32, siteInst.getRack());
+			preparedStatement.setInt(33, siteInst.getShelf());
+			preparedStatement.setLong(34, siteInst.getL());
+			preparedStatement.setString(35, siteInst.getCardNumber());
+			preparedStatement.setInt(36, siteInst.getSite_Inst_Id());
+			result = preparedStatement.executeUpdate();
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+
+		return result;
+	}
+
+	/**
+	 * 通过主键删除site_inst
+	 * 
+	 * @param site_inst_id
+	 *            主键
+	 * @param connection
+	 *            数据库连接
+	 * @return 删除记录数
+	 * @throws Exception
+	 */
+	public int delete(int site_inst_id, Connection connection) throws Exception {
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		int result = 0;
+
+		try {
+			sql = "delete from site_inst where site_inst_id=?";
+			preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.setInt(1, site_inst_id);
+
+			result = preparedStatement.executeUpdate();
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+
+		return result;
+	}
+
+	/**
+	 * 根据site_inst查询网元连接状态
+	 * 
+	 * @param site_instID
+	 * @param connection
+	 *            数据库连接
+	 * @return int是否连接,0未连接，1已连接
+	 * @throws Exception
+	 */
+	public int queryNeStatus(int siteId, Connection connection) throws Exception {
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+		int result = 0;
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+		try {
+			sql = "select loginstatus from site_inst where site_inst_id=" + siteId;
+			preparedStatement = connection.prepareStatement(sql);
+			resultSet = preparedStatement.executeQuery();
+
+			if (resultSet.next()) {
+				result = resultSet.getInt("loginstatus");
+			}
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (resultSet != null) {
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				resultSet = null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+
+		return result;
+	}
+
+	/**
+	 * 根据条件查询site_inst
+	 * 
+	 * @param codeCondition
+	 *            查询条件
+	 * @param connection
+	 *            数据库连接
+	 * @return List<SiteInst>集合
+	 * @throws Exception
+	 */
+	public List<SiteInst> queryByCondition(SiteInst siteinstCondition, Connection connection) throws Exception {
+
+		if (null == siteinstCondition) {
+			throw new Exception("siteinstCondition is null");
+		}
+
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		List<SiteInst> siteinstList = null;
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+
+		try {
+			sql = "select*from site_inst where 1=1";
+			if (siteinstCondition.getSite_Inst_Id() > 0) {
+				sql += " and site_inst_id=" + siteinstCondition.getSite_Inst_Id();
+			}
+
+			if (siteinstCondition.getSite_Hum_Id() != null && !"".equals(siteinstCondition.getSite_Hum_Id())) {
+				sql += " and site_hum_id='" + siteinstCondition.getSite_Hum_Id() + "'";
+			}
+
+			if (siteinstCondition.getCellId() != null && !"".equals(siteinstCondition.getCellId())) {
+				sql += " and CellId='" + siteinstCondition.getCellId() + "'";
+			}
+
+			if (siteinstCondition.getFieldID() > 0) {
+				sql += " and  FieldID=" + siteinstCondition.getFieldID();
+			}
+			if (siteinstCondition.getCellDescribe() != null && !"".equals(siteinstCondition.getCellDescribe())) {
+				sql += " and  CellDescribe='" + siteinstCondition.getCellDescribe() + "'";
+			}
+			if (siteinstCondition.getLoginstatus() > 0) {
+				sql += " and  loginstatus=" + siteinstCondition.getLoginstatus();
+			}
+			if (siteinstCondition.getIsGateway() > 0) {
+				sql += " and  isGateway=" + siteinstCondition.getIsGateway();
+			}
+			if ( siteinstCondition.getSn() != null && !siteinstCondition.getSn().equals("")){
+				sql += " and  sn='" + siteinstCondition.getSn()+"'";
+			}
+			preparedStatement = connection.prepareStatement(sql);
+
+			siteinstList = this.executeQuery(preparedStatement);
+		} catch (Exception e) {
+			throw e;
+		} finally {
+
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+
+		return siteinstList;
+
+	}
+	/**
+	 * 
+	 * @param humId
+	 * @param connection
+	 * @return
+	 * @throws Exception
+	 */
+	public List<Integer> queryByhumId(int humId, Connection connection) throws Exception {
+		ArrayList<Integer> fieldList = null;
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+		
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+		try
+		{
+			fieldList = new ArrayList<Integer>();
+			sql = "select FieldID from site_inst where site_Hum_id='"+humId+"'";
+			preparedStatement = connection.prepareStatement(sql);
+			resultSet = preparedStatement.executeQuery();
+			while (resultSet.next()) {
+				fieldList.add(resultSet.getInt("FieldID"));
+			}
+		}
+		 catch (Exception e) {
+				throw e;
+			} finally {
+				if (resultSet != null) {
+					try {
+						resultSet.close();
+					} catch (Exception e) {
+						ExceptionManage.dispose(e,this.getClass());
+					}
+					resultSet = null;
+				}
+				if (preparedStatement != null) {
+					try {
+						preparedStatement.close();
+					} catch (Exception e) {
+						ExceptionManage.dispose(e,this.getClass());
+					}
+					preparedStatement = null;
+				}
+				sql = null;
+			}
+		
+		return fieldList;
+	}
+
+	/**
+	 * 批量修改
+	 * 
+	 * @param siteinstList
+	 *            实体集合
+	 * @param connection
+	 *            数据库连接
+	 * @throws Exception
+	 */
+	public void updateBatch(List<SiteInst> siteinstList, Connection connection) throws Exception {
+		if (null == siteinstList) {
+			throw new Exception("fieldList is null");
+		}
+
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		PreparedStatement preparedstatement = null;
+		try {
+			String sql = "update site_inst set Site_Hum_Id=?,CellDescribe=?,CellId=?,CellType=?,CellEditon=?,CellIcccode=?,CellTPoam=?,CellTimeZone=?,CellTime=?,CellTimeServer=?,CellIdentifier=?,FieldID=?,SiteX =?,SiteY =?,Type=?,Swich=?,username=?,userpwd=?,loginstatus=?,isCreateDiscardFlow=?, sn=? ,rootIP=?,alarmReversalModel=?,isAlarmReversal=?,isDelayAlarmTrap=?,delayTime=? ,rack=?,shelf=?,rebootTime=? where site_inst_id=?";
+			// connection.setAutoCommit(false);
+			preparedstatement = connection.prepareStatement(sql);
+			for (int i = 0; i < siteinstList.size(); i++) {
+				preparedstatement.setString(1, siteinstList.get(i).getSite_Hum_Id());
+				preparedstatement.setString(2, siteinstList.get(i).getCellDescribe());
+				preparedstatement.setString(3, siteinstList.get(i).getCellId());
+				preparedstatement.setString(4, siteinstList.get(i).getCellType());
+				preparedstatement.setString(5, siteinstList.get(i).getCellEditon());
+				preparedstatement.setString(6, siteinstList.get(i).getCellIcccode());
+				preparedstatement.setString(7, siteinstList.get(i).getCellTPoam());
+				preparedstatement.setString(8, siteinstList.get(i).getCellTimeZone());
+				preparedstatement.setString(9, siteinstList.get(i).getCellTime());
+				preparedstatement.setString(10, siteinstList.get(i).getCellTimeServer());
+				preparedstatement.setString(11, siteinstList.get(i).getCellIdentifier());
+				preparedstatement.setInt(12, siteinstList.get(i).getFieldID());
+				preparedstatement.setInt(13, siteinstList.get(i).getSiteX());
+				preparedstatement.setInt(14, siteinstList.get(i).getSiteY());
+				preparedstatement.setInt(15, siteinstList.get(i).getType());
+				preparedstatement.setString(16, siteinstList.get(i).getSwich());
+				preparedstatement.setString(17, siteinstList.get(i).getUsername());
+				preparedstatement.setString(18, siteinstList.get(i).getUserpwd());
+				preparedstatement.setInt(19, siteinstList.get(i).getLoginstatus());
+				preparedstatement.setInt(20, siteinstList.get(i).getIsCreateDiscardFlow());
+				preparedstatement.setString(21, siteinstList.get(i).getSn());
+				preparedstatement.setString(22, siteinstList.get(i).getRootIP());
+				preparedstatement.setInt(23, siteinstList.get(i).getAlarmReversalModel());
+				preparedstatement.setInt(24, siteinstList.get(i).getIsAlarmReversal());
+				preparedstatement.setInt(25, siteinstList.get(i).getIsDelayAlarmTrap());
+				preparedstatement.setString(26, siteinstList.get(i).getDelayTime());
+				preparedstatement.setInt(27, siteinstList.get(i).getRack());
+				preparedstatement.setInt(28, siteinstList.get(i).getShelf());
+				preparedstatement.setLong(29, siteinstList.get(i).getL());
+				preparedstatement.setInt(30, siteinstList.get(i).getSite_Inst_Id());
+				preparedstatement.addBatch();
+			}
+			preparedstatement.executeBatch();
+			// connection.commit();
+
+		} catch (Exception e) {
+			// connection.rollback();
+			throw e;
+		} finally {
+			// connection.setAutoCommit(true);
+			if (preparedstatement != null) {
+				try {
+					preparedstatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());;
+				}
+				preparedstatement = null;
+			}
+		}
+	}
+
+	public void updateLoginStatusByIp(String ip, int loginStatus, Connection connection) throws Exception {
+
+		if (connection == null) {
+			throw new Exception("connection is null");
+		}
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		try {
+			sql = "update site_inst set loginstatus=? where CellDescribe=?";
+			preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.setInt(1, loginStatus);
+			preparedStatement.setString(2, ip);
+
+			preparedStatement.executeUpdate();
+			if (connection.getAutoCommit() != true) {
+				connection.commit();
+			}
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+			if (connection.getAutoCommit() != true) {
+				connection.setAutoCommit(true);
+			}
+			sql = null;
+		}
+
+	}
+
+	/**
+	 * 根据登陆状态查询网元
+	 * 
+	 * @param login
+	 *            登陆状态 1=已经登陆 0=离线
+	 * @param connection
+	 * @return
+	 * @throws Exception
+	 */
+	public List<SiteInst> queryByLogin(int login, Connection connection) throws Exception {
+		PreparedStatement preparedStatement = null;
+		List<SiteInst> siteList = null;
+		try {
+			preparedStatement = connection.prepareStatement(this.SQL_SELECT_LOGIN);
+			preparedStatement.setInt(1, login);
+			siteList = this.executeQuery(preparedStatement);
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+		}
+		return siteList;
+	}
+
+	public List<SiteInst> executeQuery(PreparedStatement preparedStatement) throws Exception {
+		ResultSet resultSet = null;
+		SiteInst siteInst = null;
+		List<SiteInst> siteInstList = null;
+		try {
+			siteInstList = new ArrayList<SiteInst>();
+			resultSet = preparedStatement.executeQuery();
+
+			while (resultSet.next()) {
+				siteInst = new SiteInst();
+				siteInst.setSite_Inst_Id(resultSet.getInt("site_inst_id"));
+				siteInst.setSite_Hum_Id(resultSet.getString("Site_Hum_Id"));
+				siteInst.setCellDescribe(resultSet.getString("CellDescribe"));
+				siteInst.setCellId(resultSet.getString("CellId"));
+				siteInst.setCellType(resultSet.getString("CellType"));
+				siteInst.setCellEditon(resultSet.getString("CellEditon"));
+				siteInst.setCellIcccode(resultSet.getString("CellIcccode"));
+				siteInst.setCellTPoam(resultSet.getString("CellTPoam"));
+				siteInst.setCellTimeZone(resultSet.getString("CellTimeZone"));
+				siteInst.setCellTime(resultSet.getString("CellTime"));
+				siteInst.setCellTimeServer(resultSet.getString("CellTimeServer"));
+				siteInst.setCellIdentifier(resultSet.getString("CellIdentifier"));
+				siteInst.setFieldID(resultSet.getInt("FieldID"));
+				siteInst.setSiteX(resultSet.getInt("SiteX"));
+				siteInst.setSiteY(resultSet.getInt("SiteY"));
+				siteInst.setType(resultSet.getInt("Type"));
+				siteInst.setSwich(resultSet.getString("Swich"));
+				siteInst.setUsername(resultSet.getString("username"));
+				siteInst.setUserpwd(resultSet.getString("userpwd"));
+				siteInst.setLoginstatus(resultSet.getInt("loginstatus"));
+				siteInst.setVersions(resultSet.getString("versions"));
+				siteInst.setIsGateway(resultSet.getInt("isGateway"));
+				siteInst.setSiteType(resultSet.getInt("siteType"));
+				siteInst.setManufacturer(resultSet.getInt("manufacturer"));
+				siteInst.setCreateTime(resultSet.getString("createTime"));
+				siteInst.setIsCreateDiscardFlow(resultSet.getInt("isCreateDiscardFlow"));
+				siteInst.setCreateUser(resultSet.getString("createUser"));
+				siteInst.setSiteLocation(resultSet.getString("location"));
+				siteInst.setSn(resultSet.getString("sn"));
+				siteInst.setRootIP(resultSet.getString("rootIP"));
+				siteInst.setAlarmReversalModel(resultSet.getInt("alarmReversalModel"));
+				siteInst.setIsAlarmReversal(resultSet.getInt("isAlarmReversal"));
+				siteInst.setIsDelayAlarmTrap(resultSet.getInt("isDelayAlarmTrap"));
+				siteInst.setDelayTime(resultSet.getString("delayTime"));
+				siteInst.setRack(resultSet.getInt("rack"));
+				siteInst.setShelf(resultSet.getInt("shelf"));
+				siteInst.setL(resultSet.getLong("rebootTime"));
+				siteInst.setCardNumber(resultSet.getString("hardversion"));
+				siteInstList.add(siteInst);
+			}
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (resultSet != null) {
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				resultSet = null;
+			}
+			siteInst = null;
+		}
+		return siteInstList;
+
+	}
+
+	/**
+	 * 通过ne地址关联查询网元
+	 * 
+	 * @param siteinstCondition
+	 * @param connection
+	 * @return
+	 * @throws Exception
+	 */
+	public List<SiteInst> queryByNeaddress(SiteInst siteinstCondition, Connection connection) throws Exception {
+
+		if (null == siteinstCondition) {
+			throw new Exception("siteinstCondition is null");
+		}
+
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		List<SiteInst> siteinstList = null;
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		List<Object> paramList = null;
+		try {
+			// 参数集合
+			paramList = new ArrayList<Object>();
+
+			sql = "select * from site_inst WHERE 1=1";
+			// 如果网元ID有值，就加查询条件中
+			if (null != siteinstCondition.getSite_Hum_Id() && !"".equals(siteinstCondition.getSite_Hum_Id()) && Integer.parseInt(siteinstCondition.getSite_Hum_Id()) > 0) {
+				sql += " and site_inst.site_Hum_id=?";
+				paramList.add(siteinstCondition.getSite_Hum_Id());
+			}
+
+			// 如果域id有值，把域加入查询条件中，因为存在子网，所以语句为子查询
+			if (siteinstCondition.getFieldID() > 0) {
+				sql += " AND (FieldID =(SELECT id FROM field WHERE groupId =?) or FieldID in (select id from field WHERE parentid = (select id from field WHERE groupId =?)))";
+				paramList.add(siteinstCondition.getFieldID());
+				paramList.add(siteinstCondition.getFieldID());
+			}
+
+			preparedStatement = connection.prepareStatement(sql);
+			//给?参数赋值
+			if(null!=paramList && paramList.size()>0){
+				for(int i = 0 ; i < paramList.size() ; i++){
+					preparedStatement.setObject(i+1, paramList.get(i));
+				}
+			}
+
+			siteinstList = this.executeQuery(preparedStatement);
+		} catch (Exception e) {
+			throw e;
+		} finally {
+
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+			paramList = null;
+		}
+
+		return siteinstList;
+
+	}
+
+	/**
+	 * 通过用户 的 ID （即用户查看域的权限） 查找 用户-域 关联表 查域ID查网元 插入 ： sy
+	 * 
+	 * @param userInst
+	 * @param connection
+	 * @return
+	 * @throws Exception
+	 */
+	public List<SiteInst> queryByRootSite(UserInst userInst, Connection connection) throws Exception {
+
+		if (null == userInst) {
+			throw new Exception("userInst is null");
+		}
+
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		List<SiteInst> siteinstList = null;
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+
+		try {
+			sql = "select*from site_inst ";
+			if (0 == userInst.getIsAll()) {
+//				sql += " where fieldid in(select field_id from user_field where user_id=?) or fieldid in (select id from field where parentId in(select field_id from user_field where user_id=?)) ";
+				sql += " where FieldID in(select id from field where netWorkId in(select field_id FROM user_field where user_id =?)) ";
+				preparedStatement = connection.prepareStatement(sql);
+				preparedStatement.setInt(1, userInst.getUser_Id());
+//				preparedStatement.setInt(2, userInst.getUser_Id());
+			} else {
+				
+				preparedStatement = connection.prepareStatement(sql);
+			}
+
+			siteinstList = this.executeQuery(preparedStatement);
+		} catch (Exception e) {
+			throw e;
+		} finally {
+
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+
+		return siteinstList;
+
+	}
+	
+	/**
+	 * 根据条件查询site_inst
+	 * 
+	 * @param codeCondition
+	 *            查询条件
+	 * @param connection
+	 *            数据库连接
+	 * @return List<SiteInst>集合
+	 * @throws Exception
+	 */
+	public List<SiteInst> queryWHByCondition(Connection connection) throws Exception {
+
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		List<SiteInst> siteinstList = null;
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+
+		try {
+			sql = "select*from site_inst where 1=1";
+			
+			sql += " and  loginstatus=" + 1;
+			sql += " and  manufacturer=" + 0;
+			preparedStatement = connection.prepareStatement(sql);
+			siteinstList = this.executeQuery(preparedStatement);
+		} catch (Exception e) {
+			throw e;
+		} finally {
+
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+
+		return siteinstList;
+
+	}
+	
+	public List<SiteInst> queryBySn(String sn, Connection connection) throws Exception {
+
+
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		List<SiteInst> siteinstList = null;
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+
+		try {
+			sql = "select*from site_inst where 1=1";
+			sql += " and  sn='" + sn+"'";
+			preparedStatement = connection.prepareStatement(sql);
+
+			siteinstList = this.executeQuery(preparedStatement);
+		} catch (Exception e) {
+			throw e;
+		} finally {
+
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+
+		return siteinstList;
+
+	}
+	
+	public List<SiteInst> querySnExist(Connection connection) throws Exception {
+
+
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		List<SiteInst> siteinstList = null;
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+
+		try {
+			sql = "select*from site_inst where 1=1";
+			preparedStatement = connection.prepareStatement(sql);
+
+			siteinstList = this.executeQuery(preparedStatement);
+		} catch (Exception e) {
+			throw e;
+		} finally {
+
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+
+		return siteinstList;
+
+	}
+	
+	/**
+	 * 
+	 * @param humId
+	 * @param connection
+	 * @return
+	 * @throws Exception
+	 */
+	public List<SiteInst> queryBySiteCount(Connection connection) throws Exception {
+		ArrayList<SiteInst> siteList = null;
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+		SiteInst siteInst = null;
+		try
+		{
+			siteList = new ArrayList<SiteInst>();
+			sql = "select count(s.CellType) count,createtime,site_inst_id,Site_Hum_Id,CellDescribe , CellId,CellType,CellEditon,CellIcccode,CellTPoam,CellTimeZone,CellTime,CellTimeServer,CellIdentifier,FieldID,SiteX,SiteY,Type,Swich,username,userpwd,loginstatus,versions,isGateway ,siteType" 
+				+ " ,manufacturer,isCreateDiscardFlow ,createUser ,location,sn ,rootIP,alarmReversalModel,isAlarmReversal,isDelayAlarmTrap,delayTime ,rack,shelf ,rebootTime from  site_inst s group by s.CellType";
+			preparedStatement = connection.prepareStatement(sql);
+			resultSet = preparedStatement.executeQuery();
+			while (resultSet.next()) {
+				siteInst = new SiteInst();
+				siteInst.setNeCount(resultSet.getInt("count"));
+				siteInst.setSite_Inst_Id(resultSet.getInt("site_inst_id"));
+				siteInst.setSite_Hum_Id(resultSet.getString("Site_Hum_Id"));
+				siteInst.setCellDescribe(resultSet.getString("CellDescribe"));
+				siteInst.setCellId(resultSet.getString("CellId"));
+				siteInst.setCellType(resultSet.getString("CellType"));
+				siteInst.setCellEditon(resultSet.getString("CellEditon"));
+				siteInst.setCellIcccode(resultSet.getString("CellIcccode"));
+				siteInst.setCellTPoam(resultSet.getString("CellTPoam"));
+				siteInst.setCellTimeZone(resultSet.getString("CellTimeZone"));
+				siteInst.setCellTime(resultSet.getString("CellTime"));
+				siteInst.setCellTimeServer(resultSet.getString("CellTimeServer"));
+				siteInst.setCellIdentifier(resultSet.getString("CellIdentifier"));
+				siteInst.setFieldID(resultSet.getInt("FieldID"));
+				siteInst.setSiteX(resultSet.getInt("SiteX"));
+				siteInst.setSiteY(resultSet.getInt("SiteY"));
+				siteInst.setType(resultSet.getInt("Type"));
+				siteInst.setSwich(resultSet.getString("Swich"));
+				siteInst.setUsername(resultSet.getString("username"));
+				siteInst.setUserpwd(resultSet.getString("userpwd"));
+				siteInst.setLoginstatus(resultSet.getInt("loginstatus"));
+				siteInst.setVersions(resultSet.getString("versions"));
+				siteInst.setIsGateway(resultSet.getInt("isGateway"));
+				siteInst.setSiteType(resultSet.getInt("siteType"));
+				siteInst.setManufacturer(resultSet.getInt("manufacturer"));
+				siteInst.setCreateTime(resultSet.getString("createTime"));
+				siteInst.setIsCreateDiscardFlow(resultSet.getInt("isCreateDiscardFlow"));
+				siteInst.setCreateUser(resultSet.getString("createUser"));
+				siteInst.setSiteLocation(resultSet.getString("location"));
+				siteInst.setSn(resultSet.getString("sn"));
+				siteInst.setRootIP(resultSet.getString("rootIP"));
+				siteInst.setAlarmReversalModel(resultSet.getInt("alarmReversalModel"));
+				siteInst.setIsAlarmReversal(resultSet.getInt("isAlarmReversal"));
+				siteInst.setIsDelayAlarmTrap(resultSet.getInt("isDelayAlarmTrap"));
+				siteInst.setDelayTime(resultSet.getString("delayTime"));
+				siteInst.setRack(resultSet.getInt("rack"));
+				siteInst.setShelf(resultSet.getInt("shelf"));
+				siteInst.setL(resultSet.getLong("rebootTime"));
+				siteList.add(siteInst);
+			}
+		}
+		 catch (Exception e) {
+				throw e;
+			} finally {
+				if (resultSet != null) {
+					try {
+						resultSet.close();
+					} catch (Exception e) {
+						ExceptionManage.dispose(e,this.getClass());
+					}
+					resultSet = null;
+				}
+				if (preparedStatement != null) {
+					try {
+						preparedStatement.close();
+					} catch (Exception e) {
+						ExceptionManage.dispose(e,this.getClass());
+					}
+					preparedStatement = null;
+				}
+				sql = null;
+			}
+		return siteList;
+	}
+	public List<SiteInst> queryByIsMsite(Connection connection) throws Exception {
+
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		List<SiteInst> siteinstList = null;
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+
+		try {
+			sql = "select*from site_inst where isGateway=1";
+			preparedStatement = connection.prepareStatement(sql);
+
+			siteinstList = this.executeQuery(preparedStatement);
+		} catch (Exception e) {
+			throw e;
+		} finally {
+
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+
+		return siteinstList;
+
+	}
+	
+	
+	/**
+	 * 
+	 * @param fileds 域id
+	 * @param connection
+	 * @return
+	 * @throws Exception
+	 */
+	public List<SiteInst> queryByFields(List<Integer> fileds ,Connection connection) throws Exception
+   {
+		if (null == fileds) {
+			throw new Exception("fileds is null");
+		}
+		
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		List<SiteInst> siteinstList = null;
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		String fileid = null;
+		try {
+			fileid = fileds.toString();
+			sql = "select*from site_inst where FieldID in "+" ("+fileid.substring(1, fileid.length() -1)+")";
+			preparedStatement = connection.prepareStatement(sql);
+
+			siteinstList = this.executeQuery(preparedStatement);
+		} catch (Exception e) {
+			throw e;
+		} finally {
+
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+
+		return siteinstList;
+
+	}
+}

@@ -1,0 +1,17 @@
+#L2CP配置管理#######################################################
+PerformanceTaskInfo=PerformanceTaskInfo
+#L2CP使能
+taskName=LBL_TASK_NAME
+#BPDU协议
+monitorCycle=MONITORING_PERIOD,Enum,EMonitorCycle
+#LLDP协议
+objectName=TAB_PERTASK_OBJECT
+objectType=OBJ_TYPE,Enum,EObjectType
+#LACP协议
+createTime=STRING_CREATE_TIME
+endTime=BTN_OVER_TIME
+runstates=LBL_RUN_STATUS,Enum,ERunStates
+creater=STRING_FOUNDER
+describe=LBL_ALARM_DESC
+
+

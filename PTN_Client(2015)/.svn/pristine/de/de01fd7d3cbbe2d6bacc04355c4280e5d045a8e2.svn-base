@@ -1,0 +1,128 @@
+package com.nms.model.util;
+
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.List;
+import com.nms.db.bean.equipment.shelf.SiteInst;
+import com.nms.db.bean.system.OffLinesiteBusi;
+import com.nms.db.dao.equipment.shelf.SiteInstDao;
+import com.nms.model.system.OffLinesiteBusiService;
+import com.nms.ui.manager.ConstantUtil;
+import com.nms.ui.manager.ExceptionManage;
+import com.nms.ui.manager.UiUtil;
+
+public class ObjectService {
+	protected Connection connection = null;
+	protected String ptnuser = null;
+	
+	/**
+	 * 离线网元数据保存
+	 * @param siteId 
+	 * 			网元ID
+	 * @param operId
+	 * 			各个业务表的ID
+	 * @param operType
+	 * 			离线数据类型
+	 * @param action
+	 * 			离线数据操作方法
+	 * @return
+	 * @throws Exception
+	 */
+	protected int dateDownLoad(int siteId, int operId, int operType, int action) throws Exception {
+		int result =0;
+		OffLinesiteBusiService offLinesiteBusiService = null;
+		try {
+			offLinesiteBusiService = (OffLinesiteBusiService) ConstantUtil.serviceFactory.newService(Services.OFFLINESITEBUSISERVICE);
+			SiteInstDao siteInstDao = new SiteInstDao();
+			SiteInst siteInst = new SiteInst();
+			siteInst.setSite_Inst_Id(siteId);
+			siteInst = siteInstDao.queryByCondition(siteInst, connection).get(0);
+			if(0==siteInst.getLoginstatus()){
+				OffLinesiteBusi offLinesiteBusi = new OffLinesiteBusi();
+				offLinesiteBusi.setSiteId(siteId);
+				offLinesiteBusi.setOperId(operId);
+				offLinesiteBusi.setOperType(operType);
+				offLinesiteBusi.setAction(action);
+				result = offLinesiteBusiService.dataDownLoadAction(offLinesiteBusi);
+			}
+		} catch (Exception e) {
+			throw e;
+		}finally{
+			UiUtil.closeService(offLinesiteBusiService);
+		}
+		return result;
+	}
+	
+	/**
+	 * 离线网元数据保存
+	 * @param siteId 
+	 * 			网元ID
+	 * @param operId
+	 * 			离线数据表ID
+	 * @param operType
+	 * 			离线业务类型
+	 * @param action
+	 * 			离线数据操作方法
+	 * @param actionIdentify
+	 * 			businessId
+	 * @param parentBusiId
+	 * 			父业务ID
+	 * @param portId	
+	 * 			端口ID
+	 * @param acId
+	 * 			acID
+	 * @param type
+	 * 			业务子类类型
+	 * @return
+	 * @throws Exception
+	 */
+	protected int dateDownLoad(int siteId, int operId, int operType, int action,String actionIdentify,String parentBusiId,int portId ,int acId,String type) throws Exception {
+		int result =0;
+		OffLinesiteBusiService offLinesiteBusiService = null;
+		try {
+			offLinesiteBusiService = (OffLinesiteBusiService) ConstantUtil.serviceFactory.newService(Services.OFFLINESITEBUSISERVICE);
+			SiteInstDao siteInstDao = new SiteInstDao();
+			SiteInst siteInst = new SiteInst();
+			siteInst.setSite_Inst_Id(siteId);
+			List<SiteInst> siteInstList = siteInstDao.queryByCondition(siteInst, connection);
+			if(siteInstList != null && siteInstList.size()>0){
+				siteInst = siteInstList.get(0);
+			}
+			if(0==siteInst.getLoginstatus()){
+				OffLinesiteBusi offLinesiteBusi = this.getOffLinesiteBusi(siteId, operId, operType, action, actionIdentify, parentBusiId, portId, acId, type);
+				result = offLinesiteBusiService.dataDownLoadAction(offLinesiteBusi);
+			}
+		} catch (Exception e) {
+			ExceptionManage.dispose(e, getClass());
+		}finally{
+			UiUtil.closeService(offLinesiteBusiService);
+		}
+		return result;
+	}
+	protected OffLinesiteBusi getOffLinesiteBusi(int siteId, int operId, int operType, int action,String actionIdentify,
+			String parentBusiId,int portId ,int acId ,String type){
+		OffLinesiteBusi offLinesiteBusi = new OffLinesiteBusi();
+		offLinesiteBusi.setSiteId(siteId);
+		offLinesiteBusi.setOperId(operId);
+		offLinesiteBusi.setOperType(operType);
+		offLinesiteBusi.setAction(action);
+		offLinesiteBusi.setActionIdentify(actionIdentify);
+		offLinesiteBusi.setParentBusiId(parentBusiId);
+		offLinesiteBusi.setPortId(portId);
+		offLinesiteBusi.setAcId(acId);
+		offLinesiteBusi.setType(type);
+		return offLinesiteBusi;
+	}
+	
+	/**
+	 * 关闭连接
+	 */
+	public void close(){
+		if(null!=this.connection){
+			try {
+				this.connection.close();
+			} catch (SQLException e) {
+			}
+		}
+	}
+}

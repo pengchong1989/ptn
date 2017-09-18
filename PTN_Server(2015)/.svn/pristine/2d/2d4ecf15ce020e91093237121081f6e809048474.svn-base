@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<driveRoot  xmlns="http://drive.bean.com">
+	<attribute length="90" description="备用" value="0" mapping="(1)"/>
+	<attribute length="1" description="软件型号类型" value="0" mapping="(00)"/>
+	<attribute length="5" description="备用" value="0" mapping="(1)"/>
+	<attribute length="4" description="文件长度" value="0" mapping="(00)"/>
+	<attribute length="4" description="CRC校验码" value="0" mapping="(00)"/>
+	<attribute length="40" description="备用" value="0" mapping="(00)"/>
+	<attribute length="1" description="时间1" value="0" mapping="(00)"/>
+	<attribute length="1" description="时间2" value="0" mapping="(00)"/>
+	<attribute length="1" description="时间3" value="0" mapping="(00)"/>
+	<attribute length="1" description="时间4" value="0" mapping="(00)"/>
+	<attribute length="1" description="时间5" value="0" mapping="(00)"/>
+	<attribute length="1" description="时间6" value="0" mapping="(00)"/>
+	<attribute length="1" description="时间7" value="0" mapping="(00)"/>
+	<attribute length="1" description="时间8" value="0" mapping="(00)"/>
+	<attribute length="1" description="时间9" value="0" mapping="(00)"/>
+	<attribute length="1" description="时间10" value="0" mapping="(00)"/>
+	<attribute length="1" description="时间11" value="0" mapping="(00)"/>
+	<attribute length="1" description="时间12" value="0" mapping="(00)"/>
+	<attribute length="1" description="时间13" value="0" mapping="(00)"/>
+	<attribute length="1" description="时间14" value="0" mapping="(00)"/>
+	<attribute length="1" description="时间15" value="0" mapping="(00)"/>
+	<attribute length="1" description="时间16" value="0" mapping="(00)"/>
+	<attribute length="96" description="备用" value="0" mapping="(00)"/>
+</driveRoot>

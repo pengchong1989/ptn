@@ -1,0 +1,125 @@
+package com.nms.model.equipment.port;
+
+import java.sql.Connection;
+import java.util.List;
+
+import com.nms.db.bean.equipment.port.PortStmTimeslot;
+import com.nms.db.dao.equipment.port.PortStmTimeslotDao;
+import com.nms.db.enums.EActionType;
+import com.nms.db.enums.EServiceType;
+import com.nms.model.util.ObjectService;
+import com.nms.ui.manager.ExceptionManage;
+
+public class PortStmTimeslotService extends ObjectService {
+	public void setConnection(Connection connection) {
+		super.connection = connection;
+	}
+
+	public void setPtnuser(String ptnuser) {
+		super.ptnuser = ptnuser;
+	}
+	
+	private final PortStmTimeslotDao PORTTIMESLOTDAO=new PortStmTimeslotDao();
+	
+	public List<PortStmTimeslot> select(int siteId) throws Exception{
+		List<PortStmTimeslot> list=null;
+		try {
+			list = this.PORTTIMESLOTDAO.quertyBySite(siteId, connection);
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		}
+		return list;
+	}
+	/**
+	 * 
+	
+	* 通过siteId portId name查询PortStmTimeslot
+	
+	* @author wangwf
+	
+	* @param   siteId
+	
+	* @param   portId
+	
+	* @param   name
+	
+	* @return PortStmTimeslot对象集合
+	
+	* @Exception 异常对象
+	 */
+	public List<PortStmTimeslot> selectBySiteIdAndPortIdAndName(int siteId, int portId, String name) throws Exception{
+		List<PortStmTimeslot> list=null;
+		try {
+			list = this.PORTTIMESLOTDAO.selectBySiteIdAndPortIdAndName(siteId, portId, name, connection);
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		}
+		return list;
+	}
+	public List<PortStmTimeslot> selectBySiteIdAndNumberAndName(int siteId, int portId, String name) throws Exception{
+		List<PortStmTimeslot> list=null;
+		try {
+			list = this.PORTTIMESLOTDAO.selectBySiteIdAndNumberAndName(siteId, portId, name, connection);
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		}
+		return list;
+	}
+	
+     public List<PortStmTimeslot> selectbyportId(int portId) throws Exception{
+    	 List<PortStmTimeslot> list=null;
+		try {
+			list = this.PORTTIMESLOTDAO.quertyByPortId(portId, connection);
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		}	
+		return list;
+	}
+     
+     
+ 	public void update(PortStmTimeslot portStmTimeslot) throws Exception{
+		try {
+			this.PORTTIMESLOTDAO.update(portStmTimeslot, connection);
+			//离线网元数据下载
+			super.dateDownLoad(portStmTimeslot.getSiteId(),portStmTimeslot.getId(), EServiceType.SDHSLOTTIME.getValue(), EActionType.UPDATE.getValue());
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		}
+	}
+ 	
+ 	public void insert(PortStmTimeslot portStmTimeslot) throws Exception{
+		try {
+			this.PORTTIMESLOTDAO.insert(portStmTimeslot, connection);
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		}
+	}
+ 	
+	public PortStmTimeslot selectById(int id) throws Exception{
+		PortStmTimeslot portStmTimeslot=null;
+		try {
+			portStmTimeslot = this.PORTTIMESLOTDAO.queryById(id, connection);
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		}
+		return portStmTimeslot;
+	}
+	
+	public void updateActiveStatus(int siteId, int status) throws Exception {
+
+		try {
+			connection.setAutoCommit(false);
+			this.PORTTIMESLOTDAO.updateStatus(siteId, status, connection);
+			if(!connection.getAutoCommit()){
+				connection.commit();
+			}
+		} catch (Exception e) {
+			connection.rollback();
+			ExceptionManage.dispose(e,this.getClass());
+		} finally {
+			connection.setAutoCommit(true);
+		}
+
+	}
+     
+}

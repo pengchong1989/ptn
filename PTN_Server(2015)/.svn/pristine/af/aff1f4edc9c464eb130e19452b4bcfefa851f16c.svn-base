@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nms.db.dao.ptn.PtpPortMapper" >
+  <resultMap id="BaseResultMap" type="PtpPortinfo" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="indexId" property="indexId" jdbcType="INTEGER" />
+    <result column="portNum" property="PortNum" jdbcType="INTEGER" />
+    <result column="workModel" property="workModel" jdbcType="INTEGER" />
+    <result column="portId" property="PortId" jdbcType="INTEGER" />
+    <result column="line" property="Line" jdbcType="INTEGER" />
+    <result column="lineCpn" property="LineCpn" jdbcType="INTEGER" />
+    <result column="delayMeca" property="delayMeca" jdbcType="INTEGER" />
+    <result column="MessageMode" property="MessageMode" jdbcType="INTEGER" />
+    <result column="siteId" property="siteId" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, indexId, portNum, workModel, portId, line, lineCpn, delayMeca, MessageMode, siteId
+  </sql>
+ 
+  <delete id="deletePtpBySiteId" parameterType="java.lang.Integer" >
+    delete from ptpport where siteId=#{siteId}
+  </delete>
+  
+   <insert id="insertPtpPort" parameterType="PtpPortinfo"  useGeneratedKeys="true" keyProperty="id">
+  insert into ptpport (indexId,portNum,workModel,portId,line,lineCpn,delayMeca,MessageMode,siteId)
+  values(#{indexId},#{PortNum},#{workModel},#{PortId},#{Line},#{LineCpn},#{delayMeca},#{MessageMode},#{siteId})
+  </insert>
+
+  
+   <select id="queryBySiteId" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from ptpport
+    where siteId = #{siteId,jdbcType=INTEGER}
+  </select>
+</mapper>

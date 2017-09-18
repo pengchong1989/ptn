@@ -1,0 +1,28 @@
+#1表示开，0表示关
+codeconfig=0
+
+#MAC开关1表示开，0表示关
+macEnable=1
+
+serverTask=PTN-Server
+clientTask=PTN-Client
+
+#武汉和晨晓菜单分开显示控制开关,1表示武汉，0表示晨晓
+wuhan=1
+
+#1:武汉自己的设备图  2:中兴  3:表示九江山水  4:易讯  5:北讯 6:科大智能 其它表示没有
+IconImageShowOrHide=4
+
+#服务器中英文，1:中文  2:英文
+language=1
+
+#snmp服务开关 1:开启 0:关闭
+snmpStartOrClose=0
+
+#告警轮询开关，1：开  0：关
+alarmPoll=0
+#批量线程数量
+batchSoftwareNumber=2
+
+#强制取消验证开关，1：开  0：关
+noCheck=0

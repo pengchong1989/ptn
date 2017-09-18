@@ -1,0 +1,221 @@
+package com.nms.ui.ptn.business.qinq;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import com.nms.db.bean.ptn.path.qinq.QinqChildInst;
+import com.nms.db.bean.ptn.path.qinq.QinqInst;
+import com.nms.db.enums.EManufacturer;
+import com.nms.db.enums.EOperationLogType;
+import com.nms.model.ptn.path.qinq.QinQInstService;
+import com.nms.model.util.Services;
+import com.nms.rmi.ui.util.RmiKeys;
+import com.nms.service.impl.base.DispatchBase;
+import com.nms.service.impl.util.SiteUtil;
+import com.nms.service.impl.util.WhImplUtil;
+import com.nms.ui.frame.AbstractController;
+import com.nms.ui.manager.ConstantUtil;
+import com.nms.ui.manager.DialogBoxUtil;
+import com.nms.ui.manager.DispatchUtil;
+import com.nms.ui.manager.ExceptionManage;
+import com.nms.ui.manager.ResourceUtil;
+import com.nms.ui.manager.UiUtil;
+import com.nms.ui.manager.keys.StringKeysTip;
+import com.nms.ui.ptn.business.dialog.qinq.AddQinQDialog;
+
+public class QinQBusinessController extends AbstractController {
+	private final QinQBusinessPanel view;
+
+	public QinQBusinessController(QinQBusinessPanel view) {
+		this.view = view;
+	}
+
+	@Override
+	public void refresh() throws Exception {
+		List<QinqInst> infos = null;
+		QinQInstService qinqService = null;
+		try {
+			qinqService = (QinQInstService) ConstantUtil.serviceFactory.newService(Services.QinQ);
+			infos = qinqService.select();
+			this.view.clear();
+			this.view.initData(infos);
+			if (view.getTopoPanel() != null) {
+				view.getTopoPanel().clear();
+			}
+			this.view.updateUI();
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		} finally {
+			infos = null;
+			UiUtil.closeService(qinqService);
+		}
+	}
+
+	@Override
+	public void delete() throws Exception {
+		List<QinqInst> infos = null;
+		DispatchUtil qinqServiceImpl = null;
+		boolean onlineFlag = false;
+		List<Integer> allSiteIds = null;
+		List<Integer> siteIds = null;
+		try {
+			infos = this.view.getAllSelect();
+			//判断是否有在线网元托管，存在不允许删除
+			SiteUtil siteUtil = new SiteUtil();
+			allSiteIds = new ArrayList<Integer>();
+			siteIds = new ArrayList<Integer>();
+			allSiteIds=getOfflineSiteIdNames(infos);
+			for(int i=0;i<allSiteIds.size();i++){
+				if(1==siteUtil.SiteTypeOnlineUtil(allSiteIds.get(i))){
+				   siteIds.add(allSiteIds.get(i));			    		
+				}
+		     }
+			if(siteIds !=null && siteIds.size()!=0){
+			   onlineFlag = true;
+			}
+			if(onlineFlag){
+				WhImplUtil wu = new WhImplUtil();
+				String str=wu.getNeNames(siteIds);
+				DialogBoxUtil.errorDialog(this.view, ResourceUtil.srcStr(StringKeysTip.TIP_NOT_DELETEONLINE)+""+str+ResourceUtil.srcStr(StringKeysTip.TIP_ONLINENOT_DELETEONLINE));
+				UiUtil.insertOperationLog(EOperationLogType.QINQERROR1.getValue());
+				return ;
+			}
+			
+			
+			qinqServiceImpl = new DispatchUtil(RmiKeys.RMI_QINQ);
+			String message = qinqServiceImpl.excuteDelete(infos);
+			DialogBoxUtil.succeedDialog(this.view, message);
+			UiUtil.insertOperationLog(EOperationLogType.QIQDELETE.getValue(),message);
+			this.refresh();
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		} finally {
+			infos = null;
+			qinqServiceImpl = null;
+			allSiteIds = null;
+			siteIds = null;
+		}
+	}
+
+	@Override
+	public void openCreateDialog() throws Exception {
+		try {
+			AddQinQDialog addQinQDialog = new AddQinQDialog(this.view, true, null);
+			addQinQDialog.setLocation(UiUtil.getWindowWidth(addQinQDialog.getWidth()), UiUtil.getWindowHeight(addQinQDialog.getHeight()));
+			addQinQDialog.setVisible(true);
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		}
+	}
+
+	/**
+	 * 选中一条记录后，查看详细信息
+	 */
+	@Override
+	public void initDetailInfo() {
+		try {
+			initTopoPanel();
+			initQinqChildData();
+			this.initSchematizePanel();
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		}
+	}
+
+	private void initQinqChildData() throws Exception {
+		QinqInst qinq = null;
+		try {
+			qinq = this.view.getSelect();
+			this.view.getQinqNetworkTablePanel();
+			this.view.getQinqNetworkTablePanel().initData(qinq.getQinqChildInst());
+			this.view.updateUI();
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			qinq = null;
+		}
+	}
+
+	/**
+	 * 初始化图形化界面数据
+	 * 
+	 * @author kk
+	 * 
+	 * @Exception 异常对象
+	 */
+	@SuppressWarnings("unused")
+	private void initSchematizePanel() {
+		QinqInst qinq = null;
+		try {
+			qinq = view.getSelect();
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		}finally{
+			qinq=null;
+		}
+	}
+
+	private void initTopoPanel() {
+		QinqInst qinq = null;
+		try {
+			qinq = view.getSelect();
+			view.getTopoPanel().clear();
+			view.getTopoPanel().initData(qinq);
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		}
+	}
+
+	@Override
+	public void openUpdateDialog() throws Exception {
+		try {
+			QinqInst info = this.view.getSelect();
+			if (info == null) {
+				DialogBoxUtil.errorDialog(this.view, ResourceUtil.srcStr(StringKeysTip.TIP_SELECT_DATA_ONE));
+				UiUtil.insertOperationLog(EOperationLogType.QIQ.getValue());
+			} else {
+				AddQinQDialog addQinQDialog = new AddQinQDialog(this.view, true, info);
+				addQinQDialog.setLocation(UiUtil.getWindowWidth(addQinQDialog.getWidth()), UiUtil.getWindowHeight(addQinQDialog.getHeight()));
+				addQinQDialog.setVisible(true);
+			}
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		}
+	}
+
+	/**
+	 * 执行搜索按钮动作
+	 * **/
+	@Override
+	public void search() {
+	}
+	
+	/**
+	 * 获取网元SiteId
+	 */
+	private List<Integer> getOfflineSiteIdNames(List<QinqInst> qinqList) throws Exception {
+		List<Integer> siteIds = null;
+		DispatchBase dispatchbase = new DispatchBase();
+		try {
+			siteIds = new ArrayList<Integer>();
+			for (QinqInst qinqInst : qinqList) {
+				for (QinqChildInst childInst : qinqInst.getQinqChildInst()) {
+					if (childInst.getaSiteId() > 0) {
+						if (!siteIds.contains(childInst.getaSiteId()) && dispatchbase.getManufacturer(childInst.getaSiteId()) == EManufacturer.WUHAN.getValue()) {
+							siteIds.add(childInst.getaSiteId());
+						}
+					}
+					if (childInst.getzSiteId() > 0) {
+						if (!siteIds.contains(childInst.getzSiteId()) && dispatchbase.getManufacturer(childInst.getzSiteId()) == EManufacturer.WUHAN.getValue()) {
+							siteIds.add(childInst.getzSiteId());
+						}
+					}
+				}
+			}
+			
+		} catch (Exception e) {
+			throw e;
+		}
+		return siteIds;
+	}
+}

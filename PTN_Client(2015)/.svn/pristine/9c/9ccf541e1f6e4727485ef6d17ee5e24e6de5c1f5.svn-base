@@ -1,0 +1,203 @@
+package com.nms.model.alarm;
+
+import java.sql.Connection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import com.nms.db.bean.alarm.CurrentAlarmInfo;
+import com.nms.db.bean.alarm.HisAlarmInfo;
+import com.nms.db.bean.alarm.WarningLevel;
+import com.nms.db.bean.equipment.shelf.SiteInst;
+import com.nms.db.dao.alarm.CurAlarmDao;
+import com.nms.db.dao.alarm.HisAlarmDao;
+import com.nms.db.dao.alarm.WarningLevelDao;
+import com.nms.db.dao.equipment.shelf.SiteInstDao;
+import com.nms.model.util.ObjectService;
+import com.nms.ui.manager.ExceptionManage;
+
+
+public class WarningLevelService extends ObjectService {
+	public void setConnection(Connection connection) {
+		super.connection = connection;
+	}
+
+	public void setPtnuser(String ptnuser) {
+		super.ptnuser = ptnuser;
+	}
+
+	private WarningLevelDao warningLevelDao = new WarningLevelDao();
+    
+	/**
+	 * 新增或修改warningLevel对象，通过warningLevel.getId()来判断是修改还是新增
+	 * @param warningLevel 实体
+	 * @return 执行成功插入的记录数
+	 * @throws Exception
+	 */
+	public int saveOrUpdate(WarningLevel warningLevel) throws Exception {
+
+		if (warningLevel == null) {
+			throw new Exception("warningLevel is null");
+		}
+
+		int result = 0;
+		CurAlarmDao curDao = null;
+		HisAlarmDao hisDao = null;
+		SiteInstDao siteDao = null;
+		SiteInst site = null;
+		CurrentAlarmInfo currAlarm = null;
+		List<CurrentAlarmInfo> currentAlarmList = null;
+		HisAlarmInfo hisAlarm = null;
+		List<HisAlarmInfo> hisAlarmList = null;
+		WarningLevel contion = null;
+		Map<Integer,Integer> siteMap = new HashMap<Integer,Integer>();
+		List<SiteInst> siteList = null;
+		try {
+
+			if (warningLevel.getId() == 0) {
+				result = this.warningLevelDao.insert(warningLevel, connection);
+			} else {
+				//修改告警级别的同时,也把当前告警和历史告警修改成相同的级别
+				curDao = new CurAlarmDao();
+				siteDao = new SiteInstDao();
+				hisDao = new HisAlarmDao();
+				//获取所有网元,放入map中
+				site = new SiteInst();
+				siteList = siteDao.queryByCondition(site,connection);
+				if(siteList != null && siteList.size() > 0){
+					for (SiteInst siteInst : siteList) {
+						siteMap.put(siteInst.getSite_Inst_Id(), siteInst.getManufacturer());
+					}
+				}
+				//修改当前告警的级别
+				contion = new WarningLevel();
+				contion.setId(warningLevel.getId());
+				contion = warningLevelDao.queryByCondition(contion, connection).get(0);
+				currAlarm = new CurrentAlarmInfo();
+				currAlarm.setAlarmCode(contion.getWarningcode());
+				currAlarm.setAlarmLevel(contion.getWarninglevel());
+				currentAlarmList = curDao.queryByCondition(currAlarm, connection);
+				if(currentAlarmList != null && currentAlarmList.size() > 0){
+					for (CurrentAlarmInfo curr : currentAlarmList) {
+						curr.setWarningLevel_temp(warningLevel.getWarninglevel_temp());
+						if(siteMap.get(curr.getSiteId()) == 0 && warningLevel.getManufacturer() == 1){
+							//表示武汉
+							curDao.update(curr, connection);
+						}
+						if(siteMap.get(curr.getSiteId()) == 1 && warningLevel.getManufacturer() == 2){
+							//表示晨晓
+							curDao.update(curr, connection);
+						}
+					}
+				}
+				
+				//修改历史告警的级别
+				hisAlarm = new HisAlarmInfo();
+				hisAlarm.setAlarmCode(contion.getWarningcode());
+				hisAlarm.setAlarmLevel(contion.getWarninglevel());
+				hisAlarmList = hisDao.queryByCondition(hisAlarm, connection);
+				if(hisAlarmList != null && hisAlarmList.size() > 0){
+					for (HisAlarmInfo his : hisAlarmList) {
+						his.setWarningLevel_temp(warningLevel.getWarninglevel_temp());
+						if(siteMap.get(his.getSiteId()) == 0 && warningLevel.getManufacturer() == 1){
+							//表示武汉
+							hisDao.update(his, connection);
+						}
+						if(siteMap.get(his.getSiteId()) == 1 && warningLevel.getManufacturer() == 2){
+							//表示晨晓
+							hisDao.update(his, connection);
+						}
+					}
+				}
+				
+				result = this.warningLevelDao.update(warningLevel, connection);
+			}
+
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		} finally {
+			curDao = null;
+			hisDao = null;
+			siteDao = null;
+			site = null;
+			currAlarm = null;
+			currentAlarmList = null;
+			hisAlarm = null;
+			hisAlarmList = null;
+			contion = null;
+			siteMap = null;
+			siteList = null;
+		}
+		return result;
+	}
+
+	/**
+	 * 通过主键删除warningLevel对象
+	 * @param id  主键
+	 * @return 删除的记录数
+	 * @throws Exception
+	 */
+	public int delete(int id) throws Exception {
+		
+		int result=0;
+		
+		try {
+			result=warningLevelDao.delete(id, connection);
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		}
+		return result;
+		
+	}
+	
+	/**
+	 * 查询全部
+	 * @return  List<WarningLevel> 集合
+	 * @throws Exception
+	 */
+	public List<WarningLevel> select() throws Exception {
+		List<WarningLevel> warninglevelList=null;
+		
+		try {
+			WarningLevel warningLevel=new WarningLevel();
+			warninglevelList=warningLevelDao.queryByCondition(warningLevel, connection);
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		}
+		return warninglevelList;
+	}
+   
+	/**
+	 * 根据条件查询
+	 * @param warninglevel  查询条件
+	 * @return List<WarningLevel> 集合
+	 * @throws Exception
+	 */
+	public List<WarningLevel> select(WarningLevel warninglevel) throws Exception {
+		List<WarningLevel> warninglevelList=null;
+		
+		try {
+			warninglevelList=warningLevelDao.queryByCondition(warninglevel, connection);
+		} catch (Exception e) {
+			throw e;
+		}
+		return warninglevelList;
+	}
+
+	/**
+	 * 根据条件查询
+	 * @param warninglevel  查询条件
+	 * @return List<WarningLevel> 集合
+	 * @throws Exception
+	 */
+//	public List<WarningLevel> query(WarningLevel warninglevel) throws Exception  {
+//		List<WarningLevel> warninglevelList=null;
+//		
+//		try {
+//			warninglevelList=warningLevelDao.selectByCondition(warninglevel, connection);
+//		} catch (Exception e) {
+//			ExceptionManage.dispose(e,this.getClass());
+//		}
+//		return warninglevelList;
+//	}
+}

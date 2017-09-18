@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<driveRoot  xmlns="http://drive.bean.com">
+			<attribute length="1" description="PHB2EXP_ID" value="1" mapping="(1)"/>
+			<attribute length="1" description="(BE)VC EXP" value="0" mapping="(0)"/>
+			<attribute length="1" description="(BE)VP EXP" value="0" mapping="(0)"/>
+			<attribute length="1" description="(AF1)VC EXP" value="1" mapping="(1)"/>
+			<attribute length="1" description="(AF1)VP EXP" value="1" mapping="(1)"/>
+			<attribute length="1" description="(AF2)VC EXP" value="2" mapping="(2)"/>
+			<attribute length="1" description="(AF2)VP EXP" value="2" mapping="(2)"/>
+			<attribute length="1" description="(AF3)VC EXP" value="3" mapping="(3)"/>
+			<attribute length="1" description="(AF3)VP EXP" value="3" mapping="(3)"/>
+			<attribute length="1" description="(AF4)VC EXP" value="4" mapping="(4)"/>
+			<attribute length="1" description="(AF4)VP EXP" value="4" mapping="(4)"/>
+			<attribute length="1" description="(EF)VC EXP" value="5" mapping="(5)"/>
+			<attribute length="1" description="(EF)VP EXP" value="5" mapping="(5)"/>
+			<attribute length="1" description="(CS6)VC EXP" value="6" mapping="(6)"/>
+			<attribute length="1" description="(CS6)VP EXP" value="6" mapping="(6)"/>
+			<attribute length="1" description="(CS7)VC EXP" value="7" mapping="(7)"/>
+			<attribute length="1" description="(CS7)VP EXP" value="7" mapping="(7)"/>
+</driveRoot>

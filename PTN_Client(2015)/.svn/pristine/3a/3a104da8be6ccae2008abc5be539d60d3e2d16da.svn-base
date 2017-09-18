@@ -1,0 +1,18 @@
+package com.nms.db.dao.ptn;
+
+import com.nms.db.bean.ptn.MacLearningInfo;
+
+
+public interface MacLearningLimitMapper {
+    int deleteByPrimaryKey(Integer id);
+
+    int insert(MacLearningInfo record);
+
+    int insertSelective(MacLearningInfo record);
+
+    MacLearningInfo selectByPrimaryKey(Integer id);
+
+    int updateByPrimaryKeySelective(MacLearningInfo record);
+
+    int updateByPrimaryKey(MacLearningInfo record);
+}

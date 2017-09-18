@@ -1,0 +1,77 @@
+package com.nms.model.path;
+
+import java.sql.Connection;
+import java.util.List;
+
+import com.nms.db.bean.path.SetNameRule;
+import com.nms.db.dao.path.SetNameRuleDao;
+import com.nms.model.util.ObjectService;
+import com.nms.ui.manager.ExceptionManage;
+
+public class NameRuleService extends ObjectService {
+
+	private SetNameRuleDao nameruleDao = new SetNameRuleDao();
+
+	public void setConnection(Connection connection) throws Exception {
+		super.connection = connection;
+	}
+
+	public void setPtnuser(String ptnuser) {
+		super.ptnuser = ptnuser;
+	}
+
+	public List<SetNameRule> select(SetNameRule namerule) throws Exception {
+		List<SetNameRule> nameruleList = null;
+		try {
+			nameruleList = nameruleDao.queryByidCondition(namerule, connection);
+
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		}
+		return nameruleList;
+	}
+
+	public void delete(int id) throws Exception {
+		try {
+			nameruleDao.delete(id, connection);
+		} catch (Exception e) {
+			ExceptionManage.dispose(e, this.getClass());
+		}
+	}
+	/**
+	 * 
+	 * @param afterName 修改前名称
+	 * @param beforeName 修改后名称
+	 * @param siteId  网元ID
+	 * @return
+	 */
+	public boolean nameRepetition(String afterName, String beforeName, int siteId) {
+		int result = 0;
+		try {
+			result = this.nameruleDao.query_name(afterName, beforeName, siteId, connection);
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		}
+		if(0== result){
+			return false;
+		}else{
+			return true;
+		}
+	}
+
+	public int saveOrUpdate(SetNameRule nameRule) throws Exception {
+		int rule = 0;
+		if (nameRule == null) {
+			throw new Exception("nameRule is null");
+		}
+		if (nameRule.getId() == 0) {
+			rule = nameruleDao.insert(nameRule, connection);
+
+		} else {
+			rule = nameruleDao.update(nameRule, connection);
+		}
+
+		return rule;
+	}
+
+}

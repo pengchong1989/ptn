@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nms.db.dao.system.loginlog.LoginLogMapper" >
+   <sql id="Base_Column_List" >
+    id, user_id, loginTime, outTime, IP, state, loginState, logoutState
+  </sql>
+  
+   <insert id="insertLoginLog" parameterType="LoginLog" useGeneratedKeys="true" keyProperty="id">
+    insert into login_log (user_id, loginTime,outTime, IP, state,loginState, logoutState)
+    values (#{user_id,jdbcType=INTEGER}, #{loginTime,jdbcType=VARCHAR}, #{outTime,jdbcType=VARCHAR}, #{IP,jdbcType=VARCHAR}, 
+    #{state,jdbcType=INTEGER}, #{loginState,jdbcType=INTEGER}, #{logoutState,jdbcType=INTEGER})
+  </insert>
+ 
+ <update id="updateExitLoginLog" parameterType="LoginLog" >
+    update login_log
+    <set >    
+        outTime = #{outTime,jdbcType=VARCHAR},
+        logoutState = #{logoutState,jdbcType=INTEGER}
+    </set>
+    <where>
+      <if test="id >0">id = #{id}</if>
+      <if test="user_id >0">and user_id = #{user_id}</if>
+      <if test="loginTime !=null and loginTime !='' ">and loginTime = #{loginTime}</if>
+    </where>
+  </update>
+  
+   <update id="updateByRole" parameterType="java.lang.Integer" >
+      UPDATE login_log l SET l.outtime=NOW(),l.logoutState=0 WHERE l.user_id IN 
+        (select u.user_id FROM user_inst u where roleInfo_id=#{roleId}) and l.outtime is NULL
+   </update>
+   
+   <select id="findState" resultType="LoginLog" parameterType="map" >
+    select id,user_id,loginTime,outTime,state,loginState,logoutState from login_log  where 1=1
+     <if test="loginLog.user_id>0" >
+        <if test="maxId==1">
+           and user_id=#{loginLog.user_id } order by loginTime DESC LIMIT 0,#{maxId}
+        </if>
+        <if test="maxId==4">
+           and user_id=#{loginLog.user_id } order by loginTime DESC LIMIT 0,#{maxId}
+        </if>
+          <if test="maxId !=1 and maxId !=4">
+           and user_id=#{loginLog.user_id }
+        </if> 
+     </if>
+  </select>
+   
+   <select id="queryByCondition" resultType="LoginLog" parameterType="LoginLog" >
+    select u.user_name,l.user_id,loginTime,outTime,IP,loginState,logoutState from login_log l,
+    user_inst u where state=1
+    <if test="loginLog.user_id !=0 "> and u.user_id=#{loginLog.user_id } and l.user_id=u.user_id</if>
+   
+    <if test="loginLog.user_name!=null and loginLog.user_name!='' ">
+       <if test="isSelect ==1 "> and l.user_id=u.user_id and u.user_name like '%${loginLog.user_name}%'</if>
+       <if test="isSelect ==0 "> and l.user_id=u.user_id and u.user_name =  #{loginLog.user_name}</if>
+    </if>
+   
+    <if test="loginLog.user_id ==0  ">
+      <if test="loginLog.user_name ==null or loginLog.user_name =='' "> and l.user_id=u.user_id </if>
+    </if>
+   
+    <if test="loginLog.loginIp!=null and loginLog.loginIp!='' ">
+       <if test="isSelect ==1 "> and l.IP like '%${loginLog.loginIp}%'</if>
+       <if test="isSelect ==0 "> and l.IP=#{loginLog.loginIp}</if>
+    </if>
+ 
+	<if test="loginLog.loginBeginTime!='' and loginLog.loginBeginTime!=null ">
+	  <if test="loginLog.loginEndTime!='' and loginLog.loginEndTime!=null "> and l.loginTime between #{loginLog.loginBeginTime} and #{loginLog.loginEndTime}</if>	
+	</if>
+	 											
+	<if test="loginLog.loginBeginTime=='' or loginLog.loginBeginTime==null">	
+	   <if test="loginLog.loginEndTime!='' and loginLog.loginEndTime!=null"> and l.loginTime &lt; #{loginLog.loginEndTime}</if>	  
+	</if>
+	  
+	<if test="loginLog.loginEndTime=='' or loginLog.loginEndTime==null">
+	 <if test="loginLog.loginBeginTime!='' and loginLog.loginBeginTime!=null"> and l.loginTime &gt; #{loginLog.loginBeginTime}</if>
+	</if>
+	
+	<if test="loginLog.leaveBeginTime!='' and loginLog.leaveBeginTime!=null  "> 
+	    <if test="loginLog.leaveEndTime!='' and loginLog.leaveEndTime!=null ">	and l.outTime between #{loginLog.leaveBeginTime} and #{loginLog.leaveEndTime} </if>
+	</if>
+	    
+	<if test="loginLog.leaveBeginTime =='' or loginLog.leaveBeginTime==null">
+	   <if test="loginLog.leaveEndTime!='' and loginLog.leaveEndTime!=null"> and l.outTime &lt; #{loginLog.leaveEndTime}</if>	  
+	</if>
+	
+	<if test="loginLog.leaveEndTime=='' or loginLog.leaveEndTime==null">
+	   <if test="loginLog.leaveBeginTime!='' and loginLog.loginBeginTime!=null"> and l.outTime &gt; #{loginLog.loginBeginTime}</if>
+	</if>
+	
+	<if test="loginLog.loginState!=0"> and l.loginState =#{loginLog.loginState} </if>	
+	
+	<if test="loginLog.logoutState!=0"> and l.logoutState =#{loginLog.logoutState} </if>
+
+	  order by loginTime desc				
+ </select>
+
+ <delete id="deleteFailState" parameterType="LoginLog" >
+    delete from login_log where user_id=#{loginLog.user_id} and state =#{loginLog.state}
+  </delete>
+
+ <select id="selectOnLine" resultType="LoginLog"  >
+    SELECT id,u.user_name,loginTime,IP,loginState,logoutState FROM login_log l,user_inst u WHERE 
+    (outTime IS NULL OR outTime = '')AND state = 1 AND u.user_id = l.user_id
+  </select>
+  
+  <select id="findLoginTime" parameterType="LoginLog" resultMap="BaseResultMap"  >
+    select id,user_id,loginTime,outTime,state,loginState,logoutState from login_log  where 1=1 
+    <if test="user_id !=0"> and user_id= #{user_id} and loginTime=#{loginTime} </if>   
+  </select>
+   <resultMap id="BaseResultMap" type="LoginLog" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="user_id" property="user_id" jdbcType="INTEGER" />
+    <result column="loginTime" property="loginTime" jdbcType="VARCHAR" />
+    <result column="outTime" property="outTime" jdbcType="VARCHAR" />
+    <result column="state" property="state" jdbcType="INTEGER" />
+    <result column="loginState" property="loginState" jdbcType="INTEGER" />
+    <result column="logoutState" property="logoutState" jdbcType="INTEGER" />
+  </resultMap>
+  
+   <delete id="deleteByIdsAndTime" parameterType="map" >
+    delete from login_log  where 1=1
+    <if test="ids!=null">
+    and id not in
+    <foreach item="item" index="index" collection="ids" open="(" separator= ", " close=" )">
+        #{item}
+     </foreach>     
+    </if>
+    and loginTime &lt; #{time}
+  </delete>
+  
+ <select id="selectLogCount" resultType="java.lang.Integer"  >
+   select count(*) from login_log
+  </select>
+  
+   <delete id="deleteByIds" parameterType="java.util.List" >
+   delete from login_log where id in
+   <foreach item="item" index="index" collection="idList" open="(" separator= ", " close=" )">
+        #{item}
+     </foreach>     
+   </delete>
+</mapper>

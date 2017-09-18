@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<License>
+  <Mark id="kk">
+    <MKey>Kjn3BvhW/ae/t0DDKVJPPsqjUallT7tbQvXZIBFAVNNXqm873N</MKey>
+    <PKey>hGZG2UN2i1t9SokgF5LAweTpDSRq8it+tWx8qc8/d9chTE/eiZmATFLo3Uiz/I/nf0D2Zgk=</PKey>
+    <SKey>vrvB2Fnw024ecUglItt0ZW9XSLddpuefIKYwYOBQxgPJkRKdyQ</SKey>
+  </Mark>
+  <License>
+    <Features id="98f434a20055b5414" issuedBy="tongxc" issuedFor="License for TestServer" issuedOn="Test User">
+      <Feature name="NECount" value="10" expires="2013-12-30" description=""/>
+      <Feature name="ManageRegion" value="1,3,5" expires="2013-12-30" description=""/>
+      <Feature name="ClientCount" value="1" expires="2013-12-30" description=""/>
+    </Features>
+  </License>      
+</License>

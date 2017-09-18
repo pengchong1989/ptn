@@ -1,0 +1,246 @@
+package com.nms.util;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+
+import com.nms.db.bean.equipment.port.PortInst;
+import com.nms.db.bean.equipment.shelf.EquipInst;
+import com.nms.db.bean.equipment.shelf.SiteInst;
+import com.nms.db.bean.equipment.slot.SlotInst;
+import com.nms.model.equipment.port.PortService;
+import com.nms.model.equipment.shlef.SiteService;
+import com.nms.model.equipment.slot.SlotService;
+import com.nms.model.util.Services;
+import com.nms.rmi.ui.util.RmiKeys;
+import com.nms.ui.manager.ConstantUtil;
+import com.nms.ui.manager.DateUtil;
+import com.nms.ui.manager.DispatchUtil;
+import com.nms.ui.manager.ExceptionManage;
+import com.nms.ui.manager.UiUtil;
+import com.nms.ui.manager.util.EquimentDataUtil;
+import com.nms.ui.manager.xmlbean.EquipmentType;
+import com.nms.ui.ptn.basicinfo.dialog.site.AddSiteDialog;
+
+/**
+ * 最大网元数测试程序
+ * 
+ * @author kk
+ * 
+ */
+public class MaxSiteTest implements Runnable {
+
+	@Override
+	public void run() {
+
+		try {
+			this.createSite(100);
+//
+//			this.insertAlarm();
+//
+//			System.out.println("新增告警完成..............");
+
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		}
+	}
+
+	/**
+	 * 插入告警
+	 * 
+	 * @throws Exception
+	 */
+	private void insertAlarm() throws Exception {
+
+		SiteService siteService = (SiteService) ConstantUtil.serviceFactory.newService(Services.SITE);
+		List<SiteInst> siteInstList = siteService.select();
+		PortService portService = (PortService) ConstantUtil.serviceFactory.newService(Services.PORT);
+		SlotService slotService = (SlotService) ConstantUtil.serviceFactory.newService(Services.SLOT);
+
+		Connection connection = DBManager.getInstance().getConnection();
+		String sql = "insert into current_alarm(siteid,slotId,objectid,objecttype,objectname ,alarmcode,alarmlevel,happenedtime) " + " values(?,?,?,?,?,?,?,?)";
+		PreparedStatement preparedStatement = connection.prepareStatement(sql);
+		for (SiteInst siteInst : siteInstList) {
+
+			PortInst portInst = portService.selectPortbySiteandPortname(siteInst.getSite_Inst_Id(), "ge.1.1").get(0);
+
+			preparedStatement.setObject(1, siteInst.getSite_Inst_Id());
+			preparedStatement.setObject(2, slotService.select(portInst.getPortId()).getId());
+			preparedStatement.setObject(3, portInst.getPortId());
+			preparedStatement.setObject(4, 5);
+			preparedStatement.setObject(5, portInst.getPortName());
+			preparedStatement.setObject(6, 104);
+			preparedStatement.setObject(7, 4);
+			preparedStatement.setObject(8, DateUtil.getDate(DateUtil.FULLTIME));
+			preparedStatement.addBatch();
+		}
+		preparedStatement.executeBatch();
+
+		preparedStatement.close();
+		if(connection != null){
+			connection.close();
+		}
+		UiUtil.closeService(siteService);
+		UiUtil.closeService(portService);
+		UiUtil.closeService(slotService);
+	}
+
+	/**
+	 * 创建网元
+	 * 
+	 * @param num
+	 *            创建网元数量
+	 */
+	public void createSite(int num) {
+		try {
+			if (num > 0) {
+				this.insertSite(num);
+				this.insertCard();
+			}
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		}
+	}
+
+	/**
+	 * 插入网元
+	 * 
+	 * @param num
+	 * @throws Exception
+	 */
+	private void insertSite(int num) throws Exception {
+		EquimentDataUtil equimentDataUtil=new EquimentDataUtil();
+		DispatchUtil dispatchUtil = new DispatchUtil(RmiKeys.RMI_SITE);
+		EquipmentType equipmentType = equimentDataUtil.getEquipmentType("700D");
+		SiteInst siteInst = null;
+		for (int i = 1; i <= num; i++) {
+			siteInst = new SiteInst();
+			siteInst.setCellId(i + "");
+			siteInst.setSite_Hum_Id(i + "");
+			siteInst.setCellDescribe("1.1.1." + i);
+			siteInst.setCellType("710A");
+			siteInst.setCellEditon("33");
+			siteInst.setCellIcccode("");
+			siteInst.setCellTPoam("");
+			siteInst.setCellTimeZone("35");
+			siteInst.setFieldID(1);
+			siteInst.setSiteX(20 * i);
+			siteInst.setSiteY(20 * i);
+			siteInst.setType(0);
+			siteInst.setSwich("514");
+			siteInst.setLoginstatus(1);
+			siteInst.setUsername("admin");
+			siteInst.setIsGateway(0);
+			siteInst.setSiteType(369);
+			siteInst.setManufacturer(1);
+			siteInst.setEquipInst(this.getEquipInst(equipmentType.getXmlPath()));
+
+			dispatchUtil.excuteInsert(siteInst);
+		}
+
+	}
+
+	/**
+	 * 插入板卡
+	 * 
+	 * @throws Exception
+	 */
+	private void insertCard() throws Exception {
+
+		SiteService siteService = (SiteService) ConstantUtil.serviceFactory.newService(Services.SITE);
+		List<SiteInst> siteInstList = siteService.select();
+		SlotService slotService = (SlotService) ConstantUtil.serviceFactory.newService(Services.SLOT);
+
+		SlotInst slotInst_select = null;
+		SlotInst slotInst = null;
+		for (SiteInst siteInst : siteInstList) {
+			slotInst_select = new SlotInst();
+			slotInst_select.setSiteId(siteInst.getSite_Inst_Id());
+			slotInst = slotService.select(slotInst_select).get(0);
+
+//			List<CardXml> cardXmlList = UiUtil.getCardMenu(slotInst.getSlotType());
+//			for (CardXml cardXml : cardXmlList) {
+//				CardInst cardInst = UiUtil.addCard(cardXml.getXmlPath(), slotInst);
+//				DispatchUtil cardDispatch = new DispatchUtil(RmiKeys.RMI_CARD);
+//				cardDispatch.excuteInsert(cardInst);
+//			}
+		}
+		UiUtil.closeService(siteService);
+		UiUtil.closeService(slotService);
+	}
+
+	private EquipInst getEquipInst(String xmlPath) throws Exception {
+
+		EquipInst equipInst = null;
+		DocumentBuilderFactory factory = null;
+		DocumentBuilder builder = null;
+		Document doc = null;
+		org.w3c.dom.Element root = null;
+		NodeList nodeList = null;
+		Element parent = null;
+		NodeList childList = null;
+		Element child = null;
+		List<SlotInst> slotInstList = null;
+		SlotInst slotInst = null;
+
+		try {
+			equipInst = new EquipInst();
+			factory = DocumentBuilderFactory.newInstance();
+			// 使用DocumentBuilderFactory构建DocumentBulider
+			builder = factory.newDocumentBuilder();
+			// 使用DocumentBuilder的parse()方法解析文件
+			doc = builder.parse(AddSiteDialog.class.getClassLoader().getResource(xmlPath).toString());
+			root = doc.getDocumentElement();
+			nodeList = root.getElementsByTagName("equipment");
+
+			for (int i = 0; i < nodeList.getLength(); i++) {
+				parent = (org.w3c.dom.Element) nodeList.item(i);
+
+				equipInst.setImagePath(parent.getAttribute("imagePath"));
+				equipInst.setEquipx(Integer.parseInt(parent.getAttribute("x")));
+				equipInst.setEquipy(Integer.parseInt(parent.getAttribute("y")));
+
+				slotInstList = new ArrayList<SlotInst>();
+				childList = parent.getElementsByTagName("slot");
+				for (int j = 0; j < childList.getLength(); j++) {
+					child = (Element) childList.item(j);
+					slotInst = new SlotInst();
+					slotInst.setImagePath(child.getAttribute("imagePath"));
+					slotInst.setSlotx(Integer.parseInt(child.getAttribute("x")));
+					slotInst.setSloty(Integer.parseInt(child.getAttribute("y")));
+					slotInst.setSlotType(child.getAttribute("type"));
+					slotInst.setBestCardName(child.getAttribute("bestCardName"));
+					slotInst.setMasterCardAddress(child.getAttribute("masterCardAddress"));
+					if (child.getAttribute("number").length() > 0) {
+						slotInst.setNumber(Integer.parseInt(child.getAttribute("number")));
+					}
+					slotInstList.add(slotInst);
+				}
+				equipInst.setSlotlist(slotInstList);
+			}
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			factory = null;
+			builder = null;
+			doc = null;
+			root = null;
+			nodeList = null;
+			parent = null;
+			childList = null;
+			child = null;
+			slotInstList = null;
+			slotInst = null;
+		}
+		return equipInst;
+	}
+}

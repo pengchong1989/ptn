@@ -1,0 +1,21 @@
+package com.nms.db.dao.ptn.path;
+
+import java.util.List;
+
+import com.nms.db.bean.ptn.path.StaticUnicastInfo;
+
+public interface StaticUnicastInfoMapper {
+    int deleteByPrimaryKey(Integer id);
+
+    int insert(StaticUnicastInfo record);
+
+    int insertSelective(StaticUnicastInfo record);
+
+    StaticUnicastInfo selectByPrimaryKey(Integer id);
+
+    int updateByPrimaryKeySelective(StaticUnicastInfo record);
+
+    int updateByPrimaryKey(StaticUnicastInfo record);
+
+	public List<StaticUnicastInfo> selectByStaticUniInfo(StaticUnicastInfo info);
+}

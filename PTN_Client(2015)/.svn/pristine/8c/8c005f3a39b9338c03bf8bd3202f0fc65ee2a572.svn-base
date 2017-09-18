@@ -1,0 +1,333 @@
+package com.nms.db.dao.system.user;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.nms.db.bean.system.user.UserField;
+import com.nms.db.bean.system.user.UserInst;
+import com.nms.ui.manager.ExceptionManage;
+
+public class UserFieldDao {
+
+	/**
+	 * 查询Sql
+	 */
+	private final  String SELECTSQL = "select * from user_field WHERE 1= 1";
+	
+	/**
+	 * 新建sql
+	 */
+	private final  String INSERTSQL = "insert into user_field(user_id, field_id) values(?,?)";
+	
+	/**
+	 * 删除sql
+	 */
+	private final  String DELETESQL = "DELETE FROM user_field WHERE user_id = ?";
+	private final  String DELETESQL_FIELD = "DELETE FROM user_field WHERE field_id = ?";
+	
+	
+	public int insert(UserField userField, Connection connection) throws Exception {
+		if (null == userField) {
+			throw new Exception("userField is null");
+		}
+
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		int result = 0;
+
+		try {
+			sql = INSERTSQL;
+			preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.setInt(1, userField.getUser_id());
+			preparedStatement.setInt(2, userField.getField_id());
+			result=preparedStatement.executeUpdate();
+		} catch (Exception e) {
+			throw e;
+		} finally {
+
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+
+			sql = null;
+		}
+
+		return result;
+	}
+	
+	
+	/**
+	 * 通过条件查询
+	 * @param elaninfocondition 查询条件
+	 * @param connection 数据库连接
+	 * @return List<ElineInfo>集合
+	 * @throws Exception
+	 */
+	public List<UserField> queryByCondition(int user_id,
+			Connection connection) throws Exception {
+		if (0 == user_id) {
+			throw new Exception("user_id is null");
+		}
+
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		String sql = null;
+		List<UserField> list=null;
+		try {
+			
+			sql = SELECTSQL;
+			if (user_id > 0) {
+				sql += " and user_id=" + user_id;
+			}
+			
+			list = this.excuteQuery(connection, sql);
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			sql = null;
+		}
+		return list;
+	}
+	
+	
+	/**
+	 * 执行查询语句
+	 * @param connection 数据库连接
+	 * @param sql sql语句
+	 * @return 查询集合
+	 * @throws Exception
+	 */
+	private List<UserField>  excuteQuery(Connection connection, String sql) throws Exception {
+		List<UserField> infoList = null;
+		ResultSet resultSet = null;
+		PreparedStatement preparedStatement = null;
+		UserField info = null;
+		try {
+			infoList = new ArrayList<UserField>();
+			preparedStatement = connection.prepareStatement(sql);
+			resultSet = preparedStatement.executeQuery();
+
+			while (resultSet.next()) {
+				info = new UserField();
+				info.setId(resultSet.getInt("id"));
+				info.setUser_id(resultSet.getInt("user_id"));
+				info.setField_id(resultSet.getInt("field_id"));
+				infoList.add(info);
+			}
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (resultSet != null) {
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				resultSet = null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+			info = null;
+		}
+
+		return infoList;
+	}
+	
+	
+	/**
+	 * 批量插入
+	 * @param portattrList 实体bean的集合
+	 * @param connection 数据库连接
+	 * @throws Exception
+	 */
+	public void insertBatch(List<UserField> userFields,Connection connection) throws Exception {
+		if(null==userFields){
+			throw new Exception("userFields is null");
+		}
+		
+		if(null==connection){
+			throw new Exception("connection is null");
+		}
+		
+		PreparedStatement preparedstatement = null;
+		try {
+			String sql = INSERTSQL;
+			preparedstatement = connection.prepareStatement(sql);
+			for (int i = 0; i < userFields.size(); i++) {
+				preparedstatement.setInt(1, userFields.get(i).getUser_id());
+				preparedstatement.setInt(2, userFields.get(i).getField_id());
+				preparedstatement.addBatch();
+			}
+			preparedstatement.executeBatch();
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (preparedstatement != null) {
+				try {
+					preparedstatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedstatement = null;
+			}
+		}
+	}
+	
+	
+	/**
+	 * 通过主键删除tunnel
+	 * @param tunnelId 主键
+	 * @param connection 数据库连接
+	 * @return 删除的记录数
+	 * @throws Exception
+	 */
+	public int delete(int userid, Connection connection) throws Exception {
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		int result = 0;
+
+		try {
+			sql = DELETESQL;
+			preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.setInt(1, userid);
+
+			result = preparedStatement.executeUpdate();
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+
+		return result;
+	}
+	public int deleteByField(int fieldId, Connection connection) throws Exception {
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		int result = 0;
+		try {
+			sql = DELETESQL_FIELD;
+			preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.setInt(1, fieldId);
+			result = preparedStatement.executeUpdate();
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+		return result;
+	}
+	/**
+	 * 通过条件查询
+	 * @param elaninfocondition 查询条件
+	 * @param connection 数据库连接
+	 * @return List<ElineInfo>集合
+	 * @throws Exception
+	 */
+	public List<UserField> queryByUserField(UserField userField,
+			Connection connection) throws Exception {
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		String sql = null;
+		List<UserField> list=null;
+		try {
+			
+			sql = SELECTSQL;
+			if (userField !=null&&userField.getId()>0) {
+				sql += " and id=" + userField.getId();
+			}
+			if(userField !=null&&userField.getField_id()>0){
+				sql += " and field_id=" + userField.getField_id();
+			}
+			if(userField !=null&&userField.getUser_id()>0){
+				sql += " and User_id=" + userField.getUser_id();
+			}
+			
+			list = this.excuteQuery(connection, sql);
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			sql = null;
+		}
+		return list;
+	}
+	/**
+	 * 通过条件查询(用户权限)
+	 * @param userInst 查询条件
+	 * @param connection 数据库连接
+	 * @return List<ElineInfo>集合
+	 * @throws Exception
+	 * 		修改    sy
+	 */
+	public List<UserField> queryByUserField(UserInst userInst,
+			Connection connection) throws Exception {
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		String sql = null;
+		List<UserField> list=null;
+		try {
+			
+			sql = SELECTSQL;
+			if (userInst !=null&&userInst.getUser_Id()>0) {
+				sql += " and User_id=" + userInst.getUser_Id();
+			}
+			
+			list = this.excuteQuery(connection, sql);
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			sql = null;
+		}
+		return list;
+	}
+}

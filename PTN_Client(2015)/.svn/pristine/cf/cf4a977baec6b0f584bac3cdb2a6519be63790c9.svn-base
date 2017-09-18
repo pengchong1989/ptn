@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nms.db.dao.ptn.path.eth.ElanInfoMapper" >
+  <resultMap id="BaseResultMap" type="ElanInfo" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="serviceId" property="serviceId" jdbcType="INTEGER" />
+    <result column="pwId" property="pwId" jdbcType="INTEGER" />
+    <result column="serviceType" property="serviceType" jdbcType="INTEGER" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="aXcId" property="axcId" jdbcType="INTEGER" />
+    <result column="zXcId" property="zxcId" jdbcType="INTEGER" />
+    <result column="activeStatus" property="activeStatus" jdbcType="INTEGER" />
+    <result column="aAcId" property="aAcId" jdbcType="INTEGER" />
+    <result column="zAcId" property="zAcId" jdbcType="INTEGER" />
+    <result column="createUser" property="createUser" jdbcType="VARCHAR" />
+    <result column="createTime" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="aSiteId" property="aSiteId" jdbcType="INTEGER" />
+    <result column="zSiteId" property="zSiteId" jdbcType="INTEGER" />
+    <result column="isSingle" property="isSingle" jdbcType="INTEGER" />
+    <result column="cestype" property="cestype" jdbcType="INTEGER" />
+    <result column="jobstatus" property="jobStatus" jdbcType="VARCHAR" />
+    <result column="clientId" property="clientId" jdbcType="INTEGER" />
+    <result column="branchMainSite" property="branchMainSite" jdbcType="INTEGER" />
+    <result column="branchProtectSite" property="branchProtectSite" jdbcType="INTEGER" />
+    <result column="zmostAcIds" property="zmostAcId" jdbcType="VARCHAR" />
+    <result column="amostAcIds" property="amostAcId" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, serviceId, pwId, serviceType, name, aXcId, zXcId, activeStatus, rootSite, branchSite, 
+    aAcId, zAcId, createUser, createTime, aSiteId, zSiteId, isSingle, cestype, jobstatus, 
+    clientId, branchMainSite, branchProtectSite, zmostAcIds, amostAcIds
+  </sql>
+  <select id="filterSelect" resultMap="BaseResultMap" parameterType="ElanInfo">
+  SELECT * FROM serviceinfo s WHERE serviceType=2
+  <if test="name != null and name != ''">
+  AND name LIKE "%"#{name}"%"
+  </if>
+  <if test="pwId > 0">
+  AND pwId=#{pwId}
+  </if>
+  <if test="activeStatus > 0">
+  AND activeStatus=#{activeStatus}
+  </if>
+  <if test="aSiteId > 0">
+  AND (aSiteId=#{aSiteId} OR zSiteId=#{aSiteId})
+  </if>
+  </select>
+  <select id="selectById" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+  SELECT * FROM serviceinfo WHERE serviceType=2
+  <if test="serviceId > 0">
+  	and serviceId = #{serviceId}
+  </if>
+  </select>
+  <select id="queryNodeBySite" resultMap="BaseResultMap" parameterType="ElanInfo">
+  SELECT * FROM serviceinfo WHERE serviceType=2 and ( asiteid=#{siteId} or zsiteid=#{siteId} )
+  <if test="isSingle > 0">
+  	and issingle =1
+  </if>
+  </select>
+  <select id="queryByPwId" resultMap="BaseResultMap" parameterType="java.util.List">
+  SELECT * FROM serviceinfo WHERE serviceType=2 and pwId in
+  <foreach item="item" index="index" collection="pwIdList" open="(" separator="," close=")">  
+ 	 #{item}  
+ 	</foreach>
+  </select>
+  <select id="selectMaxServiceId" resultType="java.lang.Integer">
+  select max(serviceid) as serviceid from serviceinfo where serviceType=2
+  </select>
+  <select id="queryByName" resultType="java.lang.Integer">
+  select id from serviceinfo where name=#{0}
+  </select>
+  <delete id="delete" parameterType="java.lang.Integer">
+  delete from serviceinfo where serviceId=#{0} and serviceType=2
+  </delete>
+  <insert id="insert" parameterType="ElanInfo" useGeneratedKeys="true" keyProperty="id">
+  insert into serviceinfo(serviceId,pwId,serviceType,name,aXcId,zXcId,activeStatus,aAcId, zAcId,
+   createUser , createTime , aSiteId , zSiteId,issingle,jobstatus ,clientId,amostAcIds,zmostAcIds)
+   values(#{serviceId},#{pwId},#{serviceType},#{name},#{axcId},#{zxcId},#{activeStatus},#{aAcId},#{zAcId},
+   #{createUser},#{createTime},#{aSiteId},#{zSiteId},#{isSingle},#{jobStatus},#{clientId},#{amostAcId},#{zmostAcId}
+   )
+  </insert>
+  <select id="selectBySiteId" resultMap="BaseResultMap">
+  select * from serviceinfo where serviceType=2 and (aSiteId = #{0} or zSiteId = #{0})
+  </select>
+  
+  <select id="queryElan" resultMap="BaseResultMap" parameterType="ElanInfo">
+   SELECT * FROM serviceinfo WHERE (serviceType=2 or serviceType=3)
+  <if test="serviceId>0 ">
+   and serviceId=#{serviceId}
+  </if>
+  <if test="name!=null ">
+    and name=#{name}
+  </if>
+  </select>
+  <select id="query_name" resultType="java.lang.Integer">
+ select count(*) from serviceinfo where serviceType=2 and name=#{afterName}
+ <if test="beforeName != null">
+ and name!=#{beforeName}
+ </if>
+ </select>
+ <select id="query_nameBySingle" resultType="java.lang.Integer">
+ select count(*) from serviceinfo where serviceType=2 and (aSiteId = #{siteId} or zSiteId = #{siteId}) and name=#{afterName}
+ <if test="beforeName != null">
+ and name!=#{beforeName}
+ </if>
+ </select>
+  <select id="queryAll" resultMap="BaseResultMap" >
+  SELECT jobstatus,issingle,id, serviceId, pwId, serviceType,name, aXcId, zXcId, activeStatus ,aAcId , zAcId , createUser , createTime,aSiteId, zSiteId , clientId,amostAcIds,zmostAcIds FROM serviceinfo WHERE serviceType=2  and issingle=0
+  </select>
+  
+  <select id="selectBySiteAndisSingle" resultMap="BaseResultMap" >
+  	select * from serviceinfo where serviceType = 2 and isSingle=#{1} and (aSiteId =#{0} or zSiteId = #{0})
+  </select>
+  
+</mapper>

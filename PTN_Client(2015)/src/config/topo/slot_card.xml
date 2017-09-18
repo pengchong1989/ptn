@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8"?>
+	<!-- 每个槽位可安装的板卡 -->
+<xml-body>
+	<!-- name对应 -->
+	<slotType name="700d">
+		<card name="ACTP_B" xmlPath="config/topo/card/szzd/card_700d.xml"></card>
+	</slotType>
+
+	<slotType name="700b_left">
+		<card name="FAN" xmlPath="config/topo/card/szzb/card_700b_left.xml"></card>
+	</slotType>
+
+	<slotType name="700b_1">
+		<card name="SS8P32" xmlPath="config/topo/card/szzb/card_ss8p32.xml"></card>
+		<card name="SX2G20" xmlPath="config/topo/card/szzb/card_sx2g20.xml"></card>
+	</slotType>
+
+	<slotType name="700b_2">
+		<card name="XCTPS" xmlPath="config/topo/card/szzb/card_xctps.xml"></card>
+	</slotType>
+
+	<slotType name="700b_3">
+		<card name="SS8P32" xmlPath="config/topo/card/szzb/card_ss8p32.xml"></card>
+		<card name="SX2G20" xmlPath="config/topo/card/szzb/card_sx2g20.xml"></card>
+		<card name="IP32" xmlPath="config/topo/card/szzb/card_ip32.xml"></card>
+	</slotType>
+
+	<slotType name="710_left">
+		<card name="PWR" xmlPath="config/topo/card/soz/card_710_e.xml"></card>
+	</slotType>
+
+	<slotType name="710_reserve">
+	<!-- 	<card name="IPG8" xmlPath="config/topo/card/soz/card_710_ec.xml"></card>  -->
+		<card name="SP16" xmlPath="config/topo/card/soz/card_710_e1.xml"></card>
+		<card name="IPG8" xmlPath="config/topo/card/soz/card_710_lc.xml"></card>
+	</slotType>
+
+	<slotType name="710_main">
+		<card name="XCTO1" xmlPath="config/topo/card/soz/card_710_mc.xml"></card>
+		<card name="XCTS1" xmlPath="config/topo/card/soz/card_710_mc2.xml"></card>
+	</slotType>
+
+	<slotType name="20A">
+		<card name="ACTS_B" xmlPath="config/topo/card/tza/card_20A.xml"></card>
+	</slotType>
+
+	<slotType name="703">
+		<card name="703_CARD" xmlPath="config/topo/card/szt/card_703.xml"></card>
+	</slotType>
+
+	<slotType name="703B">
+		<card name="703B_CARD" xmlPath="config/topo/card/sztb/card_703B.xml"></card>
+	</slotType>
+
+	<slotType name="710_fengshan">
+		<card name="FAN" xmlPath="config/topo/card/soz/card_710_fengshan.xml"></card>
+	</slotType>
+	<slotType name="710b_main">
+		<card name="MCU" xmlPath="config/topo/card/sozb/card_710b_mcu.xml"></card>
+	</slotType>
+
+	<slotType name="703B2">
+		<card name="703B2_CARD" xmlPath="config/topo/card/sztb2/card_703B2.xml"></card>
+	</slotType>
+
+	<!-- 700A电源 -->
+	<slotType name="700a_d">
+		<card name="PSU" xmlPath="config/topo/card/szza/card_700a_psu.xml"></card>
+	</slotType>
+	<!-- 700A风扇 -->
+	<slotType name="700a_f">
+		<card name="FAN" xmlPath="config/topo/card/szza/card_700a_fan.xml"></card>
+	</slotType>
+	<!-- 700A-ip32 -->
+	<slotType name="700a_ip32">
+		<card name="IP32" xmlPath="config/topo/card/szza/card_700a_ip32.xml"></card>
+	</slotType>
+	<!-- 700A-主控卡 -->
+	<slotType name="700a_xct">
+		<card name="XCT" xmlPath="config/topo/card/szza/card_700a_xct.xml"></card>
+	</slotType>
+	<!-- 700A-其他操作 -->
+	<slotType name="700a_eth">
+		<card name="SX2G20" xmlPath="config/topo/card/szza/card_700a_sx2g20.xml"></card>
+		<card name="SS8P32" xmlPath="config/topo/card/szza/card_700a_ss8p32.xml"></card>
+	</slotType>
+	
+	<!-- 703C 主控卡 -->
+	<slotType name="703C">
+		<card name="703C_CARD" xmlPath="config/topo/card/sztc/card_703C.xml"></card>
+	</slotType>
+	
+	<!-- 703C-A系列 主控卡 -->
+	<slotType name="703-1A">
+		<card name="703-1A_CARD" xmlPath="config/topo/card/szt/card_703-1A.xml"></card>
+	</slotType>
+	<slotType name="703-2A">
+		<card name="703-2A_CARD" xmlPath="config/topo/card/sztc/card_703-2A.xml"></card>
+	</slotType>
+	<slotType name="703-4A">
+		<card name="703-4A_CARD" xmlPath="config/topo/card/szt4a/card_703-4A.xml"></card>
+	</slotType>
+	<slotType name="703-6A">
+		<card name="703-6A_CARD" xmlPath="config/topo/card/szt6a/card_703-6A.xml"></card>
+	</slotType>
+	
+	<!-- ZXCTN 605系列  -->
+	<slotType name="ZXCTN 605-G22">
+		<card name="ZXCTN 605-G22_CARD" xmlPath="config/topo/card/zx/card_ZXCTN 605-G22.xml"></card>
+	</slotType>
+	<slotType name="ZXCTN 605-F22">
+		<card name="ZXCTN 605-F22_CARD" xmlPath="config/topo/card/zx/card_ZXCTN 605-F22.xml"></card>
+	</slotType>
+	<slotType name="ZXCTN 605-F24">
+		<card name="ZXCTN 605-F24_CARD" xmlPath="config/topo/card/zx/card_ZXCTN 605-F24.xml"></card>
+	</slotType>
+	<slotType name="ZXCTN 605-G12">
+		<card name="ZXCTN 605-G12_CARD" xmlPath="config/topo/card/zx/card_ZXCTN 605-G12.xml"></card>
+	</slotType>
+	<slotType name="ZXCTN 605-F12">
+		<card name="ZXCTN 605-F12_CARD" xmlPath="config/topo/card/zx/card_ZXCTN 605-F12.xml"></card>
+	</slotType>
+	<slotType name="ZXCTN 605-GFE2224">
+		<card name="ZXCTN 605-GFE2224_CARD" xmlPath="config/topo/card/zx/card_ZXCTN 605-GFE2224.xml"></card>
+	</slotType>
+	<slotType name="ZXCTN 605-GE224">
+		<card name="ZXCTN 605-GE224_CARD" xmlPath="config/topo/card/zx/card_ZXCTN 605-GE224.xml"></card>
+	</slotType>
+	<slotType name="ZXCTN 605-FE224">
+		<card name="ZXCTN 605-FE224_CARD" xmlPath="config/topo/card/zx/card_ZXCTN 605-FE224.xml"></card>
+	</slotType>
+	<slotType name="ZXCTN 605-GF222">
+		<card name="ZXCTN 605-GF222_CARD" xmlPath="config/topo/card/zx/card_ZXCTN 605-GF222.xml"></card>
+	</slotType>
+	<slotType name="ZXCTN 605-FE124">
+		<card name="ZXCTN 605-FE124_CARD" xmlPath="config/topo/card/zx/card_ZXCTN 605-FE124.xml"></card>
+	</slotType>
+	
+	<!-- 易迅 -->
+	<slotType name="710_fengshan_yixun">
+		<card name="FAN" xmlPath="config/topo/card/yixun/card_710_fengshan_yixun.xml"></card>
+	</slotType>
+	<slotType name="703-1">
+		<card name="703-1_CARD" xmlPath="config/topo/card/yixun/card_703_1_yixun.xml"></card>
+	</slotType>
+	<slotType name="703-2">
+		<card name="703-2_CARD" xmlPath="config/topo/card/yixun/card_703_2_yixun.xml"></card>
+	</slotType>
+	<slotType name="703-3">
+		<card name="703-3_CARD" xmlPath="config/topo/card/yixun/card_703_3_yixun.xml"></card>
+	</slotType>
+	<slotType name="703-4">
+		<card name="703-4_CARD" xmlPath="config/topo/card/yixun/card_703_4_yixun.xml"></card>
+	</slotType>
+	<slotType name="703-5">
+		<card name="703-5_CARD" xmlPath="config/topo/card/yixun/card_703_5_yixun.xml"></card>
+	</slotType>
+	<slotType name="703-6">
+		<card name="703-6_CARD" xmlPath="config/topo/card/yixun/card_703_6_yixun.xml"></card>
+	</slotType>
+	<slotType name="703-7">
+		<card name="703-7_CARD" xmlPath="config/topo/card/yixun/card_703_7_yixun.xml"></card>
+	</slotType>
+	
+	<slotType name="710">
+		<card name="XCTS1" xmlPath="config/topo/card/yixun/card_710_yixun_xcts1.xml"></card>
+	</slotType>
+	
+	<slotType name="710_reserve1">
+	<!-- 	<card name="IPG8" xmlPath="config/topo/card/yixun/card_710_yixun_ipg8.xml"></card>  -->
+		<card name="SP16" xmlPath="config/topo/card/yixun/card_710__yixun_SP16.xml"></card>
+		<card name="IPG8" xmlPath="config/topo/card/yixun/card_710_yixun_lc_ipg8.xml"></card>
+	</slotType>
+	<!-- 科大智能 -->
+  <slotType name="CSG T2000">
+		<card name="CSG T2000_CARD" xmlPath="config/topo/card/keda/card_keda_CSG T2000.xml"></card>
+	</slotType>
+
+	<slotType name="CSG T5000">
+		<card name="XCTS1" xmlPath="config/topo/card/keda/card_710_keda_MCU-A.xml"></card>
+	</slotType>
+	
+	<slotType name="CSG T5000_reserve1">
+		<card name="T5000_GE_8" xmlPath="config/topo/card/keda/card_710_keda_GE-8.xml"></card>
+		<card name="T5000_CES_E16" xmlPath="config/topo/card/keda/card_710__keda_CES-E16.xml"></card>
+	</slotType>
+	<slotType name="CSG T5000_fengshan">
+		<card name="FAN" xmlPath="config/topo/card/keda/card_710_fengshan_keda.xml"></card>
+	</slotType>
+	
+</xml-body>

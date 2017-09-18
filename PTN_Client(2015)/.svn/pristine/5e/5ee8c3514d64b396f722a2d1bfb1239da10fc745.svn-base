@@ -1,0 +1,107 @@
+package com.nms.model.ptn.port;
+
+import java.sql.Connection;
+import java.util.List;
+
+import com.nms.db.bean.ptn.path.protect.DualRelevance;
+import com.nms.db.dao.ptn.port.DualRelevanceDao;
+import com.nms.model.util.ObjectService;
+import com.nms.ui.manager.ExceptionManage;
+
+public class DualRelevanceService extends ObjectService{
+	DualRelevanceDao dualRelevanceDao = new DualRelevanceDao();
+	public void setConnection(Connection connection) {
+		super.connection = connection;
+	}
+
+	public void setPtnuser(String ptnuser) {
+		super.ptnuser = ptnuser;
+	}
+	/**
+	 * 通过网元ID查询
+	 * @param siteId 网元ID
+	 * @return
+	 *//*
+	public List<DualProtect> selectBySite(int siteId) {
+		TunnelDao tunnelDao = new TunnelDao();
+		DualProtect dualProtectSel = null;
+		dualProtectSel = new DualProtect();
+		dualProtectSel.setSiteId(siteId);
+		List<DualProtect> dualProtectList = null;
+		Tunnel BreakoverTunnel;
+		Tunnel relevanceTunnel;
+		List<Tunnel> relevanceTunnelList;
+		String[] relevanceTunnelIds;
+		String id;
+		try {
+			relevanceTunnelList = new ArrayList<Tunnel>();
+			BreakoverTunnel = new Tunnel();
+			relevanceTunnel = new Tunnel();
+			dualProtectList =  this.dualProtectDao.queryByCondition(dualProtectSel, super.connection);
+			//添加没一个 穿通 和 关联Tunnel
+			for(DualProtect dualProtect:dualProtectList){
+				BreakoverTunnel = tunnelDao.queryBySiteIdAndServiceId(dualProtect.getSiteId(), dualProtect.getBreakoverTunnelId(), connection);
+				dualProtect.setBreakoverTunnel(BreakoverTunnel);
+				relevanceTunnelIds = dualProtect.getRelevanceTunnelIds().split(",");
+				for (int i = 0; i < relevanceTunnelIds.length; i++) {
+					 id = relevanceTunnelIds[i];
+					 relevanceTunnel = tunnelDao.queryBySiteIdAndServiceId(dualProtect.getSiteId(),Integer.parseInt(id), connection);
+					 relevanceTunnelList.add(relevanceTunnel);
+				}
+				dualProtect.setRelevanceTunnelList(relevanceTunnelList);
+			}
+		} catch (Exception e) {
+			ExceptionManage.dispose(e);
+		}
+		return dualProtectList;
+	}*/
+	
+	/**
+	 * 通过网元ID查询
+	 * @param siteId 网元ID
+	 * @return
+	 */
+	public List<DualRelevance> queryByCondition(DualRelevance condition) {
+		DualRelevance dualRelevance = condition;
+		List<DualRelevance> dualProtectList = null;
+		try {
+			dualProtectList =  this.dualRelevanceDao.queryByCondition(dualRelevance, super.connection);
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		}finally{
+			dualRelevance = null;	
+		}
+		return dualProtectList;
+	}
+ 
+	public int saveOrUpdate(DualRelevance dualRelevance) {
+		int result = 0;
+		try {
+			if(0==dualRelevance.getId()){
+				this.dualRelevanceDao.save(dualRelevance,super.connection);
+			}else{
+				this.dualRelevanceDao.update(dualRelevance,super.connection);
+			}
+		} catch (Exception e) {
+		
+		}
+		return result;
+	}
+
+	public int delete(DualRelevance dualRelevance) {
+		int result = 0;
+		try {
+			result = this.dualRelevanceDao.delete(dualRelevance, super.connection);
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		}
+		return result;
+	}
+
+	public void updateEquipExitStatus(int siteId, int i) {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	
+}

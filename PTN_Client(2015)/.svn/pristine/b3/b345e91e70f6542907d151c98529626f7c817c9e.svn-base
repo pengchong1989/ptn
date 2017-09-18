@@ -1,0 +1,19 @@
+package com.nms.db.dao.system.roleManage;
+
+import com.nms.db.bean.system.roleManage.RoleManage;
+
+
+
+public interface RoleManageMapper {
+    int deleteByPrimaryKey(Integer id);
+
+    int insert(RoleManage record);
+
+    int insertSelective(RoleManage record);
+
+    RoleManage selectByPrimaryKey(Integer id);
+
+    int updateByPrimaryKeySelective(RoleManage record);
+
+    int updateByPrimaryKey(RoleManage record);
+}

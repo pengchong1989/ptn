@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<driveRoot  xmlns="http://drive.bean.com">
+	<attribute length="2" description="误码事件发生时间" value="0" mapping="0" />
+	<attribute length="2" description="误码事件监视周期" value="0" mapping="(00)"/>
+	<attribute length="2" description="误码事件阈值" value="0" mapping="(00)"/>
+	<attribute length="4" description="误码事件错误数" value="0" mapping="(00)"/>
+	<attribute length="4" description="误码事件错误总数" value="0" mapping="(00)"/>
+	<attribute length="4" description="误码事件误码错误事件总数" value="0" mapping="(00)"/>
+	
+	<attribute length="2" description="错误帧周期事件发生时间" value="0" mapping="0" />
+	<attribute length="2" description="错误帧周期事件监视周期" value="0" mapping="(00)"/>
+	<attribute length="2" description="错误帧周期事件阈值" value="0" mapping="(00)"/>
+	<attribute length="4" description="错误帧周期错误数" value="0" mapping="(00)"/>
+	<attribute length="4" description="错误帧周期错误总数" value="0" mapping="(00)"/>
+	<attribute length="4" description="错误帧周期错误帧周期事件总数" value="0" mapping="(00)"/>
+	
+	<attribute length="2" description="错误帧事件发生时间" value="0" mapping="0" />
+	<attribute length="2" description="错误帧事件监视周期" value="0" mapping="(00)"/>
+	<attribute length="2" description="错误帧事件错误帧事件阈值" value="0" mapping="(00)"/> 
+	<attribute length="4" description="错误帧事件错误数" value="0" mapping="(00)"/>
+	<attribute length="4" description="错误帧事件错误总数" value="0" mapping="(00)"/>
+	<attribute length="4" description="错误帧事件错误帧事件总数" value="0" mapping="(00)"/>
+	
+	<attribute length="2" description="错误秒帧事件发生时间" value="0" mapping="0" />
+	<attribute length="2" description="错误秒帧事件监视周期" value="0" mapping="(00)"/>
+	<attribute length="2" description="错误秒帧事件阈值" value="0" mapping="(00)"/>
+	<attribute length="4" description="错误秒帧事件错误数" value="0" mapping="(00)"/>
+	<attribute length="4" description="错误秒帧事件错误总数" value="0" mapping="(00)"/>
+	<attribute length="4" description="错误秒帧事件错误秒帧事件总数" value="0" mapping="(00)"/>
+	
+</driveRoot>

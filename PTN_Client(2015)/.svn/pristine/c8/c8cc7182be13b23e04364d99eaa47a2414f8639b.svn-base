@@ -1,0 +1,22 @@
+package com.nms.db.dao.alarm;
+
+import java.util.List;
+
+import com.nms.db.bean.alarm.HisAlarmInfo;
+
+
+public interface HisAlarmInfoMapper {
+	public List<HisAlarmInfo> queryByCondition(HisAlarmInfo hisAlarm);
+
+	public int update(HisAlarmInfo hisInfo);
+
+	/**
+	 * 搜索时，更新告警
+	 * @param newTunnelId
+	 * @param tid
+	 * @param i
+	 */
+	public void updateObjectid(int newTunnelId, String tid, int i);
+
+	public int insert(HisAlarmInfo hisInfo);
+}

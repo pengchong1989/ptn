@@ -1,0 +1,630 @@
+package com.nms.db.dao.system;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.nms.db.bean.equipment.shelf.SiteInst;
+import com.nms.db.bean.system.Field;
+import com.nms.ui.manager.ExceptionManage;
+
+/**
+ * 子网管理相关功能
+ * @author dzy
+ *
+ */
+public class SubnetDao {
+	/**
+	 *   子网列表
+	 * @param fieldCondition  域对�?
+	 * @param connection  
+	 * @return
+	 * @throws Exception
+	 */
+	public List<Field> queryByCondition(Field fieldCondition,
+			Connection connection) throws Exception {	
+		if (null == fieldCondition) {
+			throw new Exception("fieldCondition is null");
+		}
+
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+		List<Field> subnetList = null;
+		String sql = null;
+		ResultSet resultSet = null;
+		PreparedStatement preparedStatement = null;
+		Field field ;
+		try {
+			subnetList = new ArrayList<Field>();
+			sql = " SELECT t.ID,t.FieldName,(SELECT A.FieldName  FROM field A where t.parentId=a.ID ) parentName ,parentId ,t.objecttype FROM field t WHERE t.objecttype='subnet'  ";
+			
+			if (!"ALL".equals(fieldCondition.getFieldName()) ){
+				sql += " AND t.parentId = " + fieldCondition.getId();
+			}
+			
+			preparedStatement = connection.prepareStatement(sql);
+			resultSet = preparedStatement.executeQuery();
+
+			while (resultSet.next()) {
+				field = new Field();
+				field.setId(resultSet.getInt("id"));
+				field.setFieldName(resultSet.getString("FieldName")+"");
+				field.setParentName(resultSet.getString("parentName")+"");
+				field.setParentId(resultSet.getInt("parentId"));
+				field.setObjectType(resultSet.getString("objecttype"));
+				subnetList.add(field);
+			}
+
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		} finally {
+			if (resultSet != null) {
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				resultSet = null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+			field = null;
+		}
+
+		return subnetList;
+		
+	}
+	
+	/**
+	 * 下拉列表
+	 * @param connection
+	 * @return
+	 */
+	public List<Field> comboboxList(Connection connection) {
+		String sql = null;
+		List<Field> comboboxList = new ArrayList<Field>();
+		ResultSet resultSet = null;
+		PreparedStatement preparedStatement = null;
+		Field field;
+		try {
+			sql = "select * from field where 1=1 and objectType='field' ";
+			
+			preparedStatement = connection.prepareStatement(sql);
+			resultSet = preparedStatement.executeQuery();
+
+			while (resultSet.next()) {
+				field = new Field();
+				field.setId(resultSet.getInt("id"));
+				field.setFieldName(resultSet.getString("FieldName"));
+				field.setFieldX(resultSet.getInt("fieldX"));
+				field.setFieldY(resultSet.getInt("fieldY"));
+				field.setmSiteId(resultSet.getInt("mSiteId"));
+				field.setObjectType(resultSet.getString("objectType"));
+				field.setParentId(resultSet.getInt("parentId"));
+				comboboxList.add(field);
+			}
+
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		} finally {
+			if (resultSet != null) {
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				resultSet = null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+			field = null;
+		}
+
+		return comboboxList;
+	}
+	/**
+	 *  新建 、修�?子网
+	 * @param field
+	 * @param connection
+	 * @throws Exception
+	 */
+	public void saveOrUpdate(Field field ,Connection connection) throws Exception {
+		if (null == field) {
+			throw new Exception("field is null");
+		}
+
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+		String sql = null;
+		PreparedStatement preparedStatement=null;
+		try {
+			if(field.getId()>0){
+				sql= " update field set fieldName = ? , parentId=? where id = ? " ;
+			}else{
+				sql = "insert into field(fieldName,parentId,objecttype) values(?,?,'subnet')";
+			}
+			if(field.getId()>0){
+				preparedStatement = connection.prepareStatement(sql);
+				preparedStatement.setString(1, field.getFieldName());
+				preparedStatement.setInt(2, field.getParentId());
+				preparedStatement.setInt(3, field.getId());
+			}
+			if(field.getId()==0){
+				preparedStatement = connection.prepareStatement(sql);
+				preparedStatement.setString(1, field.getFieldName());
+				preparedStatement.setInt(2, field.getParentId());
+			}
+			 preparedStatement.executeUpdate();
+		} catch (Exception e) {
+			throw e;
+		} finally {
+
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+
+			sql = null;
+		}
+		
+
+	}
+	/**
+	 * 查询重复
+	 * @param afterName 修改前名�?
+	 * @param beforeName 修改后名�?
+	 * @param parentId 所属域ID
+	 * @param connection
+	 * @return
+	 * @throws Exception
+	 */
+	public int query_name(String afterName, String beforeName,int parentId, Connection connection) throws Exception {
+		if (null == afterName) {
+			throw new Exception("afterName is null");
+		}
+
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		String sql = null;
+		List<Object> paramList = new ArrayList<Object>();
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+		int result = 0;
+		try {
+			sql = " select count(*) as selectcount from field where fieldName=? and objectType='subnet'";
+			paramList.add(afterName);
+			if (null != beforeName) {
+				sql += " and fieldName!=?";
+				paramList.add(beforeName);
+			}
+			preparedStatement = connection.prepareStatement(sql);
+			for (int i = 0; i < paramList.size(); i++) {
+				preparedStatement.setObject(i + 1, paramList.get(i));
+			}
+			resultSet = preparedStatement.executeQuery();
+			if (resultSet.next()) {
+				result = resultSet.getInt("selectcount");
+			}
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (resultSet != null) {
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				resultSet = null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+			paramList = null;
+			sql = null;
+		}
+
+		return result;
+	}
+	/**
+	 * 查询是否被占�?
+	 * @param field 子网
+	 * @param connection
+	 * @return
+	 * @throws Exception
+	 */
+	public int isSingle(Field field, Connection connection) throws Exception {
+
+	
+		String sql;
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+		int result =0;
+		
+		try{
+		if (null == field) {
+			throw new Exception("field is null");
+		}
+
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+		
+		sql = " select count(*) count from site_inst where fieldId = ?";
+		
+		preparedStatement = connection.prepareStatement(sql);
+		preparedStatement.setInt(1, field.getId());
+		resultSet = preparedStatement.executeQuery();
+		if(resultSet.next()){
+			result=resultSet.getInt("count");
+		}
+	} catch (Exception e) {
+		throw e;
+	} finally {
+		if (resultSet != null) {
+			try {
+				resultSet.close();
+			} catch (Exception e) {
+				ExceptionManage.dispose(e,this.getClass());
+			}
+			resultSet = null;
+		}
+		if (preparedStatement != null) {
+			try {
+				preparedStatement.close();
+			} catch (Exception e) {
+				ExceptionManage.dispose(e,this.getClass());
+			}
+			preparedStatement = null;
+		}
+		sql = null;
+		field = null;
+	}
+		return result;
+}
+	/**
+	 * 删除子网
+	 * @param field  子网
+	 * @param connection
+	 * @return
+	 * @throws Exception
+	 */
+	public int delete(Field field, Connection connection )throws Exception {
+		if (null == field) {
+			throw new Exception("field is null");
+		}
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		int result = 0;
+		try {
+			sql = "delete from field where id = ?";
+			preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.setInt(1, field.getId());
+			result = preparedStatement.executeUpdate();
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+				
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+		return result;
+	}
+	/**
+	 * 	查询子网的上一�?�?
+	 * @param id 子网父类ID
+	 * @param connection
+	 * @return
+	 */
+	public List<Field> subnetCombo(String id, Connection connection) {
+		String sql = null;
+		List<Field> comboboxList = new ArrayList<Field>();
+		ResultSet resultSet = null;
+		PreparedStatement preparedStatement = null;
+		Field field;
+		try {
+			sql = "select * from field where 1=1 and objectType='subnet' ";
+			if(id!=null&&!"".equals(id) ){
+				sql += " and parentId= ?";
+				preparedStatement = connection.prepareStatement(sql);			
+				preparedStatement.setInt(1, Integer.parseInt(id));
+			}else{
+				preparedStatement = connection.prepareStatement(sql);			
+			}
+			resultSet = preparedStatement.executeQuery();
+			while (resultSet.next()) {
+				field = new Field();
+				field.setId(resultSet.getInt("id"));
+				field.setFieldName(resultSet.getString("FieldName"));
+				field.setFieldX(resultSet.getInt("fieldX"));
+				field.setFieldY(resultSet.getInt("fieldY"));
+				field.setmSiteId(resultSet.getInt("mSiteId"));
+				field.setObjectType(resultSet.getString("objectType"));
+				field.setParentId(resultSet.getInt("parentId"));
+				comboboxList.add(field);
+			}
+
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		} finally {
+			if (resultSet != null) {
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				resultSet = null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+			field = null;
+		}
+
+		return comboboxList;
+	}
+	/**
+	 *  查询子网 �?所属网�?
+	 * @param searchField  查询的子�?
+	 * @param connection
+	 * @return
+	 */
+	public List<Field> querySiteByCondition(Field searchField,Connection connection){
+		String sql = null;
+		ResultSet resultSet = null;
+		PreparedStatement preparedStatement = null;
+		Field field = null ;
+		List<Field> subnetList = new ArrayList<Field>();
+		try {
+			sql = " SELECT * FROM field  WHERE objectType='subnet' and parentId = ? ";
+			preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.setInt(1, searchField.getId());
+			resultSet = preparedStatement.executeQuery();
+			while (resultSet.next()) {
+				field = new Field();
+				field.setId(resultSet.getInt("id"));
+				field.setFieldName(resultSet.getString("FieldName"));
+				field.setFieldX(resultSet.getInt("fieldX"));
+				field.setFieldY(resultSet.getInt("fieldY"));
+				field.setmSiteId(resultSet.getInt("mSiteId"));
+				field.setObjectType(resultSet.getString("objectType"));
+				field.setParentId(resultSet.getInt("parentId"));
+				subnetList.add(field);
+			}
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		} finally {
+			if (resultSet != null) {
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				resultSet = null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+			field = null;
+		}
+
+		return subnetList;
+		
+	}
+	/**
+	 * 拿到网元的父�?
+	 * @param siteInst 网元
+	 * @param connection
+	 * @return
+	 */
+	public Field getSiteParent(SiteInst siteInst, Connection connection) {
+		String sql = null;
+		ResultSet resultSet = null;
+		PreparedStatement preparedStatement = null;
+		Field field = null;
+		try {
+			sql = "select * from field where 1=1 and id= ? or groupId=?";
+			
+			preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.setInt(1, siteInst.getFieldID());
+			preparedStatement.setInt(2, siteInst.getFieldID());
+			resultSet = preparedStatement.executeQuery();
+			while (resultSet.next()) {
+				field = new Field();
+				field.setId(resultSet.getInt("id"));
+				field.setFieldName(resultSet.getString("FieldName"));
+				field.setFieldX(resultSet.getInt("fieldX"));
+				field.setFieldY(resultSet.getInt("fieldY"));
+				field.setmSiteId(resultSet.getInt("mSiteId"));
+				field.setObjectType(resultSet.getString("objectType"));
+				field.setParentId(resultSet.getInt("parentId"));
+			}
+
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		} finally {
+			if (resultSet != null) {
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				resultSet = null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+
+		return field;
+	}
+	
+	/**
+	 * 	查询子网的上一�?(域和子网)
+	 * @param field 域和子网
+	 * @param connection
+	 * @return
+	 */
+	public List<Field> queryByConditionAll(Field field,String type, Connection connection) {
+		String sql = null;
+		List<Field> comboboxList = new ArrayList<Field>();
+		ResultSet resultSet = null;
+		PreparedStatement preparedStatement = null;
+		
+		try {
+			sql = "select * from field where 1=1 ";
+			if(null!=field ){
+				if(0!=field.getId()){
+					sql += " and id= ?";
+				}
+			}
+			if(null!=type&&!"".equals(type)){
+				sql += " and objectType = ?";
+			}
+			preparedStatement = connection.prepareStatement(sql);
+			if(null!=field ){
+				if(0!=field.getId()){
+					preparedStatement.setInt(1, field.getId());
+					if(null!=type&&!"".equals(type)){
+						preparedStatement.setString(2, field.getObjectType());
+					}
+				}else{
+					if(null!=type&&!"".equals(type)){
+						preparedStatement.setString(1, field.getObjectType());
+					}
+				}
+				
+			}
+			resultSet = preparedStatement.executeQuery();
+			while (resultSet.next()) {
+				field = new Field();
+				field.setId(resultSet.getInt("id"));
+				field.setFieldName(resultSet.getString("FieldName"));
+				field.setFieldX(resultSet.getInt("fieldX"));
+				field.setFieldY(resultSet.getInt("fieldY"));
+				field.setmSiteId(resultSet.getInt("mSiteId"));
+				field.setObjectType(resultSet.getString("objectType"));
+				field.setParentId(resultSet.getInt("parentId"));
+				comboboxList.add(field);
+			}
+
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		} finally {
+			if (resultSet != null) {
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				resultSet = null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+			field = null;
+		}
+
+		return comboboxList;
+	}
+	
+	/**
+	 * 删除域时，删除该域下所以子�
+	 * @param field  子网
+	 * @param connection
+	 * @return
+	 * @throws Exception
+	 */
+	public int delete(int parentId, Connection connection )throws Exception {
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		int result = 0;
+		try {
+			sql = "delete from field where parentId = ? and objectType='subnet'";
+			preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.setInt(1, parentId);
+			result = preparedStatement.executeUpdate();
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+				
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+		return result;
+	}
+	
+}

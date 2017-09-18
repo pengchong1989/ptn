@@ -1,0 +1,11 @@
+#子网管理#######################################################
+Field=Field
+#组名称
+parentName=LBL_GROUP_BELONG
+#子网名称
+fieldName=LBL_SUBNET_NAME
+
+
+
+
+

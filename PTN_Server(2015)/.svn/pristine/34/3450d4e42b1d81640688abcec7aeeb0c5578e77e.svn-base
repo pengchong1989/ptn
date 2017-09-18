@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xml-body>
+
+<node nodename="Startup Manager" clickNodeClass="com.nms.rmi.ui.ServiceStartPanel"></node>
+
+<node nodename="Database Manager" clickNodeClass="">	
+	<childNode nodename="Database Install" clickNodeClass="com.nms.rmi.ui.DatabaseInitializePanel"></childNode>
+	<childNode nodename="Database Backup" clickNodeClass="com.nms.rmi.ui.DatabaseBackupsPanel"></childNode>
+	<childNode nodename="Database Recovery" clickNodeClass="com.nms.rmi.ui.DatabaseRecoverPanel"></childNode>
+	<childNode nodename="Database Upgrade" clickNodeClass="com.nms.rmi.ui.DatabaseUpgradePanel"></childNode>
+	<childNode nodename="Auto Database Backup" clickNodeClass="com.nms.rmi.ui.AutoDatabaseBackupsPanel"></childNode>
+</node>
+
+<node nodename="Import License" clickNodeClass="com.nms.rmi.ui.LicensePanel"></node>
+
+<node nodename="System Config" clickNodeClass="com.nms.rmi.ui.SystemConfigPanel"></node> 
+</xml-body>

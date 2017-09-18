@@ -1,0 +1,173 @@
+package com.nms.ui.ptn.basicinfo.dialog.subnet.controller;
+
+import java.util.List;
+
+import com.nms.db.bean.system.Field;
+import com.nms.db.enums.EOperationLogType;
+import com.nms.model.system.SubnetService_MB;
+import com.nms.model.util.Services;
+import com.nms.ui.frame.AbstractController;
+import com.nms.ui.manager.ConstantUtil;
+import com.nms.ui.manager.ControlKeyValue;
+import com.nms.ui.manager.DialogBoxUtil;
+import com.nms.ui.manager.ExceptionManage;
+import com.nms.ui.manager.ResourceUtil;
+import com.nms.ui.manager.UiUtil;
+import com.nms.ui.manager.control.PtnButton;
+import com.nms.ui.manager.keys.StringKeysTip;
+import com.nms.ui.ptn.basicinfo.dialog.subnet.view.AddSubnetDialog;
+import com.nms.ui.ptn.basicinfo.dialog.subnet.view.SubnetTablePanel;
+
+/**
+ * 子网列表controller 实现列表 按钮功能
+ * 
+ * @author dzy
+ * 
+ */
+public class SubnetController extends AbstractController {
+	private SubnetTablePanel view;
+
+	public SubnetTablePanel getView() {
+		return view;
+	}
+
+	public void setView(SubnetTablePanel view) {
+		this.view = view;
+	}
+
+	public SubnetController(SubnetTablePanel subnetTablePanel) {
+		this.setView(subnetTablePanel);
+
+	}
+
+	@Override
+	public void refresh() throws Exception {
+		searchAndrefreshdata();
+
+	}
+
+	/**
+	 * 刷新、查询
+	 */
+	private void searchAndrefreshdata() {
+		SubnetService_MB service = null;
+		List<Field> subnetList = null;
+		Field f = new Field();
+		if (this.view.getComboBox().getItemCount() > 0) {
+			ControlKeyValue controlKeyValue = (ControlKeyValue) this.view.getComboBox().getSelectedItem();
+			f = (Field) controlKeyValue.getObject();
+		}
+		try {
+			service = (SubnetService_MB) ConstantUtil.serviceFactory.newService_MB(Services.SUBNETSERVICE);
+			subnetList = service.searchAndrefreshdata(f);
+			this.view.clear();
+			this.view.initData(subnetList);
+			this.view.updateUI();
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		} finally {
+			UiUtil.closeService_MB(service);
+		}
+	}
+
+	/**
+	 * 新建
+	 */
+	@Override
+	public void openCreateDialog() {
+		new AddSubnetDialog(this.getView(), true, null);
+	}
+
+	/**
+	 * 修改
+	 */
+	@Override
+	public void openUpdateDialog() throws Exception {
+		if (this.getView().getAllSelect().size() == 0) {
+			DialogBoxUtil.errorDialog(this.getView(), ResourceUtil.srcStr(StringKeysTip.TIP_SELECT_DATA_ONE));
+		} else {
+			Field subnet = this.getView().getAllSelect().get(0);
+			new AddSubnetDialog(this.getView(), true, subnet);
+		}
+	}
+
+	/**
+	 * /删除
+	 */
+	@Override
+	public void delete() {
+		List<Field> fieldList = null;
+		SubnetService_MB service = null;
+//		boolean flag = true;
+		boolean delresult = true;
+		try {
+			service = (SubnetService_MB) ConstantUtil.serviceFactory.newService_MB(Services.SUBNETSERVICE);
+			fieldList = this.getView().getAllSelect();
+
+			for (Field field : fieldList) {
+//				boolean Single;
+//				Single = service.isSingle(field);
+//				if (Single) {
+//					flag = false;
+//					break;
+//				} else {
+					delresult = service.delete(field);
+//				}
+			}
+//			if (!flag) {
+//				DialogBoxUtil.errorDialog(this.getView(), ResourceUtil.srcStr(StringKeysTip.TIP_SUBNET_DELETE_NODE));
+//				return;
+//			}
+			//添加日志记录
+			PtnButton deleteButton=this.view.getDeleteButton();
+			deleteButton.setOperateKey(EOperationLogType.SUBNETDELETE.getValue());
+			int operationResult=0;
+			if(delresult){
+				operationResult=1;
+			}else{
+				operationResult=2;
+			}
+			deleteButton.setResult(operationResult);
+			this.view.getRefreshButton().doClick();
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		} finally {
+			UiUtil.closeService_MB(service);
+		}
+	}
+	
+	/**
+	 * 删除之前的验证
+	 * 
+	 */
+	@Override
+	public boolean deleteChecking() throws Exception {
+		boolean flag = false;
+		List<Field> fieldList = null;
+		SubnetService_MB service = null;
+		try {
+			service = (SubnetService_MB) ConstantUtil.serviceFactory.newService_MB(Services.SUBNETSERVICE);
+			fieldList = this.getView().getAllSelect();
+
+			for (Field field : fieldList) {
+				boolean Single;
+				Single = service.isSingle(field);
+				if (Single) {
+					flag = true;
+					break;
+				} 
+			}
+			if (flag) {
+				DialogBoxUtil.errorDialog(this.getView(), ResourceUtil.srcStr(StringKeysTip.TIP_SUBNET_DELETE_NODE));
+				return false;
+			}
+			 flag = true;
+		} catch (Exception e) {
+			ExceptionManage.dispose(e, getClass());
+		}finally{
+			UiUtil.closeService_MB(service);
+		}
+		return flag;
+	}
+	
+}

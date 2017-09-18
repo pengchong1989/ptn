@@ -1,0 +1,327 @@
+﻿package com.nms.model.report;
+
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import com.nms.db.bean.equipment.port.PortInst;
+import com.nms.db.bean.ptn.path.eth.EtreeInfo;
+import com.nms.db.bean.ptn.path.pw.MsPwInfo;
+import com.nms.db.bean.ptn.port.AcPortInfo;
+import com.nms.db.bean.report.SSAlarm;
+import com.nms.db.bean.report.SSCard;
+import com.nms.db.bean.report.SSLabel;
+import com.nms.db.bean.report.SSPath;
+import com.nms.db.bean.report.SSPort;
+import com.nms.db.bean.report.SSProfess;
+import com.nms.db.dao.alarm.CurAlarmDao;
+import com.nms.db.dao.ptn.path.eth.EtreeDao;
+import com.nms.db.dao.ptn.path.pw.MsPwInfoDao;
+import com.nms.db.dao.ptn.path.tunnel.TunnelDao;
+import com.nms.db.dao.ptn.port.AcDao;
+import com.nms.db.dao.report.SSDao;
+import com.nms.model.util.ObjectService;
+import com.nms.ui.manager.ConstantUtil;
+import com.nms.ui.manager.ExceptionManage;
+public class StaticsticsService extends ObjectService {
+
+	public void setConnection(Connection connection) {
+		super.connection = connection;
+	}
+
+	public void setPtnuser(String ptnuser) {
+		super.ptnuser = ptnuser;
+	}
+	private SSDao ssDao=new SSDao();
+	public List<SSCard> SSCardSelect() throws Exception{
+		return new SSDao().querySSCard(connection);
+	}
+	//单独使用于单板的统计
+	public List<SSCard> SSCardToCardSelect() throws Exception{
+		return new SSDao().queryCard(connection);
+	}
+	
+	public List<SSLabel> SSLabelSelect() throws Exception{
+		List<SSLabel> ssLabelList = new ArrayList<SSLabel>();
+		SSDao dao = new SSDao();
+		List<SSLabel> canUsedList = dao.queryCanUsedLabel(connection);
+		List<SSLabel> labelCountList = dao.queryCountLabel(connection);
+		int allLabelCount = ConstantUtil.LABEL_MAXVALUE - 15;
+		for (SSLabel countLabel : labelCountList) {
+			int siteId2 = countLabel.getSiteId();
+			String type2 = countLabel.getLabelType();
+			int allCount = Integer.parseInt(countLabel.getLspCount());//数据库总数量
+			for (SSLabel canUsedLabel : canUsedList) {
+				int siteId = canUsedLabel.getSiteId();
+				String type = canUsedLabel.getLabelType();
+				int canUsedCount = Integer.parseInt(canUsedLabel.getLspCanUsed());//数据库剩余可用数量
+				if(siteId == siteId2 && type.equals(type2)){
+					int usedCount = allCount - canUsedCount;//已用数量
+					SSLabel ss = new SSLabel();
+					ss.setSiteName(canUsedLabel.getSiteName());
+					ss.setPortName("ALL");
+					ss.setLabelType("ALL");
+					ss.setLspCount(allLabelCount+"");
+					ss.setLspUsed(usedCount+"");
+					ss.setLspCanUsed(allLabelCount-usedCount+"");
+					ss.setSiteId(siteId);
+					ssLabelList.add(ss);
+				}
+			}
+		}
+		return ssLabelList;
+	}
+	
+	public List<SSPort> SSPortSelect() throws Exception{
+		return new SSDao().querySSPort(connection);
+	}
+	/**
+	 * 端到端路径数量统计
+	 */
+	public List<SSPath> SSPathSelect() throws Exception{
+		return new SSDao().queryPathCount(connection);
+	}
+	/**
+	 * 单网元路径数量统计
+	 */
+	public List<SSPath> SSNePathSelect() throws Exception{
+		return new SSDao().queryPathCount_site(connection);
+	}
+	/**
+	 * 告警统计
+	 * 	
+	 * @return
+	 * @throws Exception
+	 */
+	public List<SSAlarm> SSAlarmSelect()throws Exception{
+		CurAlarmDao currentAlarmDao=null;
+		List<SSAlarm> ssAlarmList=null;
+		try{
+			currentAlarmDao=new CurAlarmDao();
+			ssAlarmList=currentAlarmDao.queryByCountAlarmLevel(connection);
+		}catch (Exception e) {
+			throw e;
+		}
+		return ssAlarmList;
+	}
+	/**
+	 * 统计业务列表
+	 * 	
+	 * @return
+	 * @throws Exception
+	 */
+	public List<SSProfess>  SSBusiness()throws Exception{
+		List<SSProfess> ssList = null;
+		SSDao ssDao=new SSDao();	
+		try{			
+			ssList=ssDao.queryBusinessList(connection);
+		}catch (Exception e) {
+			ExceptionManage.dispose(e, this.getClass());
+		}
+		return ssList;
+	
+	}
+
+	public List<SSProfess> SSBusinessByPortId(String type, List<Integer> portIdList) {
+		List<SSProfess> ssList = new ArrayList<SSProfess>();
+		List<SSProfess> ssList1 = new ArrayList<SSProfess>();		
+		AcDao acDao=null;
+		EtreeDao etreeDao=null;
+		List<Integer> aAcIds =null;
+		MsPwInfoDao  msPwInfoDao = null;
+		TunnelDao tunnelDao = null;
+		List<EtreeInfo> etreeInfoList = null;
+		List<AcPortInfo> acPortInfo=null;	
+		
+		try{	
+			    ssList = ssDao.SSBusinessByPortId(type,portIdList, connection);	
+			    for(SSProfess ss : ssList){
+			    	//eline
+			    	if(ss.getServiceType()==1){	
+			    		aAcIds =new ArrayList<Integer>();
+			    		aAcIds.add(ss.getaACId());
+			    		aAcIds.add(ss.getzACId());
+			    		acDao = new AcDao();
+			    		acPortInfo=acDao.queryByAcIdCondition(aAcIds,connection);
+			    		for(int i=0;i<acPortInfo.size();i++){
+			    		 if(portIdList.contains(acPortInfo.get(i).getPortId())){
+			    			 ssList1.add(ss);
+			    			 }
+			             }
+			    		//dual
+			    	 }else if(ss.getServiceType()==40){
+			    		 etreeDao = new EtreeDao();
+			    		 acDao = new AcDao();
+			    		 etreeInfoList=etreeDao.queryAllEtree(40,ss.getName(),connection);
+			    		 aAcIds =new ArrayList<Integer>();
+			    		 for(int i=0;i<etreeInfoList.size();i++){			    			
+			    			 aAcIds.add(etreeInfoList.get(i).getaAcId());
+			    			 aAcIds.add(etreeInfoList.get(i).getzAcId());			    			 
+			    		 }
+			    		 acPortInfo=acDao.queryByAcIdCondition(aAcIds,connection);
+			    		 for(int i=0;i<acPortInfo.size();i++){
+					    	if(portIdList.contains(acPortInfo.get(i).getPortId())){
+					    		ssList1.add(ss);
+					    		}
+					          }
+			    	 //elan
+			         }else if(ss.getServiceType()==2){
+			        	 etreeDao = new EtreeDao();
+			        	 acDao = new AcDao();
+			    	     etreeInfoList=etreeDao.queryAllEtree(2,ss.getName(),connection);
+			    	     aAcIds =new ArrayList<Integer>();
+		    		     for(int i=0;i<etreeInfoList.size();i++){
+		    			    String []macss=etreeInfoList.get(i).getAmostAcId().split("\\, "); 
+    	    			    for(int j=0;j<macss.length;j++){
+    	    				   aAcIds.add(Integer.parseInt(macss[j]));
+			           	    }
+    	    			    String []macs1=etreeInfoList.get(i).getZmostAcId().split("\\, ");
+    	    			    for(int j=0;j<macs1.length;j++){
+    	    				   aAcIds.add(Integer.parseInt(macs1[j]));
+			           	     }		    					    			 
+		    		     }
+		    		     acPortInfo=acDao.queryByAcIdCondition(aAcIds,connection);
+		    		     for(int i=0;i<acPortInfo.size();i++){
+				    	    if(portIdList.contains(acPortInfo.get(i).getPortId())){
+				    		   ssList1.add(ss);
+				    		}
+				          }	
+		    		     //etree
+			           }else if(ss.getServiceType()==3){
+			        	  etreeDao = new EtreeDao();
+			        	  acDao = new AcDao();
+			    	      etreeInfoList=etreeDao.queryAllEtree(3,ss.getName(),connection);
+			    	      aAcIds =new ArrayList<Integer>();
+		    		      for(int i=0;i<etreeInfoList.size();i++){
+		    			     String []macss=etreeInfoList.get(i).getAmostAcId().split("\\, "); 
+   	    			         for(int j=0;j<macss.length;j++){
+   	    				        aAcIds.add(Integer.parseInt(macss[j]));
+			           	     }
+   	    			         String []macs1=etreeInfoList.get(i).getZmostAcId().split("\\, ");
+   	    			         for(int j=0;j<macs1.length;j++){
+   	    				        aAcIds.add(Integer.parseInt(macs1[j]));
+			           	     }		    					    			 
+		    		       }
+		    		      acPortInfo=acDao.queryByAcIdCondition(aAcIds,connection);
+		    		      for(int i=0;i<acPortInfo.size();i++){
+				    	     if(portIdList.contains(acPortInfo.get(i).getPortId())){
+				    		   ssList1.add(ss);
+				    		 }
+				          }	
+		    		      //多段Pw
+			           }else if(ss.getServiceType()==5 && ss.getId()>0){
+			        	   msPwInfoDao = new MsPwInfoDao();	
+				           tunnelDao = new TunnelDao();
+						   MsPwInfo ms= new MsPwInfo();
+						   ms.setPwId(ss.getId());
+						   List<MsPwInfo> msPwInfo=null;
+						   List<Integer> tunnelId= new ArrayList<Integer>();
+						   msPwInfo=msPwInfoDao.queryByCondition(ms,connection);
+						   for(int i=0;i<msPwInfo.size();i++){
+							   tunnelId.add(msPwInfo.get(i).getBackTunnelId());
+							   tunnelId.add(msPwInfo.get(i).getFrontTunnelId());
+						   }
+						   int atunnelId=msPwInfo.get(0).getFrontTunnelId();			    
+						   int ztunnelId=msPwInfo.get(msPwInfo.size()-1).getBackTunnelId();
+						   int  aportId=ssDao.queryPwPortName(atunnelId,ss.getaSiteName(),connection).getPortId();
+						   int  zportId=ssDao.queryPwPortName(ztunnelId,ss.getzSiteName(),connection).getPortId();						    	 
+						   if(portIdList.contains(aportId)||portIdList.contains(zportId)){
+								ssList1.add(ss);
+							}
+						   //中间网元类型的
+						   for(int j=tunnelId.size()-1;j>=0;j--){
+							   if(tunnelId.get(j)==atunnelId ||tunnelId.get(j)==ztunnelId){
+								   tunnelId.remove(j);
+							   }
+						   }
+						   HashSet<Integer> hashSet= new HashSet<Integer>(tunnelId);
+						   tunnelId.clear();
+						   tunnelId.addAll(hashSet);
+						   if(tunnelId !=null && tunnelId.size()>0){
+						   for(int j=0;j<tunnelId.size();j++){
+							   int aport=tunnelDao.queryByTunnelId(tunnelId.get(j), connection).getaPortId();
+							   int zport=tunnelDao.queryByTunnelId(tunnelId.get(j), connection).getzPortId();
+							   if(portIdList.contains(aport)||portIdList.contains(zport)){
+									ssList1.add(ss);
+								}
+						   }
+						   }
+						   //tunnel和普通PW和ces
+			             } else{	    			    	          
+			            	 ssList1.add(ss);			    	         			    	          
+			             }
+			    }
+			    //去掉重复的内容
+			    for(int i=0;i<ssList1.size();i++){
+			    	for(int j=ssList1.size()-1;j>i;j--){
+			    		if(ssList1.get(j).getName().equals(ssList1.get(i).getName())){
+			    			ssList1.remove(j);
+			    		}
+			    	}
+			    	
+			    }					
+			    if(!connection.getAutoCommit()){
+					connection.commit();
+				}
+			} catch (Exception e) {
+				try {
+					connection.rollback();
+				} catch (SQLException e1) {
+					ExceptionManage.dispose(e1,this.getClass());
+				}
+				ExceptionManage.dispose(e,this.getClass());
+			}finally{
+				try {
+					connection.setAutoCommit(true);
+				} catch (SQLException e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+			}
+			
+		
+		return ssList1;
+	}
+	
+	/**
+	 * 根据acId查询端口名称
+	 * 
+	 * @param siteId
+	 *            网元ID
+	 * @return 网元对象
+	 * @throws Exception
+	 */
+	public PortInst selectPortName(int acId) throws Exception {
+		PortInst portInst = null;
+		SSDao ssDao=new SSDao();
+		try {
+			portInst = new PortInst();
+			portInst = ssDao.queryPortName(acId, connection);
+
+		} catch (Exception e) {
+			ExceptionManage.dispose(e, this.getClass());
+		} 
+		return portInst;
+	}
+	/**
+	 * 根据tunnelId和siteName查询端口名称
+	 * 
+	 * @param siteId
+	 *            网元ID
+	 * @return 网元对象
+	 * @throws Exception
+	 */
+	public PortInst selectPwPortName(int tunnelId,String siteName) throws Exception {
+		PortInst portInst = null;
+		SSDao ssDao=new SSDao();
+		try {
+			portInst = new PortInst();
+			portInst = ssDao.queryPwPortName(tunnelId,siteName, connection);
+
+		} catch (Exception e) {
+			ExceptionManage.dispose(e, this.getClass());
+		} 
+		return portInst;
+	}
+	
+}

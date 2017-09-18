@@ -1,0 +1,94 @@
+﻿package com.nms.model.ptn.path.pw;
+
+import java.sql.Connection;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.nms.db.bean.ptn.path.pw.MsPwInfo;
+import com.nms.db.bean.ptn.path.pw.PwInfo;
+import com.nms.db.dao.ptn.path.pw.MsPwInfoDao;
+import com.nms.model.util.ObjectService;
+import com.nms.ui.manager.ExceptionManage;
+
+public class MsPwInfoService extends ObjectService{
+	
+	public void setConnection(Connection connection) {
+		super.connection = connection;
+	}
+
+	public void setPtnuser(String ptnuser) {
+		super.ptnuser = ptnuser;
+	}
+	private MsPwInfoDao msPwInfoDao = new MsPwInfoDao();
+	
+	
+	/**
+	 * 查询
+	 * @param msPwInfo
+	 * @return
+	 */
+	public List<MsPwInfo> select(MsPwInfo msPwInfo){
+		List<MsPwInfo> msPwInfos = null;
+		try {
+			msPwInfos = msPwInfoDao.queryByCondition(msPwInfo, connection);
+		} catch (Exception e) {
+			ExceptionManage.dispose(e, this.getClass());
+		}
+		return msPwInfos;
+	}
+	
+	public int insert(MsPwInfo msPwInfo){
+		int result = 0;
+		try {
+			result = msPwInfoDao.insert(msPwInfo, connection);
+		} catch (Exception e) {
+			ExceptionManage.dispose(e, this.getClass());
+		}
+		return result;
+	}
+	
+	/**
+	 * 查询
+	 * @param msPwInfo
+	 * @return
+	 */
+	public List<MsPwInfo> selectByTunnelIds(List<Integer> tunnelIds){
+		List<MsPwInfo> msPwInfos = null;
+		try {
+			msPwInfos = msPwInfoDao.queryByTunnelIds(tunnelIds, connection);
+		} catch (Exception e) {
+			ExceptionManage.dispose(e, this.getClass());
+		}
+		return msPwInfos;
+	}
+	
+	/**
+	 * 通过网元ID查询
+	 * @param msPwInfo
+	 * @return
+	 */
+	public List<MsPwInfo> selectBySiteId(int siteId){
+		List<MsPwInfo> msPwInfos = new ArrayList<MsPwInfo>();
+		try {
+			MsPwInfo mspwinfoCondition = new MsPwInfo();
+			mspwinfoCondition.setSiteId(siteId);
+			msPwInfos = msPwInfoDao.queryByCondition(mspwinfoCondition, connection);
+		} catch (Exception e) {
+			ExceptionManage.dispose(e, this.getClass());
+		}
+		return msPwInfos;
+	}
+	
+	/**
+	 * 查询
+	 * @param msPwInfo
+	 * @return
+	 */
+	public void update(MsPwInfo msPwInfo){
+		try {
+			 msPwInfoDao.update(msPwInfo, connection);
+		} catch (Exception e) {
+			ExceptionManage.dispose(e, this.getClass());
+		}
+	}
+}

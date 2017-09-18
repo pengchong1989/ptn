@@ -1,0 +1,225 @@
+package com.nms.model.ptn.ecn;
+
+import java.sql.Connection;
+import java.util.List;
+
+import com.nms.db.bean.ptn.ecn.OSPFAREAInfo;
+import com.nms.db.dao.ptn.ecn.OSPFAREADao;
+import com.nms.model.util.ObjectService;
+import com.nms.ui.manager.ExceptionManage;
+
+public class OSPFAREAService extends ObjectService {
+	// TXC
+
+	public void setConnection(Connection connection) {
+		super.connection = connection;
+	}
+
+	public void setPtnuser(String ptnuser) {
+		super.ptnuser = ptnuser;
+	}
+
+	private OSPFAREADao oSPFAREADao = new OSPFAREADao();
+
+	/**
+	 *创建
+	 * 
+	 * @param OSPFAREAInfo
+	 * @return
+	 * @throws Exception
+	 */
+	public int insert(OSPFAREAInfo OSPFAREAInfo) throws Exception {
+		if (OSPFAREAInfo == null) {
+			throw new Exception("OSPFInfo is null");
+		}
+		int ospfId = 1;
+		try {
+			connection.setAutoCommit(false);
+			ospfId = this.oSPFAREADao.insert(OSPFAREAInfo, connection);
+			if(!connection.getAutoCommit()){
+				connection.commit();
+			}
+		} catch (Exception e) {
+			connection.rollback();
+			ExceptionManage.dispose(e,this.getClass());
+		} finally {
+			connection.setAutoCommit(true);
+		}
+		return ospfId;
+	}
+
+	/**
+	 *修改
+	 * 
+	 * @param OSPFAREAInfo
+	 * @return
+	 * @throws Exception
+	 */
+	public int update(OSPFAREAInfo OSPFAREAInfo) throws Exception {
+		if (OSPFAREAInfo == null) {
+			throw new Exception("OSPFInfo is null");
+		}
+		int ospfId = 1;
+		try {
+			connection.setAutoCommit(false);
+			ospfId = this.oSPFAREADao.update(OSPFAREAInfo, connection);
+			if(!connection.getAutoCommit()){
+				connection.commit();
+			}
+		} catch (Exception e) {
+			connection.rollback();
+			ExceptionManage.dispose(e,this.getClass());
+		} finally {
+			connection.setAutoCommit(true);
+		}
+		return ospfId;
+	}
+	/**
+	 *修改  激活状态
+	 * 
+	 * @param OSPFAREAInfo
+	 * @return
+	 * @throws Exception
+	 */
+	public int updateStatus(OSPFAREAInfo OSPFAREAInfo) throws Exception {
+		if (OSPFAREAInfo == null) {
+			throw new Exception("OSPFInfo is null");
+		}
+		int ospfId = 1;
+		try {
+			connection.setAutoCommit(false);
+			ospfId = this.oSPFAREADao.updateStatus(OSPFAREAInfo, connection);
+			if(!connection.getAutoCommit()){
+				connection.commit();
+			}
+		} catch (Exception e) {
+			connection.rollback();
+			ExceptionManage.dispose(e,this.getClass());
+		} finally {
+			connection.setAutoCommit(true);
+		}
+		return ospfId;
+	}
+
+	/**
+	 *删除
+	 * 
+	 * @param id
+	 * @return
+	 * @throws Exception
+	 */
+	public int delete(String id) throws Exception {
+		if (id == null) {
+			throw new Exception("id is null");
+		}
+		int ospfId = 1;
+		try {
+			connection.setAutoCommit(false);
+			ospfId = this.oSPFAREADao.deleteById(id, connection);
+			if(!connection.getAutoCommit()){
+				connection.commit();
+			}
+		} catch (Exception e) {
+			connection.rollback();
+			ExceptionManage.dispose(e,this.getClass());
+		} finally {
+			connection.setAutoCommit(true);
+		}
+		return ospfId;
+	}
+	/**
+	 *删除
+	 * 
+	 * @param info
+	 * @return
+	 * @throws Exception
+	 */
+	public int delete(OSPFAREAInfo info) throws Exception {
+		if (info==null) {
+			throw new Exception("id is null");
+		}
+		int ospfId = 1;
+		try {
+			connection.setAutoCommit(false);
+			ospfId = this.oSPFAREADao.delete(info, connection);
+			if(!connection.getAutoCommit()){
+				connection.commit();
+			}
+		} catch (Exception e) {
+			connection.rollback();
+			ExceptionManage.dispose(e,this.getClass());
+		} finally {
+			connection.setAutoCommit(true);
+		}
+		return ospfId;
+	}
+
+	/**
+	 * 查询
+	 * 
+	 * @param neId
+	 * @return
+	 * @throws Exception
+	 */
+	public List<OSPFAREAInfo> queryByNeID(String NeID) throws Exception {
+		if (NeID == null) {
+			throw new Exception("NeID is null");
+		}
+		List<OSPFAREAInfo> oSPFAREAInfoList = null;
+		try {
+			oSPFAREAInfoList = this.oSPFAREADao.queryByNeID(NeID, connection);
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		}
+		return oSPFAREAInfoList;
+	}
+
+	/**
+	 * 查询名称是否存在
+	 * 
+	 * @param neId
+	 * @param area_range
+	 * @return
+	 * @throws Exception
+	 */
+	public int queryName(String NeID, String area_range) throws Exception {
+		if (NeID == null) {
+			throw new Exception("NeID is null");
+		}
+		if (area_range == null) {
+			throw new Exception("area_range is null");
+		}
+		int count = 0;
+		try {
+			count = this.oSPFAREADao.queryName(NeID, area_range, connection);
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		}
+		return count;
+	}
+	
+	/**
+	 * 查询
+	 * 
+	 * @param neId
+	 * @param area_range
+	 * @return oSPFAREAInfoList
+	 * @throws Exception
+	 */
+	public List<OSPFAREAInfo> queryByNeIDAndAreaRange(String NeID, String area_range) throws Exception {
+		if (NeID == null) {
+			throw new Exception("NeID is null");
+		}
+		if (area_range == null) {
+			throw new Exception("area_range is null");
+		}
+		List<OSPFAREAInfo> oSPFAREAInfoList = null;
+		try {
+			oSPFAREAInfoList = this.oSPFAREADao.queryByNeIDAndAreaRange(NeID, area_range, connection);
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		}
+		return oSPFAREAInfoList;
+	}
+
+}

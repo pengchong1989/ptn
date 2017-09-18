@@ -1,0 +1,18 @@
+package com.nms.db.dao.ptn.clock;
+
+import com.nms.db.bean.ptn.clock.PortConfigInfo;
+
+
+public interface PortConfigInfoMapper {
+    int deleteByPrimaryKey(Integer id);
+
+    int insert(PortConfigInfo record);
+
+    int insertSelective(PortConfigInfo record);
+
+    PortConfigInfo selectByPrimaryKey(Integer id);
+
+    int updateByPrimaryKeySelective(PortConfigInfo record);
+
+    int updateByPrimaryKey(PortConfigInfo record);
+}

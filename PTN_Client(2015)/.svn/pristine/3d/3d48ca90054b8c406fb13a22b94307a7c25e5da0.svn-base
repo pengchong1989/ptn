@@ -1,0 +1,27 @@
+package com.nms.db.dao.ptn.path.ces;
+
+import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
+
+import com.nms.db.bean.ptn.path.ces.CesInfo;
+
+public interface CesInfoMapper {
+    int deleteByPrimaryKey(Integer id);
+
+    int insert(CesInfo record);
+
+    int insertSelective(CesInfo record);
+
+    CesInfo selectByPrimaryKey(Integer id);
+
+    int updateByPrimaryKeySelective(CesInfo record);
+
+    int updateByPrimaryKey(CesInfo record);
+
+	List<CesInfo> filterQuery(CesInfo cesInfo);
+
+	List<CesInfo> queryNodeBySite(int siteId);
+
+	List<CesInfo> filterSingle(@Param("cesInfo")CesInfo cesInfo, @Param("siteId")int siteId);
+}

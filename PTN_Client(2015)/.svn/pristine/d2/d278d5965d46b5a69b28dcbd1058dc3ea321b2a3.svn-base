@@ -1,0 +1,13 @@
+package com.nms.db.dao.system.user;
+
+import java.util.List;
+import com.nms.db.bean.system.user.UserInst;
+
+
+
+public interface UserInstMapper {
+      
+    public List<UserInst> selectUserList(UserInst userInst);
+
+	public List<UserInst> querByroleId(UserInst userinst);
+}

@@ -1,0 +1,19 @@
+package com.nms.db.dao.ptn;
+
+import com.nms.db.bean.ptn.SsMacStudy;
+
+
+
+public interface MacStudyAddressMapper {
+    int deleteByPrimaryKey(Integer id);
+
+    int insert(SsMacStudy record);
+
+    int insertSelective(SsMacStudy record);
+
+    SsMacStudy selectByPrimaryKey(Integer id);
+
+    int updateByPrimaryKeySelective(SsMacStudy record);
+
+    int updateByPrimaryKey(SsMacStudy record);
+}

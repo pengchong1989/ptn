@@ -1,0 +1,795 @@
+﻿package com.nms.model.ptn.path.ces;
+
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.nms.db.bean.equipment.port.PortInst;
+import com.nms.db.bean.equipment.port.PortStmTimeslot;
+import com.nms.db.bean.equipment.shelf.SiteInst;
+import com.nms.db.bean.ptn.Businessid;
+import com.nms.db.bean.ptn.path.ces.CesInfo;
+import com.nms.db.bean.ptn.path.pw.PwInfo;
+import com.nms.db.dao.equipment.port.PortInstDao;
+import com.nms.db.dao.equipment.port.PortStmTimeslotDao;
+import com.nms.db.dao.ptn.BusinessidDao;
+import com.nms.db.dao.ptn.path.ces.CesInfoDao;
+import com.nms.db.dao.ptn.path.pw.PwInfoDao;
+import com.nms.db.enums.EActionType;
+import com.nms.db.enums.ECesType;
+import com.nms.db.enums.EManufacturer;
+import com.nms.db.enums.EPwType;
+import com.nms.db.enums.EServiceType;
+import com.nms.model.equipment.port.PortService;
+import com.nms.model.equipment.port.PortStmTimeslotService;
+import com.nms.model.equipment.shlef.SiteService;
+import com.nms.model.ptn.path.pw.PwInfoService;
+import com.nms.model.util.ObjectService;
+import com.nms.model.util.Services;
+import com.nms.ui.manager.BusinessIdException;
+import com.nms.ui.manager.ConstantUtil;
+import com.nms.ui.manager.ExceptionManage;
+import com.nms.ui.manager.ResourceUtil;
+import com.nms.ui.manager.UiUtil;
+import com.nms.ui.manager.keys.StringKeysTip;
+
+public class CesInfoService extends ObjectService {
+	public void setConnection(Connection connection) {
+		super.connection = connection;
+	}
+
+	public void setPtnuser(String ptnuser) {
+		super.ptnuser = ptnuser;
+	}
+
+	private CesInfoDao cesInfoDao = new CesInfoDao();
+	private PwInfoDao pwInfoDao = new PwInfoDao();
+	private BusinessidDao businessidDao = new BusinessidDao();
+	private PortInstDao portInstDao = new PortInstDao();
+	private PortStmTimeslotDao portStmTimeSlotDao = new PortStmTimeslotDao();
+
+	public void save(List<CesInfo> cesInfoList) throws Exception,BusinessIdException {
+		for (CesInfo cesInfo : cesInfoList) {
+			int cesid = this.save(cesInfo);
+			cesInfo.setId(cesid);
+		}
+	}
+
+	public int save(CesInfo cesInfo) throws Exception,BusinessIdException {
+
+		if (cesInfo == null) {
+			throw new Exception("pwinfo is null");
+		}
+		int resultcesId = 0;
+		Businessid aServiceId = null;
+		Businessid zServiceId = null;
+		SiteService siteService = null;
+		try {
+			connection.setAutoCommit(false);
+			siteService=(SiteService) ConstantUtil.serviceFactory.newService(Services.SITE, this.connection);
+			if(cesInfo.getaSiteId()!=0){
+				
+				if(cesInfo.getAxcId()==0){
+					if(siteService.getManufacturer(cesInfo.getaSiteId()) == EManufacturer.valueOf("WUHAN").getValue()){
+						aServiceId = businessidDao.query(cesInfo.getaSiteId(), "eline", connection);
+					}else{
+						aServiceId = businessidDao.query(cesInfo.getaSiteId(), "ces", connection);
+					}	
+				}else {
+					if(siteService.getManufacturer(cesInfo.getaSiteId()) == EManufacturer.valueOf("WUHAN").getValue()){
+						aServiceId=businessidDao.query(cesInfo.getAxcId(), cesInfo.getaSiteId(), "eline",connection);
+					}else{
+						aServiceId=businessidDao.query(cesInfo.getAxcId(), cesInfo.getaSiteId(), "ces",connection);
+					}
+				}
+				if (aServiceId == null) {
+					throw new BusinessIdException(siteService.getSiteName(cesInfo.getaSiteId())+ResourceUtil.srcStr(StringKeysTip.TIP_CESID));
+				}
+				cesInfo.setAxcId(aServiceId.getIdValue());
+				businessidDao.update(aServiceId.getId(), 1, connection);
+
+			}
+			if(cesInfo.getzSiteId()!=0){
+				
+				if(cesInfo.getZxcId()==0){
+					if(siteService.getManufacturer(cesInfo.getzSiteId()) == EManufacturer.valueOf("WUHAN").getValue()){
+						zServiceId = businessidDao.query(cesInfo.getzSiteId(), "eline", connection);
+					}else{
+						zServiceId = businessidDao.query(cesInfo.getzSiteId(), "ces", connection);
+					}	
+				}else {
+					if(siteService.getManufacturer(cesInfo.getzSiteId()) == EManufacturer.valueOf("WUHAN").getValue()){
+						zServiceId=businessidDao.query(cesInfo.getZxcId(), cesInfo.getzSiteId(), "eline",connection);
+					}else{
+						zServiceId=businessidDao.query(cesInfo.getZxcId(), cesInfo.getzSiteId(), "ces",connection);
+					}
+				}
+				if (zServiceId == null) {
+					throw new BusinessIdException(siteService.getSiteName(cesInfo.getzSiteId())+ResourceUtil.srcStr(StringKeysTip.TIP_CESID));
+				}
+
+				cesInfo.setZxcId(zServiceId.getIdValue());
+				businessidDao.update(zServiceId.getId(), 1, connection);
+			}
+
+			resultcesId = cesInfoDao.insert(cesInfo, connection);
+			pwInfoDao.setUser(cesInfo.getPwId(), resultcesId, EServiceType.CES.getValue(), connection);
+			setUsedForPort(cesInfo, 1); // 更新端口或者时隙也被使用
+
+			//离线网元数据下载
+			if(0!=cesInfo.getaSiteId()){
+				super.dateDownLoad(cesInfo.getaSiteId(),resultcesId, EServiceType.CES.getValue(), EActionType.INSERT.getValue());
+			}
+			if(0!=cesInfo.getzSiteId()){
+				super.dateDownLoad(cesInfo.getzSiteId(),resultcesId, EServiceType.CES.getValue(), EActionType.INSERT.getValue());
+			}
+			if(!connection.getAutoCommit()){
+				connection.commit();
+			}
+		} catch (BusinessIdException e) {
+			connection.rollback();
+			throw e;
+		}catch (Exception e) {
+			connection.rollback();
+			ExceptionManage.dispose(e,this.getClass());
+		} finally {
+			connection.setAutoCommit(true);
+//			UiUtil.closeService(siteService);
+		}
+		return resultcesId;
+	}
+
+	private void setUsedForPort(CesInfo cesInfo, int isused) {
+		List<Integer> pdhportList = null; // e1
+		try {
+			pdhportList = new ArrayList<Integer>();
+			if (cesInfo.getCestype() == ECesType.SDH.getValue()) {
+				portStmTimeSlotDao.setUsed(cesInfo.getaAcId(), isused, connection);
+				portStmTimeSlotDao.setUsed(cesInfo.getzAcId(), isused, connection);
+			} else if (cesInfo.getCestype() == ECesType.SDHPDH.getValue()) {
+				portStmTimeSlotDao.setUsed(cesInfo.getaAcId(), isused, connection);
+				
+				pdhportList.add(cesInfo.getzAcId());
+				portInstDao.updateOccupyByIdList(pdhportList, isused, connection);
+				
+			} else if (cesInfo.getCestype() == ECesType.PDH.getValue()) {
+
+				pdhportList.add(cesInfo.getzAcId());
+				pdhportList.add(cesInfo.getaAcId());
+				portInstDao.updateOccupyByIdList(pdhportList, isused, connection);
+
+			} else if (cesInfo.getCestype() == ECesType.PDHSDH.getValue()) {
+				portStmTimeSlotDao.setUsed(cesInfo.getzAcId(), isused, connection);
+
+				pdhportList.add(cesInfo.getaAcId());
+				portInstDao.updateOccupyByIdList(pdhportList, isused, connection);
+			}
+
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		} finally {
+			pdhportList = null;
+		}
+	}
+
+	public void update(List<CesInfo> cesInfoList) throws Exception {
+		for (CesInfo cesInfo : cesInfoList) {
+			this.update(cesInfo);
+		}
+	}
+
+	@SuppressWarnings("unused")
+	public void update(CesInfo cesInfo) throws Exception {
+
+		if (cesInfo == null) {
+			throw new Exception("pwinfo is null");
+		}
+		int cesId = 0;
+		CesInfo beforCes = null;
+		try {
+			connection.setAutoCommit(false);
+			beforCes = new CesInfo();
+			beforCes.setId(cesInfo.getId());
+			beforCes = cesInfoDao.queryByCondition_nojoin(beforCes, connection).get(0);
+
+			cesId = this.cesInfoDao.update(cesInfo, connection);
+
+			if (beforCes.getPwId() != cesInfo.getPwId()) {
+				pwInfoDao.setUser(beforCes.getPwId(), 0, 0, connection);
+				pwInfoDao.setUser(cesInfo.getPwId(), cesInfo.getId(), EServiceType.CES.getValue(), connection);
+			}
+			setUsedForPort(beforCes,0);//释放修改过的端口端口或者时隙也被使用
+			setUsedForPort(cesInfo, 1); // 更新端口或者时隙也被使用
+			
+			//离线网元数据下载
+			if(0!=cesInfo.getaSiteId()){
+				super.dateDownLoad(cesInfo.getaSiteId(),cesInfo.getId(), EServiceType.CES.getValue(), EActionType.UPDATE.getValue());
+			}
+			if(0!=cesInfo.getzSiteId()){
+				super.dateDownLoad(cesInfo.getzSiteId(),cesInfo.getId(), EServiceType.CES.getValue(), EActionType.UPDATE.getValue());
+			}
+			if(!connection.getAutoCommit()){
+				connection.commit();
+			}
+		} catch (Exception e) {
+			connection.rollback();
+			ExceptionManage.dispose(e,this.getClass());
+		} finally {
+			connection.setAutoCommit(true);
+		}
+	}
+
+	public void updateActiveStatus(List<Integer> idList, int status) throws Exception {
+
+		try {
+			connection.setAutoCommit(false);
+
+			cesInfoDao.updateStatus(idList, status, connection);
+			if(!connection.getAutoCommit()){
+				connection.commit();
+			}
+		} catch (Exception e) {
+			connection.rollback();
+			ExceptionManage.dispose(e,this.getClass());
+		} finally {
+			connection.setAutoCommit(true);
+		}
+
+	}	
+
+	public void updateActiveStatus(int siteId, int status) throws Exception {
+
+		try {
+			connection.setAutoCommit(false);
+			cesInfoDao.updateStatus(siteId, status, connection);
+			if(!connection.getAutoCommit()){
+				connection.commit();
+			}
+		} catch (Exception e) {
+			connection.rollback();
+			ExceptionManage.dispose(e,this.getClass());
+		} finally {
+			connection.setAutoCommit(true);
+		}
+
+	}
+
+	/**
+	 * 批量删除
+	 */
+	public int delete(List<CesInfo> infos) throws Exception {
+		int result = 0;
+		List<Integer> idList = null;
+		SiteService siteService = null;
+		try {
+			siteService=(SiteService) ConstantUtil.serviceFactory.newService(Services.SITE, this.connection);
+			connection.setAutoCommit(false);
+			// 解除pw与ces业务的引用关系
+			for (CesInfo cesInfo : infos) {
+				pwInfoDao.setUser(cesInfo.getPwId(), 0, EServiceType.CES.getValue(), connection);
+				setUsedForPort(cesInfo, 0); //修改端口使用状态
+			}
+
+			idList = new ArrayList<Integer>();
+			for (CesInfo info : infos) {
+
+				// 释放id
+				Businessid businessId = new Businessid();
+				businessId.setIdStatus(0);
+				businessId.setIdValue(info.getAxcId());
+				if (info.getaSiteId() > 0 && siteService.getManufacturer(info.getaSiteId()) == EManufacturer.valueOf("WUHAN").getValue()) {
+					businessId.setType("eline");
+				}else{
+					businessId.setType("ces");
+				}
+				businessId.setSiteId(info.getaSiteId());
+				businessidDao.updateBusinessid(businessId, connection);
+				
+				if (info.getzSiteId() > 0 && siteService.getManufacturer(info.getzSiteId()) == EManufacturer.valueOf("WUHAN").getValue()) {
+					businessId.setType("eline");
+				}else{
+					businessId.setType("ces");
+				}
+				businessId.setIdValue(info.getZxcId());
+				businessId.setSiteId(info.getzSiteId());
+				businessidDao.updateBusinessid(businessId, connection);
+
+				idList.add(info.getId());
+				
+				//离线网元数据下载
+				offLineAcion(info);
+				result = cesInfoDao.delete(info.getId(), connection);
+				
+			}
+			if(!connection.getAutoCommit()){
+				connection.commit();
+			}
+		} catch (Exception e) {
+			connection.rollback();
+			ExceptionManage.dispose(e,this.getClass());
+		} finally {
+			connection.setAutoCommit(true);
+		}
+		return result;
+	}
+
+	// private void setCesServiceType(PwInfo pwInfo) {
+	// if (pwInfo.getType() == EPwType.PDH) {
+	// this.setServiceType("pdh-pdh");
+	// } else if (pwInfo.getType() == EPwType.SDH) {
+	// this.setServiceType("sdh-sdh");
+	// } else if (pwInfo.getType() == EPwType.PDH_SDH) {
+	// this.setServiceType("pdh-sdh");
+	// } else if (pwInfo.getType() == EPwType.SDH_PDH) {
+	// this.setServiceType("sdh-pdh");
+	// }
+	// }
+
+	/**
+	 * 
+	 * @return
+	 * @throws Exception
+	 */
+	public List<CesInfo> select() throws Exception {
+		List<CesInfo> cesInfoList = null;
+		try {
+			cesInfoList = cesInfoDao.queryByCondition(new CesInfo(), connection);
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		}
+		return cesInfoList;
+	}
+
+	public List<CesInfo> select(CesInfo cesInfo) throws Exception {
+		List<CesInfo> cesInfoList = null;
+		try {
+			cesInfoList = cesInfoDao.queryByCondition(cesInfo, connection);
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		}
+		return cesInfoList;
+	}
+
+	public CesInfo selectByid(CesInfo cesInfo) throws Exception {
+		CesInfo cesInfo2 = null;
+		try {
+			cesInfo2 = cesInfoDao.queryByIdCondition(cesInfo, connection);
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		}
+		return cesInfo2;
+	}
+
+	/**
+	 * 查询单网元下的ces
+	 * 
+	 * @param siteId
+	 * @return
+	 * @throws Exception
+	 */
+	public List<CesInfo> selectNodeBySite(int siteId) throws Exception {
+		List<CesInfo> cesinfos = null;
+		try {
+			cesinfos = this.cesInfoDao.queryNodeBySite(siteId, connection);
+
+			for (CesInfo cesInfo : cesinfos) {
+				cesInfo.setNode(true);
+			}
+
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		}
+
+		return cesinfos;
+	}
+
+	/**
+	 * 同步时查询ces
+	 * 
+	 * @param siteId
+	 *            网元id
+	 * @param xcid
+	 *            设备名称
+	 * @return
+	 * @throws Exception
+	 */
+	public List<CesInfo> select_synchro(int siteId, int xcid) throws Exception {
+
+		List<CesInfo> cesInfoList = null;
+		try {
+			cesInfoList = this.cesInfoDao.querySynchro(siteId, xcid, connection);
+
+		} catch (Exception e) {
+			throw e;
+		}
+		return cesInfoList;
+	}
+
+	/**
+	 * 验证名字是否重复
+	 * 
+	 * @author kk
+	 * 
+	 * @param afterName
+	 *            修改之后的名字
+	 * @param beforeName
+	 *            修改之前的名字
+	 * 
+	 * @return
+	 * @throws Exception
+	 * 
+	 * @Exception 异常对象
+	 */
+	public boolean nameRepetition(String afterName, String beforeName) throws Exception {
+
+		int result = this.cesInfoDao.query_name(afterName, beforeName, connection);
+		if (0 == result) {
+			return false;
+		} else {
+			return true;
+		}
+
+	}
+
+	/**
+	 * 单网元名称验证
+	 * 
+	 * @param afterName
+	 * @param beforeName
+	 * @param siteId
+	 * @return
+	 * @throws Exception
+	 */
+	public boolean nameRepetitionBySingle(String afterName, String beforeName,int siteId) throws Exception {
+
+		int result = this.cesInfoDao.query_nameBySingle(afterName, beforeName, connection,siteId);
+		if (0 == result) {
+			return false;
+		} else {
+			return true;
+		}
+
+	}
+
+	/**
+	 * add by stones
+	 * **/
+	public void searchActive(List<SiteInst> siteInstList) {		
+		if(siteInstList.size()>1){
+			String siteidin =" (0,";	
+			for(SiteInst si : siteInstList){
+				siteidin=siteidin+si.getSite_Inst_Id()+"," ;
+			}
+			siteidin = siteidin.substring(0, siteidin.length()-1)+") ";
+//System.out.println("line 1508 . siteidin = "+siteidin);			
+		try {
+				cesInfoDao.exeSearchCes(connection,siteidin);
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		}
+		}else{
+			System.out.println("CesInfoService.searchActive . siteInstList.size <=1 . error");
+		}
+	}
+	
+	/**
+	 * 通过网元id初始化某网元所有ces
+	 * 
+	 * @param siteId
+	 * @throws SQLException
+	 */
+	public void initializtionSite(int siteId) throws SQLException{
+		List<CesInfo> cesInfos = null;
+		List<CesInfo> singleCesInfos = null;
+		List<CesInfo> infos = null;
+		try {
+			cesInfos = this.selectNodeBySite(siteId);
+			if(cesInfos != null && cesInfos.size()>0){
+				singleCesInfos = new ArrayList<CesInfo>();
+				infos = new ArrayList<CesInfo>();
+				for(CesInfo cesInfo : cesInfos){
+					if(cesInfo.getIsSingle() == 1){//单网元数据，直接删除
+						singleCesInfos.add(cesInfo);
+					}else{//网络侧的，初始化该网元，并成为单网元业务
+						if(cesInfo.getaSiteId() == siteId){
+							cesInfo.setaAcId(0);
+							cesInfo.setAportId(0);
+							cesInfo.setAxcId(0);
+							cesInfo.setASiteName("");
+							cesInfo.setaSiteId(0);
+							cesInfo.setIsSingle(1);
+						}else{
+							cesInfo.setzAcId(0);
+							cesInfo.setZportId(0);
+							cesInfo.setZxcId(0);
+							cesInfo.setZSiteName("");
+							cesInfo.setzSiteId(0);
+							cesInfo.setIsSingle(1);
+						}
+						infos.add(cesInfo);
+					}
+				}
+				update(infos);
+				delete(singleCesInfos);
+			}
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		}finally{
+			cesInfos = null;
+			singleCesInfos = null;
+			infos = null;
+		}
+	}
+	public List<CesInfo> queryByCondition_nojoin(CesInfo cesinfoCondition) throws Exception {
+		return this.cesInfoDao.queryByCondition_nojoin(cesinfoCondition,connection);
+	}
+	/**
+	 * 离线网元操作
+	 * @param etreeInfoList
+	 * @param pwService
+	 * @throws Exception
+	 */
+	private void offLineAcion(CesInfo cesInfo) throws Exception {
+		PwInfoService pwService = (PwInfoService) ConstantUtil.serviceFactory.newService(Services.PwInfo, this.connection);
+		PwInfo pwInfo = new PwInfo();
+		int aPortType = 0;
+		int zPortType = 0;
+		if(EPwType.ETH.getValue()==cesInfo.getCestype()){
+			aPortType=EPwType.ETH.getValue();
+			zPortType=EPwType.ETH.getValue();
+		}else if(EPwType.PDH.getValue()==cesInfo.getCestype()){
+			aPortType=EPwType.PDH.getValue();
+			zPortType=EPwType.PDH.getValue();
+		}else if(EPwType.SDH.getValue()==cesInfo.getCestype()){
+			aPortType=EPwType.SDH.getValue();
+			zPortType=EPwType.SDH.getValue();
+		}else if(EPwType.PDH_SDH.getValue()==cesInfo.getCestype()){
+			aPortType=EPwType.PDH.getValue();
+			zPortType=EPwType.SDH.getValue();
+		}else if(EPwType.SDH_PDH.getValue()==cesInfo.getCestype()){
+			aPortType=EPwType.SDH.getValue();
+			zPortType=EPwType.PDH.getValue();
+		}
+		
+		pwInfo.setPwId(cesInfo.getPwId());
+		pwInfo = pwService.selectBypwid_notjoin(pwInfo);
+//		UiUtil.closeService(pwService);
+		if(0!=cesInfo.getaSiteId()){
+			super.dateDownLoad(cesInfo.getaSiteId(),cesInfo.getServiceId(), EServiceType.CES.getValue(), EActionType.DELETE.getValue(), cesInfo.getAxcId()+"",pwInfo.getApwServiceId()+"",cesInfo.getaAcId(),0,aPortType+"");
+		}
+		if(0!=cesInfo.getzSiteId()){
+			super.dateDownLoad(cesInfo.getzSiteId(),cesInfo.getServiceId(),  EServiceType.CES.getValue(), EActionType.DELETE.getValue(), cesInfo.getZxcId()+"",pwInfo.getZpwServiceId()+"",cesInfo.getzAcId(),0,zPortType+"");
+			
+		}
+	}
+	
+	/**
+	 * 根据主键修改CES	 的激活状态
+	 * @param cesInfo
+	 * @throws Exception
+	 */
+	public void updateCesStatus(CesInfo cesInfo)throws Exception{
+		if (cesInfo == null || cesInfo.getId() == 0) {
+			throw new Exception("传人参数有误！");
+		}
+		List<Integer> idList = null;
+		try {
+			idList = new ArrayList<Integer>();
+			idList.add(cesInfo.getId());
+			this.updateActiveStatus(idList, cesInfo.getActiveStatus());
+		} catch (Exception e) {
+			connection.rollback();
+			ExceptionManage.dispose(e, this.getClass());
+		} finally {
+
+		}
+	}
+	/**
+	 * 根据cesInfo 相关信息查找此cesInfo 的所有信息（即： 只查到一条数据），若查找多条数据，则查找失败
+	 * @param cesInfo
+	 * @return
+	 * @throws Exception
+	 */
+	public CesInfo queryCesInfo(CesInfo cesInfo)throws Exception{
+		List<CesInfo> cesInfoList=null;
+		if(cesInfo==null){
+			throw new Exception("cesInfo is null");
+		}
+		cesInfoList=this.select(cesInfo);
+		if(cesInfoList!=null&&cesInfoList.size()==1){
+			cesInfo= cesInfoList.get(0);
+		}else{
+			throw new Exception("查找CES数据失败");
+		}
+		return cesInfo;
+		
+	}
+	
+	/**
+	 * 通过ID查询
+	 * @param cesInfo
+	 * @return
+	 * @throws Exception
+	 */
+	public CesInfo queryById(int id) throws Exception {
+		List<CesInfo> cesInfoList;
+		CesInfo cesInfo = new CesInfo();
+		cesInfo.setId(id);
+		cesInfoList = cesInfoDao.queryByCondition(cesInfo, connection);
+		if(null!=cesInfoList&&cesInfoList.size()==1)
+			cesInfo = cesInfoList.get(0);
+		cesInfoList = null;
+		return cesInfo;
+	}
+	
+	/**
+	 * 获取ces所用到端口名称 显示用
+	 * 
+	 * @param cesInfo
+	 *            ces业务对象
+	 * @param type
+	 *            表示A或Z端
+	 * @return
+	 * @throws Exception
+	 */
+	public String getCesPortName(CesInfo cesInfo, String type) throws Exception {
+
+		int portid = 0;
+		String type_port = null;
+		PortService portService = null;
+		PortInst portinst = null;
+		List<PortInst> portInstList = null;
+		PortStmTimeslotService portStmTimeslotService = null;
+		PortStmTimeslot portStmTimeslot = null;
+		String result = null;
+		try {
+
+			if ("a".equals(type)) {
+				if (cesInfo.getCestype() == ECesType.PDH.getValue() || cesInfo.getCestype() == ECesType.PDHSDH.getValue()) {
+					type_port = "pdh";
+				} else {
+					type_port = "sdh";
+				}
+				portid = cesInfo.getaAcId();
+			} else {
+				if (cesInfo.getCestype() == ECesType.PDH.getValue() || cesInfo.getCestype() == ECesType.SDHPDH.getValue()) {
+					type_port = "pdh";
+				} else {
+					type_port = "sdh";
+				}
+				portid = cesInfo.getzAcId();
+			}
+
+			if ("pdh".equals(type_port)) {
+				portService = (PortService) ConstantUtil.serviceFactory.newService(Services.PORT, this.connection);
+				portinst = new PortInst();
+				portinst.setPortId(portid);
+				portInstList = portService.select(portinst);
+
+				if (null != portInstList && portInstList.size() == 1) {
+					result = portInstList.get(0).getPortName();
+				} else {
+					result = "";
+				}
+			} else {
+				portStmTimeslotService = (PortStmTimeslotService) ConstantUtil.serviceFactory.newService(Services.PORTSTMTIMESLOT, this.connection);
+				portStmTimeslot = portStmTimeslotService.selectById(portid);
+
+				if (null != portStmTimeslot) {
+					result = portStmTimeslot.getTimeslotnumber();
+				} else {
+					result = "";
+				}
+			}
+		} catch (Exception e) {
+			ExceptionManage.dispose(e, this.getClass());
+		} finally {
+			type_port = null;
+//			UiUtil.closeService(portService);
+			portinst = null;
+			portInstList = null;
+//			UiUtil.closeService(portStmTimeslotService);
+			portStmTimeslot = null;
+		}
+		return result;
+	}
+	/**
+	 * 根据主键ID 查询CES（部分网络层，单网元）
+	 * @param id
+	 * @return
+	 */
+	public CesInfo selectServiceInfoById(int id) {
+		List<CesInfo> cesList = null;
+		CesInfo cesInfo=null;
+		try {
+			cesList = this.cesInfoDao.selectServiceInfoById(id, connection);
+			if(UiUtil.isNull(cesList)){
+				cesInfo=cesList.get(0);
+			}
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		}
+		return cesInfo;
+	}
+	/**
+	 * 根据网元ID，主键ID,查询此网元下的CEs
+	 * @param siteId
+	 * @param id
+	 * @return
+	 */
+	public CesInfo queryBySiteAndId(int siteId,int id){
+		List<CesInfo> cesList = new ArrayList<CesInfo>();
+		CesInfo cesInfo=null;
+		try {
+			cesList = this.cesInfoDao.selectServiceInfoById(id, connection);
+			if(cesList.size()==1){
+				cesInfo=cesList.get(0);
+				if(siteId!=cesInfo.getaSiteId()&&siteId!=cesInfo.getzSiteId()){
+					cesInfo=null;
+				}
+			}
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		}
+		return cesInfo;
+	}
+	
+	/**
+	 * 根据网元查询全部单站侧ces业务
+	 * @param siteId 网元主键
+	 * @return
+	 * @throws Exception 
+	 */
+	public List<CesInfo> selectAll_node(int siteId) throws Exception{
+		return this.cesInfoDao.queryBySingle(siteId, 1, super.connection);
+	}
+	
+	/**
+	 * 根据网元查询全部网络侧ces业务
+	 * @param siteId 网元主键
+	 * @return
+	 * @throws Exception 
+	 */
+	public List<CesInfo> selectAll_network(int siteId) throws Exception{
+		return this.cesInfoDao.queryBySingle(siteId, 0, super.connection);
+	}
+
+	public List<CesInfo> selectAll() {
+		List<CesInfo> cesInfoList = null;
+		try {
+			cesInfoList = cesInfoDao.selectAll(connection);
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		}
+		return cesInfoList;
+	}
+	
+	/**
+	 * 过滤查询，ces列表页面用
+	 * @param cesInfo 过滤条件
+	 * @return
+	 * @throws Exception
+	 */
+	public List<CesInfo> filterSelect(CesInfo cesInfo) throws Exception{
+		return this.cesInfoDao.filterQuery(cesInfo, connection);
+	}
+	
+	public List<CesInfo> filterSingle(CesInfo cesInfo, int siteId) throws Exception{
+		return this.cesInfoDao.filterSingle(cesInfo, siteId, connection);
+	}
+	
+	public void doSearch(List<CesInfo> cesInfos) throws Exception{
+		this.cesInfoDao.doSearche(cesInfos, connection);
+	}
+
+	public List<CesInfo> selectByPwId(CesInfo ces) {
+		List<CesInfo> list = null;
+		try {
+			list = this.cesInfoDao.selectByPwId(ces, connection);
+		} catch (Exception e) {
+			ExceptionManage.dispose(e, this.getClass());
+		}
+		return list;
+	}
+}

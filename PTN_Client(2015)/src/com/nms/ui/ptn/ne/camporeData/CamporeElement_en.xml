@@ -1,0 +1,10 @@
+<beaninfo>
+	<attribute 
+		businessProperty="true"
+		name="EMS" 
+		displayName="EMS"/>	
+	<attribute 
+		businessProperty="true"
+		name="NE" 
+		displayName="NE"/>	
+</beaninfo>

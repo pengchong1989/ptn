@@ -1,0 +1,45 @@
+package com.nms.model.ptn;
+
+import java.util.List;
+
+import org.apache.ibatis.session.SqlSession;
+import com.nms.db.dao.ptn.EthServiceInstMapper;
+import com.nms.model.util.ObjectService_Mybatis;
+import com.nms.ui.manager.ExceptionManage;
+
+public class EthService_MB extends ObjectService_Mybatis {
+
+	private EthServiceInstMapper mapper = null;
+
+	public void setPtnuser(String ptnuser) {
+		super.ptnuser = ptnuser;
+	}
+
+	public void setSqlSession(SqlSession sqlSession) {
+		super.sqlSession = sqlSession;
+	}
+
+	public EthServiceInstMapper getMapper() {
+		return mapper;
+	}
+
+	public void setMapper(EthServiceInstMapper mapper) {
+		this.mapper = mapper;
+	}
+	
+	/**
+	 * 根据端口号，查询该端口的二层vlan值
+	 * @param siteId
+	 * @param portLine
+	 * @return
+	 */
+	public List<Integer> queryBySiteIdAndPortLine(int siteId,String portLine,int num){
+		List<Integer> vlanIDs = null;
+		try {
+			vlanIDs = mapper.queryBySiteIdAndPortLine(siteId,portLine,num);
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		}
+		return vlanIDs;
+	}
+}

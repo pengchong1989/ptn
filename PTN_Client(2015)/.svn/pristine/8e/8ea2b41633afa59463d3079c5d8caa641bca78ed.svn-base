@@ -1,0 +1,273 @@
+package com.nms.db.dao.ptn.path;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.nms.db.bean.ptn.path.ServiceInfo;
+import com.nms.db.bean.ptn.path.eth.EtreeInfo;
+import com.nms.db.enums.EServiceType;
+import com.nms.ui.manager.ExceptionManage;
+
+/**
+ * 业务的数据库访问类。需要不区分类型，操作或查询所有业务，调用此类
+ * 
+ * @author kk
+ * 
+ */
+public class ServiceInfoDao {
+
+	private final String SQL_SELECT_PW = "select * from serviceinfo where pwid=? ";
+
+	/**
+	 * 根据pwid查询此pw下的所有业务
+	 * 
+	 * @param pwId
+	 * @param connection
+	 * @return
+	 * @throws Exception
+	 */
+	public List<ServiceInfo> queryByPwId(int pwId, Connection connection) throws Exception {
+
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+		List<ServiceInfo> serviceInfoList = null;
+		ServiceInfo serviceInfo = null;
+		try {
+			serviceInfoList = new ArrayList<ServiceInfo>();
+
+			preparedStatement = connection.prepareStatement(this.SQL_SELECT_PW);
+			preparedStatement.setInt(1, pwId);
+			resultSet = preparedStatement.executeQuery();
+
+			while (resultSet.next()) {
+				serviceInfo = new EtreeInfo();
+				serviceInfo.setIsSingle(resultSet.getInt("isSingle"));
+				serviceInfo.setServiceType(resultSet.getInt("servicetype"));
+				if(serviceInfo.getServiceType() == EServiceType.ETREE.getValue()){
+					serviceInfo.setaSiteId(resultSet.getInt("rootSite"));
+					serviceInfo.setzSiteId(resultSet.getInt("branchSite"));
+					serviceInfo.setAmostAcId(resultSet.getString("amostAcIds"));
+					serviceInfo.setZmostAcId(resultSet.getString("zmostAcIds"));
+				}else if(serviceInfo.getServiceType() == EServiceType.DUAL.getValue()){
+					serviceInfo.setaSiteId(resultSet.getInt("rootSite"));
+					if(resultSet.getInt("branchMainSite") != 0){
+						serviceInfo.setzSiteId(resultSet.getInt("branchMainSite"));
+					}else if(resultSet.getInt("branchProtectSite") != 0){
+						serviceInfo.setzSiteId(resultSet.getInt("branchProtectSite"));
+					}
+				}else{
+					serviceInfo.setaSiteId(resultSet.getInt("aSiteId"));
+					serviceInfo.setzSiteId(resultSet.getInt("zSiteId"));
+				}
+				serviceInfo.setaAcId(resultSet.getInt("aAcId"));
+				serviceInfo.setzAcId(resultSet.getInt("zAcId"));
+				
+				if(serviceInfo.getServiceType() == EServiceType.ELAN.getValue())
+				{
+					serviceInfo.setAmostAcId(resultSet.getString("amostAcIds"));
+					serviceInfo.setZmostAcId(resultSet.getString("zmostAcIds"));
+				}
+				serviceInfoList.add(serviceInfo);
+			}
+
+		} catch (Exception e) {
+			throw e;
+		} finally{
+			if(null!=resultSet){
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				resultSet = null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+			serviceInfo = null;
+		}
+
+		return serviceInfoList;
+	}
+	
+	/**
+	 * 根据主键查询业务类型。
+	 * @param id 主键ID
+	 * @param connection 数据库主键
+	 * @return
+	 * @throws Exception 
+	 */
+	public int queryType(int id,Connection connection) throws Exception{
+		String sql=null;
+		PreparedStatement preparedStatement=null;
+		ResultSet resultSet=null;
+		int result=0;
+		try {
+			sql="select serviceType FROM serviceinfo WHERE id=?";
+			preparedStatement=connection.prepareStatement(sql);
+			preparedStatement.setInt(1, id);
+			
+			resultSet=preparedStatement.executeQuery();
+			
+			if(resultSet.next()){
+				result=resultSet.getInt("serviceType");
+			}
+			
+		} catch (Exception e) {
+			throw e;
+		} finally{
+			if(null!=resultSet){
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				resultSet = null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+		}
+		return result;
+	}
+
+	/**
+	 * 通过 acId 查询
+	 * @param id	acId
+	 * @param connection
+	 * @return	返回 主键Id
+	 * @throws Exception
+	 */
+	public List<ServiceInfo> selectByAcId(int id, Connection connection) throws Exception {
+		String sql=null;
+		PreparedStatement preparedStatement=null;
+		List<ServiceInfo> serviceInfoList;
+		try {
+			sql="select * FROM serviceinfo WHERE aacid=? or zacid = ?";
+			preparedStatement=connection.prepareStatement(sql);
+			preparedStatement.setInt(1, id);
+			preparedStatement.setInt(2, id);
+			
+			serviceInfoList = this.excuteQuery(preparedStatement);
+			
+		} catch (Exception e) {
+			throw e;
+		} finally{
+			if(null!=preparedStatement){
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+		return serviceInfoList;
+	}
+
+	public String selectNameByXcId(int xcid, int siteid, Connection connection) throws Exception {
+		String sql=null;
+		PreparedStatement preparedStatement=null;
+		ResultSet resultSet=null;
+		String result="";
+		try {
+			sql=" select NAME FROM serviceinfo WHERE (((aXcId=? AND aSiteId=?) or (zXcId=? AND zSiteId=?)) AND serviceType=2)" +
+				" OR (((aXcId=? AND rootSite=?) or (zXcId=? AND branchSite=?)) AND serviceType=3)";
+			preparedStatement=connection.prepareStatement(sql);
+			preparedStatement.setInt(1, xcid);
+			preparedStatement.setInt(2, siteid);
+			preparedStatement.setInt(3, xcid);
+			preparedStatement.setInt(4, siteid);
+			preparedStatement.setInt(5, xcid);
+			preparedStatement.setInt(6, siteid);
+			preparedStatement.setInt(7, xcid);
+			preparedStatement.setInt(8, siteid);
+			resultSet=preparedStatement.executeQuery();
+			
+			if(resultSet.next()){
+				result=resultSet.getString("NAME");
+			}
+			
+		} catch (Exception e) {
+			throw e;
+		} finally{
+			if(null!=preparedStatement){
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+		
+		return result;
+	}
+	
+	/**
+	 * 执行查询语句 关联pw表 site表
+	 * 
+	 * @param connection
+	 *            数据库连接
+	 * @param sql
+	 *            sql语句
+	 * @return 查询集合
+	 * @throws Exception
+	 */
+	private List<ServiceInfo> excuteQuery(PreparedStatement preparedStatement) throws Exception {
+		List<ServiceInfo> serviceInfoList = null;
+		ServiceInfo serviceInfo;
+		ResultSet resultSet = null;
+		try {
+			resultSet=preparedStatement.executeQuery();
+			
+			serviceInfoList = new ArrayList<ServiceInfo>();
+
+			while (resultSet.next()) {
+				serviceInfo = new ServiceInfo();
+				serviceInfo.setId(resultSet.getInt("id"));
+				serviceInfo.setServiceType(resultSet.getInt("serviceType"));
+				serviceInfo.setServiceId(resultSet.getInt("serviceId"));
+				serviceInfo.setPwId(resultSet.getInt("pwId"));
+				serviceInfo.setName(resultSet.getString("name"));
+				serviceInfo.setaAcId(resultSet.getInt("aAcId"));
+				serviceInfo.setzAcId(resultSet.getInt("zAcId"));
+				serviceInfo.setaSiteId(resultSet.getInt("aSiteId"));
+				serviceInfo.setzSiteId(resultSet.getInt("zSiteId"));
+				serviceInfo.setActiveStatus(resultSet.getInt("activeStatus"));
+				serviceInfo.setCreateTime(resultSet.getString("createTime"));
+				serviceInfo.setCreateUser(resultSet.getString("createUser"));
+				serviceInfo.setIsSingle(resultSet.getInt("issingle"));
+				serviceInfo.setJobStatus(resultSet.getString("jobstatus"));
+				serviceInfo.setClientId(resultSet.getInt("clientId"));
+				serviceInfoList.add(serviceInfo);
+			}
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		} finally {
+			if (resultSet != null) {
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				resultSet = null;
+			}
+			serviceInfo = null;
+		}
+		return serviceInfoList;
+	}
+}

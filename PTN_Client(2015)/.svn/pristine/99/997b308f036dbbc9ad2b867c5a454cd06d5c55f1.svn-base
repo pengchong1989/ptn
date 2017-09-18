@@ -1,0 +1,118 @@
+package com.nms.model.perform;
+
+import java.sql.Connection;
+import java.util.List;
+
+import com.nms.db.bean.perform.Capability;
+import com.nms.db.dao.perform.CapabilityDao;
+import com.nms.model.util.ObjectService;
+import com.nms.ui.manager.ExceptionManage;
+
+public class CapabilityService extends ObjectService {
+
+	public void setConnection(Connection connection) {
+		super.connection = connection;
+	}
+
+	public void setPtnuser(String ptnuser) {
+		super.ptnuser = ptnuser;
+	}
+
+	private CapabilityDao capabilityDao = new CapabilityDao();
+  
+	/**
+	 *  新增或修改capability对象，通过capability.getId()来判断是修改还是新增
+	 * @param capability 实体
+	 * @return  执行成功的记录数
+	 * @throws Exception
+	 */
+	public int saveOrUpdate(Capability capability) throws Exception {
+
+		if (capability == null) {
+			throw new Exception("capability is null");
+		}
+
+		int result = 0;
+		try {
+
+			if (capability.getId() == 0) {
+				result = this.capabilityDao.insert(capability, connection);
+			} else {
+				result = this.capabilityDao.update(capability, connection);
+			}
+
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		}
+		return result;
+	}
+   
+	/**
+	 * 通过主键删除capability对象
+	 * @param id 主键
+	 * @return 删除的记录数
+	 * @throws Exception
+	 */
+	public int delete(int id) throws Exception {
+
+		int result = 0;
+
+		try {
+			result = capabilityDao.delete(id, connection);
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		}
+		return result;
+
+	}
+    /**
+     * 查询全部
+     * @return  List<Capability> 集合
+     * @throws Exception
+     */
+	public List<Capability> select() throws Exception {
+		List<Capability> capabilityList=null;
+		
+		try {
+			Capability capability = new Capability();
+			capability.setManufacturer(1);
+			capabilityList=capabilityDao.queryByCondition(capability, connection);
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		}
+		return capabilityList;
+	}
+   
+	/**
+	 * 根据条件查询
+	 * @param capability 查询条件
+	 * @return List<Capability> 集合
+	 * @throws Exception
+	 */
+	public List<Capability> select(Capability capability) throws Exception {
+		List<Capability> capabilityList=null;
+		
+		try {
+			capabilityList=capabilityDao.queryByCondition(capability, connection);
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		}
+		return capabilityList;
+	}
+	/**
+	 * 关联查询 
+	 * 		通过 网元ID，端口名称，- performanceCode
+	 * 		查找 CapabilityName
+	 * @param hisPerformanceInfo
+	 * @return
+	 * @throws Exception
+	 */
+	
+	public List<Capability> selectCapaName(Capability capability) throws Exception{
+		if(capability==null){
+			throw new Exception("capability is null");
+		}
+		List<Capability> capabilityList=capabilityDao.queryByCapaName(capability,connection);
+		return capabilityList;
+	}
+}

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<driveRoot  xmlns="http://drive.bean.com">
+    <attribute length="1" description="协议版本号" value="0" mapping=""/>
+	<attribute length="1" description="单盘屏蔽配置" value="0" mapping=""/>
+	<attribute length="4" description="屏蔽配置条目总数" value="" mapping="" >
+		<listRoot file="com/nms/drive/analysis/xmltool/file/告警屏蔽单盘配置_1.xml">
+		</listRoot>
+	</attribute>
+	<attribute length="4" description="CRC校验码" value="0" mapping="(00)"/>
+	<attribute length="2" description="年" value="0" mapping="(00)"/>
+	<attribute length="1" description="月" value="0" mapping="(00)"/>
+	<attribute length="1" description="日" value="0" mapping="(00)"/>
+	<attribute length="1" description="时" value="0" mapping="(00)"/>
+	<attribute length="1" description="分" value="0" mapping="(00)"/>
+	<attribute length="1" description="秒" value="0" mapping="(00)"/>
+	<attribute length="11" description="校验码" value="0" mapping="(00)"/>
+</driveRoot>
+

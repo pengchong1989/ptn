@@ -1,0 +1,22 @@
+package com.nms.db.dao.system;
+
+import java.util.List;
+
+import com.nms.db.bean.system.NetWork;
+
+
+public interface NetWorkMapper {
+    int deleteByPrimaryKey(Integer networkid);
+
+    int insert(NetWork record);
+
+    int insertSelective(NetWork record);
+
+    NetWork selectByPrimaryKey(Integer networkid);
+
+    int updateByPrimaryKeySelective(NetWork record);
+
+    int updateByPrimaryKey(NetWork record);
+    
+    public List<NetWork> select();
+}

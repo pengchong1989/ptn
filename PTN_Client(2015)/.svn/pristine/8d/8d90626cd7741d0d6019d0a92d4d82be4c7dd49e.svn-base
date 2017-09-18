@@ -1,0 +1,18 @@
+package com.nms.db.dao.ptn.clock;
+
+import com.nms.db.bean.ptn.clock.ClockSource;
+
+
+public interface ClockSourceMapper {
+    int deleteByPrimaryKey(Integer id);
+
+    int insert(ClockSource record);
+
+    int insertSelective(ClockSource record);
+
+    ClockSource selectByPrimaryKey(Integer id);
+
+    int updateByPrimaryKeySelective(ClockSource record);
+
+    int updateByPrimaryKey(ClockSource record);
+}

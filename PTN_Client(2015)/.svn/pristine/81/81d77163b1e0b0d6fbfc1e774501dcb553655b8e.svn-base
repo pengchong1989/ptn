@@ -1,0 +1,124 @@
+package com.nms.model.ptn.ecn;
+
+import java.sql.Connection;
+
+import com.nms.db.bean.ptn.ecn.OSPFInfo;
+import com.nms.db.dao.ptn.ecn.OSPFInfoDao;
+import com.nms.model.util.ObjectService;
+import com.nms.ui.manager.ExceptionManage;
+
+public class OSPFInfoService extends ObjectService {
+	// TXC
+
+	public void setConnection(Connection connection) {
+		super.connection = connection;
+	}
+
+	public void setPtnuser(String ptnuser) {
+		super.ptnuser = ptnuser;
+	}
+
+	private OSPFInfoDao oSPFInfoDao = new OSPFInfoDao();
+
+	/**
+	 *创建
+	 * 
+	 * @param OSPFInfo
+	 * @return
+	 * @throws Exception
+	 */
+	public int insert(OSPFInfo OSPFInfo) throws Exception {
+		if (OSPFInfo == null) {
+			throw new Exception("OSPFInfo is null");
+		}
+		int ospfId = 1;
+		try {
+			connection.setAutoCommit(false);
+			ospfId = this.oSPFInfoDao.insert(OSPFInfo, connection);
+			if(!connection.getAutoCommit()){
+				connection.commit();
+			}
+		} catch (Exception e) {
+			connection.rollback();
+			ExceptionManage.dispose(e,this.getClass());
+		} finally {
+			connection.setAutoCommit(true);
+		}
+		return ospfId;
+	}
+
+	/**
+	 *修改
+	 * 
+	 * @param OSPFInfo
+	 * @return
+	 * @throws Exception
+	 */
+	public int update(OSPFInfo OSPFInfo) throws Exception {
+		if (OSPFInfo == null) {
+			throw new Exception("OSPFInfo is null");
+		}
+		int ospfId = 1;
+		try {
+			connection.setAutoCommit(false);
+			ospfId = this.oSPFInfoDao.update(OSPFInfo, connection);
+			if(!connection.getAutoCommit()){
+				connection.commit();
+				}
+		} catch (Exception e) {
+			connection.rollback();
+			ExceptionManage.dispose(e,this.getClass());
+		} finally {
+			connection.setAutoCommit(true);
+		}
+		return ospfId;
+	}
+
+	/**
+	 *删除
+	 * 
+	 * @param id
+	 * @return
+	 * @throws Exception
+	 */
+	public int delete(String id) throws Exception {
+		if (id == null) {
+			throw new Exception("id is null");
+		}
+		int ospfId = 1;
+		try {
+			connection.setAutoCommit(false);
+			ospfId = this.oSPFInfoDao.deleteById(id, connection);
+			if(!connection.getAutoCommit()){
+				connection.commit();
+			}
+		} catch (Exception e) {
+			connection.rollback();
+			ExceptionManage.dispose(e,this.getClass());
+		} finally {
+			connection.setAutoCommit(true);
+		}
+		return ospfId;
+	}
+
+	/**
+	 * 查询
+	 * 
+	 * @param neId
+	 * @return
+	 * @throws Exception
+	 */
+	public OSPFInfo queryByNeID(String NeID) throws Exception {
+		if (NeID == null) {
+			throw new Exception("NeID is null");
+		}
+		OSPFInfo OSPFInfo = null;
+		try {
+			OSPFInfo = this.oSPFInfoDao.queryByNeID(NeID, connection);
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		}
+		return OSPFInfo;
+	}
+
+}

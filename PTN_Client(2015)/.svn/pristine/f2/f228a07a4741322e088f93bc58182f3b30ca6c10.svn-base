@@ -1,0 +1,1705 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xml-body>
+	<table name="currPerTable" layout="filter">
+		<attribute id="id" name="ID_en" visible="false" />
+		<attribute id="siteName" name="NE Name" visible="true" />
+		<attribute id="objectName" name="Performance Object" visible="true" />
+		<attribute id="perforName" name="Para Name" visible="true" />
+		<attribute id="perforDesc" name="Description" visible="true" />
+		<attribute id="perforValue" name="Value" visible="true" />
+		<attribute id="perforCycleStart" name="Start Time" visible="true" />
+		<attribute id="perforCycleEnd" name="End Time" visible="true" />
+	</table>
+	<table name="hisPerTable" layout="filter">
+		<attribute id="id" name="ID" visible="false" />
+		<attribute id="siteName" name="NE Name" visible="true" />
+		<attribute id="objectName" name="Performance Object" visible="true" />
+		<attribute id="perforName" name="Para Name" visible="true" />
+		<attribute id="perforDesc" name="Description" visible="true" />
+		<attribute id="perforValue" name="Value" visible="true" />
+		<attribute id="perforCycleStart" name="Start Time" visible="true" />
+		<attribute id="endTime" name="End Time" visible="true" />
+		<attribute id="useable" name="Is Valid" visible="true" />
+	</table>
+	<table name="perTaskTable" layout="filter">
+		<attribute id="id" name="ID" visible="false" />
+		<attribute id="siteName" name="NE Name" visible="true" />
+		<attribute id="taskName" name="Task Name" visible="true" />
+		<attribute id="taskObj" name="Task Object" visible="true" />
+		<attribute id="taskCycle" name="Monitoring Period" visible="true" />
+		<attribute id="createTime" name="Create Time" visible="true" />
+		<attribute id="endTime" name="End Time" visible="true" />
+		<attribute id="runStates" name="Operating Status" visible="true" />
+		<attribute id="taskCreater" name="Creater" visible="true" />
+		<attribute id="taskDesc" name="Description" visible="true" />
+	</table>
+	<table name="segmentQoSTable">
+		<attribute id="cos" name="COS" visible="true" />
+		<attribute id="cir" name="CIR(kbps)" visible="true" />
+		<attribute id="usedBand" name="Used Bandwidth (kbps)" visible="true" />
+		<attribute id="restBand" name="Remaining Bandwidth (kbps)" visible="true" />
+	</table>
+	<table name="segmentOAMTable">
+		<attribute id="id" name="ID" visible="false" />
+		<attribute id="siteId" name="NE" visible="true" />
+		<attribute id="megIcc" name="ICC" visible="true" />
+		<attribute id="megUmc" name="UMC" visible="true" />
+		<attribute id="localMepId" name="Source MEPID" visible="true" />
+		<attribute id="remoteMepId" name="Sink MEPID" visible="true" />
+		<attribute id="lpbOutTime" name="LB Timeout(50ms)" visible="true" />
+		<attribute id="mel" name="MEL Level" visible="true" />
+		<attribute id="cv" name="CV" visible="true" />
+		<attribute id="cvCycle" name="CVCycle(ms)" visible="true" />
+		<attribute id="lck" name="LCK" visible="true" />
+		<attribute id="aps" name="APS" visible="true" />
+		<attribute id="ssm" name="SSM" visible="true" />
+		<attribute id="scc" name="SCC" visible="true" />
+	</table>
+	<table name="segmentTable">
+		<attribute id="id" name="ID" visible="false" />
+		<attribute id="name" name="Section Name" visible="true" />
+		<attribute id="speedSegment" name="Rate" visible="true" />
+		<attribute id="asiteName" name="Source NE " visible="true" />
+		<attribute id="zsiteName" name="Sink NE" visible="true" />
+		<attribute id="aportName" name="Source Port" visible="true" />
+		<attribute id="zportName" name="Sink Port" visible="true" />
+		<attribute id="createUser" name="Creator" visible="false" />
+		<attribute id="createTimer" name="Create Time" visible="true" />
+	</table>
+	<table name="analysisAlarmTable">
+		<attribute id="id" name="ID" visible="false" />
+		<attribute id="objectName" name="Service Name" visible="true" />
+		<attribute id="objectType" name="Service Type" visible="true" />
+		<attribute id="activateState" name="Actived" visible="true" />
+		<attribute id="consistency" name="Consistency" visible="true" />
+		<attribute id="createTime" name="Create Time" visible="true" />
+		<attribute id="activateTime" name="Activation Time" visible="true" />
+		<attribute id="creater" name="Creater" visible="true" />
+		<attribute id="rebootTime" name="Reboot Time" visible="true" />
+	</table>
+	<table name="siteInstTable">
+		<attribute id="id" name="ID" visible="false"></attribute>
+		<attribute id="neName" name="NE Name" visible="true"></attribute>
+		<attribute id="neDescribe" name="NE IP" visible="true"></attribute>
+		<attribute id="fieldName" name="Group Name" visible="true"></attribute>
+		<attribute id="neType" name="NE Type" visible="true"></attribute>
+		<attribute id="administratorType" name="Management Type" visible="true"></attribute>
+			<attribute id="isCreateFlow" name="Whether to Create the Discard Stream" visible="true"></attribute>
+		<attribute id="openCondition" name="On/Off Status" visible="false"></attribute>
+		<attribute id="createTime" name="Create Time" visible="false" />
+		<attribute id="username" name="User Name" visible="false"></attribute>
+		<attribute id="userpwd" name="Password" visible="false" />
+	</table>
+	<table name="pwNNIStreamTable">
+		<attribute id="id" name="ID" visible="false" />
+		<attribute id="name" name="Name" visible="true" />
+		<attribute id="portName" name="Port Name" visible="true" />
+		<attribute id="pwName" name="PW Name" visible="true" />
+		<attribute id="neName" name="NE Name" visible="true" />
+		<attribute id="downREC" name="Down Stream TAG Identifier" visible="true" />
+		<attribute id="onREC" name="Up Stream TAG Identifier" visible="true" />
+		<attribute id="onVlanId" name="Up Stream VLAN-ID" visible="true" />
+		<attribute id="onVlanPRI" name="Up Stream VLAN-PRI" visible="true" />
+		<attribute id="macAddr" name="MAC Address Self-learning" visible="true" />
+		<attribute id="verticalSplit" name="Split Horizon" visible="true" />
+	</table>
+
+	<table name="acTableWH">
+		<attribute id="id" name="ID" visible="false" />
+		<attribute id="acname" name="Name" visible="true" />
+		<attribute id="portName" name="Port Name" visible="true" />
+		<attribute id="jobstatus" name="Working Status" visible="true" />
+		<!--
+		<attribute id="acMode" name="Port Mode" visible="true" />
+		-->
+		<attribute id="acMacLearn" name="Output Rules" visible="true" />
+		<attribute id="vlanid" name="Vlan ID" visible="true" />
+		<attribute id="isService" name="Is Associated Business" visible="true" />
+		<attribute id="macCount" name="MAC Address Table Capacity" visible="true" />
+	</table>
+	
+	
+	<table name="acTableCX">
+		<attribute id="id" name="ID" visible="false" />
+		<attribute id="acname" name="Name" visible="true" />
+		<attribute id="protname" name="Port Name" visible="true" />
+		<attribute id="jobstatus" name="Working Status" visible="true" />
+		<attribute id="acMode" name="Port Mode" visible="true" />
+		<attribute id="acMacLearn" name="Output Rules" visible="true" />
+		<attribute id="vlanid" name="Vlan ID" visible="true" />
+		<attribute id="vlanpri" name="Vlan Pri" visible="true" />
+		<attribute id="isService" name="Is Associated Business" visible="true" />
+		<attribute id="activeStatus" name="Activation" visible="true" />
+	</table>
+
+	<table name="simpleQosTable">
+		<attribute id="id" name="ID" visible="false" />
+		<attribute id="seq" name="SEQ" visible="true" />
+		<attribute id="cos" name="COS" visible="true" />
+		<attribute id="cir" name="CIR(kbmp)" visible="true" />
+		<attribute id="cbs" name="CBS(bytes)" visible="true" />
+		<attribute id="eir" name="EIR(kbmp)" visible="true" />
+		<attribute id="ebs" name="EBS(bytes)" visible="true" />
+		<attribute id="colorSence" name="Color Sensitive Mode" visible="true" />
+		<attribute id="pir" name="PIR(kbmp)" visible="true" />
+		<attribute id="pbs" name="PBS(bytes)" visible="true" />
+	</table>
+
+	<table name="detatilQosTable">
+		<attribute id="id" name="ID" visible="false" />
+		<attribute id="vlanid" name="VLAN ID" visible="true" />
+		<attribute id="vlanpri" name="802.1P" visible="true" />
+		<attribute id="phb" name="PHB" visible="true" />
+		<attribute id="cir" name="CIR(kbmp)" visible="true" />
+		<attribute id="cbs" name="CBS(bytes)" visible="true" />
+		<attribute id="colorSence" name="Color Sensitive Mode" visible="true" />
+		<attribute id="pir" name="PIR(kbmp)" visible="true" />
+		<attribute id="pbs" name="PBS(bytes)" visible="true" />
+	</table>
+
+	<table name="portInfoTable">
+		<attribute id="id" name="ID" visible="false" />
+		<attribute id="portName" name="Port Name" visible="true" />
+		<attribute id="portType" name="Role" visible="true" />
+		<attribute id="enable" name="Admin Status" visible="true" />
+		<attribute id="portNo" name="Working Status" visible="true" />
+		<attribute id="isWithSegment" name="Is Connected To Segment" visible="true" />
+		<attribute id="belongCard" name="Belonged Card" visible="true" />
+	</table>
+	
+	<table name="lspPathTable">
+		<attribute id="id" name="ID" visible="false" />
+		<attribute id="lspName" name="LSP Name" visible="true" />
+		<attribute id="asiteName" name="Source NE" visible="true" />
+		<attribute id="zsiteName" name="Sink NE" visible="true" />
+		<attribute id="aportName" name="Source Port" visible="true" />
+		<attribute id="zportName" name="Sink port" visible="true" />
+		<attribute id="createTime" name="Create Time" visible="true" />
+		<attribute id="creater" name="Creater" visible="true" />
+	</table>
+		
+	<table name="lspNodeTable">
+		<attribute id="id" name="NO" visible="false" />
+		<attribute id="lspname" name="Name" visible="true" />
+		<attribute id="inlabel" name="Input Label" visible="true" />
+		<attribute id="outlabel" name="Output Label" visible="true" />
+		<attribute id="type" name="Type" visible="true" />
+		<attribute id="portname" name="Port" visible="true" />
+		<attribute id="sitename" name="Peer NE" visible="true" />
+		<attribute id="position" name="Working Status" visible="true" />
+	</table>
+	
+	<table name="lspNetworkTable">
+		<attribute id="id" name="ID" visible="false" />
+		<attribute id="lsptype" name="Work/Protect" visible="true" />
+		<attribute id="lspname" name="Name" visible="true" />
+		<attribute id="asiteName" name="Source NE" visible="true" />
+		<attribute id="zsiteName" name="Sink NE" visible="true" />
+		<attribute id="aportName" name="Source Port" visible="true" />
+		<attribute id="zportName" name="Sink Port" visible="true" />
+		<attribute id="inlabel" name="Ingress Label" visible="true" />
+		<attribute id="outlabel" name="Engress Label" visible="true" />
+		<attribute id="position" name="Working Status" visible="true" />
+	</table>
+
+	<table name="pwBusinessTable" layout="filter" >
+		<attribute id="id" name="ID" visible="false" />
+		<attribute id="pwName" name="Name" visible="true" />
+		<attribute id="activeStates" name="Activation" visible="true" />
+		<attribute id="serviceType" name="Tunnel Name" visible="true" />
+		<attribute id="type" name="Type" visible="true" />
+		<attribute id="inLabelValue" name="Ingress Label" visible="true" />
+		<attribute id="outLabelValue" name="Engress Label" visible="true" />
+		<attribute id="asiteName" name="Source NE" visible="true" />
+		<attribute id="zsiteName" name="Sink NE" visible="true" />
+		<attribute id="direction" name="Direction" visible="true" />
+		<attribute id="createTime" name="Create Time" visible="true" />
+		<attribute id="creater" name="Creater" visible="true" />
+	</table>
+	
+	<table name="pwNodeTable" layout="filter" >
+		<attribute id="id" name="ID" visible="false" />
+		<attribute id="pwName" name="Name" visible="true" />
+		<attribute id="activeStates" name="Activation" visible="true" />
+		<attribute id="jobStatus" name="Working Status" visible="true" />
+		<attribute id="serviceType" name="Service Type" visible="true" />
+		<attribute id="type" name="Type" visible="true" />
+		<attribute id="tunnelName" name="Tunnel Name" visible="true" />
+		<attribute id="inLabelValue" name="Ingress Label" visible="true" />
+		<attribute id="outLabelValue" name="Engress Label" visible="true" />
+		<attribute id="siteName" name="Peer Network Element Name" visible="true" />
+		<attribute id="issingle" name="Is Single NE" visible="true" />
+	</table>
+	
+	<table name="pwBusinessOAMTable">
+		<attribute id="id" name="ID" visible="false" />
+		<attribute id="siteId" name="NE" visible="true" />
+		<attribute id="megIcc" name="MEG ICC" visible="true" />
+		<attribute id="megUmc" name="MEG UMC" visible="true" />
+		<attribute id="mel" name="MEL" visible="true" />
+		<attribute id="localMepId" name="Source MEPID" visible="true" />
+		<attribute id="remoteMepId" name="Sink MEPID" visible="true" />
+		<attribute id="mip" name="MIP" visible="true" />
+		<attribute id="cv" name="CV" visible="true" />
+		<attribute id="cvCycle" name="CVCycle(ms)" visible="true" />
+		<attribute id="lpbOutTime" name="Loopback Timeout Time (50ms)" visible="true" />
+		<attribute id="lm" name="LM" visible="true" />
+	</table>
+	
+	<table name="pwBusinessQoSTable">
+		<attribute id="id" name="ID" visible="false" />
+		<attribute id="cos" name="COS" visible="true" />
+		<attribute id="direction" name="Direction" visible="true" />
+		<attribute id="cir" name="CIR(kbps)" visible="true" />
+		<attribute id="cbs" name="CBS(bytes)" visible="true" />
+		<attribute id="eir" name="EIR(kbps)" visible="true" />
+		<attribute id="ebs" name="EBS(bytes)" visible="true" />
+		<attribute id="pir" name="PIR(kbps)" visible="true" />
+	</table>
+	<table name="tunnelBusinessTable" layout="filter" >
+		<attribute id="id" name="ID" visible="false" />
+		<attribute id="tunnelName" name="Tunnel Name" visible="true" />
+		<attribute id="tunneltype" name="Type" visible="true" />
+		<attribute id="activeStates" name="Activation" visible="true" />
+		<attribute id="asiteName" name="Sourse NE" visible="true" />
+		<attribute id="zsiteName" name="Sink NE" visible="true" />
+		<attribute id="aportName" name="Sourse Port" visible="true" />
+		<attribute id="zportName" name="Sink Port" visible="true" />
+		<attribute id="direction" name="Direction" visible="true" />
+		<attribute id="createTime" name="Create Time" visible="true" />
+		<attribute id="creater" name="Creater" visible="true" />
+	</table>
+
+	<table name="tunnelNodeTable" layout="filter" >
+		<attribute id="id" name="ID" visible="false" />
+		<attribute id="tunnelName" name="Tunnel Name" visible="true" />
+		<attribute id="tunneltype" name="Type" visible="true" />
+		<attribute id="activeStates" name="Activation" visible="true" />
+		<attribute id="jobStatus" name="Working Status" visible="true" />
+		<attribute id="role" name="Role" visible="true" />
+		<attribute id="isSingle" name="Is Single NE" visible="true" />
+		<attribute id="createTime" name="Create Time" visible="true" />
+		<attribute id="creater" name="Creater" visible="true" />
+	</table>
+
+	<table name="cesBusinessTable" layout="filter">
+		<attribute id="id" name="ID" visible="false" />
+		<attribute id="cesName" name="Name" visible="true" />
+		<attribute id="type" name="Type" visible="true" />
+		<attribute id="pwName" name="PW" visible="true" />
+		<attribute id="activeStates" name="Activation" visible="true" />
+		<attribute id="asiteName" name="Source NE" visible="true" />
+		<attribute id="zsiteName" name="Sink NE" visible="true" />
+		<attribute id="createTime" name="Create Time" visible="true" />
+		<attribute id="creater" name="Creater" visible="true" />
+	</table>
+
+	<table name="cesNodeTable">
+		<attribute id="id" name="ID" visible="false" />
+		<attribute id="cesName" name="Name" visible="true" />
+		<attribute id="activeStates" name="Activation" visible="true" />
+		<attribute id="jobstatus" name="Working Status" visible="true" />
+		<attribute id="type" name="Service Type" visible="true" />
+		<attribute id="issingle" name="Is Single NE" visible="true" />
+		<attribute id="createTime" name="Create Time" visible="true" />
+		<attribute id="creater" name="Creater" visible="true" />
+	</table>
+
+	<table name="cesInfoTable">
+		<attribute id="id" name="ID" visible="false" />
+		<attribute id="portname" name="Port Slot Elements" visible="true" />
+		<attribute id="pwname" name="PW Name" visible="true" />
+		<attribute id="tunnelname" name="Tunnel Name" visible="true" />
+		<attribute id="sitename" name="Opposite Side NE" visible="true" />
+		<attribute id="inlabel" name="Input Label" visible="true" />
+		<attribute id="outlabel" name="Output Label" visible="true" />
+	</table>
+
+	<table name="elineBusinessTable" layout="filter" >
+		<attribute id="id" name="ID" visible="false" />
+		<attribute id="elineName" name="Name" visible="true" />
+		<attribute id="pwName" name="PW Name" visible="true" />
+		<attribute id="activeStates" name="Activation" visible="true" />
+		<attribute id="asiteName" name="Source NE" visible="true" />
+		<attribute id="zsiteName" name="Sink NE" visible="true" />
+		<attribute id="createTime" name="Create Time" visible="true" />
+		<attribute id="creater" name="Creater" visible="true" />
+	</table>
+	<table name="elineNodeTable">
+		<attribute id="id" name="ID" visible="false" />
+		<attribute id="elineName" name="Name" visible="true" />
+		<attribute id="activeStates" name="Activation" visible="true" />
+		<attribute id="jobstatus" name="Working Status" visible="true" />
+		<attribute id="issingle" name="Is Single NE" visible="true" />
+		<attribute id="createTime" name="Create Time" visible="true" />
+		<attribute id="creater" name="Createdr" visible="true" />
+	</table>
+	<table name="elineAcTable">
+		<attribute id="id" name="ID" visible="false" />
+		<attribute id="acname" name="Name" visible="true" />
+		<attribute id="portname" name="Carrying Interfaces" visible="true" />
+		<attribute id="model" name="Mode" visible="true" />
+		<attribute id="vlanid" name="VlanId" visible="true" />
+		<attribute id="vlanpri" name="VlanPri" visible="true" />
+	</table>
+	<table name="elinePwTable">
+		<attribute id="id" name="ID" visible="false" />
+		<attribute id="pwname" name="Name" visible="true" />
+		<attribute id="tunnelname" name="Bearing Tunnel" visible="true" />
+		<attribute id="inlabel" name="Input Label" visible="true" />
+		<attribute id="outlabel" name="Output Label" visible="true" />
+		<attribute id="sitename" name="Opposite Side NE" visible="true" />
+	</table>	
+
+	<table name="UserLockTable">
+		<attribute id="id" name="ID" visible="false" />
+		<attribute id="user_name" name="User Name" visible="true" />
+		<attribute id="lockTime" name="Lock Time" visible="true" />
+		<attribute id="clearTime" name="Unlock Time" visible="true" />
+		<attribute id="lockType" name="Lock Type" visible="true" />
+		<attribute id="clearType" name="Unlock Type" visible="true" />
+		<attribute id="lockUsername" name="Lock User" visible="true" />
+		<attribute id="clearUsername" name="Unlock User" visible="true" />
+	</table>
+
+	<table name="elanBusinessTable" layout="filter">
+		<attribute id="id" name="ID" visible="false" />
+		<attribute id="elanName" name="Name" visible="true" />
+		<attribute id="activeStates" name="Activation" visible="true" />
+		<attribute id="createTime" name="Create Time" visible="true" />
+		<attribute id="creater" name="Creater" visible="true" />
+	</table>
+
+	<table name="elanNodeTable">
+		<attribute id="id" name="ID" visible="false" />
+		<attribute id="elanName" name="Name" visible="true" />
+		<attribute id="activeStates" name="Activation" visible="true" />
+		<attribute id="jobstatus" name="Working Status" visible="true" />
+		<attribute id="issingle" name="Is Single NE" visible="true" />
+		<attribute id="createTime" name="Create Time" visible="true" />
+		<attribute id="creater" name="Creater" visible="true" />
+	</table>
+
+	<table name="etreeBusinessTable" layout="filter">
+		<attribute id="id" name="ID" visible="false" />
+		<attribute id="etreeName" name="Name" visible="true" />
+		<attribute id="activeStates" name="Activation" visible="true" />
+		<attribute id="createTime" name="Create Time" visible="true" />
+		<attribute id="creater" name="Creater" visible="true" />
+	</table>
+
+	<table name="etreeNodeTable">
+		<attribute id="id" name="ID" visible="false" />
+		<attribute id="etreeName" name="Name" visible="true" />
+		<attribute id="activeStates" name="Activation" visible="true" />
+		<attribute id="jobstatus" name="Working Status" visible="true" />
+		<attribute id="type" name="Service Type" visible="true" />
+		<attribute id="issingle" name="Is Single NE" visible="true" />
+		<attribute id="createTime" name="Create Time" visible="true" />
+		<attribute id="creater" name="Creater" visible="true" />
+	</table>
+
+	<table name="upgradeTable">
+		<attribute id="id" name="ID" visible="false" />
+		<attribute id="equipmentType" name="Ne Name" visible="true" />
+		<attribute id="cardId" name="Genus Card" visible="true" />
+		<attribute id="softwarType" name="Software Summary Information" visible="true" />
+		<attribute id="crc" name="CRC Check" visible="true" />
+		<attribute id="time" name="Build Time" visible="true" />
+	</table>
+
+	<table name="stmTimeslotTable">
+		<attribute id="id" name="ID" visible="false" />
+		<attribute id="timeslotnumber" name="Slot Number" visible="true" />
+		<attribute id="managerStatus" name="Admin Status" visible="true" />
+		<attribute id="jobstatus" name="Working Status" visible="true" />
+		<attribute id="expectjtwo" name="J2 Expected RX Byte" visible="true" />
+		<attribute id="sendjtwo" name="J2 TX Byte" visible="true" />
+		<attribute id="realityjtwo" name="J2 Actual RX Byte" visible="true" />
+		<attribute id="lptim" name="LP-TIM Enable" visible="true" />
+		<attribute id="expectvfive" name="V5 Expected RX Byte" visible="true" />
+		<attribute id="sendvfive" name="V5 TX Byte" visible="true" />
+		<attribute id="realityvfive" name="V5 Actual RX Byte" visible="true" />
+		<attribute id="checkvfive" name="Check V5 Bytes" visible="true" />
+	</table>
+
+	<table name="stmTable">
+		<attribute id="id" name="ID" visible="false" />
+		<attribute id="portname" name="Port Name" visible="true" />
+		<attribute id="adminstatus" name="Admin Status" visible="true" />
+		<attribute id="jobstatus" name="Working Status" visible="true" />
+		<attribute id="type" name="Type" visible="true" />
+		<attribute id="jobwavelength" name="Wavelength(nm)" visible="true" />
+		<attribute id="sfpexpect" name="SFP Expected Type" visible="true" />
+		<attribute id="sfpreality" name="Actual SFP Type" visible="true" />
+		<attribute id="sfpvender" name="SFP Vendor Info" visible="true" />
+	</table>
+
+	<table name="userTable">
+		<attribute id="id" name="ID" visible="false" />
+		<attribute id="user_name" name="User Name" visible="true" />
+		<attribute id="User_Group" name="Role" visible="true" />
+		<attribute id="startIp" name="Start IP" visible="true" />
+		<attribute id="endIp" name="End IP" visible="true" />
+		<attribute id="User_Inface" name="Interface" visible="true" />
+		<attribute id="adminstatus" name="Domain" visible="true" />
+		<attribute id="isLock" name="Lock" visible="true" />
+	</table>
+	<table name="cxE1">
+		<attribute id="id" name="ID" visible="false" />
+		<attribute id="portName" name="Port Name" visible="true" />
+		<attribute id="model" name="Mode" visible="true" />
+		<attribute id="managerStatus" name="Admin Status" visible="true" />
+		<attribute id="jotStatus" name="Working Status" visible="true" />
+		<attribute id="linecoding" name="Line Code" visible="true" />
+		<attribute id="impedance" name="Impedance" visible="true" />
+	</table>
+	<table name="whE1" layout="filter">
+		<attribute id="id" name="ID" visible="false" />
+		<attribute id="legId" name="UNI Number" visible="true" />
+		<attribute id="legShield" name="UNI Shield" visible="true" />
+		<attribute id="legEnable" name="UNI Enabled" visible="true" />
+		<attribute id="prestoreTimeEnable" name="Cache Time Control Enabled" visible="true" />
+		<attribute id="prestoreTime" name="Cache Time" visible="true" />
+		<attribute id="pinCount" name="Number Of Encapsulated Frames" visible="true" />
+		<attribute id="pwLabel" name="PW Label" visible="true" />
+	</table>
+	<table name="portLag">
+		<attribute id="id" name="ID" visible="false" />
+		<attribute id="name" name="Name" visible="true" />
+		<attribute id="lagMode" name="Aggregation Mode" visible="true" />
+		<attribute id="workModel" name="Aggregation Workgroup mode" visible="true" />
+		<attribute id="fuzaiModel" name="Non-load-sharing mode returns" visible="true" />
+		<attribute id="mainPort" name="Main Port" visible="true" />
+		<attribute id="standPort" name="Stand Port" visible="true" />
+		<attribute id="waitTime" name="Wait Time(min)" visible="true" />
+	</table>
+	<table name="cxportLag">
+		<attribute id="id" name="ID" visible="false" />
+		<attribute id="PortName" name="Port Name" visible="true" />
+		<attribute id="portEnable" name="Admin Status" visible="true" />
+		<attribute id="Oper" name="Working Status" visible="true" />
+		<attribute id="Role" name="Role" visible="true" />
+		<attribute id="Mac" name="Local MAC" visible="true" />
+		<attribute id="framelen" name="Max Frame Length" visible="true" />
+		<attribute id="psc" name="LAG PSC" visible="true" />
+		<attribute id="work" name="Configure Work Port" visible="true" />
+		<attribute id="active" name="Actual Work Port" visible="true" />
+		<attribute id="iused" name="Inbwlimit(Kbps)" 	visible="true" />
+		<attribute id="oused" name="Egbwlimit(Kbps)" visible="true" />
+		<attribute id="VLANID" name="Default VLAN ID" visible="true" />
+		<attribute id="VLANLevel" name="Default VLAN Pri" visible="true" />
+		<attribute id="recover" name="1:1 Recovery Mode" visible="true" />
+		<attribute id="permitpktloop" name="Permitpktloop" visible="true" />
+		<attribute id="activeStatus" name="Activation" visible="true" />
+	</table>
+	<table name="cesPortTable">
+		<attribute id="id" name="ID" visible="false" />
+		<attribute id="name" name="Name" visible="true" />
+	</table>
+
+	<table name="addLagMemTable">
+		<attribute id="id" name="ID" visible="false" />
+		<attribute id="portName" name="Port Name" visible="true" />
+		<attribute id="portType" name="LACP WTR Value (S)" visible="true" />
+		<attribute id="enable" name="LACP Interface Priority" visible="true" />
+	</table>
+
+	<table name="areaTable">
+		<attribute id="id" name="ID" visible="false" />
+		<attribute id="ospfid" name="OSPF Area ID" visible="true" />
+		<attribute id="areatype" name="Area Type" visible="true" />
+		<attribute id="Metric" name="Default Metric" visible="true" />
+		<attribute id="NoSummary" name="No Summary" visible="true" />
+	<attribute id="status" name="Active" visible="true" />
+	</table>
+
+	<table name="distributeTable">
+		<attribute id="id" name="ID" visible="false" />
+		<attribute id="type" name="Re-distribution Type" visible="true" />
+		<attribute id="routetype" name="Route Type" visible="true" />
+		<attribute id="Metric" name="Metric Value" visible="true" />
+		<attribute id="open" name="Enable The Filtering Rules" visible="true" />
+		<attribute id="soucre" name="Re-distribution  Source" visible="true" />
+	<attribute id="status" name="Active" visible="true" />
+	</table>
+
+	<table name="ospfstatusTable">
+		<attribute id="id" name="ID" visible="false" />
+		<attribute id="ccnid" name="CCNID" visible="true" />
+		<attribute id="interfaces" name="Number Of Interface Neighbor" visible="true" />
+		<attribute id="ipaddress" name="IP Addresses" visible="true" />
+		<attribute id="routeid" name="Neighbor Route-id" visible="true" />
+		<attribute id="option" name="Neighbor Option" visible="true" />
+		<attribute id="priority" name="Neighbor Priority" visible="true" />
+		<attribute id="findstatus" name="Neighbor Discovery Status" visible="true" />
+	</table>
+
+	<table name="ospfmessageTable">
+		<attribute id="id" name="ID" visible="false" />
+		<attribute id="portname" name="Port Name" visible="true" />
+		<attribute id="helloin" name="Hello_in" visible="true" />
+		<attribute id="helloout" name="Hello_out" visible="true" />
+		<attribute id="dbdescin" name="Db_desc_in" visible="true" />
+		<attribute id="dbdescout" name="Db_desc_out" visible="true" />
+	</table>
+
+	<table name="ospfrunstatusTable">
+		<attribute id="id" name="ID" visible="false" />
+		<attribute id="bdr" name="BDR" visible="true" />
+		<attribute id="hellointerval" name="Hello_interval" visible="true" />
+		<attribute id="deadinterval" name="Dead_interval" visible="true" />
+		<attribute id="retransmitinterval" name="Retransmit_interval" visible="true" />
+		<attribute id="transit_delay" name="Transit_delay" visible="true" />
+	</table>
+
+	<table name="routetransmitTable">
+		<attribute id="id" name="ID" visible="false" />
+		<attribute id="network" name="Target Network" visible="true" />
+		<attribute id="nextip" name="Next-hop IP" visible="true" />
+		<attribute id="outinterfaces" name="Output Interface" visible="true" />
+		<attribute id="routetype" name="Route Type" visible="true" />
+		<attribute id="metric" name="Default Metric Value" visible="true" />
+	</table>
+
+	<table name="staticrouteTable">
+		<attribute id="id" name="ID" visible="false" />
+		<attribute id="network" name="Target Network" visible="true" />
+		<attribute id="nextip" name="Next-hop IP" visible="true" />
+		<attribute id="directinginterfaces" name="Point Interface" visible="true" />
+		<attribute id="routedistance" name="Routing Distance Value" visible="true" />
+	</table>
+
+	<table name="ecninterfacesTable">
+		<attribute id="id" name="ID" visible="false" />
+		<attribute id="portname" name="Port Name" visible="true" />
+		<attribute id="ipaddress" name="IP Addresses" visible="true" />
+		<attribute id="max" name="Max Transmission Unit (Byte)" visible="true" />
+	</table>
+
+	<table name="ccnTable">
+		<attribute id="id" name="ID" visible="false" />
+		<attribute id="portname" name="Port Name" visible="true" />
+		<attribute id="adminstatus" name="Admin Status" visible="true" />
+		<attribute id="workstatus" name="Working Status" visible="true" />
+		<attribute id="interfacesip" name="Local Interface IP" visible="true" />
+		<attribute id="peerip" name="Opposite Side NE IP" visible="true" />
+		<attribute id="max" name="Maximum Transmission Unit" visible="true" />
+		<attribute id="peer" name="Carrying Interfaces" visible="true" />
+	</table>
+
+	<table name="ospfport">
+		<attribute id="id" name="ID" visible="false" />
+		<attribute id="interfacesid" name="Interface ID" visible="true" />
+		<attribute id="ospfareaid" name="OSPF Area ID" visible="true" />
+		<attribute id="type" name="Type" visible="true" />
+		<attribute id="hellointerval" name="Hello Interval(s)" visible="true" />
+		<attribute id="deadinterval" name="Dead Interval(s)" visible="true" />
+		<attribute id="retransmissioninterval" name="Retransmission Interval(s)" visible="true" />
+		<attribute id="delayed" name="Packet Transmission Delay(s)" visible="true" />
+		<attribute id="passivity" name="Passive Mode" visible="true" />
+		<attribute id="cost" name="Metric" visible="true" />
+		<attribute id="priority" name="Priority" visible="true" />
+		<attribute id="approve" name="Authentication Type" visible="true" />
+		<attribute id="activeStatus" name="Activation" visible="true"></attribute>
+	</table>
+
+	<table name="datetopo">
+		<attribute id="id" name="ID" visible="false" />
+		<attribute id="portname" name="Port Name" visible="true" />
+		<attribute id="sitestatus" name="Neighbor NE Status" visible="true" />
+		<attribute id="siteid" name="Neighbor NE ID" visible="true" />
+		<attribute id="peerid" name="Opposite Side NE ID" visible="true" />
+		<attribute id="peermac" name="Opposite Side Port MAC Address" visible="true" />
+		<attribute id="ccnstatus" name="CCN Bearing Enable" visible="true" />
+	</table>
+
+	<table name="addaddress">
+		<attribute id="id" name="ID" visible="false" />
+		<attribute id="network" name="Port Name" visible="true" />
+		<attribute id="polymerization" name="Aggregate Cost" visible="true" />
+		<attribute id="open" name="Information Notice" visible="true" />
+	</table>
+
+	<table name="addvl">
+		<attribute id="id" name="ID" visible="false" />
+		<attribute id="ipaddress" name="IP Addresses" visible="true" />
+		<attribute id="hellointerval" name="Hello Signal Interval" visible="true" />
+		<attribute id="deadinterval" name="Dead Signal Interval" visiIble="true" />
+		<attribute id="retransmissioninterval" name="Retransmission interval" visible="true" />
+		<attribute id="message" name="Packet Transmission Delay" visible="true" />
+	</table>
+	<table name="oamNodeTable">
+		<attribute id="id" name="id" visible="false" />
+		<attribute id="objectName" name="Name" visible="true" />
+		<attribute id="objectType" name="OAM Type" visible="true" />
+		<attribute id="mip" name="MIP" visible="true" />
+	</table>
+	<table name="groupSpreadTable">
+		<attribute id="id" name="ID" visible="false" />
+		<attribute id="smId" name="SM ID" visible="true" />
+		<attribute id="vpls_vs" name="VPLS-VS Select" visible="true" />
+		<attribute id="portChoice" name="Port Selection" visible="true" />
+		<attribute id="macAddress" name="MAC Address" visible="true" />
+	</table>
+	<table name="StaticUniTable">
+		<attribute id="id" name="ID" visible="false" />
+		<attribute id="suId" name="SU ID" visible="true" />
+		<attribute id="vplsVs" name="VPLS-VS Select" visible="true" />
+		<attribute id="portChoice" name="Port Selection" visible="true" />
+		<attribute id="macAddress" name="MAC Address" visible="true" />
+	</table>
+	<table name="siteinfoTable" layout="statistics">
+		<attribute id="id" name="ID" visible="false" />
+		<attribute id="neName" name="NE Name" visible="true" />
+		<attribute id="CellID" name="NE ID" visible="true"/>
+		<attribute id="neType" name="Device Type" visible="true" />
+		<attribute id="siteVersions" name="NE Version" visible="false" />
+		<attribute id="siteState" name="NE State" visible="true" />
+		<attribute id="ipAddress" name="IP Addresses" visible="true" />
+		<attribute id="ipMask" name="IP Mask" visible="true" />
+		<attribute id="cableNumber" name="Cable Number" visible="true" />
+		<attribute id="cablePort" name="Cable port" visible="true" />
+		<attribute id="createTime" name="Create Time" visible="true" />
+	</table>
+	
+	<table name="segmentinfoTable" layout="statistics">
+		<attribute id="id" name="ID" visible="false" />
+		<attribute id="name" name="Section Name" visible="true" />
+		<attribute id="bandwidth" name="Band Width" visible="true" />
+		<attribute id="asiteName" name="Source NE" visible="true" />
+		<attribute id="aportName" name="Source Port" visible="true" />
+		<attribute id="zsiteName" name="Sink NE" visible="true" />
+		<attribute id="zportName" name="Sink Port" visible="true" />
+	</table>
+	
+	<table name="slotinfoTable" layout="statistics">
+		<attribute id="id" name="ID" visible="false" />
+		<attribute id="name" name="NE Name" visible="true" />
+		<attribute id="number" name="Slot Number" visible="true" />
+		<attribute id="cardName" name="Card Name" visible="true" />
+	</table>
+	
+	<table name="CardInfoPanel" layout="statistics">
+		<attribute id="id" name="ID" visible="false" />
+		<attribute id="SiteName" name="NE Name" visible="false" />
+		<attribute id="CardId" name="CardId" visible="false" />
+		<attribute id="EquipType" name="Equipment Type" visible="true" />
+		<attribute id="CardType" name="CardType" visible="true" />
+		<attribute id="Version" name="Version" visible="true" />
+		<attribute id="hardwareVersion" name="hardware Version" visible="true" />
+		<attribute id="SN" name="serialNumber" visible="false" />
+		<attribute id="protectWay" name="protectWay" visible="false" />
+	</table>
+
+	<table name="segmentWidthTable" layout="statistics">
+		<attribute id="id" name="NO." visible="false" />
+		<attribute id="name" name="Name" visible="true" />
+		<attribute id="F_BE" name="Forward/BE" visible="true" />
+		<attribute id="F_AF1" name="Forward/AF1" visible="true" />
+		<attribute id="F_AF2" name="Forward/AF2" visible="true" />
+		<attribute id="F_AF3" name="Forward/AF3" visible="true" />
+		<attribute id="F_AF4" name="Forward/AF4" visible="true" />
+		<attribute id="F_EF" name="Forward/EF" visible="true" />
+		<attribute id="F_CS6" name="Forward/CS6" visible="true" />
+		<attribute id="F_CS7" name="Forward/CS7" visible="true" />
+		<attribute id="B_BE" name="Backward/BE" visible="true" />
+		<attribute id="B_AF1" name="Backward/AF1" visible="true" />
+		<attribute id="B_AF2" name="Backward/AF2" visible="true" />
+		<attribute id="B_AF3" name="Backward/AF3" visible="true" />
+		<attribute id="B_AF4" name="Backward/AF4" visible="true" />
+		<attribute id="B_EF" name="Backward/EF" visible="true" />
+		<attribute id="B_CS6" name="Backward/CS6" visible="true" />
+		<attribute id="B_CS7" name="Backward/CS7" visible="true" />
+	</table>
+
+	<table name="pathWidthTable" layout="statistics">
+		<attribute id="id" name="ID" visible="false" />
+		<attribute id="name" name="Name" visible="true" />
+		<attribute id="qosType" name="QoS Type" visible="true" />
+		<attribute id="F_BE" name="Forward/BE" visible="true" />
+		<attribute id="F_AF1" name="Forward/AF1" visible="true" />
+		<attribute id="F_AF2" name="Forward/AF2" visible="true" />
+		<attribute id="F_AF3" name="Forward/AF3" visible="true" />
+		<attribute id="F_AF4" name="Forward/AF4" visible="true" />
+		<attribute id="F_EF" name="Forward/EF" visible="true" />
+		<attribute id="F_CS6" name="Forward/CS6" visible="true" />
+		<attribute id="F_CS7" name="Forward/CS7" visible="true" />
+		<attribute id="B_BE" name="Backward/BE" visible="true" />
+		<attribute id="B_AF1" name="Backward/AF1" visible="true" />
+		<attribute id="B_AF2" name="Backward/AF2" visible="true" />
+		<attribute id="B_AF3" name="Backward/AF3" visible="true" />
+		<attribute id="B_AF4" name="Backward/AF4" visible="true" />
+		<attribute id="B_EF" name="Backward/EF" visible="true" />
+		<attribute id="B_CS6" name="Backward/CS6" visible="true" />
+		<attribute id="B_CS7" name="Backward/CS7" visible="true" />
+	</table>
+	
+	<table name="AlarmInfoPanel" layout="statistics">
+		<attribute id="id" name="NO." visible="false" />
+		<attribute id="name" name="Alarm Source" visible="true" />
+		<attribute id="instancy" name="Critical" visible="true" />
+		<attribute id="mostly" name="Major" visible="true" />
+		<attribute id="subordination" name="Minor" visible="true" />
+		<attribute id="clew" name="Warning" visible="true" />
+		<attribute id="Unknow" name="Indeterminate" visible="true" />
+		<attribute id="AlarmCount" name="Total" visible="true" />
+	</table>
+	
+	<table name="LableInfoPanel" layout="statistics">
+		<attribute id="id" name="ID" visible="false" />
+		<attribute id="product" name="product" visible="false"/>
+		<attribute id="SiteName" name="NE Name" visible="true" />
+		<attribute id="portName" name="port Name" visible="true" />
+		<attribute id="labelType" name="labelType" visible="true" />
+		<attribute id="lspUsed" name="Quantity Of Occupied Tags" visible="true" />
+		<attribute id="lspCanUsed" name="Quantity Of Tags Available" visible="true" />
+		<attribute id="lspCount" name="Quantity Of Tags" visible="true" />
+		<attribute id="pwUsed" name="PW Has Occupied The Number Of Tags" visible="false" />
+		<attribute id="pwCanUsed" name="PW Number Of Tags Available" visible="false" />
+		<attribute id="pwCount" name="PW Total Number Of Tags" visible="false" />
+	</table>
+	
+	<table name="PortInfoPanel" layout="statistics">
+		<attribute id="id" name="ID" visible="false" />
+		<attribute id="SiteName" name="NE Name" visible="true" />
+		<attribute id="SiteType" name="NE Type" visible="true" />
+		<attribute id="PortType" name="Port Type" visible="true" />
+		<attribute id="PortCount" name="Port Number" visible="true" />
+		<attribute id="PortUsed" name="Used Port" visible="true" />
+		<attribute id="PortUnUsed" name="Spare" visible="true" />
+		<attribute id="UsedRate" name="Utilization Rate" visible="true" />
+	</table>
+	<table name="PathNumStatisticsPanel" layout="statistics">
+		<attribute id="id" name="序号" visible="false" />
+		<attribute id="PathType" name="Path Type" visible="true" />
+		<attribute id="PathCount" name="Path Munber" visible="true" />
+		<attribute id="PathUsed" name="Used Path" visible="true" />
+		<attribute id="PathUnUsed" name="Spare" visible="true" />
+	</table>
+	<table name="NePathNumStatisticsPanel" layout="statistics">
+		<attribute id="id" name="序号" visible="false" />
+		<attribute id="SiteName" name="NE Name" visible="true" />
+		<attribute id="PathType" name="Path Type" visible="true" />
+		<attribute id="PathCount" name="Path Munber" visible="true" />
+		<attribute id="PathUsed" name="Used Path" visible="true" />
+		<attribute id="PathUnUsed" name="Spare" visible="true" />
+	</table>
+	<table name="acNetworkTable">
+		<attribute id="id" name="ID" visible="false" />
+		<attribute id="acname" name="Name" visible="true" />
+		<attribute id="sitename" name="NE Name" visible="true" />
+		<attribute id="portname" name="Carrying Interfaces" visible="true" />
+		<attribute id="model" name="Mode" visible="true" />
+		<attribute id="vlanid" name="VlanId" visible="true" />
+		<attribute id="vlanpri" name="VlanPri" visible="true" />
+	</table>
+	<table name="cesporttable">
+		<attribute id="objectname" name="Name" visible="true" />
+		<attribute id="porttype" name="Type" visible="true" />
+		<attribute id="sitename" name="NE Name" visible="true" />
+		<attribute id="portname" name="Port Name" visible="true" />
+	</table>
+
+	<table name="lagethporttabel">
+		<attribute id="portName" name="Port Name" visible="true" />
+		<attribute id="portType" name="Port Type" visible="true" />
+		<attribute id="portNo" name="Working Status" visible="true" />
+	</table>
+	<table name="loopProtect">
+		<attribute id="id" name="ID" visible="false" />
+		<attribute id="name" name="Name" visible="true" />
+		<attribute id="apsenable" name="APS Enable" visible="true" />
+		<attribute id="waittime" name="WTR Time(min)" visible="true" />
+		<attribute id="delaytime" name="Delay Time(ms)" visible="true" />
+		<attribute id="backType" name="Whether To Return" visible="true" />
+		<attribute id="createTime" name="Create Time" visible="true" />
+		<attribute id="createUser" name="Creater" visible="true" />
+	</table>
+	<table name="segmentNetworkTable">
+		<attribute id="id" name="ID" visible="false" />
+		<attribute id="name" name="Name" visible="true" />
+		<attribute id="asiteName" name="Source NE" visible="true" />
+		<attribute id="zsiteName" name="Sink NE" visible="true" />
+		<attribute id="aportName" name="Source Port" visible="true" />
+		<attribute id="zportName" name="Sink Port" visible="true" />
+	</table>
+	<table name="clockSource">
+		<attribute id="id" name="ID" visible="false" />
+		<attribute id="port" name="Port" visible="true" />
+		<attribute id="clockType" name="Clock Type" visible="true" />
+		<attribute id="priority" name="Priority" visible="true" />
+		<attribute id="physicalStatus" name="PHY Status" visible="true" />
+		<attribute id="logicalStatus" name="Logical Status" visible="true" />
+		<attribute id="SSMSettingValue" name="Set Receive SSM Value" visible="true" />
+		<attribute id="SSMActualValue" name="Receive SSM Actual Value" visible="true" />
+		<attribute id="SSMSendingEnabled" name="Enabled SSM Sending " visible="true" />
+		<attribute id="SelectorQualityLevel" name="Quality Level Of Selectors" visible="true" />
+		<attribute id="DNUGroup" name="DNU Group" visible="true" />
+		<attribute id="RecoveryMode" name="Recovery Mode" visible="true" />
+		<attribute id="External Order" name="External Order" visible="true" />
+	</table>
+
+	<table name="portConfigInfo">
+		<attribute id="id" name="ID" visible="false" />
+		<attribute id="port" name="Port" visible="true" />
+		<attribute id="portEnable" name="Port Enable" visible="true" />
+		<attribute id="clockModel" name="Clock Mode" visible="true" />
+		<attribute id="delayMechanism" name="Delay Mechanism" visible="true" />
+		<attribute id="vlanID" name="Vlan ID" visible="true" />
+		<attribute id="operationMode" name="Operation Mode" visible="true" />
+		<attribute id="portStatus" name="Port Status" visible="true" />
+		<attribute id="timeStampMode" name="TimeStamp Mode" visible="true" />
+		<attribute id="AnncPacketsInterval" name="ANNC Interval(s)" visible="true" />
+		<attribute id="AnncTimeoutSetting" name="Set ANNC Timeout" visible="true" />
+		<attribute id="SyncPacketsInterval" name="Sync Interval(s)"
+			visible="true" />
+		<attribute id="Delay_ReqPacketsInterval" name="DelayReq time Interval(s)"
+			visible="true" />
+		<attribute id="Pdel_ReqPacketsInterval" name="PdelReq time Interval(s)"
+			visible="true" />
+		<attribute id="lineDelayCompensation" name=" Delay Offset(ns)"
+			visible="true" />
+		<attribute id="delayCompensationMeasure" name="Tested Delay Offest(ns)"
+			visible="true" />
+		<attribute id="portMapping" name="Port Mapping" visible="true" />
+	</table>
+
+	<table name="TODConfig">
+		<attribute id="id" name="ID" visible="false" />
+		<attribute id="port" name="Port" visible="true" />
+		<attribute id="interfaceType" name="Interface Type" visible="true" />
+		<attribute id="PhysicalStatus" name="Physical Status" visible="true" />
+		<attribute id="LogicalStatus" name="Logical Status" visible="true" />
+		<attribute id="Priority1" name="Priority 1" visible="true" />
+		<attribute id="ClockType" name="Clock Type" visible="true" />
+		<attribute id="ClockAccuracy" name="Clock Accuracy" visible="true" />
+		<attribute id="ClockVariance" name="Clock Variance" visible="true" />
+		<attribute id="Priority2" name="Priority 2" visible="true" />
+	</table>
+
+	<table name="ExternalClockInterface">
+		<attribute id="id" name="ID" visible="false" />
+		<attribute id="interfaceName" name="Interface Name" visible="true" />
+		<attribute id="managingStatus" name="Managing Status" visible="true" />
+		<attribute id="workingStatus" name="Working Status" visible="true" />
+		<attribute id="interfaceMode" name="Interface Mode" visible="true" />
+		<attribute id="inputImpedance" name="Input Impedance(Ω)" visible="true" />
+		<attribute id="sanBits" name="SAN Bits" visible="true" />
+		<attribute id="timeOffsetCompensation" name="Time Offset Compensation(ns)"
+			visible="true" />
+	</table>
+
+	<table name="LineClockInterface">
+		<attribute id="id" name="ID" visible="false" />
+		<attribute id="port" name="Port" visible="true" />
+		<attribute id="rate" name="Rate" visible="true" />
+		<attribute id="ssmSendingEnabled" name="SSM Sending Enabled" visible="true" />
+		<attribute id="dnuGroup" name="DNU Group" visible="true" />
+	</table>
+	<table name="soltReset">
+		<attribute id="id" name="ID" visible="false" />
+		<attribute id="number" name="Slot Number" visible="true" />
+		<attribute id="cardName" name="Card Name" visible="true" />
+		<attribute id="slotType" name="card Type" visible="true" />
+	</table>
+	<table name="loopsegmentTable">
+		<attribute id="id" name="ID" visible="false" />
+		<attribute id="name" name="Section" visible="true" />
+		<attribute id="asiteName" name="Source NE" visible="true" />
+		<attribute id="zsiteName" name="Sink NE" visible="true" />
+	</table>
+	<table name="pwvlantable_cx">
+		<attribute id="id" name="ID" visible="false" />
+		<attribute id="sitename" name="NE Name" visible="true" />
+		<attribute id="exitRule" name="Output Rules" visible="true" />
+		<attribute id="svlan" name="S-VLan" visible="true" />
+		<attribute id="tpid" name="TPID" visible="true" />
+		<attribute id="vlanpri" name="S-VLan Pri" visible="true" />
+	</table>
+
+	<table name="pwvlantable_wh">
+		<attribute id="id" name="ID" visible="false" />
+		<attribute id="sitename" name="NE Name" visible="true" />
+		<attribute id="exitRule" name="Up Stream TAG Identifier" visible="true" />
+		<attribute id="svlan" name="VLan ID" visible="true" />
+		<attribute id="vlanpri" name="VLan Pri" visible="true" />
+		<attribute id="horizontalDivision" name="Split Horizon" visible="true" />
+		<attribute id="macAddressLearn" name="MAC Address Self-learning" visible="true" />
+		<attribute id="controlEnable" name="Control Word  Enable" visible="true" />
+		<attribute id="tagAction" name="Down Stream TAG Identifier" visible="true" />
+	</table>
+
+	<table name="siteTable">
+		<attribute id="id" name="ID" visible="false"></attribute>
+		<attribute id="neName" name="NE Name" visible="true"></attribute>
+		<attribute id="neDescribe" name="NE IP" visible="true"></attribute>
+		<attribute id="fieldName" name="Domain name" visible="true"></attribute>
+		<attribute id="neType" name="Domain name" visible="true"></attribute>
+		<attribute id="administratorType" name="Managerment Type" visible="false"></attribute>
+		<attribute id="openCondition" name="On/Off Status" visible="false"></attribute>
+		<attribute id="createTime" name="Create Time" visible="false" />
+		<attribute id="username" name="User Name" visible="false"></attribute>
+		<attribute id="userpwd" name="Password" visible="false" />
+		<attribute id="clearLockEnabled" name="Whether To Unlock" visible="true" />
+	</table>
+
+	<table name="siteLockTable">
+		<attribute id="id" name="ID" visible="false"></attribute>
+		<attribute id="siteId" name="NE ID" visible="false"></attribute>
+		<attribute id="lockType" name="Lock Type" visible="true"></attribute>
+		<attribute id="lockStatus" name="Status of Lock" visible="true"></attribute>
+		<attribute id="lockUser" name="Lock User" visible="true"></attribute>
+		<attribute id="lockDate" name="Lock Time" visible="true"></attribute>
+		<attribute id="clearUser" name="Lock By" visible="true"></attribute>
+		<attribute id="clearDate" name="Unlock Time" visible="true"></attribute>
+		<attribute id="isForceClear" name="Whether It Is Mandatory To Unlock" visible="false"></attribute>
+	</table>
+
+	<table name="loginLogTable" layout="filter">
+		<attribute id="id" name="ID" visible="false"></attribute>
+		<attribute id="user_name" name="User Name" visible="true"></attribute>
+		<attribute id="loginTime" name="Login Time" visible="true"></attribute>
+		<attribute id="outTime" name="Leave Time" visible="true"></attribute>
+		<attribute id="onlineTime" name="Stay Time" visible="true"></attribute>
+		<attribute id="Ip" name="Login IP" visible="true"></attribute>
+		<attribute id="loginState" name="Login State" visible="true"></attribute>
+		<attribute id="logoutState" name="Logout State" visible="true"></attribute>
+	</table>
+	<table name="operationLogTable" layout="filter">
+		<attribute id="id" name="ID" visible="false"></attribute>
+		<attribute id="userName" name="User Name" visible="true"></attribute>
+		<attribute id="startTime" name="Start Time" visible="true"></attribute>
+		<attribute id="overTime" name="End Time" visible="true"></attribute>
+		<attribute id="operationType" name="Action Type" visible="true"></attribute>
+		<attribute id="operationResult" name="Result" visible="true"></attribute>
+		<attribute id="IP" name="User IP" visible="true"></attribute>
+	</table>
+	<table name="UserOnLineTable">
+		<attribute id="id" name="ID" visible="false"></attribute>
+		<attribute id="user_name" name="User Name" visible="true"></attribute>
+		<attribute id="loginTime" name="Login Time" visible="true"></attribute>
+		<attribute id="Ip" name="Login IP" visible="true"></attribute>
+	</table>
+
+	<table name="qosMappingTable">
+		<attribute id="id" name="ID" visible="false"></attribute>
+		<attribute id="name" name="Mapping Table Name" visible="true"></attribute>
+		<attribute id="BE" name="BE(TMC/TMP)" visible="true"></attribute>
+		<attribute id="AF1" name="AF1(TMC/TMP)" visible="true"></attribute>
+		<attribute id="AF2" name="AF2(TMC/TMP)" visible="true"></attribute>
+		<attribute id="AF3" name="AF3(TMC/TMP)" visible="true"></attribute>
+		<attribute id="AF4" name="AF4(TMC/TMP)" visible="true"></attribute>
+		<attribute id="EF" name="EF(TMC/TMP)" visible="true"></attribute>
+		<attribute id="CS6" name="CS6(TMC/TMP)" visible="true"></attribute>
+		<attribute id="CS7" name="CS7(TMC/TMP)" visible="true"></attribute>
+	</table>
+
+	<table name="expMapping">
+		<attribute id="id" name="ID" visible="false"></attribute>
+		<attribute id="name" name="Expmap Name" visible="true"></attribute>
+	</table>
+	<table name="priMapping">
+		<attribute id="id" name="ID" visible="false"></attribute>
+		<attribute id="name" name="primap名称" visible="true"></attribute>
+	</table>
+	<table name="ClientInfoTable">
+		<attribute id="id" name="ID" visible="false"></attribute>
+		<attribute id="name" name="Customer Name" visible="true"></attribute>
+		<attribute id="adress" name="Address" visible="true"></attribute>
+		<attribute id="linkMan" name="Contact" visible="true"></attribute>
+		<attribute id="phoneNumber" name="Phone" visible="true"></attribute>
+		<attribute id="grade" name="User Level" visible="true"></attribute>
+		<attribute id="area" name="Area" visible="true"></attribute>
+		<attribute id="remark" name="Remark" visible="true"></attribute>
+	</table>
+	<table name="SiteSearchTable">
+		<attribute id="CellDescribe" name="IP" visible="true"></attribute>
+		<attribute id="CellEditon" name="Products" visible="true"></attribute>
+		<attribute id="CellType" name="Device Type" visible="true"></attribute>
+		<attribute id="versions" name="Version" visible="true"></attribute>
+	</table>
+	<table name="loopProtectSingle">
+		<attribute id="id" name="ID" visible="false" />
+		<attribute id="name" name="Name" visible="true"></attribute>
+		<attribute id="nodeId" name="Links Point ID" visible="true"></attribute>
+		<attribute id="apsenable" name="APS Enable" visible="true"></attribute>
+		<attribute id="b" name="External Order" visible="true"></attribute>
+		<attribute id="waittime" name="WTR Time(min)" visible="true"></attribute>
+		<attribute id="delaytime" name="Delay Time (ms)" visible="true"></attribute>
+		<attribute id="activeStatus" name="Activation" visible="true"></attribute>
+	</table>
+	<table name="loopInfo">
+		<attribute id="id" name="ID" visible="false" />
+		<attribute id="port" name="Port" visible="true"></attribute>
+		<attribute id="position" name="Port Capacity" visible="true"></attribute>
+		<attribute id="nodeIdOppo" name="Peer Node ID" visible="true"></attribute>
+		<attribute id="ap" name="APS Enable" visible="true"></attribute>
+		<attribute id="w" name="Last Received APS PUD" visible="true"></attribute>
+		<attribute id="q" name="last Sented APS PUD" visible="true"></attribute>
+	</table>
+	<table name="clockStatusTable">
+		<attribute id="id" name="ID" visible="false"></attribute>
+		<attribute id="name" name="Clock Source Name" visible="true"></attribute>
+		<attribute id="sourceStatus" name="Input Source Status" visible="true"></attribute>
+		<attribute id="inQL" name="QL Value Of The Input Source" visible="true"></attribute>
+		<attribute id="outQL" name="QL Value Of The Output Source" visible="true"></attribute>
+	</table>
+	<table name="protectStatus">
+		<attribute id="id" name="ID" visible="false"></attribute>
+		<attribute id="name" name="Name Of Protection" visible="true"></attribute>
+		<attribute id="protectType" name="Type Of Protection" visible="true"></attribute>
+		<attribute id="mainPort" name="The Primary Port" visible="true"></attribute>
+		<attribute id="mainLspAlarm" name="Master LSP Alarm" visible="true"></attribute>
+		<attribute id="standPort" name="Alternate Port" visible="true"></attribute>
+		<attribute id="standLspAlarm" name="Spare LSP Alarm" visible="true"></attribute>
+		<attribute id="rorateStatus" name="Switching Status" visible="true"></attribute>
+		<attribute id="delaytime" name="Delay Time (10ms)" visible="true"></attribute>
+		<attribute id="receiveAps" name="Receive APS" visible="true"></attribute>
+		<attribute id="launchAps" name="Send APS" visible="true"></attribute>
+		<attribute id="backType" name="Return Type" visible="true"></attribute>
+		<attribute id="isWorking" name="Working path" visible="true"></attribute>
+	</table>
+	<table name="unloadingPanel" layout="filter">
+		<attribute id="unloadType" name="Transfer Data Type" visible="true"></attribute>
+		<attribute id="cellType" name="Activation Status" visible="true"></attribute>
+		<attribute id="spillEntry" name="Overflow Items" visible="true"></attribute>
+		<attribute id="holdEntry" name="Reserved Entry" visible="true"></attribute>
+		<attribute id="unloadMod" name="Transfer Mode" visible="true"></attribute>
+		<attribute id="fileWay" name="File Path" visible="true"></attribute>
+		<attribute id="isAuto" name="isAutoBack" visible="false"></attribute>
+        <attribute id="autoTime" name="autoBackTime" visible="true"></attribute>
+		<attribute id="timeInterval" name="autoTimeInterval" visible="false"></attribute>
+	</table>
+	<table name="unloadupdatePanel">
+		<attribute id="id" name="ID" visible="false"></attribute>
+		<attribute id="unloadType" name="Dump Data Types" visible="true"></attribute>
+		<attribute id="cellType" name="Activation" visible="true"></attribute>
+		<attribute id="unloadLimit" name="Storage Time" visible="true"></attribute>
+		<attribute id="spillEntry" name="Overflow Entries" visible="true"></attribute>
+		<attribute id="holdEntry" name="Reserved Entry" visible="true"></attribute>
+		
+	</table>
+	<table name="oamTable">
+		<attribute id="id" name="id" visible="false" />
+		<attribute id="oamName" name="OAM Name" visible="true" />
+		<attribute id="objectType" name="OAM Type" visible="true" />
+		<attribute id="mel" name="meg Level" visible="true" />
+		<attribute id="mip" name="MIP" visible="false" />
+	</table>
+	<table name="pwStatus">
+		<attribute id="id" name="ID" visible="false"></attribute>
+		<attribute id="pwname" name="PW Name" visible="true"></attribute>
+		<attribute id="inlable" name="Input Label" visible="true"></attribute>
+		<attribute id="outlable" name="Output Label" visible="true"></attribute>
+		<attribute id="lspname" name="Tunnel Name" visible="true"></attribute>
+		<attribute id="cvenalbe" name="Enable CV" visible="true"></attribute>
+		<attribute id="cvcircle" name="CV Cycle" visible="true"></attribute>
+		<attribute id="loc" name="LOC Alarm" visible="true"></attribute>
+		<attribute id="rdi" name="RDI Alarm" visible="true"></attribute>
+	</table>
+	<table name="portStatus">
+		<attribute id="id" name="ID" visible="false"></attribute>
+		<attribute id="portName" name="Port Name" visible="true"></attribute>
+		<attribute id="link" name="LINK" visible="true"></attribute>
+		<attribute id="model" name="Mode" visible="true"></attribute>
+		<attribute id="LoopState" name="LoopState" visible="true"></attribute>
+		<attribute id="received" name="Number Of Packets Received" visible="false"></attribute>
+		<attribute id="send" name="Number Of Packets Sended" visible="false"></attribute>
+	</table>
+	<table name="tunnelStatus">
+		<attribute id="id" name="ID" visible="false"></attribute>
+		<attribute id="tunnelName" name="Tunnel Name" visible="true"></attribute>
+		<attribute id="nodeType" name="Node Type" visible="true"></attribute>
+		<attribute id="inport" name="Port Of The Enter Tag" visible="true"></attribute>
+		<attribute id="inlable" name="Label Of The Enter Tag" visible="true"></attribute>
+		<attribute id="outport" name="Port Of The Export Tag" visible="true"></attribute>
+		<attribute id="outlable" name="Label Of The Export Tag" visible="true"></attribute>
+	</table>
+	<table name="vpwsStatus">
+		<attribute id="id" name="ID" visible="false"></attribute>
+		<attribute id="vpwsName" name="Business Name" visible="true"></attribute>
+		<attribute id="buffer" name="Flow ID" visible="true"></attribute>
+		<attribute id="uni" name="UNI" visible="true"></attribute>
+		<attribute id="vpwstype" name="Business Match Type" visible="true"></attribute>
+		<attribute id="value1" name="The First Matching Value" visible="true"></attribute>
+		<attribute id="value2" name="The Second Match Value" visible="true"></attribute>
+		<attribute id="nni" name="NNI" visible="true"></attribute>
+		<attribute id="outtunnellable" name="Out Label Of The Tunnel" visible="true"></attribute>
+		<attribute id="outpwlable" name="Out Label Of The PW" visible="true"></attribute>
+		<attribute id="intunnellable" name="Enter Label Of The Tunnel" visible="true"></attribute>
+		<attribute id="inpwlable" name="Enter Label Of The PW" visible="true"></attribute>
+		<attribute id="pwname" name="PW Name" visible="true"></attribute>
+	</table>
+	<!-- elan etree 选择的AC列表 -->
+	<table name="selectAcList">
+		<attribute id="id" name="ID" visible="false"></attribute>
+		<attribute id="acname" name="Name" visible="true"></attribute>
+		<attribute id="portName" name="Carrying Port" visible="true"></attribute>
+		<attribute id="sitename" name="NE Name" visible="true"></attribute>
+	</table>
+	<!-- elan etree 选择的PW列表 -->
+	<table name="selectPwList">
+		<attribute id="id" name="ID" visible="false"></attribute>
+		<attribute id="pwName" name="Name" visible="true"></attribute>
+		<attribute id="activeStates" name="Activation" visible="true"></attribute>
+		<attribute id="inLabelValue" name="Ingress Label" visible="true"></attribute>
+		<attribute id="outLabelValue" name="Engress Label" visible="true"></attribute>
+	</table>
+	<!-- 告警描述 -->
+	<table name="alarmTable">
+		<attribute id="id" name="ID" visible="false"></attribute>
+		<attribute id="alarmname" name="Alarm Name" visible="true"></attribute>
+		<attribute id="alarmleavel" name="alarm Severity" visible="true"></attribute>
+		<attribute id="alarmtype" name="Alarm Type" visible="true"></attribute>
+		<attribute id="influence" name="Alarm Influence" visible="true"></attribute>
+		<attribute id="desc" name="Description" visible="true"></attribute>
+		<attribute id="remark" name="Remark" visible="true"></attribute>
+	</table>
+	<!-- 性能描述 -->
+	<table name="performanceDescTable">
+		<attribute id="id" name="ID" visible="false"></attribute>
+		<attribute id="type" name="Performance Type" visible="true"></attribute>
+		<attribute id="parameter" name="Performance Name" visible="true"></attribute>
+		<attribute id="explain" name="Performance Explained" visible="true"></attribute>
+		<attribute id="desc" name="Remark" visible="true"></attribute>
+	</table>
+
+	<!-- MSP保护table -->
+	<table name="mspTable">
+		<attribute id="id" name="NO" visible="false"></attribute>
+		<attribute id="name" name="Protection Group Name" visible="true"></attribute>
+		<attribute id="type" name="Type Of Protection" visible="true"></attribute>
+		<attribute id="model" name="Recovery Mode" visible="true"></attribute>
+		<attribute id="waitTime" name="WTR Time(min)" visible="true"></attribute>
+		<attribute id="delay" name="Delay Time(ms)" visible="true"></attribute>
+		<attribute id="rotateOrder" name="External Order" visible="true"></attribute>
+		<attribute id="sfpriority" name="SF Priority" visible="true"></attribute>
+		<attribute id="sdpriority" name="SD Priority" visible="true"></attribute>
+		<attribute id="apsenabled" name="APS Enable" visible="true"></attribute>
+		<attribute id="sdenabled" name="SD Enabled" visible="true"></attribute>
+		<attribute id="activeStatus" name="Activation" visible="true"></attribute>
+	</table>
+
+	<!-- MSP保护端口table -->
+	<table name="mspPortTable">
+		<attribute id="portName" name="Port Name" visible="true"></attribute>
+		<attribute id="identity" name="Identity" visible="true"></attribute>
+		<attribute id="workPort" name="Actual Working Port" visible="true"></attribute>
+		<attribute id="protectStatus" name="Protection Status" visible="true"></attribute>
+		<attribute id="k1byte" name="Tx/Rx K1 byte  / acceptance K1 byte" visible="true"></attribute>
+		<attribute id="k2byte" name="Tx/Rx K2 byte  / acceptance K2 byte" visible="true"></attribute>
+	</table>
+	<table name="RoInfoTable">
+		<attribute id="id" name="ID" visible="false"></attribute>
+		<attribute id="roleName" name="Role Name" visible="true"></attribute>
+		<attribute id="remark" name="Remark" visible="true"></attribute>
+	</table>
+
+	<!-- 双规保护主界面table -->
+	<table name="dualProtect">
+		<attribute id="id" name="NO" visible="false"></attribute>
+		<attribute id="name" name="Name" visible="true"></attribute>
+		<attribute id="type" name="Type Of Protection" visible="true"></attribute>
+		<attribute id="port" name="Dual Interface" visible="true"></attribute>
+		<attribute id="tunnel" name="Pass Tunnel" visible="true"></attribute>
+		<attribute id="identity" name="Standby Status" visible="true"></attribute>
+		<attribute id="aps" name="APS Enable" visible="true"></attribute>
+		<attribute id="waittime" name="WTR Time(min)" visible="true"></attribute>
+		<attribute id="delaytime" name="Delay Time (ms)" visible="true"></attribute>
+		<attribute id="command" name="External Order" visible="true"></attribute>
+		<attribute id="workPort" name="Actual Working Port" visible="true"></attribute>
+		<attribute id="activeStatus" name="Activation" visible="true"></attribute>
+	</table>
+
+	<!-- 双规保护tunnel信息table -->
+	<table name="dualTunnelTable">
+		<attribute id="id" name="ID" visible="false"></attribute>
+		<attribute id="name" name="Name" visible="true"></attribute>
+		<attribute id="type" name="Type" visible="true"></attribute>
+		<attribute id="role" name="Role" visible="true"></attribute>
+	</table>
+	<!-- qinq -->
+	<table name="QinQBusinessTable">
+		<attribute id="qinqId" name="ID" visible="false"></attribute>
+		<attribute id="qinqName" name="Name" visible="true"></attribute>
+		<attribute id="tpId" name="TpId" visible="true"></attribute>
+		<attribute id="aSiteId" name="Source NE" visible="true"></attribute>
+		<attribute id="zSiteId" name="Sink NE" visible="true"></attribute>
+		<attribute id="aAcPortId" name="Source Port" visible="true"></attribute>
+		<attribute id="zAcPortId" name="Sink Port" visible="true"></attribute>
+		<attribute id="createTime" name="Create Time" visible="true"></attribute>
+		<attribute id="createUser" name="Creater" visible="true"></attribute>
+		<attribute id="vlanId" name="Operators Vlan ID" visible="true"></attribute>
+		<attribute id="qinqStatus" name="Status" visible="true"></attribute>
+		<attribute id="basedInVlanId" name="Is Based On The Inner Vlan ID" visible="true"></attribute>
+	</table>
+	<table name="qinqNetworkTable">
+		<attribute id="id" name="ID" visible="false" />
+		<attribute id="qinqChildName" name="Name" visible="true" />
+		<attribute id="aSiteName" name="Source NE" visible="true" />
+		<attribute id="zSiteName" name="Sink NE" visible="true" />
+		<attribute id="aPortName" name="Source Port" visible="true" />
+		<attribute id="zPortName" name="Sink Port" visible="true" />
+	</table>
+	<!-- 双规保护添加窗口 tunnel信息 -->
+	<table name="selectTunnelTable">
+			<attribute id="id" name="ID" visible="false"></attribute>
+			<attribute id="tunnelName" name="Interface Name" visible="true"></attribute>
+			<attribute id="tunneltype" name="Type" visible="true"></attribute>
+	</table>
+	
+	<table name="oamEvent">
+			<attribute id="id" name="ID" visible="false"></attribute>
+			<attribute id="siteId" name="Site" visible="true"></attribute>
+			<attribute id="port" name="Port" visible="true"></attribute>
+			<attribute id="eventName" name="Event" visible="true"></attribute>
+			<attribute id="eventStatus" name="Event Status" visible="true"></attribute>
+			<attribute id="time" name="Report Time" visible="true"></attribute>
+	</table>
+	<!-- TCA告警table -->
+	<table name="tcaAlarm" layout="filter">
+		<attribute id="id" name="NO" visible="false" />
+		<attribute id="siteName" name="NE" visible="true" />
+		<attribute id="alarmSource" name="Alarm source" visible="true" />
+		<attribute id="performanceType" name="PM Type" visible="true" />
+		<attribute id="happenTime" name="Start Time" visible="true" />
+		<attribute id="EndTime" name="End Time" visible="true" />
+		<attribute id="granularity" name="Granularity" visible="true" />
+		<attribute id="threshold" name="Threshold" visible="true" />
+		<attribute id="remark" name="Remark" visible="true" />
+	</table>	
+		<!-- vlanpriTo颜色模板列表 信息 -->
+	<table name="vlanpriToColorTemplate">
+			<attribute id="id" name="ID" visible="false"></attribute>
+			<attribute id="name" name="Name" visible="true"></attribute>
+			<attribute id="vlanpri0" name="VLANPRI0" visible="true"></attribute>
+			<attribute id="vlanpri1" name="VLANPRI1" visible="true"></attribute>
+			<attribute id="vlanpri2" name="VLANPRI2" visible="true"></attribute>
+			<attribute id="vlanpri3" name="VLANPRI3" visible="true"></attribute>
+			<attribute id="vlanpri4" name="VLANPRI4" visible="true"></attribute>
+			<attribute id="vlanpri5" name="VLANPRI5" visible="true"></attribute>
+			<attribute id="vlanpri6" name="VLANPRI6" visible="true"></attribute>
+			<attribute id="vlanpri7" name="VLANPRI7" visible="true"></attribute>
+			
+	</table>
+	<!-- vlanpriTo颜色模板列表 信息 -->
+	<table name="priorityTovlanpriTemplate">
+			<attribute id="id" name="ID" visible="false"></attribute>
+			<attribute id="name" name="Name" visible="true"></attribute>
+			<attribute id="BE" name="BE" visible="true"></attribute>
+			<attribute id="AF1" name="AF1" visible="true"></attribute>
+			<attribute id="AF2" name="AF2" visible="true"></attribute>
+			<attribute id="AF3" name="AF3" visible="true"></attribute>
+			<attribute id="AF4" name="AF4" visible="true"></attribute>
+			<attribute id="EF" name="EF" visible="true"></attribute>
+			<attribute id="CS6" name="CS6" visible="true"></attribute>
+			<attribute id="CS7" name="CS7" visible="true"></attribute>
+	</table>
+	<!-- 双归保护网络侧列表 信息 -->
+	<table name="dualInfo">
+			<attribute id="id" name="ID" visible="false"></attribute>
+			<attribute id="name" name="Name" visible="true"></attribute>
+			<attribute id="activeStates" name="Activation" visible="true"></attribute>
+			<attribute id="creater" name="Creater" visible="true"></attribute>
+			<attribute id="createTime" name="Create time" visible="true"></attribute>
+	</table>
+	<!--OAM ENVENT-->
+	<table name="oamEvent"  layout="statistics">
+		<attribute id="id" name="ID" visible="false" />
+		<attribute id="oamPort" name="port" visible="true" />
+		<attribute id="oamEvent" name="envent" visible="true" />
+		<attribute id="oamEventType" name="enventType" visible="true" />
+		<attribute id="isThis" name="isThis" visible="true" />
+		<attribute id="oamDate" name="Date" visible="true" />
+		<attribute id="envCyc" name="envCyc" visible="true" />
+		<attribute id="envLimit" name="envLimit" visible="true" />
+		<attribute id="envTimes" name="envTimes" visible="true" />
+		<attribute id="errSum" name="errSum" visible="true" />
+		<attribute id="envSum" name="envSum" visible="true" />
+		<attribute id="upDate" name="upDate" visible="true" />
+	</table>
+	<table name="tunnelofthepw" >
+		<attribute id="id" name="ID" visible="false" />
+		<attribute id="tunnelName" name="Tunnel Name" visible="true" />
+		<attribute id="tunneltype" name="Type" visible="true" />
+		<attribute id="activeStates" name="Active Status" visible="true" />
+		<attribute id="aportName" name="A segment port" visible="true" />
+		<attribute id="zportName" name="Z segment port" visible="true" />
+	</table>
+
+		<table name="AclTable" layout="statistics">
+		<attribute id="id" name="ID" visible="false" />
+		<attribute id="portName" name="Port Name" visible="true" />
+		<attribute id="vlanID" name="vlanID" visible="true" />
+		<attribute id="ruleObject" name="Rules of Application Objects" visible="true" />
+	</table>
+
+	<table name="routebusiness" >
+		<attribute id="name" name="Name" visible="true" />
+		<attribute id="type" name="Type" visible="true" />
+		<attribute id="activeStates" name="Activation" visible="true" />
+		<attribute id="aSiteName" name="Source NE" visible="true" />
+		<attribute id="zSiteName" name="Sink NE" visible="true" />
+		<attribute id="aportName" name="Source Port" visible="true" />
+		<attribute id="zportName" name="Sink Port" visible="true" />
+		<attribute id="createTime" name="Create time" visible="true" />
+	</table>
+	<table name="blackListMacTable" >
+	<attribute id="id" name="ID" visible="false" />
+		<attribute id="portId" name="port Name" visible="true" />
+		<attribute id="mac" name="MAC address blacklist" visible="true" />
+	</table>
+	<table name="macLearningTable" >
+		<attribute id="id" name="ID" visible="false" />
+		<attribute id="portId" name="Port Name" visible="true" />
+		<attribute id="macModel" name="MAC Learning Limit Mode" visible="true" />
+		<attribute id="vlanId" name="vlan Value" visible="true" />
+		<attribute id="macCount" name="MAC Address Learning Limit On The Number" visible="true" />
+	</table>
+	
+	<table name="blackAndWhilteListMacTable" >
+	  <attribute id="id" name="ID" visible="false" />
+	  <attribute id="serviceName" name="Business Name" visible="true" />
+		<attribute id="nameList" name="List mode" visible="true" />
+		<attribute id="mac" name="MAC address" visible="true" />
+	</table>
+	
+	<table name="wrappingStatus">
+		<attribute id="id" name="ID" visible="false" />
+		<attribute id="name" name="Ring Name" visible="true" />
+		<attribute id="westPort" name="West Port" visible="true" />
+		<attribute id="eastPort" name="East Port" visible="true" />
+		<attribute id="protectType" name="Protection Type" visible="true" />
+		<attribute id="rorateStatus" name="Switching Status" visible="true" />
+		<attribute id="totalNumber" name="Total Number of Nodes in the Ring" visible="true" />
+		<attribute id="localNumber" name="This Site Node ID" visible="true" />
+		<attribute id="westAlarm" name="West Line Alarm" visible="true" />
+		<attribute id="eastAlarm" name="East Line Alarm" visible="true" />
+		<attribute id="westReceiveAps" name="APS Information of West Received" visible="true" />
+		<attribute id="eastReceiveAps" name="APS Information of East Received" visible="true" />
+		<attribute id="westSendAps" name="APS Information of West Sended" visible="true" />
+		<attribute id="eastSendAps" name="APS Information of East Sended" visible="true" />
+		<attribute id="dealyTime(ms)" name="Dealy Time" visible="true" />
+		<attribute id="backType" name="Return Type" visible="true" />
+	</table>
+		
+	<table name="oamPing" layout="statistics">
+		<attribute id="id" name="ID" visible="false" />
+		<attribute id="idNumber" name="Entries ID" visible="true" />
+		<attribute id="frame" name="Frame Count" visible="true" />
+		<attribute id="status" name="Status" visible="true" />
+		<attribute id="farMac" name="Remote MAC" visible="true" />
+		<attribute id="bytes" name="Byte count" visible="true" />
+		<attribute id="time" name="Time(ms)" visible="true" />
+	</table>
+	<table name="querySfpPow" >
+		<attribute id="linkName" name="Connection Information" visible="true" />
+		<attribute id="aPortName" name="A End Port" visible="true" />
+		<attribute id="zPortName" name="Z End Port" visible="true" />
+		<attribute id="sfpTxPow" name="Optical Module Transmition Power" visible="true" />
+		<attribute id="sfpRxPow" name="Optical Module Receives Power" visible="true" />
+	</table>
+	<table name="smartFanTable">
+		<attribute id="id" name="id" visible="false" />
+		<attribute id="workType" name="Fan Pattern" visible="true" />
+		<attribute id="gearLevel" name="Fan Gear" visible="true" />
+	</table>
+<table name="SSProfessPanel" layout="statistics">
+			<attribute id="id" name="ID" visible="false" />
+		<attribute id="name" name="Service Name" visible="true" />
+		<attribute id="direction" name="Direction" visible="true" />
+		<attribute id="rate" name="Rate" visible="true" />
+		<attribute id="aSiteId" name="A End NE" visible="true" />
+		<attribute id="aPortName" name="A End Port Name" visible="true" />
+		<attribute id="zSiteId" name="Z End NE" visible="true" />
+		<attribute id="zPortName" name="Z End Port Name" visible="true" />
+		<attribute id="serviceType" name="Service Type" visible="true" />
+		<attribute id="alarmCount" name="Whether Exist Alarm" visible="true" />
+		<attribute id="activeStatus" name="ActiveStatus" visible="true" />
+		<attribute id="activeTime" name="ActiveTime" visible="true" />
+		<attribute id="createTime" name="CreateTime" visible="true" />
+		<attribute id="clientName" name="ClientName" visible="true" />
+		<attribute id="cos" name="COS" visible="false" />
+		<attribute id="cir" name="CIR(kbps)" visible="false" />
+		<attribute id="cbs" name="CBS(Byte)" visible="false" />
+		<attribute id="eir" name="EIR(kbps)" visible="false" />
+		<attribute id="ebs" name="EBS(Byte)" visible="false" />
+		<attribute id="pir" name="PIR(kbps)" visible="false" />
+	</table>
+	<table name="e1LegStatus">
+		<attribute id="e1LegId" name="e1LegId" visible="true"></attribute>
+		<attribute id="e1Status" name="e1Status" visible="true"></attribute>
+		<attribute id="e1Model" name="e1Model" visible="true"></attribute>
+		<attribute id="tdmClock" name="tdmClock" visible="true"></attribute>
+		<attribute id="e1LegStatus" name="e1LegStatus" visible="true"></attribute>
+		<attribute id="e1LegType" name="e1LegType" visible="true"></attribute>
+		<attribute id="e1legSpeed" name="e1legSpeed" visible="true"></attribute>
+		<attribute id="e1Attr" name="e1Attr" visible="true"></attribute>
+	</table>
+	<table name="currPerCountTable" layout="filter">
+		<attribute id="id" name="ID" visible="false" />
+		<attribute id="siteName" name="siteName" visible="true" />
+		<attribute id="time" name="time" visible="true" />
+		<attribute id="objectName" name="objectName" visible="true" />
+		<attribute id="receiveByte" name="receiveByte(KB)" visible="true" />
+		<attribute id="sendByte" name="sendByte(KB)" visible="true" />
+		<attribute id="inBandwidthUtil" name="inBandwidthUtil" visible="true" />
+		<attribute id="outBandwidthUtil" name="outBandwidthUtil" visible="true" />
+	</table>
+	<table name="ethService">
+		<attribute id="id" name="id" visible="false" />
+		<attribute id="Vlan ID" name="Vlan ID" visible="true" />
+		<attribute id="portName" name="Port Name" visible="true" />
+	</table>
+	<table name="siteCount" >
+		<attribute id="id" name="ID" visible="false" />
+		<attribute id="neType" name="Equipment Type" visible="true" />
+		<attribute id="neCount" name="Number" visible="true" />
+		<attribute id="cardCount" name="Equipment Percentage" visible="true" />
+	</table>
+	<table name="cardCount" >
+		<attribute id="id" name="ID" visible="false" />
+		<attribute id="name" name="Total Number of Card" visible="true" />
+		<attribute id="cardCount" name="Total Number of Board" visible="true" />
+	</table>
+	<table name="cirCount" >
+		<attribute id="id" name="ID" visible="false" />
+		<attribute id="cirObject" name="Link Port" visible="true" />
+		<attribute id="cirCount" name="CIR Bandwidth Sum" visible="true" />
+		<attribute id="surplusCirCount" name="CIR Remaining Bandwidth" visible="true" />
+	</table>
+
+	<table name="alarmShow" >
+		<attribute id="alarmName" name="Alarm Name" visible="true" />
+		<attribute id="alarmLevel" name="Alarm Level" visible="true" />
+		<attribute id="alarmType" name="Alarm Type" visible="true" />
+	</table>
+
+	<table name="E1T1Table" layout="filter">
+		<attribute id="id" name="ID_en" visible="false" />
+		<attribute id="port" name="PORT" visible="true" />
+		<attribute id="channel" name="CHANNEL" visible="true" />
+		<attribute id="speedgrade" name="SPEED GRADE" visible="true" />
+		<attribute id="frameformat" name="FRAME FORMAT" visible="true" />
+		<attribute id="complexframe" name="COMPLEX FRAME" visible="true" />		
+	</table>
+	
+	<table name="SetNameRuleTable" >
+		<attribute id="id" name="ID" visible="false" />
+		<attribute id="sourcename" name="sourcename" visible="true" />	
+		<attribute id="name" name="name" visible="true" />		
+		<attribute id="type" name="type" visible="true" />
+		<attribute id="namerule" name="Name Rule" visible="true" />
+		<attribute id="nameexample" name="Name Example" visible="true" />
+		<attribute id="row" name="Row" visible="false" />	
+	</table>
+	<table name="pathPerCountTable" layout="filter">
+		<attribute id="id" name="ID" visible="false" />
+		<attribute id="siteName" name="siteName" visible="true" />
+		<attribute id="objectName" name="objectName" visible="true" />
+		<attribute id="time" name="time" visible="true" />
+		<attribute id="packlosr_near" name="packlosr_near(%)" visible="true" />
+		<attribute id="packlosr_far" name="packlosr_far(%)" visible="true" />
+		<attribute id="pmpackdelay_s" name="pmpackdelay_s(s)" visible="true" />
+		<attribute id="pmpackdelay_ns" name="pmpackdelay_ns(ns)" visible="true" />
+		<attribute id="rx_cv" name="rx_cv" visible="true" />
+		<attribute id="tx_cv" name="tx_cv" visible="true" />
+	</table>
+	<table name="layerRateTable" layout="statistics">
+		<attribute id="id" name="ID" visible="false" />
+		<attribute id="objName" name="rateName" visible="true" />
+		<attribute id="layerNumber" name="rateNumber" visible="true" />
+	</table>
+	<table name="pwXcTablePanel" >
+	  <attribute id="id" name="ID" visible="false" />
+	  <attribute id="siteName" name="siteName" visible="true" />
+	  <attribute id="frontInlabel" name="frontInLabel" visible="true" />
+	  <attribute id="frontOutlabel" name="frontOutLabel" visible="true" />
+	  <attribute id="backInlabel" name="backInLabel" visible="true" />
+	  <attribute id="backOutlabel" name="backOutLabel" visible="true" />
+	</table>
+	<table name="subNetTable">
+		<attribute id="id" name="ID" visible="false"></attribute>
+		<attribute id="subName" name="Sub Name" visible="true"></attribute>
+		<attribute id="groupName" name="Group Name" visible="true"></attribute>
+		<attribute id="parentName" name="Feild Name" visible="true"></attribute>
+	</table>
+	<table name="groupTable">
+		<attribute id="id" name="ID" visible="false"></attribute>
+		<attribute id="fieldName" name="Group Name" visible="true"></attribute>
+		<attribute id="groupId" name="Group Id" visible="true"></attribute>
+		<attribute id="parentName" name="Feild Name" visible="true"></attribute>
+	</table>
+	<table name="pwProtectStatus">
+		<attribute id="id" name="ID" visible="false"></attribute>		
+		<attribute id="protectType" name="Type Of Protection" visible="true"></attribute>
+		<attribute id="mainPort" name="The Primary Port" visible="true"></attribute>
+		<attribute id="mainLspName" name="The Primary LSP ID" visible="true"></attribute>
+		<attribute id="mainPwName" name="The Primary PW ID" visible="true"></attribute>
+		<attribute id="mainPwAlarm" name="Master PW Alarm" visible="true"></attribute>
+		<attribute id="standPort" name="Alternate Port" visible="true"></attribute>
+		<attribute id="standLspName" name="The Alternate LSP ID" visible="true"></attribute>
+		<attribute id="standPwName" name="The Alternate PW ID" visible="true"></attribute>
+		<attribute id="standPwAlarm" name="Spare PW Alarm" visible="true"></attribute>
+		<attribute id="rorateStatus" name="Switching Status" visible="true"></attribute>
+		<attribute id="delaytime" name="Delay Time (s)" visible="true"></attribute>
+		<attribute id="receiveAps" name="Receive APS" visible="true"></attribute>
+		<attribute id="launchAps" name="Send APS" visible="true"></attribute>
+		<attribute id="backType" name="Return Type" visible="true"></attribute>
+	</table>
+	<table name="ssMacStudy">
+		<attribute id="id" name="ID" visible="false"></attribute>
+		<attribute id="portName" name="Port Id" visible="true"></attribute>	
+		<attribute id="macId" name="MAC ID" visible="false"></attribute>			
+		<attribute id="vlan" name="Vlan" visible="true"></attribute>		
+		<attribute id="countNumber" name="MAC Address Count Number" visible="true"></attribute>
+		<attribute id="macAddress" name="MAC Address" visible="false"></attribute>
+	</table>
+		<table name="macAddress">
+		<attribute id="id" name="ID" visible="false"></attribute>
+		<attribute id="macId" name="MAC ID" visible="false"></attribute>
+		<attribute id="portName" name="Port ID" visible="true"></attribute>		
+		<attribute id="vlan" name="VLAN" visible="true"></attribute>				
+		<attribute id="macAddress" name="MAC Address" visible="true"></attribute>
+	</table>
+	<table name="SiteInst_Soft">
+		<attribute id="id" name="ID" visible="false"></attribute>
+		<attribute id="siteid" name="网元" visible="false"></attribute>	
+		<attribute id="neName" name="网元名称" visible="true"></attribute>	
+		<attribute id="allFileName" name="所有的升级文件" visible="true"></attribute>
+		<attribute id="fileName" name="当前升级文件" visible="true"></attribute>
+		<attribute id="schedule" name="升级进度" visible="true"></attribute>
+		<attribute id="result" name="升级结果" visible="true"></attribute>
+	</table>
+		<table name="lagStatus">
+		<attribute id="id" name="ID" visible="false"></attribute>
+		<attribute id="lacpSwitch" name="LACP协议开关" visible="true"></attribute>
+		<attribute id="sysPri" name="系统优先级" visible="true"></attribute>
+		<attribute id="lagId" name="LAG ID" visible="true"></attribute>
+		<attribute id="workMode" name="聚合组工作模式" visible="true"></attribute>
+		<attribute id="lagMode" name="聚合模式" visible="true"></attribute>
+		<attribute id="lagNum" name="聚合组成员数" visible="true"></attribute>
+		<attribute id="returnType" name="非负载分担返回类型" visible="true"></attribute>
+		<attribute id="waitTime" name="等待恢复时间" visible="true"></attribute>
+		<attribute id="portNum" name="端口号" visible="true"></attribute>
+		<attribute id="portLacp" name="端口LACP协议" visible="true"></attribute>
+		<attribute id="portStatus" name="端口状态" visible="true"></attribute>		
+		<attribute id="localPort" name="本地端口优先级" visible="true"></attribute>
+	</table>
+		<table name="ptpPort">
+		<attribute id="id" name="ID" visible="false"></attribute>
+		<attribute id="IndexId" name="Index Id" visible="true"></attribute>
+		<attribute id="PortNum" name="Port Num" visible="true"></attribute>
+		<attribute id="workMode" name="Work Model" visible="true"></attribute>
+		<attribute id="portId" name="Port ID" visible="true"></attribute>
+		<attribute id="Line" name="Line" visible="true"></attribute>
+		<attribute id="LineCpn" name="Line of Cpn" visible="true"></attribute>
+		<attribute id="delayMeca" name="Delay Meca" visible="true"></attribute>
+		<attribute id="MessageMode" name="Message Model" visible="true"></attribute>
+	</table>	
+		<table name="CccTable">
+		<attribute id="id" name="ID" visible="false" />
+		<attribute id="cccName" name="CCC Name" visible="true" />
+		<attribute id="activeStates" name="Active States" visible="true" />		
+		<attribute id="createTime" name="Create Time" visible="true" />
+		<attribute id="creater" name="Creater" visible="true" />
+	</table>
+	<table name="tunnelOamMainTable">
+		<attribute id="" name="是否返回" visible="true"></attribute>
+		<attribute id="" name="等待恢复时间" visible="true"></attribute>
+		<attribute id="" name="拖延时间" visible="true"></attribute>
+		<attribute id="" name="A端主用OAM使能" visible="true"></attribute>
+		<attribute id="" name="Z端主用OAM使能" visible="true"></attribute>
+		<attribute id="" name="主用连通性检测" visible="true"></attribute>
+		<attribute id="" name="A端主用APS使能" visible="true"></attribute>
+		<attribute id="" name="Z端主用APS使能" visible="true"></attribute>
+		<attribute id="" name="A端备用OAM使能" visible="true"></attribute>
+		<attribute id="" name="Z端备用OAM使能" visible="true"></attribute>
+		<attribute id="" name="备用连通性检测" visible="true"></attribute>
+		<attribute id="" name="A端备用APS使能" visible="true"></attribute>
+		<attribute id="" name="Z端备用APS使能" visible="true"></attribute>
+	</table>
+	<table name="snSiteInstTable">
+		<attribute id="id" name="ID" visible="false"></attribute>
+		<attribute id="neName" name="网元名称" visible="true"></attribute>
+		<attribute id="rootSiteIp" name="源网元IP" visible="true"></attribute>
+		<attribute id="isLocationNe" name="是否是本地网元" visible="true"></attribute>
+		<attribute id="neDescribe" name="网元IP" visible="true"></attribute>
+		<attribute id="fieldName" name="组名称" visible="true"></attribute>
+		<attribute id="neType" name="网元类型" visible="true"></attribute>
+		<attribute id="sn" name="SN序列号" visible="true"></attribute>
+	</table>
+	<table name="ptpPortStatus">
+		<attribute id="id" name="ID" visible="false"></attribute>
+		<attribute id="indexId" name="索引" visible="true"></attribute>
+		<attribute id="slotId" name="槽位号" visible="true"></attribute>
+		<attribute id="PortNum" name="端口号" visible="true"></attribute>
+		<attribute id="portStatus" name="端口状态" visible="true"></attribute>
+		<attribute id="portClockId" name="端口时钟ID" visible="true"></attribute>
+		<attribute id="portId" name="端口ID" visible="true"></attribute>
+		<attribute id="couplePortId" name="对偶端口ID" visible="true"></attribute>
+		<attribute id="Line" name="线路不对称时延属性" visible="true"></attribute>
+		<attribute id="LineCpn" name="线路不对称时延补偿值(ns)" visible="true"></attribute>
+		<attribute id="delayMeca" name="延时机制" visible="true"></attribute>
+		<attribute id="MessageMode" name="消息模式" visible="true"></attribute>
+	</table>
+	
+	<table name="BfdInfoTable">
+		<attribute id="id" name="ID" visible="false"></attribute>
+		<attribute id="bfdId" name="BFD ID" visible="true"></attribute>
+		<attribute id="bfdEnabel" name="BFD会话使能" visible="true"></attribute>
+		<attribute id="testMode" name="检测方式" visible="false"></attribute>
+		<attribute id="bfdMessageSendType" name="BFD报文发帧类型" visible="true"></attribute>
+		<attribute id="vlanPriority" name="VLAN优先级" visible="false"></attribute>
+		<attribute id="vlanId" name="VLAN ID" visible="false"></attribute>
+		<attribute id="serviceType" name="服务类型" visible="false"></attribute>
+		<attribute id="localIp" name="本地IP地址" visible="false"></attribute>
+		<attribute id="peerIp" name="远端IP地址" visible="false"></attribute>
+		<attribute id="udpPort" name="UDP源端口" visible="false"></attribute>
+		<attribute id="mySid" name="本地回话标识符" visible="true"></attribute>
+		<attribute id="peerStydyEnabel" name="对端会话标识符自学习使能" visible="false"/>	
+		<attribute id="peerSid" name="对端会话标识符" visible="true"></attribute>
+		<attribute id="dmti" name="发送最小周期" visible="false"></attribute>
+		<attribute id="rmri" name="接收最小周期" visible="false"></attribute>
+		<attribute id="dectMul" name="检测倍数" visible="false"/>				
+		<attribute id="pwBfdStyle" name="BFD FOR PW时BFD封装方式" visible="false"></attribute>
+		<attribute id="pwTtl" name="PW TTL" visible="false"></attribute>
+		<attribute id="tLayelPortMark" name="二层端口BFD标识" visible="false"></attribute>
+		<attribute id="lspId" name="LSP ID" visible="true"/>
+		<attribute id="lspName" name="LSP NAME" visible="true"/>
+		<attribute id="pwId" name="PW ID" visible="true"/>	
+		<attribute id="pwName" name="PW NAME" visible="true"/>
+	</table>
+<table name="bfdStatus">
+		<attribute id="id" name="ID" visible="false"></attribute>
+		<attribute id="bfdId" name="BFD ID" visible="true"></attribute>
+		<attribute id="bfdStatus" name="状态" visible="true"></attribute>
+		<attribute id="mySid" name="MY_SID" visible="true"></attribute>
+		<attribute id="peerSid" name="PEER_SID" visible="true"></attribute>		
+		<attribute id="bfdSend" name="TX_PACKS(个)" visible="true"></attribute>
+		<attribute id="bfdRe" name="RX_PACKS(个)" visible="true"></attribute>
+		<attribute id="bfdReWorkingPeriod" name="DMTI" visible="true"></attribute>
+		<attribute id="bfdSeWorkingPeriod" name="RMRI" visible="true"></attribute>
+		<attribute id="bfdType" name="类型" visible="true"></attribute>
+		<attribute id="portName" name="端口号" visible="true"></attribute>
+		<attribute id="lspLabel" name="出LSP标签" visible="true"></attribute>
+		<attribute id="pwLabel" name="出PW标签" visible="true"></attribute>
+	    <attribute id="lspId" name="LSP ID" visible="false"></attribute>
+	    <attribute id="lspName" name="LSP Name" visible="true"></attribute>
+		<attribute id="pwId" name="PW ID" visible="false"></attribute>
+		<attribute id="pwName" name="PW Name" visible="true"></attribute>
+	</table>
+	<table name="ARPInfoTable">
+		<attribute id="id" name="ID" visible="false"></attribute>
+		<attribute id="name" name="名称" visible="true"></attribute>
+		<attribute id="dualName" name="双规保护名称" visible="true"></attribute>
+		<attribute id="sourceMac" name="源MAC地址" visible="true"></attribute>
+		<attribute id="vlanEnabled" name="VLAN使能" visible="true"></attribute>
+		<attribute id="vlanId" name="VLAN ID" visible="true"></attribute>
+		<attribute id="vlanPri" name="VLAN PRI" visible="true"></attribute>
+		<attribute id="sourceIp" name="源IP" visible="true"></attribute>
+		<attribute id="targetIp" name="目的IP" visible="true"></attribute>
+		<attribute id="enabled" name="使能" visible="true"></attribute>
+	</table>
+</xml-body>

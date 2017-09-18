@@ -1,0 +1,17 @@
+package com.nms.db.dao.ptn.path.pw;
+
+import com.nms.db.bean.ptn.path.pw.PwInfo;
+
+public interface PwInfoMapper {
+    int deleteByPrimaryKey(Integer pwid);
+
+    int insert(PwInfo record);
+
+    int insertSelective(PwInfo record);
+
+    PwInfo selectByPrimaryKey(Integer pwid);
+
+    int updateByPrimaryKeySelective(PwInfo record);
+
+    int updateByPrimaryKey(PwInfo record);
+}

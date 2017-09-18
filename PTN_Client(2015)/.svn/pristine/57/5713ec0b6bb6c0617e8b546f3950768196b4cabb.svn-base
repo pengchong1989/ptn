@@ -1,0 +1,93 @@
+package com.nms.model.alarm;
+
+import java.util.List;
+
+import org.apache.ibatis.session.SqlSession;
+
+import com.nms.db.bean.alarm.CurrentAlarmInfo;
+import com.nms.db.dao.alarm.CurrentAlarmInfoMapper;
+import com.nms.model.util.ObjectService_Mybatis;
+
+public class CurAlarmService_MB extends ObjectService_Mybatis {
+	private CurrentAlarmInfoMapper mapper = null;
+
+	public void setPtnuser(String ptnuser) {
+		super.ptnuser = ptnuser;
+	}
+
+	public void setSqlSession(SqlSession sqlSession) {
+		super.sqlSession = sqlSession;
+	}
+
+	public void setMapper(CurrentAlarmInfoMapper mapper) {
+		this.mapper = mapper;
+	}
+
+	public List<CurrentAlarmInfo> select(CurrentAlarmInfo currentAlarmInfo) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
+//	
+//	/**
+//	 * 根据告警级别查询告警的相应数目
+//	 * 
+//	 * @return
+//	 */
+//	@SuppressWarnings("unchecked")
+//	public int queryCurByAlarmlevel(int alarmlevel) throws Exception {
+//		int count = 0;
+//		CurrentAlarmInfo currentAlarmInfo = null;
+//		List<CurrentAlarmInfo> currentAlarmInfoList = null;
+//		ListingFilter listingFilter = null;
+//		List<Object> objectList = null;
+//		try {
+//			currentAlarmInfoList = new ArrayList<CurrentAlarmInfo>();
+//			// 根据网元等级查询
+//			currentAlarmInfo = new CurrentAlarmInfo();
+//			currentAlarmInfo.setWarningLevel_temp(alarmlevel);
+//			List<CurrentAlarmInfo> currentAlarm =new ArrayList<CurrentAlarmInfo>();
+//			currentAlarm=this.mapper.query_join(currentAlarmInfo);
+//			SimpleDateFormat sdf = null;
+//			sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+//			for(int i=0;i<currentAlarm.size();i++){
+//				if (currentAlarm.get(i).getRaisedTime() != null && !"".equals(currentAlarm.get(i).getRaisedTime()) {
+//					currentAlarm.get(i).setRaisedTime(sdf.parse(currentAlarm.get(i).getRaisedTime()));
+//				}
+//				if (currentAlarm.get(i).getAckTime() != null && !"".equals(currentAlarm.get(i).getAckTime())) {
+//					currentAlarm.get(i).setAckTime(sdf.parse(currentAlarm.get(i).getAckTime()));
+//					currentAlarm.get(i).setAcked(true);
+//				} else {
+//					currentAlarm.get(i).setAcked(false);
+//				}
+//				
+//				if("zh_CN".equals(ResourceUtil.language)){
+//					currentAlarm.get(i).setAlarmDesc(currentAlarm.get(i).getWarningLevel().getwaresultSet.getString("w.warningdescribe"));
+//				}else{
+//					curInfo.setAlarmDesc(resultSet.getString("w.warningname"));
+//				}
+//			}
+//			
+//			currentAlarmInfoList.addAll(this.mapper.query_join(currentAlarmInfo));
+//		
+//			
+//			
+//			//等级为2时 才去查询登录而产生的告警
+//			if(alarmlevel ==2){
+//				currentAlarmInfoList.addAll(this.mapper .queryByClent());
+//			}
+//			// 查询后过滤没有权限的网元
+//			listingFilter = new ListingFilter();
+//			objectList = (List<Object>) listingFilter.filterList(currentAlarmInfoList);
+//			count = objectList.size();
+//		} catch (Exception e) {
+//			throw e;
+//		} finally {
+//			currentAlarmInfo = null;
+//			currentAlarmInfoList = null;
+//			listingFilter = null;
+//			objectList = null;
+//		}
+//		return count;
+//	}
+}

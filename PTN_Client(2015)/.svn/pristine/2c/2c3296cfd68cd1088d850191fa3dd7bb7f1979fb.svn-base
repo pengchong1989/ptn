@@ -1,0 +1,33 @@
+package com.nms.model.system;
+
+
+import java.util.List;
+import org.apache.ibatis.session.SqlSession;
+import com.nms.db.bean.system.UdaAttr;
+import com.nms.db.dao.system.UdaAttrMapper;
+import com.nms.model.util.ObjectService_Mybatis;
+
+
+public class UdaAttrService_MB extends ObjectService_Mybatis {
+
+    private UdaAttrMapper mapper = null;
+	
+	public void setPtnuser(String ptnuser) {
+		super.ptnuser = ptnuser;
+	}
+
+	public void setSqlSession(SqlSession sqlSession) {
+		super.sqlSession = sqlSession;
+	}
+	
+	public UdaAttrMapper getMapper() {
+		return mapper;
+	}
+
+	public void setMapper(UdaAttrMapper mapper) {
+		this.mapper = mapper;
+	}
+
+
+
+}

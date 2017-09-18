@@ -1,0 +1,45 @@
+package com.nms.model.ptn.qos;
+
+import java.sql.Connection;
+import java.util.List;
+
+import com.nms.db.bean.ptn.qos.QosMappingAttr;
+import com.nms.db.bean.ptn.qos.QosMappingMode;
+import com.nms.db.dao.ptn.qos.QosMappingModeDao;
+import com.nms.model.util.ObjectService;
+import com.nms.model.util.Services;
+import com.nms.ui.manager.ConstantUtil;
+
+public class QosMappingModeService extends ObjectService{
+	
+	public void setConnection(Connection connection) {
+		super.connection = connection;
+	}
+
+	public void setPtnuser(String ptnuser) {
+		super.ptnuser = ptnuser;
+	}
+	
+	private QosMappingModeDao qosMappingModeDao = new QosMappingModeDao();
+	
+	/**
+	 * 条件查询qos模板
+	 * @param qosMappingMode
+	 * @return
+	 * @throws Exception
+	 */
+	public List<QosMappingMode> queryByCondition(QosMappingMode qosMappingMode) throws Exception{
+		List<QosMappingMode> mappingModes = null;
+		List<QosMappingAttr> mappingAttrs = null;
+		QosMappingAttr qosMappingAttr = new QosMappingAttr();
+		QosMappingModeAttrService mappingModeAttrService = (QosMappingModeAttrService) ConstantUtil.serviceFactory.newService(Services.QosMappingModeAttrService, this.connection);
+		mappingModes = qosMappingModeDao.queryByCondition(qosMappingMode, connection);
+		for(QosMappingMode mappingMode :mappingModes){
+			qosMappingAttr.setPhbId(mappingMode.getId());
+			qosMappingAttr.setSiteId(mappingMode.getSiteId());
+			mappingAttrs = mappingModeAttrService.queryByCondition(qosMappingAttr);
+			mappingMode.setQosMappingAttrList(mappingAttrs);
+		}
+		return mappingModes;
+	}
+}

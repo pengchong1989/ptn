@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- ACTP_B板卡下所有端口配置 (700D的主控卡) -->
+<xml-boby>
+
+<card cardName="ACTP_B" cardType="" imagePath="/com/nms/ui/images/topo/card_700d_1.png" x="72" y="55" >
+	<port portName="NMS"  seq="" portType="system" bandWidth="" imagePath="/com/nms/ui/images/topo/port_top.png" x="266" y="26" number="1" module="(o)"></port>
+	<port portName="C/T1"  seq="" portType="system" bandWidth="" imagePath="/com/nms/ui/images/topo/port_top.png" x="295" y="26" number="23" module="(o)"></port>
+	<port portName="fe" seq="1" portType="NONE" bandWidth="" imagePath="/com/nms/ui/images/topo/port_top.png" x="322" y="26" number="3" module="(o)"></port>
+	<port portName="fe" seq="3" portType="NONE" bandWidth="" imagePath="/com/nms/ui/images/topo/port_top.png" x="350" y="26" number="4" module="(o)"></port>
+	<port portName="e1" seq="1" portType="e1" bandWidth="" imagePath="/com/nms/ui/images/topo/port_top.png" x="384" y="26" number="5" module="(o)"></port>
+	<port portName="e1" seq="5" portType="e1" bandWidth="" imagePath="/com/nms/ui/images/topo/port_top.png" x="412" y="26" number="6" module="(o)"></port>
+	<port portName="e1" seq="9" portType="e1" bandWidth="" imagePath="/com/nms/ui/images/topo/port_top.png" x="440" y="26" number="7" module="(o)"></port>
+	<port portName="e1" seq="13" portType="e1" bandWidth="" imagePath="/com/nms/ui/images/topo/port_top.png" x="468" y="26" number="8" module="(o)"></port>
+	
+	<port portName="ALM" seq="" portType="system" bandWidth="" imagePath="/com/nms/ui/images/topo/port_bottom.png" x="266" y="52" number="9" module="(o)"></port>
+	<port portName="C/T2" seq="" portType="system" bandWidth="" imagePath="/com/nms/ui/images/topo/port_bottom.png" x="295" y="52" number="10" module="(o)"></port>
+	<port portName="fe" seq="2" portType="NONE" bandWidth="" imagePath="/com/nms/ui/images/topo/port_bottom.png" x="322" y="52" number="11" module="(o)"></port>
+	<port portName="fe" seq="4" portType="NONE" bandWidth="" imagePath="/com/nms/ui/images/topo/port_bottom.png" x="350" y="52" number="12" module="(o)"></port>
+	<port portName="e1" seq="3" portType="e1" bandWidth="" imagePath="/com/nms/ui/images/topo/port_bottom.png" x="384" y="52" number="13" module="(o)"></port>
+	<port portName="e1" seq="7" portType="e1" bandWidth="" imagePath="/com/nms/ui/images/topo/port_bottom.png" x="412" y="52" number="14" module="(o)"></port>
+	<port portName="e1" seq="11" portType="e1" bandWidth="" imagePath="/com/nms/ui/images/topo/port_bottom.png" x="440" y="52" number="15" module="(o)"></port>
+	<port portName="e1" seq="15" portType="e1" bandWidth="" imagePath="/com/nms/ui/images/topo/port_bottom.png" x="468" y="52" number="16" module="(o)"></port>
+	
+	<port portName="fx" seq="1" portType="NONE" bandWidth="" imagePath="/com/nms/ui/images/topo/port_double.png" x="506" y="52" number="17" module="(e)"></port>
+	<port portName="fx" seq="2" portType="NONE" bandWidth="" imagePath="/com/nms/ui/images/topo/port_double.png" x="534" y="52" number="18" module="(e)"></port>
+	<port portName="fx" seq="3" portType="NONE" bandWidth="" imagePath="/com/nms/ui/images/topo/port_double.png" x="561" y="52" number="19" module="(e)"></port>
+	<port portName="fx" seq="4" portType="NONE" bandWidth="" imagePath="/com/nms/ui/images/topo/port_double.png" x="588" y="52" number="20" module="(e)"></port>
+	<port portName="ge" seq="1" portType="NONE" bandWidth="" imagePath="/com/nms/ui/images/topo/port_double.png" x="618" y="52" number="21" module="(e)"></port>
+	<port portName="ge" seq="2" portType="NONE" bandWidth="" imagePath="/com/nms/ui/images/topo/port_double.png" x="645" y="52" number="22" module="(e)"></port>
+	<port portName="ge" seq="3" portType="NONE" bandWidth="" imagePath="/com/nms/ui/images/topo/port_double.png" x="672" y="52" number="2" module="(e)"></port>
+	<port portName="ge" seq="4" portType="NONE" bandWidth="" imagePath="/com/nms/ui/images/topo/port_double.png" x="699" y="52" number="24" module="(e)"></port>
+	
+</card>
+
+</xml-boby>

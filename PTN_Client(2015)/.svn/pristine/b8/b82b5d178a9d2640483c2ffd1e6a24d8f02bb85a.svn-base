@@ -1,0 +1,1396 @@
+package com.nms.db.dao.alarm;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+import com.nms.db.bean.alarm.HisAlarmInfo;
+import com.nms.db.bean.alarm.WarningLevel;
+import com.nms.db.bean.equipment.slot.SlotInst;
+import com.nms.db.bean.report.SSAlarm;
+import com.nms.db.enums.EObjectType;
+import com.nms.ui.manager.ExceptionManage;
+import com.nms.ui.manager.ResourceUtil;
+import com.nms.ui.manager.keys.StringKeysTip;
+import com.nms.ui.ptn.alarm.AlarmTools;
+import com.nms.ui.ptn.alarm.model.CurrentAlarmFilter;
+
+public class HisAlarmDao {
+	
+	/**
+	 * 关联warninglevel查询非设备告警
+	 */
+		private final String SQL_CLIENT_JOIN = "SELECT c.*,w.* FROM  history_alarm c, warninglevel w WHERE  c.alarmcode = w.WarningCode AND c.alarmlevel = w.WarningLevel AND w.Manufacturer =1 and c.objectname LIKE '%EMS服务器_%'";
+	
+		/**
+		 * 查询最大id号语句
+		 */
+		private final String SQL_SELECT_MAX_ID = "select max(id) as maxid from history_alarm";
+		
+	/**
+	 * 新增历史告警数据
+	 * 
+	 * @param hisInfo
+	 *            历史告警实体
+	 * @param connection
+	 *            数据库连接
+	 * @return 插入的记录数
+	 * @throws Exception
+	 */
+	public int insert(HisAlarmInfo hisInfo, Connection connection) throws Exception {
+		if (null == hisInfo) {
+			throw new Exception("hisInfo is null");
+		}
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+		int result = 0;
+		try {
+			sql = "insert into history_alarm(siteid,slotId,objectid,objecttype,objectname ,alarmcode,alarmlevel,happenedtime,confirmtime,clearedtime,ackuser,comments,alarmlevel_temp,isCleared,alarmId) " + " values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+			preparedStatement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+			preparedStatement.setInt(1, hisInfo.getSiteId());
+			preparedStatement.setInt(2, hisInfo.getSlotId());
+			preparedStatement.setInt(3, hisInfo.getObjectId());
+			preparedStatement.setInt(4, hisInfo.getObjectType().getValue());
+			preparedStatement.setString(5, hisInfo.getObjectName());
+			preparedStatement.setInt(6, hisInfo.getAlarmCode());
+			preparedStatement.setInt(7, hisInfo.getAlarmLevel());
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			if (hisInfo.getRaisedTime() != null ) {
+				preparedStatement.setString(8, sdf.format(hisInfo.getRaisedTime()));
+			}else{
+				preparedStatement.setString(8, "");
+			}
+			if (hisInfo.getAckTime() != null) {
+				preparedStatement.setString(9, sdf.format(hisInfo.getAckTime()));
+			}else{
+				preparedStatement.setString(9, "");
+			}
+			if (hisInfo.getClearedTime() != null) {
+				preparedStatement.setString(10, sdf.format(hisInfo.getClearedTime()));
+			}else{
+				preparedStatement.setString(10, "");
+			}
+			preparedStatement.setString(11, hisInfo.getAckUser());
+			preparedStatement.setString(12, hisInfo.getCommonts());
+			preparedStatement.setInt(13, hisInfo.getWarningLevel_temp());
+			String isclear = ResourceUtil.srcStr(StringKeysTip.TIP_CLEARED);			
+			if(hisInfo.getIsCleared()!=null && hisInfo.getIsCleared().equals(isclear))
+			{
+				preparedStatement.setInt(14, 1);
+			}
+			else
+			{
+				preparedStatement.setInt(14, 0);
+			}
+			preparedStatement.setInt(15, hisInfo.getAlarmId());
+			result = preparedStatement.executeUpdate();
+			resultSet = preparedStatement.getGeneratedKeys();
+			if (resultSet.next()) {
+				result = resultSet.getInt(1);
+			}
+		} catch (Exception e) {
+			
+			throw e;
+		} finally {
+			if (resultSet != null) {
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				resultSet = null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+		return result;
+	}
+
+	/**
+	 * 修改历史告警数据
+	 * 
+	 * @param hisInfo
+	 *            历史告警实体
+	 * @param connection
+	 *            数据库连接
+	 * @return 插入的记录数
+	 * @throws Exception
+	 */
+	public int update(HisAlarmInfo hisInfo, Connection connection) throws Exception {
+		if (null == hisInfo) {
+			throw new Exception("hisInfo is null");
+		}
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		//ResultSet resultSet = null;
+		int result = 0;
+		try {
+			sql = "update  history_alarm as p set p.confirmtime=?,p.happenedtime=?,p.clearedtime=?,p.ackuser=?,p.comments=?,p.alarmlevel=?,p.alarmlevel_temp=?,p.isCleared=?,p.alarmId = ? " + " where p.id=? ";
+			preparedStatement = connection.prepareStatement(sql);
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			if (hisInfo.getAckTime() != null) {
+				preparedStatement.setString(1, sdf.format(hisInfo.getAckTime()));
+			} else {
+				preparedStatement.setString(1, null);
+			}
+			if (hisInfo.getRaisedTime() != null) {
+				preparedStatement.setString(2, sdf.format(hisInfo.getRaisedTime()));
+			} else {
+				preparedStatement.setString(2, null);
+			}
+			if (hisInfo.getClearedTime() != null) {
+				preparedStatement.setString(3, sdf.format(hisInfo.getClearedTime()));
+			} else {
+				preparedStatement.setString(3, null);
+			}
+			preparedStatement.setString(4, hisInfo.getAckUser());
+			preparedStatement.setString(5, hisInfo.getAlarmDesc());
+			preparedStatement.setInt(6, hisInfo.getAlarmLevel());
+			preparedStatement.setInt(7, hisInfo.getWarningLevel_temp());
+			String isclear = ResourceUtil.srcStr(StringKeysTip.TIP_CLEARED);
+			if(hisInfo.getIsCleared()!=null && hisInfo.getIsCleared().equals(isclear))
+			{
+				preparedStatement.setInt(8, 1);
+			}
+			else
+			{
+				preparedStatement.setInt(8, 0);
+			}
+			preparedStatement.setInt(9, hisInfo.getAlarmId());
+			preparedStatement.setInt(10, hisInfo.getId());
+			result = preparedStatement.executeUpdate();
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+		return result;
+	}
+
+	/**
+	 * 删除历史告警数据
+	 * 
+	 * @param hisId
+	 *            历史告警主键id
+	 * @param connection
+	 *            数据库连接
+	 * @return 插入的记录数
+	 * @throws Exception
+	 */
+	public int delete(int hisId, Connection connection) throws Exception {
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		int result = 0;
+		try {
+			sql = "delete from history_alarm where id=?";
+			preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.setInt(1, hisId);
+			result = preparedStatement.executeUpdate();
+		} catch (Exception e) {
+			
+			throw e;
+		} finally {
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+		return result;
+	}
+	
+	/**
+	 * 通过网元id删除历史告警数据
+	 * 
+	 * @param siteId
+	 *            网元id
+	 * @param connection
+	 *            数据库连接
+	 * @return 插入的记录数
+	 * @throws Exception
+	 */
+	public int deleteBySiteId(int siteId, Connection connection) throws Exception {
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		int result = 0;
+		try {
+			sql = "delete from history_alarm where siteId=?";
+			preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.setInt(1, siteId);
+			result = preparedStatement.executeUpdate();
+		} catch (Exception e) {
+			
+			throw e;
+		} finally {
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());;
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+		return result;
+	}
+
+	/**
+	 * 根据主键集合，批量删除历史告警数据
+	 * 
+	 * @param idList 主键集合
+	 * @param connection 数据库连接
+	 * @return 删除记录数
+	 * @throws Exception
+	 */
+	public int delete(List<Integer> idList, Connection connection) throws Exception {
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		int result = 0;
+		String ids = null;
+		try {
+			ids = idList.toString().substring(1, idList.toString().length() - 1);
+			sql = "delete from history_alarm where id in (" + ids + " )";
+			preparedStatement = connection.prepareStatement(sql);
+			result = preparedStatement.executeUpdate();
+		} catch (Exception e) {
+			
+			throw e;
+		} finally {
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+			ids = null;
+		}
+
+		return result;
+	}
+
+	/**
+	 * 条件查询历史告警数据
+	 * 
+	 * @param hisInfo 历史告警
+	 * @param connection 数据库连接
+	 * @return list 当前告警集合
+	 * @throws Exception
+	 */
+	public List<HisAlarmInfo> queryByCondition(HisAlarmInfo hisInfo, Connection connection) throws Exception {
+		if (null == hisInfo) {
+			throw new Exception("hisInfo is null");
+		}
+
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+		String sql = null;
+		try {
+			sql = "SELECT * from history_alarm where 1=1 ";
+			if (hisInfo.getId() > 0) {
+				sql += " and id=" + hisInfo.getId();
+			}
+			if (hisInfo.getSiteId() != 0) {
+				sql += " and siteid=" + hisInfo.getSiteId();
+			}
+			if (hisInfo.getSlotId() != 0) {
+				sql += " and slotId=" + hisInfo.getSlotId();
+			}
+			if (hisInfo.getObjectId() != 0) {
+				sql += " and objectid=" + hisInfo.getObjectId();
+			}
+			if (hisInfo.getObjectType() != null) {
+				sql += " and objecttype=" + hisInfo.getObjectType().getValue();
+			}
+			if (hisInfo.getAlarmCode() != 0) {
+				sql += " and alarmcode=" + hisInfo.getAlarmCode();
+			}
+			if (hisInfo.getAlarmLevel() != 0) {
+				sql += " and alarmlevel=" + hisInfo.getAlarmLevel();
+			}
+			if (hisInfo.getWarningLevel_temp() != 0) {
+				sql += " and alarmlevel_temp=" + hisInfo.getWarningLevel_temp();
+			}
+			if (hisInfo.getAlarmTime() != null) {
+				sql += " and happenedtime='" + hisInfo.getAlarmTime() + "'";
+			}
+			return this.excuteQuery(connection, sql);
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			sql = null;
+		}
+	}
+
+	/**
+	 * 根据主键id列表，批量查询
+	 * 
+	 * @param idList 主键ID
+	 * @param connection 数据库连接
+	 * @return list当前告警集合
+	 * @throws Exception
+	 */
+	public List<HisAlarmInfo> queryByIdList(List<Integer> idList, Connection connection) throws Exception {
+		if (null == idList) {
+			throw new Exception("idList is null");
+		}
+
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		List<HisAlarmInfo> hisInfoList = null;
+		ResultSet resultSet = null;
+		PreparedStatement preparedStatement = null;
+		HisAlarmInfo hisInfo;
+		String sql = null;
+		String ids = null;
+		try {
+			ids = idList.toString().substring(1, idList.toString().length() - 1);
+			hisInfoList = new ArrayList<HisAlarmInfo>();
+			sql = "SELECT * from history_alarm  WHERE id in " + "(" + ids + ")";
+			preparedStatement = connection.prepareStatement(sql);
+			resultSet = preparedStatement.executeQuery();
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			while (resultSet.next()) {
+				hisInfo = new HisAlarmInfo();
+				hisInfo.setId(resultSet.getInt("id"));
+				hisInfo.setSiteId(resultSet.getInt("siteid"));
+				hisInfo.setSlotId(resultSet.getInt("slotId"));
+				hisInfo.setObjectId(resultSet.getInt("objectid"));
+				hisInfo.setObjectType(EObjectType.forms(resultSet.getInt("objecttype")));
+				hisInfo.setObjectName(resultSet.getString("objectname"));
+				WarningLevel warningLevel = new WarningLevel();
+				warningLevel.setWarningcode(resultSet.getInt("alarmcode"));
+				warningLevel.setWarninglevel(resultSet.getInt("alarmlevel"));
+				hisInfo.setWarningLevel(warningLevel);
+				hisInfo.setAlarmCode(resultSet.getInt("alarmcode"));
+				hisInfo.setAlarmLevel(resultSet.getInt("alarmlevel"));
+				if (resultSet.getString("happenedtime") != null && !"".equals(resultSet.getString("happenedtime"))) {
+					hisInfo.setRaisedTime(sdf.parse(resultSet.getString("happenedtime")));
+				}
+				if (resultSet.getString("confirmtime") != null && !"".equals(resultSet.getString("confirmtime"))) {
+					hisInfo.setAckTime(sdf.parse(resultSet.getString("confirmtime")));
+				}
+				if (resultSet.getString("clearedtime") != null && !"".equals(resultSet.getString("clearedtime"))) {
+					hisInfo.setClearedTime(sdf.parse(resultSet.getString("clearedtime")));
+				}
+				hisInfo.setAckUser(resultSet.getString("ackuser"));
+				hisInfo.setCommonts(resultSet.getString("comments"));
+				if(resultSet.getInt("isCleared") == 1)
+				{
+					hisInfo.setIsCleared(ResourceUtil.srcStr(StringKeysTip.TIP_CLEARED));
+				}
+				else
+				{
+					hisInfo.setIsCleared(ResourceUtil.srcStr(StringKeysTip.TIP_UNCLEARED));
+				}
+				hisInfo.setAlarmId(resultSet.getInt("alarmId"));
+				hisInfoList.add(hisInfo);
+			}
+
+		} catch (Exception e) {
+			
+			throw e;
+		} finally {
+			if (resultSet != null) {
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				resultSet = null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+			hisInfo = null;
+			ids = null;
+		}
+		return hisInfoList;
+	}
+
+	/**
+	 * 执行查询语句
+	 * 
+	 * @param connection
+	 *            数据库连接
+	 * @param sql
+	 *            sql语句
+	 * @return 查询集合
+	 * @throws Exception
+	 */
+	private List<HisAlarmInfo> excuteQuery(Connection connection, String sql) throws Exception {
+		List<HisAlarmInfo> hisInfoList = null;
+		ResultSet resultSet = null;
+		PreparedStatement preparedStatement = null;
+		HisAlarmInfo hisInfo;
+		try {
+			hisInfoList = new ArrayList<HisAlarmInfo>();
+			preparedStatement = connection.prepareStatement(sql);
+			resultSet = preparedStatement.executeQuery();
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			while (resultSet.next()) {
+				hisInfo = new HisAlarmInfo();
+				hisInfo.setId(resultSet.getInt("id"));
+				hisInfo.setSiteId(resultSet.getInt("siteid"));
+				hisInfo.setSlotId(resultSet.getInt("slotId"));
+				hisInfo.setObjectId(resultSet.getInt("objectid"));
+				hisInfo.setObjectType(EObjectType.forms(resultSet.getInt("objecttype")));
+				hisInfo.setObjectName(resultSet.getString("objectname"));
+				WarningLevel warningLevel = new WarningLevel();
+				warningLevel.setWarningcode(resultSet.getInt("alarmcode"));
+				warningLevel.setWarninglevel(resultSet.getInt("alarmlevel"));
+				hisInfo.setWarningLevel(warningLevel);
+				hisInfo.setAlarmCode(resultSet.getInt("alarmcode"));
+				hisInfo.setAlarmLevel(resultSet.getInt("alarmlevel"));
+				hisInfo.setWarningLevel_temp(resultSet.getInt("alarmlevel_temp"));
+				if (resultSet.getString("happenedtime") != null && !"".equals(resultSet.getString("happenedtime"))) {
+					hisInfo.setRaisedTime(sdf.parse(resultSet.getString("happenedtime")));
+				}
+				if (resultSet.getString("confirmtime") != null && !"".equals(resultSet.getString("confirmtime"))) {
+					hisInfo.setAckTime(sdf.parse(resultSet.getString("confirmtime")));
+				}
+				if (resultSet.getString("clearedtime") != null && !"".equals(resultSet.getString("clearedtime"))) {
+					hisInfo.setClearedTime(sdf.parse(resultSet.getString("clearedtime")));
+				}
+				hisInfo.setAckUser(resultSet.getString("ackuser"));
+				hisInfo.setCommonts(resultSet.getString("comments"));
+				if(resultSet.getInt("isCleared") == 1)
+				{
+					hisInfo.setIsCleared(ResourceUtil.srcStr(StringKeysTip.TIP_CLEARED));
+				}
+				else
+				{
+					hisInfo.setIsCleared(ResourceUtil.srcStr(StringKeysTip.TIP_UNCLEARED));
+				}
+				hisInfo.setAlarmId(resultSet.getInt("alarmId"));
+				hisInfoList.add(hisInfo);
+			}
+		} catch (Exception e) {
+			
+			throw e;
+		} finally {
+			if (resultSet != null) {
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				resultSet = null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+			hisInfo = null;
+		}
+
+		return hisInfoList;
+	}
+
+	/**
+	 * 根据网元，查询历史告警
+	 * 
+	 * @param siteIds 网元ID
+	 * @param connection 数据库连接
+	 * @return list 历史告警集合
+	 * @throws Exception
+	 */
+	public List<HisAlarmInfo> queryHisBySites(List<Integer> siteIds, Connection connection) throws Exception {
+		if (null == siteIds) {
+			throw new Exception("siteIds is null");
+		}
+
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+		StringBuffer sql = null;
+		String strIds = null;
+		try {
+			sql = new StringBuffer("SELECT * from history_alarm  where 1=1 ");
+			if (siteIds != null && siteIds.size() > 0) {
+				strIds = siteIds.toString().substring(1, siteIds.toString().length() - 1);
+				sql.append(" and siteid in (").append(strIds).append(") ");
+			}
+			return this.excuteQuery(connection, sql.toString());
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			sql = null;
+			strIds = null;
+		}
+	}
+
+	/**
+	 * 根据网元+槽位，查询历史告警
+	 * 
+	 * @param siteId 网元ID
+	 * @param slotIds 槽位ID集合
+	 * @param connection 数据库连接
+	 * @return list 历史告警集合
+	 * @throws Exception
+	 */
+	public List<HisAlarmInfo> queryHisBySlots(Integer siteId, List<Integer> slotIds, Connection connection) throws Exception {
+		if (null == siteId) {
+			throw new Exception("siteId is null");
+		}
+		if (null == slotIds) {
+			throw new Exception("slotIds is null");
+		}
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+		StringBuffer sql = null;
+		String strIds = null;
+		try {
+			sql = new StringBuffer("SELECT * from history_alarm  where 1=1 ");
+			if (siteId > 0) {
+				sql.append(" and siteId = ").append(siteId);
+			}
+			if (slotIds != null && slotIds.size() > 0) {
+				strIds = slotIds.toString().substring(1, slotIds.toString().length() - 1);
+				sql.append(" and slotId in (").append(strIds).append(") ");
+			}
+			return this.excuteQuery(connection, sql.toString());
+		} catch (Exception e) {
+			
+			throw e;
+		} finally {
+			sql = null;
+			strIds = null;
+		}
+	}
+
+	/**
+	 * 根据网元，查询历史告警
+	 * 
+	 * @param siteId 网元ID
+	 * @param connection 数据库连接
+	 * @return list 历史告警
+	 * @throws Exception
+	 */
+	public HisAlarmInfo queryCurrBySites(Integer siteId, Connection connection) throws Exception {
+		if (null == siteId) {
+			throw new Exception("siteId is null");
+		}
+
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+		StringBuffer sql = null;
+		List<HisAlarmInfo> infos = null;
+		HisAlarmInfo info = null;
+		try {
+			sql = new StringBuffer("SELECT * from history_alarm where happenedtime = (SELECT MAX(happenedtime) from history_alarm GROUP BY objectid,siteid, objecttype  HAVING ");
+			sql.append(" objecttype = ").append(EObjectType.SITEINST);
+			sql.append(" and objectid = ").append(siteId);
+			sql.append(" and siteid=").append(siteId).append(")");
+			infos = this.excuteQuery(connection, sql.toString());
+			if (infos != null && infos.size() > 0)
+				info = infos.get(0);
+		} catch (Exception e) {
+		
+			throw e;
+		} finally {
+			sql = null;
+		}
+		return info;
+	}
+	/**
+	 * 根据网元+槽位，查询历史告警
+	 * 
+	 * @param siteId 网元ID
+	 * @param slotId 槽位ID
+	 * @param connection 数据库连接
+	 * @return list 历史告警
+	 * @throws Exception
+	 */
+	public HisAlarmInfo queryCurrBySlot(Integer siteId, Integer slotId, Connection connection) throws Exception {
+		if (null == siteId) {
+			throw new Exception("siteId is null");
+		}
+		if (null == slotId) {
+			throw new Exception("slotId is null");
+		}
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+		StringBuffer sql = null;
+		List<HisAlarmInfo> infos = null;
+		try {
+			sql = new StringBuffer("SELECT * from history_alarm where happenedtime = (SELECT MAX(happenedtime) from history_alarm GROUP BY objectid,siteid, objecttype  HAVING ");
+			sql.append(" objecttype = ").append(EObjectType.SLOTINST);
+			sql.append(" and objectid = ").append(slotId);
+			sql.append("  and siteid = ").append(siteId).append(")");
+			infos = this.excuteQuery(connection, sql.toString());
+			if (infos != null && infos.size() > 0)
+				return infos.get(0);
+			else
+				return new HisAlarmInfo();
+		} catch (Exception e) {
+		
+			throw e;
+		} finally {
+			sql = null;
+		}
+	}
+	/**
+	 * 数据库中有多少条记录
+	 * @param siteIdList 
+	 * @param filter 
+	 * @param connection
+	 * @return
+	 * @throws Exception
+	 */
+	public int selectAlarmCount(CurrentAlarmFilter filter, List<Integer> siteIdList, 
+			Connection connection)throws Exception{
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+		int result = 0;
+		try {
+			String sql = "select count(*) from history_alarm where 1=1";
+			sql = this.getSql(sql, filter, siteIdList);
+			preparedStatement = connection.prepareStatement(sql);
+			resultSet = preparedStatement.executeQuery();
+			while(resultSet.next()){
+				result=resultSet.getInt("count(*)");
+			}
+		} catch (Exception e) {
+			throw e;
+		} finally{
+			if (resultSet != null) {
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				resultSet = null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+		}
+		return result;
+	}
+
+	/**
+	 * 导入 数据
+	 * @param sql
+	 * @param connection
+	 * @return
+	 * @throws Exception
+	 */
+	public int insertInport(String sql, Connection connection) throws Exception {
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+		PreparedStatement preparedStatement = null;
+		int result = 0;
+		try {			
+			preparedStatement = connection.prepareStatement(sql);
+			result = preparedStatement.executeUpdate();			
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+		}
+		return result;
+	}
+	/*
+	 * 查看表   tableName 
+	 * 是否存在
+	 */
+	public boolean selectTable(String tableName,Connection connection)throws Exception{
+		boolean flag=false;
+		ResultSet resultset = null;
+		try {
+			resultset  = connection.getMetaData().getTables(null, null,  tableName, null );
+			if(resultset.next()){
+				flag=true;
+				//	System.out.println("查询成功！。。表存在");
+			}else{
+				//System.out.println("表不存在");
+			}
+		} catch (Exception e) {
+			throw e;
+		}finally{
+			if(resultset != null){
+				try {
+					resultset.close();
+				} catch (Exception e2) {
+					ExceptionManage.dispose(e2, getClass());
+				}finally{
+					resultset = null;
+				}
+			}
+		}
+		return flag;
+	}
+	/**
+	 * 查询  网元ID 和  某一告警级别的统计数
+	 * @return  
+	 * @throws Exception
+	 */
+	public List<SSAlarm> queryByCountAlarmLevel(Connection connection)throws Exception{
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+		ResultSet resultSet = null;
+		int alarmLevel = 0;//告警 级别 
+		SSAlarm ssAlarm = null;
+		List<SSAlarm> ssAlarmList = null;
+		PreparedStatement preparedStatement = null;
+		String sql="select s.CellId ,c.alarmlevel_temp,count(c.alarmlevel_temp) from history_alarm c,site_inst s " +
+				" where s.site_inst_id=c.siteid group by c.siteid,c.alarmlevel_temp ";
+		try{
+			ssAlarmList = new ArrayList<SSAlarm>();
+			preparedStatement = connection.prepareStatement(sql);
+			resultSet = preparedStatement.executeQuery();
+			while (resultSet.next()) {
+				ssAlarm=new SSAlarm();
+				ssAlarm.setName(resultSet.getString("s.CellId"));
+				//判断  告警 级别 
+				alarmLevel=resultSet.getInt("c.alarmlevel_temp");
+				switch(alarmLevel){
+				case 1: 
+					ssAlarm.setUnknow(resultSet.getInt("count(c.alarmlevel_temp)"));
+					break;
+				case 2: 
+					ssAlarm.setClew(resultSet.getInt("count(c.alarmlevel_temp)"));
+					break;
+				case 3: 
+					ssAlarm.setSubordination(resultSet.getInt("count(c.alarmlevel_temp)"));
+					break;
+				case 4: 
+					//主要告警
+					ssAlarm.setMostly(resultSet.getInt("count(c.alarmlevel_temp)"));
+					break;
+				case 5: 
+					ssAlarm.setInstancy(resultSet.getInt("count(c.alarmlevel_temp)"));//紧急告警
+					break;
+				}
+				ssAlarmList.add(ssAlarm);		
+			}
+		} catch (Exception e) {
+			
+			throw e;
+		} finally {
+			if (resultSet != null) {
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				resultSet = null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+			sql=null;
+			ssAlarm=null;
+		}
+		return ssAlarmList;
+	}
+	
+	/**
+	 * 条件删除历史告警
+	 * @param currentAlarmInfo
+	 * @param connection
+	 * @return
+	 * @throws Exception
+	 */
+	public int deleteHisAlarmInfo(HisAlarmInfo hisAlarmInfo, Connection connection) throws Exception {
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		int result = 0;
+		List<Object> paramList = null;
+		try {
+			sql = "delete from history_alarm where 1=1";
+			paramList = new ArrayList<Object>();
+			if (hisAlarmInfo.getSiteId() != 0) {
+				sql += " and siteid=?";
+				paramList.add(hisAlarmInfo.getSiteId());
+			}
+			if (hisAlarmInfo.getObjectId() != 0) {
+				sql += " and objectid=?";
+				paramList.add(hisAlarmInfo.getObjectId());
+			}
+			if (hisAlarmInfo.getObjectType() != null) {
+				sql += " and objecttype=?";
+				paramList.add(hisAlarmInfo.getObjectType().getValue());
+			}
+			if (hisAlarmInfo.getAlarmCode() != 0) {
+				sql += " and alarmcode=?";
+				paramList.add(hisAlarmInfo.getAlarmCode());
+			}
+			if (hisAlarmInfo.getAlarmLevel() != 0) {
+				sql += " and alarmlevel=?";
+				paramList.add(hisAlarmInfo.getAlarmLevel());
+			}
+			preparedStatement = connection.prepareStatement(sql);
+			if (paramList.size() > 0) {
+				for (int i = 0; i < paramList.size(); i++) {
+					preparedStatement.setObject(i + 1, paramList.get(i));
+				}
+			}
+			result = preparedStatement.executeUpdate();
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+		return result;
+	}
+	
+	
+	private HisAlarmInfo getHisAlarmInfo(ResultSet resultSet) {
+		HisAlarmInfo hisInfo = new HisAlarmInfo();
+		try {
+			hisInfo.setId(resultSet.getInt("id"));
+			hisInfo.setSiteId(resultSet.getInt("siteid"));
+			hisInfo.setSlotId(resultSet.getInt("slotId"));
+			hisInfo.setObjectId(resultSet.getInt("objectid"));
+			hisInfo.setObjectType(EObjectType.forms(resultSet.getInt("objecttype")));
+			hisInfo.setObjectName(resultSet.getString("objectname"));
+			WarningLevel warningLevel = new WarningLevel();
+			warningLevel.setWarningcode(resultSet.getInt("alarmcode"));
+			warningLevel.setWarninglevel(resultSet.getInt("alarmlevel"));
+			warningLevel.setWarningname(resultSet.getString("WarningName"));
+			warningLevel.setWarningtype(resultSet.getInt("WarningType"));
+			warningLevel.setWarningdescribe(resultSet.getString("WarningDescribe"));
+			warningLevel.setWarningnote(resultSet.getString("WarningNote"));
+			hisInfo.setWarningLevel(warningLevel);
+			hisInfo.setAlarmCode(resultSet.getInt("alarmcode"));
+			hisInfo.setAlarmLevel(resultSet.getInt("alarmlevel"));
+			hisInfo.setWarningLevel_temp(resultSet.getInt("alarmlevel_temp"));
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			if (resultSet.getString("happenedtime") != null && !"".equals(resultSet.getString("happenedtime"))) {
+				hisInfo.setRaisedTime(sdf.parse(resultSet.getString("happenedtime")));
+			}
+			if (resultSet.getString("confirmtime") != null && !"".equals(resultSet.getString("confirmtime"))) {
+				hisInfo.setAckTime(sdf.parse(resultSet.getString("confirmtime")));
+			}
+			if (resultSet.getString("clearedtime") != null && !"".equals(resultSet.getString("clearedtime"))) {
+				hisInfo.setClearedTime(sdf.parse(resultSet.getString("clearedtime")));
+			}
+			try{
+				hisInfo.setSlotNumber(resultSet.getInt("slot.number"));
+			}catch(SQLException ex){
+			}
+			hisInfo.setAckUser(resultSet.getString("ackuser"));
+			hisInfo.setCommonts(resultSet.getString("comments"));
+			if(resultSet.getInt("isCleared") == 1)
+			{
+				hisInfo.setIsCleared(ResourceUtil.srcStr(StringKeysTip.TIP_CLEARED));
+			}
+			else
+			{
+				hisInfo.setIsCleared(ResourceUtil.srcStr(StringKeysTip.TIP_UNCLEARED));
+			}
+			hisInfo.setAlarmId(resultSet.getInt("alarmId"));
+		} catch (SQLException e) {
+			ExceptionManage.dispose(e, getClass());
+		} catch (ParseException e) {
+			ExceptionManage.dispose(e, getClass());
+		}
+		return hisInfo;
+	}
+	
+	//raiseTimeDuration 告警产生时间段，格式：2014-05-20 12:22:22|2014-05-20 12:22:42
+	//clearTimeDuration 告警清除时间段，格式：2014-05-20 12:22:22|2014-05-20 12:22:42
+	public List<HisAlarmInfo> selectHisAlarmByCond(
+			String raiseTimeDuration, String clearTimeDuration,
+			List<String> siteIdList, List<Integer> alarmSeverityList,
+			List<Integer> alarmTypeList, String[] probableCauseArray, Connection connection) throws Exception {
+		
+		ResultSet resultSet = null;
+		PreparedStatement preparedStatement = null;
+		List<HisAlarmInfo> hisAlarmList = new ArrayList<HisAlarmInfo>();
+		try {
+			String[] raiseTime = raiseTimeDuration.split("\\|");
+			String[] clearTime =clearTimeDuration.split("\\|");
+			String siteIds = objList2Str(siteIdList);
+			String alarmSeverities = objList2Str(alarmSeverityList);
+			String alarmTypes = objList2Str(alarmTypeList);
+			String alarmProbableCauses = objArray2Str(probableCauseArray);
+			StringBuffer sqlBuf = new StringBuffer();
+			sqlBuf.append("SELECT h.*, w.* "); 
+			sqlBuf.append(" FROM site_inst s "); 
+			sqlBuf.append(" INNER JOIN history_alarm h ON s.site_inst_id = h.siteid ");
+			sqlBuf.append(" INNER JOIN slot_inst slot ON slot.id = h.slotId ");
+		    sqlBuf.append(" INNER JOIN warninglevel w  ON h.alarmcode = w.WarningCode AND h.alarmlevel = w.WarningLevel ");
+		    if(raiseTime.length==2){
+		        sqlBuf.append(" WHERE h.happenedtime BETWEEN ").append("\"").append(raiseTime[0]).append("\"").append(" AND ").append("\"").append(raiseTime[1]).append("\"");
+		    }
+		    else if(clearTime.length==2){
+		        sqlBuf.append(" WHERE h.clearedtime BETWEEN ").append("\"").append(clearTime[0]).append("\"").append(" AND ").append("\"").append(clearTime[1]).append("\"");  	
+		    }
+	        if(siteIds!=null){
+	        	 sqlBuf.append(" AND h.siteid IN (").append(siteIds).append(") ");
+	        }
+	        if(alarmTypes!=null){
+	        	 sqlBuf.append(" AND w.WarningType IN (").append(alarmTypes).append(") ");
+	        }
+	        if(alarmProbableCauses!=null){
+	        	 sqlBuf.append(" AND w.WarningName IN (").append(alarmProbableCauses).append(") ");
+	        }
+	        if(alarmSeverities!=null){
+		        sqlBuf.append(" AND h.alarmlevel IN (").append(alarmSeverities).append(") ");
+	        }
+	        sqlBuf.append(" AND w.Manufacturer = (CASE WHEN ( SELECT co.codeValue FROM `code` co WHERE co.id = s.CellEditon ) = '0' THEN 1 ELSE 2 END )");
+	        String sql = sqlBuf.toString();
+	    	preparedStatement = connection.prepareStatement(sql);
+			resultSet = preparedStatement.executeQuery();
+			while (resultSet.next()) {
+				HisAlarmInfo hisAlarm = getHisAlarmInfo(resultSet);
+				hisAlarmList.add(hisAlarm);
+			}
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (resultSet != null) {
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				resultSet = null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+		}
+    	return hisAlarmList;
+	}
+	
+	private String objArray2Str(String[] strArray) {
+		if(strArray == null ||strArray.length == 0){
+			return null;
+		}
+		StringBuffer objListStr = new StringBuffer();
+		for(int i=0; i< strArray.length; i++){
+			objListStr.append(strArray[i]).append(",");
+		}
+		objListStr.deleteCharAt(objListStr.length() - 1);
+		return objListStr.toString();
+	}
+	
+	//
+	private String objList2Str(List objList){
+		if(objList==null ||objList.isEmpty()){
+			return null;
+		}
+		StringBuffer objListStr = new StringBuffer();
+		Iterator iter = objList.iterator();
+		while(iter.hasNext()){
+			objListStr.append(iter.next()).append(",");
+		}
+		objListStr.deleteCharAt(objListStr.length() - 1);
+		return objListStr.toString();
+	}
+
+	
+	/**
+	 * 根据时间段来查询历史告警
+	 * @throws Exception 
+	 */
+	public List<HisAlarmInfo> queryByCondition(String startTime,
+			String endTime, Connection connection) throws Exception {
+		if (null == startTime || null == endTime) {
+			throw new Exception("time is null");
+		}
+
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+		try {
+			String sql = "SELECT * from history_alarm where happenedtime " +
+					"between '"+startTime+"' and '"+endTime+"'";
+			return this.excuteQuery(connection, sql);
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+	
+	
+	/**
+	 * 通过槽位查询当前告警
+	 * @param slotInst	槽位
+	 * @param connection	connection
+	 * @return 
+	 * @throws Exception 
+	 */
+	public List<HisAlarmInfo> queryByClent(int alarmLevel,Connection connection) throws Exception {
+		
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		PreparedStatement preparedStatement = null;
+		List<HisAlarmInfo> hisAlarmInfoList = null;
+		String sql = null;
+		try {
+			sql = SQL_CLIENT_JOIN+"and c.alarmlevel="+alarmLevel;
+			preparedStatement = connection.prepareStatement(sql);
+			hisAlarmInfoList = this.excuteQuery_joinAlarm(preparedStatement);
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e, this.getClass());
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+		return hisAlarmInfoList;
+	}
+	/**
+	 * 执行查询语句 关联warninglevel、siteinst表
+	 * 
+	 * @param connection
+	 *            数据库连接
+	 * @param sql
+	 *            sql语句
+	 * @return 查询集合
+	 * @throws Exception
+	 */
+	private List<HisAlarmInfo> excuteQuery_joinAlarm(PreparedStatement preparedStatement) throws Exception {
+		ResultSet resultSet = null;
+		HisAlarmInfo hisAlarmInfo;
+		SimpleDateFormat sdf = null;
+		AlarmTools alarmTools=new AlarmTools();
+		List<HisAlarmInfo> hisAlarmInfoList = null;
+		try {
+			hisAlarmInfoList = new ArrayList<HisAlarmInfo>();
+			resultSet = preparedStatement.executeQuery();
+			sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			while (resultSet.next()) {
+				hisAlarmInfo = new HisAlarmInfo();
+				hisAlarmInfo.setId(resultSet.getInt("c.id"));
+				hisAlarmInfo.setSiteId(resultSet.getInt("c.siteid"));
+				hisAlarmInfo.setSlotId(resultSet.getInt("c.slotId"));
+				hisAlarmInfo.setObjectId(resultSet.getInt("c.objectid"));
+				hisAlarmInfo.setObjectType(EObjectType.forms(resultSet.getInt("c.objecttype")));
+				hisAlarmInfo.setObjectName(resultSet.getString("c.objectname"));
+				hisAlarmInfo.setAlarmCode(resultSet.getInt("c.alarmcode"));
+				hisAlarmInfo.setAlarmLevel(resultSet.getInt("c.alarmlevel"));
+				hisAlarmInfo.setWarningLevel_temp(resultSet.getInt("c.alarmlevel_temp"));
+				if (resultSet.getString("c.happenedtime") != null && !"".equals(resultSet.getString("c.happenedtime"))) {
+					hisAlarmInfo.setRaisedTime(sdf.parse(resultSet.getString("c.happenedtime")));
+				}
+				if (resultSet.getString("c.confirmtime") != null && !"".equals(resultSet.getString("c.confirmtime"))) {
+					hisAlarmInfo.setAckTime(sdf.parse(resultSet.getString("c.confirmtime")));
+					hisAlarmInfo.setAcked(true);
+				} else {
+					hisAlarmInfo.setAcked(false);
+				}
+				if (resultSet.getString("c.clearedtime") != null && !"".equals(resultSet.getString("c.clearedtime"))) {
+					hisAlarmInfo.setClearedTime(sdf.parse(resultSet.getString("c.clearedtime")));
+					hisAlarmInfo.setCleared(true);
+				} else {
+					hisAlarmInfo.setCleared(false);
+				}
+				if(resultSet.getInt("c.isCleared") == 1)
+				{
+					hisAlarmInfo.setIsCleared(ResourceUtil.srcStr(StringKeysTip.TIP_CLEARED));
+				}
+				else
+				{
+					hisAlarmInfo.setIsCleared(ResourceUtil.srcStr(StringKeysTip.TIP_UNCLEARED));
+				}
+				try{
+					hisAlarmInfo.setSlotNumber(resultSet.getInt("slot.number"));
+				}catch(SQLException ex){
+				}
+				hisAlarmInfo.setAckUser(resultSet.getString("c.ackuser"));
+				hisAlarmInfo.setCommonts(resultSet.getString("c.comments"));
+				if("zh_CN".equals(ResourceUtil.language)){
+					hisAlarmInfo.setAlarmDesc(resultSet.getString("w.warningdescribe"));
+				}else{
+					hisAlarmInfo.setAlarmDesc(resultSet.getString("w.warningname"));
+				}
+				hisAlarmInfo.setAlarmId(resultSet.getInt("alarmId"));
+				WarningLevel warningLevel = new WarningLevel();
+				warningLevel.setId(resultSet.getInt("w.id"));
+				warningLevel.setWarningname(resultSet.getString("w.warningname"));
+				warningLevel.setWarningnote(resultSet.getString("w.warningnote"));
+				warningLevel.setWarninglevel(resultSet.getInt("w.warninglevel"));
+				warningLevel.setWarninglevel_temp(resultSet.getInt("w.warninglevel_temp"));
+				warningLevel.setWarningcode(resultSet.getInt("w.warningcode"));
+				warningLevel.setWarningobject(resultSet.getString("w.warningobject"));
+				warningLevel.setWarningtype(resultSet.getInt("w.warningtype"));
+				warningLevel.setManufacturer(resultSet.getInt("w.manufacturer"));
+				warningLevel.setWarningdescribe(resultSet.getString("w.warningdescribe"));
+				warningLevel.setWaringeffect(resultSet.getString("w.waringeffect"));
+				warningLevel.setWaringremark(resultSet.getString("w.waringremark"));
+				hisAlarmInfo.setWarningLevel(warningLevel);
+
+				hisAlarmInfo.setAlarmSeverity(alarmTools.getAlarmSeverity(hisAlarmInfo.getWarningLevel().getWarninglevel_temp())); // 2表示晨晓
+				hisAlarmInfoList.add(hisAlarmInfo);
+			}
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (resultSet != null) {
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e, this.getClass());
+				}
+				resultSet = null;
+			}
+			alarmTools = null;
+			sdf = null;
+		}
+
+		return hisAlarmInfoList;
+	}
+
+	/**
+	 * @param direction 0/1 = 上一页/下一页
+	 * @param id minId(下一页需要用最小值)/maxId(上一页需要用最大值)
+	 * @param siteIdList 
+	 * @param filter 
+	 * @param pageCount 
+	 */
+	public List<HisAlarmInfo> selectByPage(int direction, int id, CurrentAlarmFilter filter,
+			List<Integer> siteIdList, Connection connection, int pageCount) throws Exception {
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+		String sql = "";
+		if(direction == 0){
+			sql = "SELECT * FROM history_alarm WHERE id>"+id;
+			sql = this.getSql(sql, filter, siteIdList);
+			sql += " ORDER BY id ASC LIMIT " + pageCount;
+		}else{
+			sql = "SELECT * FROM history_alarm WHERE id<"+id;
+			sql = this.getSql(sql, filter, siteIdList);
+			sql += " ORDER BY id DESC LIMIT " + pageCount;
+		}
+		return this.excuteQuery(connection, sql);
+	}
+	
+	private String getSql(String sql, CurrentAlarmFilter filter, List<Integer> siteIdList) {
+		if(siteIdList != null && siteIdList.size() > 0){
+			sql += " and siteid in(";
+			for (Integer siteId : siteIdList) {
+				sql += siteId+",";
+			}
+			sql += "0) ";
+		}
+		if(filter != null){
+			if (filter.getObjectType() != null && filter.getObjectType() == EObjectType.SLOTINST) {
+				List<SlotInst> slotList = filter.getSlotInsts();
+				sql += "and slotId in(";
+				for (SlotInst slot : slotList) {
+					sql += slot.getId()+",";
+				}
+				sql += "0) ";
+			}
+			sql += "and alarmcode in(";
+			for (Integer code : filter.getAlarmCodeList()) {
+				sql += code+",";
+			}
+			sql += "0) ";
+			sql += "and alarmlevel_temp in(";
+			for (Integer level : filter.getAlarmLevel()) {
+				sql += level+",";
+			}
+			sql += "0) ";
+			if(filter.getAlarmState().equals("1")){
+				sql += "and ackuser is not null ";
+			}else{
+				sql += "and ackuser is null ";
+			}
+			if(filter.getHappenTime() != null){
+				sql += "and (happenedtime between '"+filter.getHappenTime()+"' and '"
+				+filter.getHappenEndTime()+"') ";
+			}
+			if(filter.getClearTime() != null){
+				sql += "and (clearedtime between '"+filter.getClearTime()+"' and '"
+				+filter.getClearEndTime()+"') ";
+			}
+			if(filter.getEnsureTime() != null){
+				sql += "and (confirmtime between '"+filter.getEnsureTime()+"' and '"
+				+filter.getEnsureEndTime()+"') ";
+			}
+			if(filter.getEnsureUser() != null){
+				sql += "and ackuser = '" + filter.getEnsureUser()+"' ";
+			}
+		}
+		return sql;
+	}
+	
+	/**
+	 * 获取最大id号
+	 * 
+	 * @param connection
+	 *            数据库连接
+	 * @return
+	 * @throws Exception
+	 */
+	public int queryMaxId(Connection connection) throws Exception {
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+		int result = 0;
+		try {
+			preparedStatement = connection.prepareStatement(this.SQL_SELECT_MAX_ID);
+			resultSet = preparedStatement.executeQuery();
+			if (resultSet.next()) {
+				result = resultSet.getInt("maxid");
+			}
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (resultSet != null) {
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e, this.getClass());
+				}
+				resultSet = null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e, this.getClass());
+				}
+				preparedStatement = null;
+			}
+		}
+		return result;
+	}
+	
+	public List<Integer> selectAllIdList(CurrentAlarmFilter filter, List<Integer> siteIdList, Connection connection) throws SQLException {
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+		int result = 0;
+		List<Integer> allIdList = new ArrayList<Integer>();
+		try {
+			String sql = "select id from history_alarm where 1=1 ";
+			sql = this.getSql(sql, filter, siteIdList);
+			sql += " order by id desc";
+			preparedStatement = connection.prepareStatement(sql);
+			resultSet = preparedStatement.executeQuery();
+			while(resultSet.next()){
+				result = resultSet.getInt("id");
+				allIdList.add(result);
+			}
+		} finally{
+			if (resultSet != null) {
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				resultSet = null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+		}
+		return allIdList;
+	}
+}

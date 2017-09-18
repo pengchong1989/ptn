@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nms.db.dao.ptn.BlackWhiteMacNameMapper" >
+  <resultMap id="BaseResultMap" type="BlackAndwhiteMacInfo" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="siteId" property="siteId" jdbcType="INTEGER" />
+    <result column="vplsServiceName" property="vplsServiceName" jdbcType="VARCHAR" />
+    <result column="elanBussinessId" property="elanBussinessId" jdbcType="INTEGER" />
+    <result column="nameList" property="nameList" jdbcType="INTEGER" />
+    <result column="mac" property="mac" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, siteId, vplsServiceName, elanBussinessId, nameList, mac
+  </sql>
+
+  <delete id="delete" parameterType="java.lang.Integer" >
+    delete from blackwhitemacnamelist
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  
+  <insert id="insert" parameterType="BlackAndwhiteMacInfo"  useGeneratedKeys="true" keyProperty="id">
+    insert into blackwhitemacnamelist
+    (siteId, vplsServiceName, elanBussinessId, nameList, mac)
+    values ( #{siteId,jdbcType=INTEGER}, #{vplsServiceName,jdbcType=VARCHAR}, 
+      #{elanBussinessId,jdbcType=INTEGER}, #{nameList,jdbcType=INTEGER}, #{mac,jdbcType=VARCHAR}
+      )
+  </insert>
+ 
+
+  <update id="update" parameterType="BlackAndwhiteMacInfo" >
+    update blackwhitemacnamelist set
+      vplsServiceName = #{vplsServiceName,jdbcType=VARCHAR},
+      elanBussinessId = #{elanBussinessId,jdbcType=INTEGER},
+      nameList = #{nameList,jdbcType=INTEGER},
+      mac = #{mac,jdbcType=VARCHAR}
+      where id = #{id,jdbcType=INTEGER}
+  </update>
+  
+   <select id="selectByBlackAndwhiteMacInfo" resultMap="BaseResultMap" parameterType="BlackAndwhiteMacInfo" >
+    select 
+    <include refid="Base_Column_List" />
+    from blackwhitemacnamelist
+    where 1=1
+    <if test="id>0"> and id =#{id}</if>
+    <if test="siteId>0"> and siteId =#{siteId}</if>
+  </select>
+  
+  <delete id="deleteBySiteId" parameterType="java.lang.Integer" >
+    delete from blackwhitemacnamelist
+    where siteId = #{siteId,jdbcType=INTEGER}
+  </delete>
+  
+  <select id="selectByVsAndSiteId" resultType="java.lang.String" parameterType="map" >
+    select name from  serviceinfo where ( asiteId =#{siteId} or zsiteId =#{siteId} )and (aXcId =#{vsId} or zXcId =#{vsId}) and serviceType=2 group by name
+  </select>
+</mapper>

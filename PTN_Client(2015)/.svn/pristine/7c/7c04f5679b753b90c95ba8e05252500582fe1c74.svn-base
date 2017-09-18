@@ -1,0 +1,3384 @@
+﻿package com.nms.db.dao.ptn.path.tunnel;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import com.nms.db.bean.ptn.path.tunnel.Lsp;
+import com.nms.db.bean.ptn.path.tunnel.Tunnel;
+import com.nms.db.bean.report.SearchTunnelInfo;
+import com.nms.ui.manager.DateUtil;
+import com.nms.ui.manager.ExceptionManage;
+import com.nms.ui.manager.UiUtil;
+
+public class TunnelDao {
+
+	/** 修改激活状态 */
+	private final String SQL_UPDATE_ACTIVITY = "UPDATE tunnel t SET tunnelStatus = ? WHERE aSiteId = ? OR zSiteId = ? OR ( aSiteId != ? AND zSiteId != ? AND tunnelId IN ( SELECT lsp.tunnelId FROM lspinfo lsp WHERE ( lsp.asiteid = ? AND lsp.aPortId != 0 ) OR ( lsp.zsiteid = ? AND lsp.zportid != 0 )))";
+	/**
+	 * 根据名称查询
+	 */
+	private final String SELECT_BY_NAME = "select count(*) as selectcount from tunnel where (aSiteId = ? or zSiteId = ?) and tunnelName=?";
+	/**
+	 * 查询是否有可用的tunnel
+	 */
+	private final String SELECT_EXIST_TUNNEL = "select * from tunnel t where t.tunnelType=? and t.tunnelStatus=? and t.isSingle=? AND t.waittime=? and t.delaytime=? and t.apsenable=? AND ((aSiteId=? AND aPortId=? AND zSiteId=? and zPortId=?) OR (aSiteId=? AND aPortId=? AND zSiteId=? and zPortId=?))";
+
+	/**
+	 * 增加tunnel
+	 * 
+	 * @param tunnel
+	 *            实体
+	 * @param connection
+	 *            数据库连接
+	 * @return 插入的记录数
+	 * @throws Exception
+	 */
+	public int insert(Tunnel tunnel, Connection connection) throws Exception {
+
+		if (null == tunnel) {
+			throw new Exception("tunnel is null");
+		}
+
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		int result = 0;
+		ResultSet resultSet = null;
+
+		try {
+			sql = "insert into tunnel(tunnelName,tunnelType,tunnelStatus,bandwidth,aSiteId,zSiteId," + "aPortId,zPortId,direction,isReverse,createTime,createUser,protectTunnelId," + "protectTunnelName,protectType,isSingle,jobstatus,waittime,delaytime,apsenable," + "Position,protectBack,aprotectId,zprotectId,sncpIds,inBandwidthControl," + "outBandwidthControl,aVlanEnable,aOutVlanValue,aTp_id,zVlanEnable,zOutVlanValue," + "zTp_id,sourceMac,endMac) values" + "(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+			preparedStatement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+			preparedStatement.setString(1, tunnel.getTunnelName());
+			preparedStatement.setString(2, tunnel.getTunnelType());
+			preparedStatement.setInt(3, tunnel.getTunnelStatus());
+			preparedStatement.setInt(4, tunnel.getBandwidth());
+			preparedStatement.setInt(5, tunnel.getASiteId());
+			preparedStatement.setInt(6, tunnel.getZSiteId());
+			preparedStatement.setInt(7, tunnel.getAPortId());
+			preparedStatement.setInt(8, tunnel.getZPortId());
+			// preparedStatement.setInt(9, tunnel.getLabelValue());
+			preparedStatement.setString(9, tunnel.getDirection());
+			preparedStatement.setInt(10, tunnel.getIsReverse());
+			preparedStatement.setString(11, DateUtil.getDate(DateUtil.FULLTIME));
+			tunnel.setCreateTime(DateUtil.getDate(DateUtil.FULLTIME));
+			preparedStatement.setString(12, tunnel.getCreateUser());
+			preparedStatement.setInt(13, tunnel.getProtectTunnelId());
+			preparedStatement.setString(14, tunnel.getProtectTunnelName());
+			preparedStatement.setInt(15, tunnel.getProtectType());
+			preparedStatement.setInt(16, tunnel.getIsSingle());
+			preparedStatement.setString(17, tunnel.getJobStatus());
+			preparedStatement.setInt(18, tunnel.getWaittime());
+			preparedStatement.setInt(19, tunnel.getDelaytime());
+			preparedStatement.setInt(20, tunnel.getApsenable());
+			preparedStatement.setInt(21, tunnel.getPosition());
+			preparedStatement.setInt(22, tunnel.getProtectBack());
+			preparedStatement.setInt(23, tunnel.getAprotectId());
+			preparedStatement.setInt(24, tunnel.getZprotectId());
+			preparedStatement.setString(25, tunnel.getSncpIds());
+			preparedStatement.setInt(26, tunnel.getInBandwidthControl());
+			preparedStatement.setInt(27, tunnel.getOutBandwidthControl());
+			preparedStatement.setInt(28, tunnel.getaVlanEnable());
+			preparedStatement.setInt(29, tunnel.getaOutVlanValue());
+			preparedStatement.setInt(30, tunnel.getaTp_id());
+			preparedStatement.setInt(31, tunnel.getzVlanEnable());
+			preparedStatement.setInt(32, tunnel.getzOutVlanValue());
+			preparedStatement.setInt(33, tunnel.getzTp_id());
+			preparedStatement.setString(34, tunnel.getSourceMac());
+			preparedStatement.setString(35, tunnel.getEndMac());
+			preparedStatement.executeUpdate();
+			resultSet = preparedStatement.getGeneratedKeys();
+			if (resultSet.next()) {
+				result = resultSet.getInt(1);
+			}
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (resultSet != null) {
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				resultSet = null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+
+
+			sql = null;
+		}
+
+		return result;
+	}
+
+	/**
+	 * 修改tunnel
+	 * 
+	 * @param tunnel
+	 *            实体
+	 * @param connection
+	 *            数据库连接
+	 * @return 修改的记录数
+	 * @throws Exception
+	 */
+	public int update(Tunnel tunnel, Connection connection) throws Exception {
+		if (null == tunnel) {
+			throw new Exception("tunnel is null");
+		}
+
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		int result = 0;
+
+		try {
+			sql = "update tunnel set tunnelName=?,tunnelType=?,tunnelStatus=?,bandwidth=? ,aSiteId = ?," + "zSiteId = ?,aPortId = ?,zPortId = ?, direction =? , isReverse = ? , protectTunnelId=? ," + " protectTunnelName=? , protectType=?,waittime=?,delaytime=?,apsenable=? ,isSingle=? ," + "position=?,protectBack=? ,aprotectId=?,zprotectId=?,sncpIds=? ,inBandwidthControl=?," + "outBandwidthControl=?,aVlanEnable=?,aOutVlanValue=?,aTp_id=?,zVlanEnable=?," + "zOutVlanValue=?,zTp_id=?,sourceMac=?,endMac=?" + " where tunnelId=?";
+			preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.setString(1, tunnel.getTunnelName());
+			preparedStatement.setString(2, tunnel.getTunnelType());
+			preparedStatement.setInt(3, tunnel.getTunnelStatus());
+			preparedStatement.setInt(4, tunnel.getBandwidth());
+			preparedStatement.setInt(5, tunnel.getASiteId());
+			preparedStatement.setInt(6, tunnel.getZSiteId());
+			preparedStatement.setInt(7, tunnel.getAPortId());
+			preparedStatement.setInt(8, tunnel.getZPortId());
+			// preparedStatement.setInt(9, tunnel.getLabelValue());
+			preparedStatement.setString(9, tunnel.getDirection());
+			preparedStatement.setInt(10, tunnel.getIsReverse());
+			preparedStatement.setInt(11, tunnel.getProtectTunnelId());
+			preparedStatement.setString(12, tunnel.getProtectTunnelName());
+			preparedStatement.setInt(13, tunnel.getProtectType());
+			preparedStatement.setInt(14, tunnel.getWaittime());
+			preparedStatement.setInt(15, tunnel.getDelaytime());
+			preparedStatement.setInt(16, tunnel.getApsenable());
+			preparedStatement.setInt(17, tunnel.getIsSingle());
+			preparedStatement.setInt(18, tunnel.getPosition());
+			preparedStatement.setInt(19, tunnel.getProtectBack());
+			preparedStatement.setInt(20, tunnel.getAprotectId());
+			preparedStatement.setInt(21, tunnel.getZprotectId());
+			preparedStatement.setString(22, tunnel.getSncpIds());
+			preparedStatement.setInt(23, tunnel.getInBandwidthControl());
+			preparedStatement.setInt(24, tunnel.getOutBandwidthControl());
+			preparedStatement.setInt(25, tunnel.getaVlanEnable());
+			preparedStatement.setInt(26, tunnel.getaOutVlanValue());
+			preparedStatement.setInt(27, tunnel.getaTp_id());
+			preparedStatement.setInt(28, tunnel.getzVlanEnable());
+			preparedStatement.setInt(29, tunnel.getzOutVlanValue());
+			preparedStatement.setInt(30, tunnel.getzTp_id());
+			preparedStatement.setString(31, tunnel.getSourceMac());
+			preparedStatement.setString(32, tunnel.getEndMac());
+			preparedStatement.setInt(33, tunnel.getTunnelId());
+			result = preparedStatement.executeUpdate();
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+
+		return result;
+	}
+
+	/**
+	 * 批量修改状态
+	 * 
+	 * @param idList
+	 *            id集合
+	 * @param beforeStatus
+	 *            原状态
+	 * @param afterStatus
+	 *            修改状态
+	 * @param connection
+	 *            数据库连接
+	 * @throws Exception
+	 */
+	public void updateStatus(List<Integer> idList, int beforeStatus, int afterStatus, Connection connection) throws Exception {
+
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		String sql = null;
+		String ids = null;
+		PreparedStatement preparedStatement = null;
+		try {
+			ids = idList.toString();
+			sql = "update tunnel set tunnelstatus=? where tunnelstatus=? and tunnelid in (" + ids.subSequence(1, ids.length() - 1) + ")";
+
+			preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.setInt(1, afterStatus);
+			preparedStatement.setInt(2, beforeStatus);
+
+			preparedStatement.executeUpdate();
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+			ids = null;
+		}
+
+	}
+
+	/**
+	 * 通过主键删除tunnel
+	 * 
+	 * @param tunnelId
+	 *            主键
+	 * @param connection
+	 *            数据库连接
+	 * @return 删除的记录数
+	 * @throws Exception
+	 */
+	public int delete(int tunnelId, Connection connection) throws Exception {
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		int result = 0;
+
+		try {
+			sql = "delete from tunnel where tunnelId=?";
+			preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.setInt(1, tunnelId);
+
+			result = preparedStatement.executeUpdate();
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+
+		return result;
+	}
+
+	/**
+	 * 通过条件查询Tunnel
+	 * 
+	 * @param tunnelCondition
+	 *            查询条件
+	 * @param connection
+	 *            数据库连接
+	 * @return List<Tunnel>集合
+	 * @throws Exception
+	 */
+	public List<Tunnel> queryByCondition(Tunnel tunnelCondition, Connection connection) throws Exception {
+
+		if (null == tunnelCondition) {
+			throw new Exception("tunnelCondition is null");
+		}
+
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		List<Tunnel> tunnelList = null;
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		List<Object> filterCondition = new ArrayList<Object>();
+		try {
+			tunnelList = new ArrayList<Tunnel>();
+			sql = "SELECT t.zVlanEnable,t.zOutVlanValue,t.zTp_id,t.aVlanEnable,t.aOutVlanValue,t.aTp_id,t.sourceMac,t.endMac,t.inBandwidthControl,t.outBandwidthControl,t.waittime,t.delaytime,t.apsenable, t.isSingle,t.jobStatus, t.tunnelId, t.tunnelName, t.tunnelType, t.tunnelStatus, t.bandwidth, t.aSiteId, t.zSiteId, t.aPortId, t.zPortId, t.direction," + " t.isReverse, t.createTime, t.createUser, sa.CellId AS aSiteName, sz.CellId AS zSiteName, pa.portName AS aPortName, pz.portName AS zPortName ,t.protectTunnelId,t.protectTunnelName ,t.protectType ,t.position ,"
+					+ "t.protectBack,t.sncpIds FROM site_inst sa, site_inst sz, port_inst pa, port_inst pz, tunnel t WHERE t.aSiteId = sa.site_inst_id AND t.zSiteId = sz.site_inst_id AND t.aPortId = pa.portId AND t.zPortId = pz.portId AND t.tunnelId = t.tunnelId and tunneltype!='0' and t.isSingle='0'";
+
+			if (tunnelCondition.getTunnelId() > 0) {
+				sql += " and t.tunnelId=?";
+				filterCondition.add(tunnelCondition.getTunnelId());
+			}
+
+			if (tunnelCondition.getTunnelType() != null && tunnelCondition.getTunnelType() != "0") {
+				sql += " and t.tunnelType=?";
+				filterCondition.add(tunnelCondition.getTunnelType());
+			}
+			// tunnel filter中的名字模糊查询
+			if (tunnelCondition.getTunnelName() != null) {
+				if (tunnelCondition.getTunnelName().length() > 0) {
+					sql += " and t.tunnelName like ?";
+					filterCondition.add("%" + tunnelCondition.getTunnelName() + "%");
+				}
+			}
+			if (tunnelCondition.getASiteId() != 0) {
+				sql += " and t.aSiteId=?";
+				filterCondition.add(tunnelCondition.getASiteId());
+			}
+			if (tunnelCondition.getZSiteId() != 0) {
+				sql += " and t.zSiteId=?";
+				filterCondition.add(tunnelCondition.getZSiteId());
+			}
+			if (tunnelCondition.getAPortId() != 0) {
+				sql += " and t.aPortId=?";
+				filterCondition.add(tunnelCondition.getAPortId());
+			}
+			if (tunnelCondition.getZPortId() != 0) {
+				sql += " and t.zPortId=?";
+				filterCondition.add(tunnelCondition.getZPortId());
+			}
+			if (tunnelCondition.getProtectTunnelId() != 0) {
+				sql += " and t.protectTunnelId=?";
+				filterCondition.add(tunnelCondition.getProtectTunnelId());
+			}
+			/**
+			 * 条件过滤 查询 Tunnel
+			 */
+			if (null != tunnelCondition.getCreateUser() && !"".equals(tunnelCondition.getCreateUser())) { // 创建人
+				sql += " and t.createUser=?";
+				filterCondition.add(tunnelCondition.getCreateUser());
+			}
+			// 1 激活 ，2 为 激活
+			if (tunnelCondition.getTunnelStatus() != 0) {
+				sql += " and t.tunnelStatus =?";
+				filterCondition.add(tunnelCondition.getTunnelStatus());
+			}
+			if (tunnelCondition.getCreateTime() != null) {
+				switch (Integer.parseInt(tunnelCondition.getCreateTime())) {
+				case 0:
+					// 过滤选择框 已做处理（结束时间不可以选择 0）
+					break;
+				case 1:// 近 一個小時
+					sql += " and  t.createTime>= now()-interval 1 hour";
+					break;
+				case 2:
+					sql += " and  t.createTime>= now()-interval 12 hour";
+					break;
+				case 3:
+					sql += " and  t.createTime>= now()-interval 24 hour";
+					break;
+				case 4:// 近 7 天
+						// sql +=" and performanceEndtime between CURDATE()-interval 7 day";
+					sql += " and  t.createTime>= now()-interval 168 hour";
+					break;
+				case 5:
+					// sql +=" and performanceEndtime between CURDATE()-interval 30 day";
+					sql += " and  t.createTime>= now()-interval 720 hour";
+					break;
+				case 7:// 自定義 ，， 時間選擇 為完成
+					sql += " and  t.createTime between ? and ?";
+					filterCondition.add(tunnelCondition.getCreateTime());
+					filterCondition.add(tunnelCondition.getOverTime());
+				default:
+					break;
+				}
+			}
+			preparedStatement = connection.prepareStatement(sql);
+			if (filterCondition.size() > 0) {
+				for (int i = 0; i < filterCondition.size(); i++) {
+					preparedStatement.setObject(i + 1, filterCondition.get(i));
+				}
+			}
+			tunnelList = this.executeQuery_join(preparedStatement);
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+		return tunnelList;
+	}
+
+	/**
+	 * 通过条件查询Tunnel
+	 * 
+	 * @param tunnelCondition
+	 *            查询条件
+	 * @param connection
+	 *            数据库连接
+	 * @return List<Tunnel>集合
+	 * @throws Exception
+	 */
+	public List<Tunnel> queryByCondition_nojoin(Tunnel tunnelCondition, Connection connection) throws Exception {
+
+		if (null == tunnelCondition) {
+			throw new Exception("tunnelCondition is null");
+		}
+
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		List<Tunnel> tunnelList = null;
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		List<Object> filterConditionList = new ArrayList<Object>();
+
+		try {
+			tunnelList = new ArrayList<Tunnel>();
+			sql = "SELECT * from tunnel t where 1=1";
+
+			if (tunnelCondition.getTunnelName() != null) {
+				if (tunnelCondition.getTunnelName().trim().length() > 0) {
+					sql += " and t.tunnelName =?";
+					filterConditionList.add(tunnelCondition.getTunnelName());
+				}
+			}
+			if (tunnelCondition.getTunnelId() > 0) {
+				sql += " and t.tunnelId=?";
+				filterConditionList.add(tunnelCondition.getTunnelId());
+			}
+			if (tunnelCondition.getASiteId() != 0) {
+				sql += " and t.aSiteId=?";
+				filterConditionList.add(tunnelCondition.getASiteId());
+			}
+			if (tunnelCondition.getZSiteId() != 0) {
+				sql += " and t.zSiteId=?";
+				filterConditionList.add(tunnelCondition.getZSiteId());
+			}
+			if (tunnelCondition.getTunnelStatus() != 0) {
+				sql += " and t.tunnelstatus=?";
+				filterConditionList.add(tunnelCondition.getTunnelStatus());
+			}
+
+			if (tunnelCondition.getAPortId() != 0) {
+				sql += " and t.aPortId=?";
+				filterConditionList.add(tunnelCondition.getAPortId());
+			}
+			if (tunnelCondition.getZPortId() != 0) {
+				sql += " and t.zPortId=?";
+				filterConditionList.add(tunnelCondition.getZPortId());
+			}
+			if (tunnelCondition.getProtectTunnelId() != 0) {
+				sql += " and t.protectTunnelId=?";
+				filterConditionList.add(tunnelCondition.getProtectTunnelId());
+			}
+			if (tunnelCondition.getAprotectId() != 0) {
+				sql += " and t.aprotectId=?";
+				filterConditionList.add(tunnelCondition.getAprotectId());
+			}
+			if (tunnelCondition.getZprotectId() != 0) {
+				sql += " and t.zprotectId=?";
+				filterConditionList.add(tunnelCondition.getZprotectId());
+			}
+
+			preparedStatement = connection.prepareStatement(sql);
+			if (filterConditionList.size() > 0) {
+				for (int i = 0; i < filterConditionList.size(); i++) {
+					preparedStatement.setObject(i + 1, filterConditionList.get(i));
+				}
+			}
+			tunnelList = this.executeQuery(preparedStatement);
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+		return tunnelList;
+	}
+
+	/**
+	 * 根据site查询
+	 * 
+	 * @param siteId
+	 *            网元ID
+	 * @param connection
+	 *            数据库连接
+	 * @return
+	 * @throws Exception
+	 */
+	public List<Tunnel> queryBySiteId(int siteId, Connection connection) throws Exception {
+
+		if (siteId == 0) {
+			throw new Exception("siteid is 0");
+		}
+		if (connection == null) {
+			throw new Exception("connection is null");
+		}
+
+		List<Tunnel> tunnelList = null;
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		try {
+			tunnelList = new ArrayList<Tunnel>();
+			sql = "select * from tunnel t where t.tunnelStatus=1 and t.tunnelId in " + "(SELECT tunnelId from lspinfo lsp WHERE aSiteId=" + siteId + " or zSiteId=" + siteId + ")";
+			// 这里siteId可能是另外的tunnel的中间网元，如果根据lspparcular查，这条tunnel则会被查出，实际是不符合条件
+			// "(select lspp.lspid from lspparticular lspp where aSiteId="+siteId+" or zSiteId="+siteId+"))";
+
+			preparedStatement = connection.prepareStatement(sql);
+			tunnelList = this.executeQuery(preparedStatement);
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+		return tunnelList;
+	}
+	/**
+	 * 
+	 * @param portId
+	 * @param connection
+	 * @return
+	 * @throws Exception
+	 */
+	public List<Tunnel> queryByportId(int portId, Connection connection) throws Exception {
+
+		if (connection == null) {
+			throw new Exception("connection is null");
+		}
+
+		List<Tunnel> tunnelList = null;
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		try {
+			tunnelList = new ArrayList<Tunnel>();
+			sql = "select * from tunnel t where t.aPortId=" + portId + " or zPortId=" + portId;
+		
+			preparedStatement = connection.prepareStatement(sql);
+			tunnelList = this.executeQuery(preparedStatement);
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+		return tunnelList;
+	}
+	
+	/**
+	 * 通过网元id和业务id查找
+	 * 
+	 * @param siteId
+	 * @param serviceId
+	 * @param connection
+	 * @return
+	 * @throws Exception
+	 */
+	public Tunnel queryBySiteIdAndServiceId(int siteId, int serviceId, Connection connection) throws Exception {
+		if (connection == null) {
+			throw new Exception("connection is null");
+		}
+
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		Tunnel tunnel = null;
+		List<Tunnel> tunnelList = null;
+		try {
+			sql = "select * from tunnel t where t.tunnelId  in (( select lag.tunnelId from lspinfo lag where (lag.asiteid=? and lag.atunnelbusinessid =?) OR (lag.zsiteid=? and lag.ztunnelbusinessid =?)))";
+			preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.setInt(1, siteId);
+			preparedStatement.setInt(2, serviceId);
+			preparedStatement.setInt(3, siteId);
+			preparedStatement.setInt(4, serviceId);
+			tunnelList = this.executeQuery(preparedStatement);
+
+			if (tunnelList.size() == 1) {
+				tunnel = tunnelList.get(0);
+			}
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+			tunnelList = null;
+		}
+		return tunnel;
+	}
+
+	
+	/**
+	 * 方便性能查询 通过网元id和业务id查找
+	 * @param siteId 通过网元id
+	 * @param serviceId 业务id查找
+	 * @param connection
+	 * @return tunnel对象
+	 * @throws Exception
+	 */
+	public Tunnel queryBySiteIdAndServiceIdByPerformance(int siteId, int serviceId, Connection connection) throws Exception {
+		if (connection == null) {
+			throw new Exception("connection is null");
+		}
+
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		Tunnel tunnel = null;
+		List<Tunnel> tunnelList = null;
+		try {
+			sql = "select * from tunnel t where t.tunnelId  in (select lag.tunnelId from lspinfo lag where (lag.asiteid=? and lag.atunnelbusinessid =?) OR (lag.zsiteid=? and lag.ztunnelbusinessid =?))";
+			preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.setInt(1, siteId);
+			preparedStatement.setInt(2, serviceId);
+			preparedStatement.setInt(3, siteId);
+			preparedStatement.setInt(4, serviceId);
+			tunnelList = this.executeQuery(preparedStatement);
+
+			if (tunnelList.size() == 1) {
+				tunnel = tunnelList.get(0);
+			}
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+			tunnelList = null;
+		}
+		return tunnel;
+	}
+	
+	public List<Tunnel> queryNodesByCondition(Tunnel tunnelCondition, Connection connection) throws Exception {
+
+		if (null == tunnelCondition) {
+			throw new Exception("tunnelCondition is null");
+		}
+
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		List<Tunnel> tunnelList = null;
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+
+		try {
+			tunnelList = new ArrayList<Tunnel>();
+			sql = "SELECT t.zVlanEnable,t.zOutVlanValue,t.zTp_id,t.aVlanEnable,t.aOutVlanValue,t.aTp_id,t.sourceMac,t.endMac,t.inBandwidthControl,t.outBandwidthControl, t.waittime,t.delaytime,t.apsenable,t.isSingle,t.jobStatus, t.tunnelId, t.tunnelName, t.tunnelType, t.tunnelStatus, t.bandwidth, t.aSiteId, t.zSiteId, t.aPortId, t.zPortId, t.direction, t.isReverse, t.createTime, t.createUser, sa.CellId AS aSiteName, sz.CellId AS zSiteName, pa.portName AS aPortName, pz.portName AS zPortName ,t.protectTunnelId,t.protectTunnelName ,t.protectType FROM site_inst sa, site_inst sz, port_inst pa, port_inst pz, tunnel t WHERE t.aSiteId = sa.site_inst_id AND t.zSiteId = sz.site_inst_id AND t.aPortId = pa.portId AND t.zPortId = pz.portId AND t.tunnelId = t.tunnelId";
+
+			if (tunnelCondition.getTunnelId() > 0) {
+				sql += " and tunnelId=" + tunnelCondition.getTunnelId();
+			}
+			if (tunnelCondition.getASiteId() != 0) {
+				sql += " and t.aSiteId=" + tunnelCondition.getASiteId();
+			}
+
+			if (tunnelCondition.getTunnelStatus() != 0) {
+				sql += " and t.tunnelstatus=" + tunnelCondition.getTunnelStatus();
+			}
+
+			if (tunnelCondition.getAPortId() != 0) {
+				sql += " and t.aPortId=" + tunnelCondition.getAPortId();
+			}
+			preparedStatement = connection.prepareStatement(sql);
+			tunnelList = this.executeQuery_join(preparedStatement);
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+		return tunnelList;
+	}
+
+	/**
+	 * 条件过滤查询单网元的所有tunnel 带xc
+	 * 
+	 * @param siteId
+	 * @param connection
+	 * @param tunnelCondition查询的过滤条件
+	 * @param isAddIsSingle
+	 *            是否加入单网元条件 如果是ture 那么sql语句加 isSingle=tunnelCondition.getIssingle();
+	 * @return
+	 * @throws Exception
+	 */
+	public List<Tunnel> quertyNodeBySite(int siteId, Tunnel tunnelCondition, boolean isAddIsSingle, Connection connection) throws Exception {
+
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		List<Tunnel> tunnelList = null;
+		List<Object> filterConditionList = new ArrayList<Object>();
+		try {
+			sql = "SELECT * FROM tunnel t WHERE (( tunnelId IN ( SELECT lsp.tunnelId FROM lspinfo lsp WHERE " + "( lsp.asiteid = ? AND lsp.aPortId != 0 ) OR ( lsp.zsiteid = ? AND lsp.zportid != 0 )) AND t.tunneltype != '0' ) OR " + "( tunnelId IN ( SELECT lsp.tunnelId FROM lspinfo lsp WHERE ( lsp.asiteid = ? AND lsp.aPortId != 0 AND lsp.aSiteId != t.aSiteId ) OR " + "( lsp.zsiteid = ? AND lsp.zportid != 0 AND lsp.zSiteId != t.zSiteId ))))";
+			// 名字模糊查询
+			if (tunnelCondition.getTunnelName() != null) {
+				if (tunnelCondition.getTunnelName().length() > 0) {
+					sql += " and t.tunnelName like ?";
+					filterConditionList.add("%" + tunnelCondition.getTunnelName() + "%");
+				}
+			}
+			// 类型过滤条件
+			if (tunnelCondition.getTunnelType() != null && !tunnelCondition.getTunnelType().equals("0")) {
+				sql += " and t.tunnelType= ?";
+				filterConditionList.add(tunnelCondition.getTunnelType());
+			}
+			// 状态条件
+			if (tunnelCondition.getTunnelStatus() != 0) {
+				sql += " and t.tunnelstatus= ?";
+				filterConditionList.add(tunnelCondition.getTunnelStatus());
+			}
+			if (!tunnelCondition.getRole().equals("0") && !"".equals(tunnelCondition.getRole())) {
+				if ("ingress".equalsIgnoreCase(UiUtil.getCodeById(Integer.parseInt(tunnelCondition.getRole())).getCodeName())) {
+					sql += " and asiteid=? and aportid!=0";
+					filterConditionList.add(siteId);
+				} else if ("egress".equalsIgnoreCase(UiUtil.getCodeById(Integer.parseInt(tunnelCondition.getRole())).getCodeName())) {
+					sql += " and zsiteid=? and zportid!=0";
+					filterConditionList.add(siteId);
+				} else {
+					sql += " and zsiteid=0 and asiteid=0";
+				}
+			}
+
+			if (isAddIsSingle) {
+				sql += " and t.isSingle=?";
+				filterConditionList.add(tunnelCondition.getIsSingle());
+			}
+
+			preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.setInt(1, siteId);
+			preparedStatement.setInt(2, siteId);
+			preparedStatement.setInt(3, siteId);
+			preparedStatement.setInt(4, siteId);
+			if (filterConditionList.size() > 0) {
+				for (int i = 5; i < filterConditionList.size() + 5; i++) {
+					preparedStatement.setObject(i, filterConditionList.get(i - 5));
+				}
+			}
+			tunnelList = this.executeQuery(preparedStatement);
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+		return tunnelList;
+	}
+
+	/**
+	 * 查询单网元的所有tunnel 带xc 带保护tunnel
+	 * 
+	 * @param siteId
+	 * @param connection
+	 * @return
+	 * @throws Exception
+	 */
+	public List<Tunnel> quertyWHNodeBySite(int siteId, Connection connection) throws Exception {
+
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		List<Tunnel> tunnelList = null;
+		try {
+			// 查询出lspinfo表中asiteid或者zsiteid等于入参 并且对应的portid不等于0 如果port为0 说明是对端网元的标识
+			sql = "SELECT * FROM tunnel t WHERE ( tunnelId IN ( SELECT lsp.tunnelId FROM lspinfo lsp WHERE ( lsp.asiteid = ? AND lsp.aPortId != 0 ) OR ( lsp.zsiteid = ? AND lsp.zportid != 0 )) ) OR ( tunnelId IN ( SELECT lsp.tunnelId FROM lspinfo lsp WHERE ( lsp.asiteid = ? AND lsp.aPortId != 0 AND lsp.aSiteId != t.aSiteId ) OR ( lsp.zsiteid = ? AND lsp.zportid != 0 AND lsp.zSiteId != t.zSiteId )))";
+
+			preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.setInt(1, siteId);
+			preparedStatement.setInt(2, siteId);
+			preparedStatement.setInt(3, siteId);
+			preparedStatement.setInt(4, siteId);
+			tunnelList = this.executeQuery(preparedStatement);
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+		return tunnelList;
+	}
+
+	/**
+	 * 查询单网元的所有tunnel 不带xc
+	 * 
+	 * @param siteId
+	 * @param connection
+	 * @return
+	 * @throws Exception
+	 */
+	public List<Tunnel> quertyNodeBySite_noxc(int siteId, String type, Connection connection) throws Exception {
+
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		List<Tunnel> tunnelList = null;
+		try {
+			sql = "select * from tunnel WHERE 1=1";
+			if ("ingress".equals(type)) {
+				sql += " and asiteid=? and aportid!=0";
+			} else {
+				sql += " and zsiteid=? and zportid!=0";
+			}
+			preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.setInt(1, siteId);
+			tunnelList = this.executeQuery(preparedStatement);
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+		return tunnelList;
+	}
+
+	/**
+	 * 执行查询方法
+	 * 
+	 * @param preparedStatement
+	 * @return
+	 * @throws Exception
+	 */
+	private List<Tunnel> executeQuery(PreparedStatement preparedStatement) throws Exception {
+
+		ResultSet resultSet = null;
+		List<Tunnel> tunnelList = null;
+		Tunnel tunnel = null;
+		try {
+			tunnelList = new ArrayList<Tunnel>();
+			resultSet = preparedStatement.executeQuery();
+
+			while (resultSet.next()) {
+				tunnel = new Tunnel();
+				tunnel.setTunnelId(resultSet.getInt("tunnelId"));
+				tunnel.setTunnelName(resultSet.getString("tunnelName"));
+				tunnel.setTunnelType(resultSet.getString("tunnelType"));
+				tunnel.setTunnelStatus(resultSet.getInt("tunnelStatus"));
+				tunnel.setBandwidth(resultSet.getInt("bandwidth"));
+				tunnel.setASiteId(resultSet.getInt("aSiteId"));
+				tunnel.setZSiteId(resultSet.getInt("ZSiteId"));
+				tunnel.setAPortId(resultSet.getInt("aPortId"));
+				tunnel.setZPortId(resultSet.getInt("zPortId"));
+				tunnel.setDirection(resultSet.getString("direction"));
+				tunnel.setIsReverse(resultSet.getInt("isReverse"));
+				tunnel.setCreateTime(DateUtil.strDate(resultSet.getString("createTime"),DateUtil.FULLTIME));
+				tunnel.setCreateUser(resultSet.getString("createUser"));
+				tunnel.setProtectTunnelId(resultSet.getInt("protectTunnelId"));
+				tunnel.setProtectTunnelName(resultSet.getString("protectTunnelName"));
+				tunnel.setProtectType(resultSet.getInt("protectType"));
+				tunnel.setIsSingle(resultSet.getInt("isSingle"));
+				tunnel.setJobStatus(resultSet.getString("JobStatus"));
+				tunnel.setWaittime(resultSet.getInt("waittime"));
+				tunnel.setDelaytime(resultSet.getInt("delaytime"));
+				tunnel.setApsenable(resultSet.getInt("apsenable"));
+				tunnel.setPosition(resultSet.getInt("position"));
+				tunnel.setProtectBack(resultSet.getInt("protectBack"));
+				tunnel.setAprotectId(resultSet.getInt("aprotectId"));
+				tunnel.setZprotectId(resultSet.getInt("zprotectId"));
+				tunnel.setSncpIds(resultSet.getString("sncpIds"));
+				tunnel.setInBandwidthControl(resultSet.getInt("inBandwidthControl"));
+				tunnel.setOutBandwidthControl(resultSet.getInt("outBandwidthControl"));
+				tunnel.setaVlanEnable(resultSet.getInt("aVlanEnable"));
+				tunnel.setaOutVlanValue(resultSet.getInt("aOutVlanValue"));
+				tunnel.setaTp_id(resultSet.getInt("aTp_id"));
+				tunnel.setzVlanEnable(resultSet.getInt("zVlanEnable"));
+				tunnel.setzOutVlanValue(resultSet.getInt("zOutVlanValue"));
+				tunnel.setzTp_id(resultSet.getInt("zTp_id"));
+				tunnel.setSourceMac(resultSet.getString("sourceMac"));
+				tunnel.setEndMac(resultSet.getString("endMac"));
+				tunnelList.add(tunnel);
+			}
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (resultSet != null) {
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				resultSet = null;
+			}
+			tunnel = null;
+		}
+		return tunnelList;
+	}
+
+	/**
+	 * 执行查询方法
+	 * 
+	 * @param preparedStatement
+	 * @return
+	 * @throws Exception
+	 */
+	private List<Tunnel> executeQuery_join(PreparedStatement preparedStatement) throws Exception {
+
+		ResultSet resultSet = null;
+		List<Tunnel> tunnelList = null;
+		Tunnel tunnel = null;
+		try {
+			tunnelList = new ArrayList<Tunnel>();
+			resultSet = preparedStatement.executeQuery();
+
+			while (resultSet.next()) {
+				tunnel = new Tunnel();
+				tunnel.setTunnelId(resultSet.getInt("tunnelId"));
+				tunnel.setTunnelName(resultSet.getString("tunnelName"));
+				tunnel.setTunnelType(resultSet.getString("tunnelType"));
+				tunnel.setTunnelStatus(resultSet.getInt("tunnelStatus"));
+				tunnel.setBandwidth(resultSet.getInt("bandwidth"));
+				tunnel.setShowSiteAname(resultSet.getString("aSiteName"));
+				tunnel.setShowSiteZname(resultSet.getString("zSiteName"));
+				tunnel.setShowPortAname(resultSet.getString("aPortName"));
+				tunnel.setShowPortZname(resultSet.getString("zPortName"));
+				tunnel.setDirection(resultSet.getString("direction"));
+				tunnel.setIsReverse(resultSet.getInt("isReverse"));
+				tunnel.setCreateTime(DateUtil.strDate(resultSet.getString("createTime"), DateUtil.FULLTIME));
+				tunnel.setCreateUser(resultSet.getString("createUser"));
+				tunnel.setProtectTunnelId(resultSet.getInt("protectTunnelId"));
+				tunnel.setProtectTunnelName(resultSet.getString("protectTunnelName"));
+				tunnel.setProtectType(resultSet.getInt("protectType"));
+				tunnel.setAPortId(resultSet.getInt("aPortId"));
+				tunnel.setZPortId(resultSet.getInt("zPortId"));
+				tunnel.setASiteId(resultSet.getInt("aSiteId"));
+				tunnel.setZSiteId(resultSet.getInt("zSiteId"));
+				tunnel.setIsSingle(resultSet.getInt("isSingle"));
+				tunnel.setJobStatus(resultSet.getString("JobStatus"));
+				tunnel.setWaittime(resultSet.getInt("waittime"));
+				tunnel.setDelaytime(resultSet.getInt("delaytime"));
+				tunnel.setApsenable(resultSet.getInt("apsenable"));
+				tunnel.setPosition(resultSet.getInt("position"));
+				tunnel.setProtectBack(resultSet.getInt("protectBack"));
+				tunnel.setSncpIds(resultSet.getString("sncpIds"));
+				tunnel.setInBandwidthControl(resultSet.getInt("inBandwidthControl"));
+				tunnel.setOutBandwidthControl(resultSet.getInt("outBandwidthControl"));
+				tunnel.setaVlanEnable(resultSet.getInt("aVlanEnable"));
+				tunnel.setaOutVlanValue(resultSet.getInt("aOutVlanValue"));
+				tunnel.setaTp_id(resultSet.getInt("aTp_id"));
+				tunnel.setzVlanEnable(resultSet.getInt("zVlanEnable"));
+				tunnel.setzOutVlanValue(resultSet.getInt("zOutVlanValue"));
+				tunnel.setzTp_id(resultSet.getInt("zTp_id"));
+				tunnel.setSourceMac(resultSet.getString("sourceMac"));
+				tunnel.setEndMac(resultSet.getString("endMac"));
+				tunnelList.add(tunnel);
+			}
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (resultSet != null) {
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				resultSet = null;
+			}
+			tunnel = null;
+		}
+		return tunnelList;
+	}
+
+	public Tunnel queryBySiteIdAndTunnelId(int siteId, int tunnelId, Connection connection) throws Exception {
+		if (connection == null) {
+			throw new Exception("connection is null");
+		}
+
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		Tunnel tunnel = null;
+		List<Tunnel> tunnelList = null;
+		try {
+			sql = "select * from tunnel t where t.tunnelId  in (select l.tunnelId from lspinfo l where l.tunnelId in ( select lag.tunnelId from lspinfo lag where (lag.asiteid=? and lag.tunnelId =?) OR (lag.zsiteid=? and lag.tunnelId =?)))";
+			preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.setInt(1, siteId);
+			preparedStatement.setInt(2, tunnelId);
+			preparedStatement.setInt(3, siteId);
+			preparedStatement.setInt(4, tunnelId);
+			tunnelList = this.executeQuery(preparedStatement);
+
+			if (tunnelList.size() == 1) {
+				tunnel = tunnelList.get(0);
+			}
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+			tunnelList = null;
+		}
+		return tunnel;
+	}
+
+	/**
+	 * 修改tunnel的激活状态和工作状态
+	 * 
+	 * @author kk
+	 * 
+	 * @param
+	 * 
+	 * @return
+	 * @throws Exception
+	 * 
+	 * @Exception 异常对象
+	 */
+	public void updateStatus(Tunnel tunnel, Connection connection) throws Exception {
+
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		try {
+			sql = "update tunnel set tunnelStatus=?,jobStatus=? ,sourceMac=? ,endMac=?  where tunnelId=?";
+			preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.setInt(1, tunnel.getTunnelStatus());
+			preparedStatement.setInt(2, Integer.parseInt(tunnel.getJobStatus()));
+			preparedStatement.setString(3, tunnel.getSourceMac());
+			preparedStatement.setString(4, tunnel.getEndMac());
+			preparedStatement.setInt(5, tunnel.getTunnelId());
+			preparedStatement.executeUpdate();
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+	}
+
+	/**
+	 * 修改激活状态
+	 * 
+	 * @author kk
+	 * 
+	 * @param
+	 * 
+	 * @return
+	 * @throws Exception
+	 * 
+	 * @Exception 异常对象
+	 */
+	public void update_activity(int siteId, int activity, Connection connection) throws Exception {
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+		PreparedStatement preparedStatement = null;
+		try {
+			preparedStatement = connection.prepareStatement(this.SQL_UPDATE_ACTIVITY);
+			preparedStatement.setInt(1, activity);
+			preparedStatement.setInt(2, siteId);
+			preparedStatement.setInt(3, siteId);
+			preparedStatement.setInt(4, siteId);
+			preparedStatement.setInt(5, siteId);
+			preparedStatement.setInt(6, siteId);
+			preparedStatement.setInt(7, siteId);
+			preparedStatement.executeUpdate();
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+		}
+	}
+
+	/**
+	 * 通过业务id和网元id查询
+	 * 
+	 * @param siteId
+	 * @param tunnelId
+	 * @param connection
+	 * @return
+	 * @throws Exception
+	 */
+	public Tunnel queryBySiteIdAndServiceid(int siteId, int serviceId, Connection connection) throws Exception {
+		if (connection == null) {
+			throw new Exception("connection is null");
+		}
+
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		Tunnel tunnel = null;
+		List<Tunnel> tunnelList = null;
+		try {
+			sql = "select * from tunnel t where t.tunnelId  in (select l.tunnelId from lspinfo l where l.tunnelId in ( select lag.tunnelId from lspinfo lag where (lag.asiteid=? and lag.atunnelbusinessid =?) OR (lag.zsiteid=? and lag.ztunnelbusinessid =?)))";
+			preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.setInt(1, siteId);
+			preparedStatement.setInt(2, serviceId);
+			preparedStatement.setInt(3, siteId);
+			preparedStatement.setInt(4, serviceId);
+			tunnelList = this.executeQuery(preparedStatement);
+
+			if (tunnelList.size() == 1) {
+				tunnel = tunnelList.get(0);
+			}
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+			tunnelList = null;
+		}
+		return tunnel;
+	}
+
+	/**
+	 * 查询名称是否重复
+	 * 
+	 * @author kk
+	 * 
+	 * @param
+	 * 
+	 * @return
+	 * @throws Exception
+	 * 
+	 * @Exception 异常对象
+	 */
+	public int query_nameBySingle(String afterName, String beforeName, Connection connection, int siteId) throws Exception {
+		if (null == afterName) {
+			throw new Exception("afterName is null");
+		}
+
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		String sql = null;
+		List<Object> paramList = new ArrayList<Object>();
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+		int result = 0;
+		try {
+			sql = this.SELECT_BY_NAME;
+			paramList.add(siteId);
+			paramList.add(siteId);
+			paramList.add(afterName);
+			if (null != beforeName) {
+				sql += " and tunnelName!=?";
+				paramList.add(beforeName);
+			}
+			preparedStatement = connection.prepareStatement(sql);
+			for (int i = 0; i < paramList.size(); i++) {
+				preparedStatement.setObject(i + 1, paramList.get(i));
+			}
+			resultSet = preparedStatement.executeQuery();
+			if (resultSet.next()) {
+				result = resultSet.getInt("selectcount");
+			}
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (resultSet != null) {
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				resultSet = null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+			paramList = null;
+			sql = null;
+		}
+
+		return result;
+	}
+
+	/**
+	 * 网络侧名称验证
+	 */
+	public int query_name(String afterName, String beforeName, Connection connection) throws Exception {
+		if (null == afterName) {
+			throw new Exception("afterName is null");
+		}
+
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		String sql = null;
+		List<Object> paramList = new ArrayList<Object>();
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+		int result = 0;
+		try {
+			sql = "select count(*) as selectcount from tunnel where tunnelName=?";
+			paramList.add(afterName);
+			if (null != beforeName) {
+				sql += " and tunnelName!=?";
+				paramList.add(beforeName);
+			}
+			preparedStatement = connection.prepareStatement(sql);
+			for (int i = 0; i < paramList.size(); i++) {
+				preparedStatement.setObject(i + 1, paramList.get(i));
+			}
+			resultSet = preparedStatement.executeQuery();
+			if (resultSet.next()) {
+				result = resultSet.getInt("selectcount");
+			}
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (resultSet != null) {
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				resultSet = null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+			paramList = null;
+			sql = null;
+		}
+
+		return result;
+	}
+
+	/**
+	 * 通过portId和siteId查询tunnel
+	 * 
+	 * @param siteId
+	 * @param serviceId
+	 * @param connection
+	 * @return
+	 * @throws Exception
+	 */
+	public List<Tunnel> queryByPortIdAndServiceId(int siteId, int portId, Connection connection) throws Exception {
+		if (connection == null) {
+			throw new Exception("connection is null");
+		}
+
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		List<Tunnel> tunnelList = null;
+		try {
+			sql = "select * from tunnel t where t.tunnelId  in ( select lag.tunnelId from lspinfo lag where (lag.asiteid=? and lag.aPortId =?) OR (lag.zsiteid=? and lag.zPortId =?))";
+			preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.setInt(1, siteId);
+			preparedStatement.setInt(2, portId);
+			preparedStatement.setInt(3, siteId);
+			preparedStatement.setInt(4, portId);
+			tunnelList = this.executeQuery(preparedStatement);
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+		return tunnelList;
+
+	}
+
+	/**
+	 * @auther StonesLi add for Search
+	 * **/
+	public boolean exeSearchTunnel(Connection conn, String siteIdin) throws Exception {
+		ArrayList<SearchTunnelInfo> arr = new ArrayList<SearchTunnelInfo>();
+		String sqls = new StringBuffer().append(" select l.id,t.az,l.tunnelId,t.tunnelStatus,t.tunnelType,l.aSiteId,l.zSiteId,l.aPortId,l.zPortId,l.frontLabelValue,l.backLabelValue").append(" ,l.atunnelbusinessid,l.ztunnelbusinessid,l.segmentId,se.id SID,").append(" (select s.site_inst_id from site_inst s where s.CellDescribe=l.aoppositeId ) aoppositeId,l.aoppositeId aoppositeIdIP").append(" ,(select s.site_inst_id from site_inst s where s.CellDescribe=l.zoppositeId ) zoppositeId,l.zoppositeId zoppositeIdIP")
+		// .append(" from (select * from lspinfo where id in ( select distinct id1 from ( select l1.id id1,l2.id id2 from lspinfo l1 LEFT JOIN lspinfo l2 on l1.frontLabelValue=l2.backLabelValue and l1.backLabelValue=l2.frontLabelValue where (l1.aSiteId in ").append(siteIdin).append(") and (l1.zSiteId in ").append(siteIdin).append(" )) lll where id2 is not null ) ) l")
+		// .append(" select frontLabelValue,backLabelValue,count(1) cou from lspinfo where (aSiteId in ").append(siteIdin).append(") and (zSiteId in ").append(siteIdin).append(" )  group by frontLabelValue,backLabelValue ) d where d.cou=2) dd")
+		// .append(" LEFT JOIN lspinfo l on dd.frontLabelValue=l.frontLabelValue and dd.backLabelValue=l.backLabelValue  ")
+				.append(" from (select frontLabelValue,backLabelValue,cou from (").append(" select frontLabelValue,backLabelValue,count(1) cou from lspinfo where (aSiteId in ").append(siteIdin).append(") and (zSiteId in ").append(siteIdin).append(" )  group by frontLabelValue,backLabelValue ) d where d.cou=2) dd").append(" LEFT JOIN lspinfo l on dd.frontLabelValue=l.frontLabelValue and dd.backLabelValue=l.backLabelValue  ")
+
+				.append(" LEFT JOIN (select tunnelId,2 az,tunnelStatus,tunnelType from tunnel t where t.isSingle=1 and t.aSiteId=0 and t.zSiteId=0").append(" union all").append(" select tunnelId,1 az,tunnelStatus,tunnelType from tunnel t where t.isSingle=1 and t.aSiteId!= 0 and t.zSiteId=0").append(" union all").append(" select tunnelId,3 az,tunnelStatus,tunnelType from tunnel t where t.isSingle=1 and t.aSiteId=0 and t.zSiteId!=0").append(" union all").append(" select tunnelId,9 az,tunnelStatus,tunnelType from tunnel t where t.isSingle=0 ) t on l.tunnelId=t.tunnelId ").append(" LEFT JOIN segment se on (l.aSiteId =se.ASITEID and l.aPortId=se.APORTID) ").append(" or (l.aSiteId=se.ZSITEID and l.aPortId=se.ZPORTID) ").append(" or (l.zSiteId=se.ASITEID and l.zPortId=se.APORTID ) ").append(" or (l.zSiteId = se.ZSITEID and l.zPortId=se.ZPORTID) where se.id is not null and t.az is not null order by az").toString();
+		// 获取
+		PreparedStatement preparedStatement = null;
+		ResultSet rs = null;
+		// System.out.println("line 1169 . sqls = "+sqls);
+		try {
+			preparedStatement = conn.prepareStatement(sqls);
+			rs = preparedStatement.executeQuery();
+			while (rs.next()) {
+				SearchTunnelInfo st = new SearchTunnelInfo();
+				st.setId(rs.getInt("id"));
+				st.setAz(rs.getInt("az"));
+				st.setTunnelId(rs.getInt("tunnelId"));
+				st.setTunnelStatus(rs.getInt("tunnelStatus"));
+				st.setTunnelType(rs.getInt("tunnelStatus"));
+				st.setASiteId(rs.getInt("aSiteId"));
+				st.setZSiteId(rs.getInt("zSiteId"));
+				st.setAPortId(rs.getInt("aPortId"));
+				st.setZPortId(rs.getInt("zPortId"));
+				st.setFrontLableValue(rs.getInt("frontLabelValue"));
+				st.setBackLableValue(rs.getInt("backLabelValue"));
+				st.setAtunnelbusinessid(rs.getInt("atunnelbusinessid"));
+				st.setZtunnelbusinessid(rs.getInt("ztunnelbusinessid"));
+				st.setSegmentId(rs.getInt("segmentId"));
+				st.setSID(rs.getInt("SID"));
+				st.setAoppositeId(rs.getInt("aoppositeId"));
+				st.setAoppositeIdIP(rs.getString("aoppositeIdIP"));
+				st.setZoppositeId(rs.getInt("zoppositeId"));
+				st.setZoppositeIdIP(rs.getString("zoppositeIdIP"));
+				arr.add(st);
+			}
+			doSearch(arr, conn);
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (rs != null) {
+				try {
+					rs.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				rs = null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+		}
+
+		return true;
+	}
+
+	public int doSearch(ArrayList<SearchTunnelInfo> arr, Connection conn) {
+		// for(SearchTunnelInfo s : arr){
+		// System.out.println("searchtunnelinfo s = "+s.toString());
+		// }
+		for (SearchTunnelInfo se : arr) {
+			if (se.getAz() == 1) { // 说明是开始节点
+				if (HaveEnd(arr, se) == 1) { // 找到跟开始节点对应结束节点,1层，无中间节点
+					// 合并这2个节点lsp数据 ，合并 对应tunnel数据
+					SearchTunnelInfo se2 = getZ(arr, se);
+					// se ,se2
+					String newTunnelName = "tunnel_" + System.currentTimeMillis();
+					PreparedStatement ps = null;
+					String sql = null;
+					try {
+						// 1 插入新tunnel 表 数据
+						sql = new StringBuffer().append(" insert into tunnel (tunnelName,tunnelType,tunnelStatus,bandwidth,aSiteId,zSiteId,aPortId,zPortId,direction,createTime,createUser,isReverse,protectTunnelId,").append(" protectType,protectTunnelName,isSingle,jobStatus,waittime,delaytime,apsenable,position,protectBack,aprotectId,zprotectId,sncpIds) ").append(" select '").append(newTunnelName).append("' tunnelName,t1.tunnelType,t1.tunnelStatus,t1.bandwidth,").append(" t1.aSiteId,t2.zSiteId,t1.aPortId,t2.zPortId,t1.direction,now() createTime,t1.createUser,t1.isReverse").append(" ,t1.protectTunnelId,t1.protectType,t1.protectTunnelName,0 isSingle,t1.jobStatus,t1.waittime,t1.delaytime,t1.apsenable,t1.position,t1.protectBack,t1.aprotectId,t2.zprotectId,t1.sncpIds").append("  from tunnel t1,tunnel t2 where t1.tunnelId in(").append(se.getTunnelId()).append(",").append(se2.getTunnelId()).append(") and t2.tunnelId in(").append(se.getTunnelId()).append(",").append(se2.getTunnelId()).append(") and t1.zSiteId=0 and t2.aSiteId=0  ").toString();
+						// System.out.println("line 1250插入新tunnel . sql : "+sql);
+						ps = conn.prepareStatement(sql);
+						ps.executeUpdate();
+						// 得到新插入的tunnel ID；
+
+						int newTunnelId = 0;// sql 得到
+						sql = "select tunnelId from tunnel where tunnelName='" + newTunnelName + "' ";
+						PreparedStatement preparedS = null;
+						ResultSet rs = null;
+						try {
+							// System.out.println("line 1262查出新tunnel的ID . sql : "+sql);
+							preparedS = conn.prepareStatement(sql);
+							rs = preparedS.executeQuery();
+							if (rs.next()) {
+								newTunnelId = rs.getInt("tunnelId");
+							}
+						} catch (Exception e) {
+							throw e;
+						} finally {
+							if (rs != null) {
+								try {
+									rs.close();
+								} catch (Exception e) {
+									throw e;
+								}
+								rs = null;
+							}
+							if (preparedS != null) {
+								try {
+									preparedS.close();
+								} catch (Exception e) {
+									throw e;
+								}
+								preparedS = null;
+							}
+						}
+						if (newTunnelId == 0) {
+							ExceptionManage.dispose(new Exception("tunnel Search error. "), this.getClass());
+							continue;
+						}
+						// 更新 pw表 ，把老的tunnel关联更新到新的tunnulid上
+						sql = new StringBuffer().append("update pwinfo set tunnelId= ").append(newTunnelId).append(" where tunnelId in(").append(se.getTunnelId()).append(",").append(se2.getTunnelId()).append(")").toString();
+						// System.out.println("1294更新pw sql : "+sql);
+						ps = conn.prepareStatement(sql);
+						ps.executeUpdate();
+						// 更新 tunnel 表 ，当有保护时候,protectTunnelId =保护的tunnelID.
+						sql = new StringBuffer().append("update tunnel set protectTunnelId= ").append(newTunnelId).append(" where protectTunnelId in(").append(se.getTunnelId()).append(",").append(se2.getTunnelId()).append(")").toString();
+						// System.out.println("1294更新tunnel保护  sql : "+sql);
+						ps = conn.prepareStatement(sql);
+						ps.executeUpdate();
+						// 更新qos表
+						sql = new StringBuffer().append("update qosrelevance set objId= ").append(newTunnelId).append(" where objType='TUNNEL' and objId in(").append(se.getTunnelId()).append(",").append(se2.getTunnelId()).append(")").toString();
+						// System.out.println("1294更新qos sql : "+sql);
+						ps = conn.prepareStatement(sql);
+						ps.executeUpdate();
+						// 更新oam表1
+						sql = new StringBuffer().append("update oammepinfo set objId= ").append(newTunnelId).append(" where objId in(").append(se.getTunnelId()).append(",").append(se2.getTunnelId()).append(")").toString();
+						// System.out.println("1294更新oammepinfo sql : "+sql);
+						ps = conn.prepareStatement(sql);
+						ps.executeUpdate();
+						// 更新oam表2
+						sql = new StringBuffer().append("update oammipinfo set objId= ").append(newTunnelId).append(" where objId in(").append(se.getTunnelId()).append(",").append(se2.getTunnelId()).append(")").toString();
+						// System.out.println("1294更新oammipinfo sql : "+sql);
+						ps = conn.prepareStatement(sql);
+						ps.executeUpdate();
+
+						// 删除老的 tunnel 数据
+						sql = new StringBuffer().append("delete from tunnel where tunnelId in(").append(se.getTunnelId()).append(",").append(se2.getTunnelId()).append(")").toString();
+						// System.out.println("1301删除老tunnel sql : "+sql);
+						ps = conn.prepareStatement(sql);
+						ps.executeUpdate();
+						// 插入新的lsp数据
+						sql = new StringBuffer().append("insert into lspinfo (tunnelId,pathStatus,aSiteId,zSiteId,aPortId,zPortId,frontLabelValue,backLabelValue,alspbusinessid,zlspbusinessid,").append("atunnelbusinessid,ztunnelbusinessid,segmentId,aoppositeId,zoppositeId) values ( ").append(newTunnelId).append(",0,").append(se.getASiteId()).append(",").append(se2.getZSiteId()).append(",").append(se.getAPortId()).append(",").append(se2.getZPortId()).append(",").append(se.getFrontLableValue()).append(",").append(se2.getBackLableValue()).append(",0,0,").append(se.getAtunnelbusinessid()).append(",").append(se2.getZtunnelbusinessid()).append(",").append(se.getSID()).append(",'").append(se.getAoppositeIdIP()).append("','").append(se2.getZoppositeIdIP()).append("' )").toString();
+						// System.out.println("1321插入新lsp sql : "+sql);
+						ps = conn.prepareStatement(sql);
+						ps.executeUpdate();
+						// 删除老的lsp数据
+						sql = new StringBuffer().append("delete from lspinfo where id in(").append(se.getId()).append(",").append(se2.getId()).append(")").toString();
+						// System.out.println("1328删除老lsp sql : "+sql);
+						ps = conn.prepareStatement(sql);
+						ps.executeUpdate();
+					} catch (Exception e) {
+						ExceptionManage.dispose(e, this.getClass());
+					} finally {
+						if (ps != null) {
+							try {
+								ps.close();
+							} catch (Exception e) {
+								ExceptionManage.dispose(e, this.getClass());
+							}
+							ps = null;
+						}
+						sql = null;
+					}
+				}
+				/** 开启循环有中间节点 **/
+				if (HaveEnd(arr, se) >= 2) {// 有结尾节点,有中间节点，该连接是完整链路
+					int cenI = HaveEnd(arr, se);
+					SearchTunnelInfo[] arrS = new SearchTunnelInfo[cenI * 2];
+					setT(arrS, arr, se); // 设置带中间节点的数据组
+					SearchTunnelInfo se2 = arrS[arrS.length - 1]; // 设置z
+					String newTunnelName = "tunnel_" + System.currentTimeMillis();
+					PreparedStatement ps = null;
+					String sql = null;
+					try {
+						// 1 插入新tunnel 表 数据
+						sql = new StringBuffer().append(" insert into tunnel (tunnelName,tunnelType,tunnelStatus,bandwidth,aSiteId,zSiteId,aPortId,zPortId,direction,createTime,createUser,isReverse,protectTunnelId,").append(" protectType,protectTunnelName,isSingle,jobStatus,waittime,delaytime,apsenable,position,protectBack,aprotectId,zprotectId,sncpIds) ").append(" select '").append(newTunnelName).append("' tunnelName,t1.tunnelType,t1.tunnelStatus,t1.bandwidth,").append(" t1.aSiteId,t2.zSiteId,t1.aPortId,t2.zPortId,t1.direction,now() createTime,t1.createUser,t1.isReverse").append(" ,t1.protectTunnelId,t1.protectType,t1.protectTunnelName,0 isSingle,t1.jobStatus,t1.waittime,t1.delaytime,t1.apsenable,t1.position,t1.protectBack,t1.aprotectId,t2.zprotectId,t1.sncpIds").append("  from tunnel t1,tunnel t2 where t1.tunnelId in(").append(se.getTunnelId()).append(",").append(se2.getTunnelId()).append(") and t2.tunnelId in(").append(se.getTunnelId()).append(",").append(se2.getTunnelId()).append(") and t1.zSiteId=0 and t2.aSiteId=0  ").toString();
+						// System.out.println("1413 插入新tunnel sql : "+sql);
+						ps = conn.prepareStatement(sql);
+						ps.executeUpdate();
+						// 得到新插入的tunnel ID；
+						sql = "select tunnelId from tunnel where tunnelName='" + newTunnelName + "' ";
+						// 得到所有中间tunnelId
+						String Tid = new String("(");
+						for (SearchTunnelInfo a : arrS) {
+							Tid = Tid + a.getTunnelId() + ",";
+						}
+						Tid = Tid.substring(0, Tid.length() - 1) + ")";
+
+						int newTunnelId = 0;// sql 得到
+						PreparedStatement preparedS = null;
+						ResultSet rs = null;
+						try {
+							// System.out.println("line 1429查出新tunnel的ID . sql : "+sql);
+							preparedS = conn.prepareStatement(sql);
+							rs = preparedS.executeQuery();
+							if (rs.next()) {
+								newTunnelId = rs.getInt("tunnelId");
+							}
+						} catch (Exception e) {
+							throw e;
+						} finally {
+							if (rs != null) {
+								try {
+									rs.close();
+								} catch (Exception e) {
+									throw e;
+								}
+								rs = null;
+							}
+							if (preparedS != null) {
+								try {
+									preparedS.close();
+								} catch (Exception e) {
+									throw e;
+								}
+								preparedS = null;
+							}
+						}
+						if (newTunnelId == 0) {
+							ExceptionManage.dispose(new Exception("tunnel Search error. "), this.getClass());
+							continue;
+						}
+
+						// 更新 pw表 ，把老的tunnel关联更新到新的tunnulid上
+						sql = new StringBuffer().append("update pwinfo set tunnelId= ").append(newTunnelId).append(" where tunnelId in ").append(Tid).toString();
+						// System.out.println("1461更新pw sql : "+sql);
+						ps = conn.prepareStatement(sql);
+						ps.executeUpdate();
+						// 更新 tunnel 表 ，当有保护时候,protectTunnelId =保护的tunnelID.
+						sql = new StringBuffer().append("update tunnel set protectTunnelId= ").append(newTunnelId).append(" where protectTunnelId in ").append(Tid).toString();
+						// System.out.println("1461更新tunnel 保护tunnelID sql : "+sql);
+						ps = conn.prepareStatement(sql);
+						ps.executeUpdate();
+						// 更新qos表
+						sql = new StringBuffer().append("update qosrelevance set objId= ").append(newTunnelId).append(" where objType='TUNNEL' and objId in ").append(Tid).toString();
+						// System.out.println("1461更新qos sql : "+sql);
+						ps = conn.prepareStatement(sql);
+						ps.executeUpdate();
+						// 更新oam表1
+						sql = new StringBuffer().append("update oammepinfo set objId= ").append(newTunnelId).append(" where objId in ").append(Tid).toString();
+						// System.out.println("1461更新oammepinfo sql : "+sql);
+						ps = conn.prepareStatement(sql);
+						ps.executeUpdate();
+						// 更新oam表2
+						sql = new StringBuffer().append("update oammipinfo set objId= ").append(newTunnelId).append(" where objId in ").append(Tid).toString();
+						// System.out.println("1461更新oammipinfo sql : "+sql);
+						ps = conn.prepareStatement(sql);
+						ps.executeUpdate();
+						// 删除老的 tunnel 数据
+						sql = new StringBuffer().append("delete from tunnel where tunnelId in ").append(Tid).toString();
+						// System.out.println("1494删除老tunnel sql : "+sql);
+						ps = conn.prepareStatement(sql);
+						ps.executeUpdate();
+						// 插入新的lsp数据
+						for (int i = 0; i < cenI * 2; i = i + 2) {
+							lspSearchdo(newTunnelId, arrS[i], arrS[i + 1], conn); // 循环合并中间lsp信息
+						}
+
+					} catch (Exception e) {
+						ExceptionManage.dispose(e, this.getClass());
+					} finally {
+						if (ps != null) {
+							try {
+								ps.close();
+							} catch (Exception e) {
+								ExceptionManage.dispose(e, this.getClass());
+							}
+							ps = null;
+						}
+						sql = null;
+					}
+				}
+
+			}
+		}
+		return 0;
+	}
+
+	private void lspSearchdo(int newTunnelId, SearchTunnelInfo se, SearchTunnelInfo se2, Connection conn) {
+		PreparedStatement ps = null;
+		String sql = null;
+		try {
+			sql = new StringBuffer().append("insert into lspinfo (tunnelId,pathStatus,aSiteId,zSiteId,aPortId,zPortId,frontLabelValue,backLabelValue,alspbusinessid,zlspbusinessid,").append("atunnelbusinessid,ztunnelbusinessid,segmentId,aoppositeId,zoppositeId) values ( ").append(newTunnelId).append(",0,").append(se.getASiteId()).append(",").append(se2.getZSiteId()).append(",").append(se.getAPortId()).append(",").append(se2.getZPortId()).append(",").append(se.getFrontLableValue()).append(",").append(se2.getBackLableValue()).append(",0,0,").append(se.getAtunnelbusinessid()).append(",").append(se2.getZtunnelbusinessid()).append(",").append(se.getSID()).append(",'").append(se.getAoppositeIdIP()).append("','").append(se2.getZoppositeIdIP()).append("' )").toString();
+			// System.out.println("1541 插入新的lspinfo信息 sql : "+sql);
+			ps = conn.prepareStatement(sql);
+			ps.executeUpdate();
+			// 删除老的lsp数据
+			sql = new StringBuffer().append("delete from lspinfo where id in(").append(se.getId()).append(",").append(se2.getId()).append(")").toString();
+			// System.out.println("1547删除老的lsp信息 sql : "+sql);
+			ps = conn.prepareStatement(sql);
+			ps.executeUpdate();
+		} catch (Exception e) {
+			ExceptionManage.dispose(e, this.getClass());
+		} finally {
+			if (ps != null) {
+				try {
+					ps.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e, this.getClass());
+				}
+				ps = null;
+			}
+			sql = null;
+		}
+	}
+
+	// 查找对应 Z 节点
+	public SearchTunnelInfo getZ(ArrayList<SearchTunnelInfo> arr, SearchTunnelInfo sear) {
+		for (SearchTunnelInfo ss : arr) {
+			if ((ss.getId() != sear.getId()) && (ss.getFrontLableValue() == sear.getFrontLableValue()) && (ss.getBackLableValue() == sear.getBackLableValue())) { // && (ss.getTunnelType()==sear.getTunnelType() )
+				return ss;
+			}
+		}
+		return null;
+	}
+
+	// 查找中间节点的下一开始 A
+	public SearchTunnelInfo getZZ(ArrayList<SearchTunnelInfo> arr, SearchTunnelInfo sear) {
+		for (SearchTunnelInfo ss : arr) {
+			if ((ss.getId() != sear.getId()) && (ss.getAz() == 2) && (ss.getTunnelId() == sear.getTunnelId()) && (ss.getASiteId() != 0)) {
+				return ss;
+			}
+		}
+		return null;
+	}
+
+	// 判断该节点是否可以完成,返回该节点 完成 时的层数,初始 为 1
+	public int HaveEnd(ArrayList<SearchTunnelInfo> arr, SearchTunnelInfo sear) {
+		if (sear == null) {
+			return -9999;
+		}
+		SearchTunnelInfo ss = getZ(arr, sear);
+		if (ss == null) {
+			return -9999;
+		}
+		if (ss.getAz() == 3) {
+			return 1;
+		}
+		if (ss.getAz() == 2) {
+			return 1 + HaveEnd(arr, getZZ(arr, ss));
+		}
+		return -9999;// 校验失败的该中间节点允许最大个数是9998个
+	}
+
+	// 设置完整队列
+	private void setT(SearchTunnelInfo[] arrS, ArrayList<SearchTunnelInfo> arr, SearchTunnelInfo a) {
+		arrS[0] = a;
+		int i = 1;
+		do {
+			if (i % 2 == 1) {
+				arrS[i] = getZ(arr, arrS[i - 1]);
+			} // 下一节点
+			if (i % 2 == 0 && i != 0) {
+				arrS[i] = getZZ(arr, arrS[i - 1]);
+			} // 下一开始节点
+			i++;
+		} while (i < arrS.length);
+	}
+
+	public List<Integer> querySiteIdByTunnelName(String oldTunnelName, Connection conn) throws Exception {
+		if (conn == null) {
+			throw new Exception("connection is null");
+		}
+
+		List<Integer> siteIdList = new ArrayList<Integer>();
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+		try {
+			sql = "select aSiteId,zSiteId,aPortId,zPortId from tunnel t where tunnelName = ?";
+			preparedStatement = conn.prepareStatement(sql);
+			preparedStatement.setString(1, oldTunnelName);
+			resultSet = preparedStatement.executeQuery();
+			while (resultSet.next()) {
+				siteIdList.add(resultSet.getInt("aSiteId"));
+				siteIdList.add(resultSet.getInt("zSiteId"));
+				siteIdList.add(resultSet.getInt("aPortId"));
+				siteIdList.add(resultSet.getInt("zPortId"));
+			}
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (resultSet != null) {
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				resultSet = null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+		return siteIdList;
+	}
+
+	/**
+	 * 根据site查询
+	 * 
+	 * @param siteId
+	 *            网元ID
+	 * @param connection
+	 *            数据库连接
+	 * @return
+	 * @throws Exception
+	 */
+	public List<Tunnel> selectBySiteId(int siteId, Connection connection) throws Exception {
+
+		if (siteId == 0) {
+			throw new Exception("siteid is 0");
+		}
+		if (connection == null) {
+			throw new Exception("connection is null");
+		}
+
+		List<Tunnel> tunnelList = null;
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		try {
+			tunnelList = new ArrayList<Tunnel>();
+			sql = "select * from tunnel t where t.tunnelStatus=1 and t.isSingle=0 and t.aSiteId=" + siteId + " or t.zSiteId=" + siteId;
+			preparedStatement = connection.prepareStatement(sql);
+			tunnelList = this.executeQuery(preparedStatement);
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+		return tunnelList;
+	}
+
+	/**
+	 * 查询数据库中条件等于参数tunnel的tunnel集合。（eline快速配置业务时，查询是否存在可用tunnel时用）
+	 * 
+	 * @param tunnel
+	 *            页面传递的tunnel对象
+	 * @param connection
+	 *            数据库连接
+	 * @return tunnel集合
+	 * @throws Exception
+	 */
+	public List<Tunnel> queryExistTunnel(Tunnel tunnel, Connection connection) throws Exception {
+		PreparedStatement preparedStatement = null;
+		List<Tunnel> tunnelList = null;
+		try {
+			preparedStatement = connection.prepareStatement(this.SELECT_EXIST_TUNNEL);
+			preparedStatement.setString(1, tunnel.getTunnelType());
+			preparedStatement.setInt(2, tunnel.getTunnelStatus());
+			preparedStatement.setInt(3, tunnel.getIsSingle());
+			preparedStatement.setInt(4, tunnel.getWaittime());
+			preparedStatement.setInt(5, tunnel.getDelaytime());
+			preparedStatement.setInt(6, tunnel.getApsenable());
+			preparedStatement.setInt(7, tunnel.getASiteId());
+			preparedStatement.setInt(8, tunnel.getAPortId());
+			preparedStatement.setInt(9, tunnel.getZSiteId());
+			preparedStatement.setInt(10, tunnel.getZPortId());
+			preparedStatement.setInt(11, tunnel.getZSiteId());
+			preparedStatement.setInt(12, tunnel.getZPortId());
+			preparedStatement.setInt(13, tunnel.getASiteId());
+			preparedStatement.setInt(14, tunnel.getAPortId());
+
+			tunnelList = this.executeQuery(preparedStatement);
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+		}
+		return tunnelList;
+	}
+
+	/**
+	 * 关联查询，不分单网元网络侧 通过条件查询Tunnel
+	 * 
+	 * @param tunnelCondition
+	 *            查询条件
+	 * @param connection
+	 *            数据库连接
+	 * @return List<Tunnel>集合
+	 * @throws Exception
+	 */
+	public List<Tunnel> queryByConditionAll(Tunnel tunnelCondition, Connection connection) throws Exception {
+
+		if (null == tunnelCondition) {
+			throw new Exception("tunnelCondition is null");
+		}
+
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		List<Tunnel> tunnelList = null;
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+
+		try {
+			tunnelList = new ArrayList<Tunnel>();
+			sql = "SELECT t.zVlanEnable,t.zOutVlanValue,t.zTp_id,t.aVlanEnable,t.aOutVlanValue,t.aTp_id,t.sourceMac,t.endMac,t.inBandwidthControl,t.outBandwidthControl,t.waittime,t.delaytime,t.apsenable, t.isSingle,t.jobStatus, t.tunnelId, t.tunnelName, t.tunnelType, t.tunnelStatus, t.bandwidth, t.aSiteId, t.zSiteId, t.aPortId, t.zPortId, t.direction, t.isReverse, t.createTime, t.createUser, sa.CellId AS aSiteName, sz.CellId AS zSiteName, pa.portName AS aPortName, pz.portName AS zPortName ,t.protectTunnelId,t.protectTunnelName ,t.protectType ,t.position ,t.protectBack FROM site_inst sa, site_inst sz, port_inst pa, port_inst pz, tunnel t WHERE t.tunnelId = t.tunnelId and tunneltype!='0'";
+			if (tunnelCondition.getAPortId() > 0 && tunnelCondition.getZPortId() == 0) {
+				sql += "and t.aSiteId = sa.site_inst_id  AND t.aPortId = pa.portId ";
+			} else if (tunnelCondition.getAPortId() == 0 && tunnelCondition.getZPortId() > 0) {
+				sql += "and t.zSiteId = sz.site_inst_id AND t.zPortId = pz.portId ";
+			} else {
+				sql += "and t.aSiteId = sa.site_inst_id AND t.zSiteId = sz.site_inst_id AND t.aPortId = pa.portId AND t.zPortId = pz.portId ";
+			}
+			if (tunnelCondition.getTunnelId() > 0) {
+				sql += " and t.tunnelId=" + tunnelCondition.getTunnelId();
+			}
+			if (tunnelCondition.getASiteId() != 0) {
+				sql += " and t.aSiteId=" + tunnelCondition.getASiteId();
+			}
+			if (tunnelCondition.getZSiteId() != 0) {
+				sql += " and t.zSiteId=" + tunnelCondition.getZSiteId();
+			}
+			if (tunnelCondition.getTunnelStatus() != 0) {
+				sql += " and t.tunnelstatus=" + tunnelCondition.getTunnelStatus();
+			}
+			if (tunnelCondition.getAPortId() != 0) {
+				sql += " and t.aPortId=" + tunnelCondition.getAPortId();
+			}
+			if (tunnelCondition.getZPortId() != 0) {
+				sql += " and t.zPortId=" + tunnelCondition.getZPortId();
+			}
+			if (tunnelCondition.getProtectTunnelId() != 0) {
+				sql += " and t.protectTunnelId=" + tunnelCondition.getProtectTunnelId();
+			}
+			preparedStatement = connection.prepareStatement(sql);
+			tunnelList = this.executeQuery_join(preparedStatement);
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+		return tunnelList;
+	}
+
+	/**
+	 * 根据端口和保护Id查找主用tunnel，不关联
+	 * 
+	 * @param siteId
+	 * @param protectId
+	 * @param connection
+	 * @return
+	 * @throws Exception
+	 */
+	public Tunnel queryBySiteIdAndProtectId(int siteId, int protectId, Connection connection) throws Exception {
+		if (connection == null) {
+			throw new Exception("connection is null");
+		}
+
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		Tunnel tunnel = null;
+		List<Tunnel> tunnelList = null;
+		try {
+			sql = "select * from tunnel  where (asiteid=? and aprotectId =?) OR (zsiteid=? and zprotectId =?)";
+			preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.setInt(1, siteId);
+			preparedStatement.setInt(2, protectId);
+			preparedStatement.setInt(3, siteId);
+			preparedStatement.setInt(4, protectId);
+			tunnelList = this.executeQuery(preparedStatement);
+
+			if (tunnelList.size() == 1) {
+				tunnel = tunnelList.get(0);
+			}
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+			tunnelList = null;
+		}
+		return tunnel;
+	}
+
+	/**
+	 * 根据site查询不包含xc
+	 * 
+	 * @param siteId
+	 *            网元ID
+	 * @param connection
+	 *            数据库连接
+	 * @return
+	 * @throws Exception
+	 */
+	public List<Tunnel> queryBySiteIdNoXc(int siteId, Connection connection) throws Exception {
+
+		if (siteId == 0) {
+			throw new Exception("siteid is 0");
+		}
+		if (connection == null) {
+			throw new Exception("connection is null");
+		}
+
+		List<Tunnel> tunnelList = null;
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		try {
+			tunnelList = new ArrayList<Tunnel>();
+			sql = "select * from tunnel  WHERE aSiteId=" + siteId + " or zSiteId=" + siteId + ")";
+
+			preparedStatement = connection.prepareStatement(sql);
+			tunnelList = this.executeQuery(preparedStatement);
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+		return tunnelList;
+	}
+
+	/**
+	 * 根据tunnelA,Z过滤可用SNCP保护（武汉）
+	 * 
+	 * @param siteId
+	 * @param protectId
+	 * @param connection
+	 * @return
+	 * @throws Exception
+	 */
+	public List<Tunnel> querySNCPbySiteId(int asiteId, int zsiteId, String tunneltype, Connection connection) throws Exception {
+		if (connection == null) {
+			throw new Exception("connection is null");
+		}
+
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		List<Tunnel> tunnelList = null;
+		try {
+			sql = "select * from tunnel  where isSingle= 0 and (asiteid !=? and zsiteid !=?) and (zsiteid !=? and zsiteid !=?) and tunnelType='" + tunneltype + "'";
+			preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.setInt(1, asiteId);
+			preparedStatement.setInt(2, asiteId);
+			preparedStatement.setInt(3, zsiteId);
+			preparedStatement.setInt(4, zsiteId);
+			tunnelList = this.executeQuery(preparedStatement);
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+		return tunnelList;
+	}
+
+	/**
+	 * 根据site查询
+	 * 
+	 * @param siteId
+	 *            网元ID
+	 * @param connection
+	 *            数据库连接
+	 * @return
+	 * @throws Exception
+	 */
+	public List<Tunnel> selectTunnelBySiteId(int siteId, Connection connection) throws Exception {
+
+		if (siteId == 0) {
+			throw new Exception("siteid is 0");
+		}
+		if (connection == null) {
+			throw new Exception("connection is null");
+		}
+
+		List<Tunnel> tunnelList = null;
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		try {
+			tunnelList = new ArrayList<Tunnel>();
+			sql = "select * from tunnel t where t.tunnelStatus=1 and t.aSiteId=" + siteId + " or t.zSiteId=" + siteId;
+			preparedStatement = connection.prepareStatement(sql);
+			tunnelList = this.executeQuery(preparedStatement);
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+		return tunnelList;
+	}
+
+	/**
+	 * 根据两个端口查询出跟这两个端口相关联的所有tunnel 段模块中查询剩余带宽时用
+	 * 
+	 * @param portId1
+	 *            端口id=段的aportid
+	 * @param portId2
+	 *            端口id=段的zportid
+	 * @param connection
+	 *            数据库连接
+	 * @return
+	 * @throws Exception
+	 */
+	public List<Tunnel> queryPort(int portId1, int portId2, Connection connection) throws Exception {
+
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		List<Tunnel> tunnelList = null;
+		try {
+
+			sql = "select * from tunnel where tunnelId IN (select tunnelId from lspinfo where aPortId=? OR aPortId=?  OR zPortId=? or zPortId=?)";
+			preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.setInt(1, portId1);
+			preparedStatement.setInt(2, portId2);
+			preparedStatement.setInt(3, portId1);
+			preparedStatement.setInt(4, portId2);
+
+			tunnelList = this.executeQuery(preparedStatement);
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+		return tunnelList;
+	}
+
+	/**
+	 * 查询同一端口下是否有多条tunnel
+	 * 
+	 * @param portId
+	 * @param label
+	 * @return
+	 * @throws Exception
+	 * @throws Exception
+	 */
+	public List<Integer> checkPortUsable(int portId, Connection connection) throws Exception {
+		String sql = "select tunnelId from tunnel where aportid=? or zportid=?";
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+		List<Integer> tunnelIdList = new ArrayList<Integer>();
+		try {
+			preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.setInt(1, portId);
+			preparedStatement.setInt(2, portId);
+			resultSet = preparedStatement.executeQuery();
+			while (resultSet.next()) {
+				int tunnelId = resultSet.getInt("tunnelId");
+				if (!tunnelIdList.contains(tunnelId)) {
+					tunnelIdList.add(tunnelId);
+				}
+			}
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (resultSet != null) {
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				resultSet = null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+		}
+
+		return tunnelIdList;
+	}
+
+	public List<Tunnel> selectForSite(int siteId, Connection connection) throws Exception {
+		if (siteId == 0) {
+			throw new Exception("siteid is 0");
+		}
+		if (connection == null) {
+			throw new Exception("connection is null");
+		}
+
+		List<Tunnel> tunnelList = null;
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		try {
+			tunnelList = new ArrayList<Tunnel>();
+			sql = "select * from tunnel t where t.tunnelStatus=1 and t.aSiteId=" + siteId + " or t.zSiteId=" + siteId;
+			preparedStatement = connection.prepareStatement(sql);
+			tunnelList = this.executeQuery(preparedStatement);
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+		return tunnelList;
+	}
+
+	public boolean selectByTunnelId(int id, Connection connection) throws Exception {
+
+		if (connection == null) {
+			throw new Exception("connection is null");
+		}
+		boolean exist = false;
+		String sql = "select tunnelId from tunnel where tunnelId=?";
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+		try {
+			preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.setInt(1, id);
+			resultSet = preparedStatement.executeQuery();
+			while (resultSet.next()) {
+				int tunnelId = resultSet.getInt("tunnelId");
+				if (tunnelId > 0) {
+					exist = true;
+				}
+			}
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (resultSet != null) {
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				resultSet = null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+		}
+		return exist;
+	}
+
+	/**
+	 * 通过a、z端网元ID查询tunnel
+	 * 
+	 * @param aSiteId
+	 *            a端网元ID
+	 * @param zSiteId
+	 *            z端网元ID
+	 * @param connection
+	 * @return
+	 * @throws Exception
+	 */
+	public List<Tunnel> selectByASiteIdAndZSiteId(int aSiteId, int zSiteId, Connection connection) throws Exception {
+		if (connection == null) {
+			throw new Exception("connection is null");
+		}
+
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		List<Tunnel> tunnelList = null;
+		try {
+			sql = "SELECT t.zVlanEnable,t.zOutVlanValue,t.zTp_id,t.aVlanEnable,t.aOutVlanValue,t.aTp_id,t.sourceMac,t.endMac,t.inBandwidthControl,t.outBandwidthControl,t.waittime,t.delaytime,t.apsenable, t.isSingle,t.jobStatus, t.tunnelId, t.tunnelName, t.tunnelType, t.tunnelStatus, t.bandwidth, t.aSiteId, t.zSiteId, t.aPortId, t.zPortId, t.direction, t.isReverse, t.createTime, t.createUser, sa.CellId AS aSiteName, sz.CellId AS zSiteName, pa.portName AS aPortName, pz.portName AS zPortName ,t.protectTunnelId,t.protectTunnelName ,t.protectType ,t.position ,t.protectBack,t.sncpIds FROM site_inst sa, site_inst sz, port_inst pa, port_inst pz, tunnel t WHERE t.aSiteId = sa.site_inst_id AND t.zSiteId = sz.site_inst_id AND t.aPortId = pa.portId AND t.zPortId = pz.portId AND t.tunnelId = t.tunnelId and tunneltype!='0' and t.isSingle='0' and ((t.aSiteId = ? and t.zSiteId = ?) or (t.aSiteId = ? and t.zSiteId = ? )) ";
+			preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.setInt(1, aSiteId);
+			preparedStatement.setInt(2, zSiteId);
+			preparedStatement.setInt(3, zSiteId);
+			preparedStatement.setInt(4, aSiteId);
+			tunnelList = this.executeQuery_join(preparedStatement);
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+		return tunnelList;
+	}
+
+	/**
+	 * 通过tunnel名称查询
+	 * 
+	 * @param tunneName
+	 * @param connection
+	 * @return
+	 * @throws Exception
+	 */
+	public List<Tunnel> selectByTunnelName(String tunneName, Connection connection) throws Exception {
+		if (tunneName == null) {
+			throw new Exception("siteid is 0");
+		}
+		if (connection == null) {
+			throw new Exception("connection is null");
+		}
+
+		List<Tunnel> tunnelList = null;
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		try {
+			tunnelList = new ArrayList<Tunnel>();
+			sql = "select * from tunnel t where t.tunnelName= ? ";
+
+			preparedStatement = connection.prepareStatement(sql);
+			if (UiUtil.isNull(tunneName)) {
+				preparedStatement.setObject(1, tunneName);
+			}
+			tunnelList = this.executeQuery(preparedStatement);
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+		return tunnelList;
+	}
+
+	/**
+	 * 通过条件查询Tunnel 关联site_roate表
+	 * 
+	 * @param tunnelCondition
+	 *            查询条件
+	 * @param connection
+	 *            数据库连接
+	 * @return List<Tunnel>集合
+	 * 
+	 * @throws Exception
+	 */
+	public List<Tunnel> queryByCondition_joinRotate(Tunnel tunnelCondition, Connection connection) throws Exception {
+
+		if (null == tunnelCondition) {
+			throw new Exception("tunnelCondition is null");
+		}
+
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		List<Tunnel> tunnelList = null;
+		ResultSet resultSet = null;
+		Tunnel tunnel = null;
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		List<Object> paraList = new ArrayList<Object>();
+
+		try {
+			tunnelList = new ArrayList<Tunnel>();
+			sql = "SELECT t.*, sa.roate AS 'arotate', sz.roate AS 'zrotate' FROM tunnel t, tunnel pt, site_roate sa, site_roate sz WHERE " + "t.protectTunnelId = pt.tunnelId AND pt.tunnelId = sa.typeId AND pt.aSiteId = sa.siteId AND pt.tunnelId = sz.typeId AND " + "pt.zSiteId = sz.siteId AND t.isSingle = 0";
+
+			if (null != tunnelCondition.getTunnelType() && !"".equals(tunnelCondition.getTunnelType()) && Integer.parseInt(tunnelCondition.getTunnelType()) > 0) {
+				sql += " and t.tunnelType = ? ";
+				paraList.add(tunnelCondition.getTunnelType());
+			}
+			if (tunnelCondition.getTunnelId() > 0) {
+				sql += " and t.tunnelId = ? ";
+				paraList.add(tunnelCondition.getTunnelId());
+			}
+			if (tunnelCondition.getASiteId() != 0) {
+				sql += " and t.aSiteId = ?";
+				paraList.add(tunnelCondition.getASiteId());
+			}
+			if (tunnelCondition.getZSiteId() != 0) {
+				sql += " and t.zSiteId = ?";
+				paraList.add(tunnelCondition.getZSiteId());
+			}
+			if (tunnelCondition.getTunnelStatus() != 0) {
+				sql += " and t.tunnelstatus = ?";
+				paraList.add(tunnelCondition.getTunnelStatus());
+			}
+
+			if (tunnelCondition.getAPortId() != 0) {
+				sql += " and t.aPortId = ?";
+				paraList.add(tunnelCondition.getAPortId());
+			}
+			if (tunnelCondition.getZPortId() != 0) {
+				sql += " and t.zPortId = ?";
+				paraList.add(tunnelCondition.getZPortId());
+			}
+			if (tunnelCondition.getProtectTunnelId() != 0) {
+				sql += " and t.protectTunnelId = ?";
+				paraList.add(tunnelCondition.getProtectTunnelId());
+			}
+			if (tunnelCondition.getAprotectId() != 0) {
+				sql += " and t.aprotectId = ?";
+				paraList.add(tunnelCondition.getAprotectId());
+			}
+			if (tunnelCondition.getZprotectId() != 0) {
+				sql += " and t.zprotectId = ?";
+				paraList.add(tunnelCondition.getZprotectId());
+			}
+			preparedStatement = connection.prepareStatement(sql);
+			for (int i = 0; i < paraList.size(); i++) {
+				preparedStatement.setObject(i + 1, paraList.get(i));
+			}
+
+			tunnelList = new ArrayList<Tunnel>();
+			resultSet = preparedStatement.executeQuery();
+
+			while (resultSet.next()) {
+				tunnel = new Tunnel();
+				tunnel.setTunnelId(resultSet.getInt("tunnelId"));
+				tunnel.setTunnelName(resultSet.getString("tunnelName"));
+				tunnel.setTunnelType(resultSet.getString("tunnelType"));
+				tunnel.setTunnelStatus(resultSet.getInt("tunnelStatus"));
+				tunnel.setBandwidth(resultSet.getInt("bandwidth"));
+				tunnel.setASiteId(resultSet.getInt("aSiteId"));
+				tunnel.setZSiteId(resultSet.getInt("ZSiteId"));
+				tunnel.setAPortId(resultSet.getInt("aPortId"));
+				tunnel.setZPortId(resultSet.getInt("zPortId"));
+				tunnel.setDirection(resultSet.getString("direction"));
+				tunnel.setIsReverse(resultSet.getInt("isReverse"));
+				tunnel.setCreateTime(resultSet.getString("createTime"));
+				tunnel.setCreateUser(resultSet.getString("createUser"));
+				tunnel.setProtectTunnelId(resultSet.getInt("protectTunnelId"));
+				tunnel.setProtectTunnelName(resultSet.getString("protectTunnelName"));
+				tunnel.setProtectType(resultSet.getInt("protectType"));
+				tunnel.setIsSingle(resultSet.getInt("isSingle"));
+				tunnel.setJobStatus(resultSet.getString("JobStatus"));
+				tunnel.setWaittime(resultSet.getInt("waittime"));
+				tunnel.setDelaytime(resultSet.getInt("delaytime"));
+				tunnel.setApsenable(resultSet.getInt("apsenable"));
+				tunnel.setPosition(resultSet.getInt("position"));
+				tunnel.setProtectBack(resultSet.getInt("protectBack"));
+				tunnel.setAprotectId(resultSet.getInt("aprotectId"));
+				tunnel.setZprotectId(resultSet.getInt("zprotectId"));
+				tunnel.setSncpIds(resultSet.getString("sncpIds"));
+				tunnel.setRotate_a(resultSet.getInt("arotate"));
+				tunnel.setRotate_z(resultSet.getInt("zrotate"));
+				tunnel.setInBandwidthControl(resultSet.getInt("inBandwidthControl"));
+				tunnel.setOutBandwidthControl(resultSet.getInt("outBandwidthControl"));
+				tunnel.setaVlanEnable(resultSet.getInt("aVlanEnable"));
+				tunnel.setaOutVlanValue(resultSet.getInt("aOutVlanValue"));
+				tunnel.setaTp_id(resultSet.getInt("aTp_id"));
+				tunnel.setzVlanEnable(resultSet.getInt("zVlanEnable"));
+				tunnel.setzOutVlanValue(resultSet.getInt("zOutVlanValue"));
+				tunnel.setzTp_id(resultSet.getInt("zTp_id"));
+				tunnel.setSourceMac(resultSet.getString("sourceMac"));
+				tunnel.setEndMac(resultSet.getString("endMac"));
+				tunnelList.add(tunnel);
+			}
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (resultSet != null) {
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				resultSet = null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+			tunnel = null;
+		}
+		return tunnelList;
+	}
+
+	/**
+	 * 根据site查询
+	 * 
+	 * @param siteId
+	 *            网元ID
+	 * @param connection
+	 *            数据库连接
+	 * @return
+	 * @throws Exception
+	 */
+	public List<Tunnel> queryTunnelBySiteId(int siteId, Connection connection) throws Exception {
+
+		if (siteId == 0) {
+			throw new Exception("siteid is 0");
+		}
+		if (connection == null) {
+			throw new Exception("connection is null");
+		}
+
+		List<Tunnel> tunnelList = null;
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		try {
+			tunnelList = new ArrayList<Tunnel>();
+			sql = "select * from tunnel t where t.aSiteId=" + siteId + " or t.zSiteId=" + siteId;
+			preparedStatement = connection.prepareStatement(sql);
+			tunnelList = this.executeQuery(preparedStatement);
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+		return tunnelList;
+	}
+
+	/**
+	 * 查询所有的tunnel数据（单站侧和网络侧数据）
+	 * 
+	 * @param connnection
+	 * @return
+	 * @throws Exception
+	 */
+	public List<Tunnel> queryAllTunnel(Connection connection) throws Exception {
+		if (connection == null) {
+			throw new Exception("connection is null");
+		}
+		List<Tunnel> tunnelList = null;
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		try {
+			tunnelList = new ArrayList<Tunnel>();
+			sql = "select * from tunnel";
+			preparedStatement = connection.prepareStatement(sql);
+			tunnelList = this.executeQuery(preparedStatement);
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+		return tunnelList;
+	}
+
+	/**
+	 * 查询所有的tunnel数据（单站侧和网络侧数据）
+	 * 
+	 * @param connnection
+	 * @return
+	 * @throws Exception
+	 */
+	public Tunnel queryTunnelById(int id, Connection connection) throws Exception {
+		if (connection == null) {
+			throw new Exception("connection is null");
+		}
+		Tunnel tunnel = null;
+		List<Tunnel> tunnelList = null;
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		try {
+			tunnelList = new ArrayList<Tunnel>();
+			sql = "select * from tunnel where tunnelId =" + id;
+			preparedStatement = connection.prepareStatement(sql);
+			tunnelList = this.executeQuery(preparedStatement);
+			if (tunnelList != null && tunnelList.size() > 0) {
+				tunnel = tunnelList.get(0);
+			}
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+			tunnelList = null;
+		}
+		return tunnel;
+	}
+
+	/**
+	 * 根据site查询和保护ID来获取相应的tunnel
+	 * 
+	 * @param siteId
+	 *            网元ID
+	 * @param connection
+	 *            数据库连接
+	 * @return
+	 * @throws Exception
+	 */
+	public Tunnel queryTunnelBySiteIdAndProtectId(Tunnel tunnel, Connection connection) throws Exception {
+
+		if (tunnel == null) {
+			throw new Exception("tunnel is NULL");
+		}
+		if (connection == null) {
+			throw new Exception("connection is null");
+		}
+
+		List<Tunnel> tunnelList = null;
+		Tunnel tunnelInst = null;
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		try {
+			tunnelInst = new Tunnel();
+			tunnelList = new ArrayList<Tunnel>();
+			sql = "select * from tunnel t where (t.aSiteId=" + tunnel.getASiteId() + " or t.zSiteId=" + tunnel.getZSiteId() + ") and (t.aprotectId=" + tunnel.getAprotectId() + " or t.zprotectId=" + tunnel.getZprotectId() + ")";
+			preparedStatement = connection.prepareStatement(sql);
+			tunnelList = this.executeQuery(preparedStatement);
+			if (tunnelList != null && tunnelList.size() > 0) {
+				tunnelInst = tunnelList.get(0);
+			}
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+			tunnelList = null;
+		}
+		return tunnelInst;
+	}
+
+	/**
+	 * 过滤查询tunnel，tunnel列表中用到
+	 * 
+	 * @param tunnel
+	 *            查询条件
+	 * @param connection
+	 *            数据库连接
+	 * @return
+	 * @throws Exception
+	 */
+	public List<Tunnel> filterSelect(Tunnel tunnel, Connection connection) throws Exception {
+		if (null == tunnel) {
+			throw new Exception("tunnel is null");
+		}
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		StringBuffer stringBuffer = new StringBuffer();
+		List<Object> parameterList = new ArrayList<Object>();
+		PreparedStatement preparedStatement = null;
+		List<Tunnel> tunnelList = null;
+		try {
+			stringBuffer.append("SELECT ");
+			stringBuffer.append("t.zVlanEnable,t.zOutVlanValue,t.zTp_id,t.aVlanEnable,t.aOutVlanValue,t.aTp_id,t.sourceMac,t.endMac,t.inBandwidthControl,");
+			stringBuffer.append("t.outBandwidthControl,t.waittime,t.delaytime,t.apsenable, t.isSingle,t.jobStatus, t.tunnelId, t.tunnelName, t.tunnelType, ");
+			stringBuffer.append("t.tunnelStatus, t.bandwidth, t.aSiteId, t.zSiteId, t.aPortId, t.zPortId, t.direction,t.isReverse, t.createTime, t.createUser, ");
+			stringBuffer.append("sa.CellId AS aSiteName, sz.CellId AS zSiteName, pa.portName AS aPortName, pz.portName AS zPortName ,t.protectTunnelId,t.protectTunnelName ,");
+			stringBuffer.append("t.protectType ,t.position ,t.protectBack,t.sncpIds ");
+			stringBuffer.append("FROM ");
+			stringBuffer.append("site_inst sa, site_inst sz, port_inst pa, port_inst pz, tunnel t ");
+			stringBuffer.append("WHERE t.aSiteId = sa.site_inst_id AND t.zSiteId = sz.site_inst_id AND t.aPortId = pa.portId AND t.zPortId = pz.portId AND t.tunnelId = t.tunnelId and tunneltype!='0'");
+			stringBuffer.append(" and t.isSingle=?");
+
+			parameterList.add(tunnel.getIsSingle());
+
+			// 模糊查找tunnel
+			if (null != tunnel.getTunnelName() && !"".equals(tunnel.getTunnelName())) {
+				stringBuffer.append(" and t.tunnelName like ?");
+				parameterList.add("%" + tunnel.getTunnelName() + "%");
+			}
+			// 加网元主键
+			if (tunnel.getASiteId() > 0 && tunnel.getaPortId() == 0) {
+				stringBuffer.append(" and t.tunnelId IN (SELECT tunnelId FROM lspinfo WHERE lspinfo.aSiteId=? OR lspinfo.zSiteId=?)");
+				parameterList.add(tunnel.getASiteId());
+				parameterList.add(tunnel.getASiteId());
+			}
+
+			// 加端口主键
+			if (tunnel.getaPortId() > 0) {
+				stringBuffer.append(" and t.tunnelId IN (SELECT tunnelId FROM lspinfo WHERE lspinfo.aPortId=? OR lspinfo.zPortId=?)");
+				parameterList.add(tunnel.getAPortId());
+				parameterList.add(tunnel.getAPortId());
+			}
+
+			preparedStatement = connection.prepareStatement(stringBuffer.toString());
+			if (parameterList.size() > 0) {
+				for (int i = 0; i < parameterList.size(); i++) {
+					preparedStatement.setObject(i + 1, parameterList.get(i));
+				}
+			}
+			tunnelList = this.executeQuery_join(preparedStatement);
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+
+			stringBuffer = null;
+			parameterList = null;
+		}
+		return tunnelList;
+	}
+
+	/**
+	 * 单网元列表过滤查询
+	 * 
+	 * @param tunnel
+	 *            查询条件
+	 * @param connection
+	 *            数据库连接
+	 * @return
+	 * @throws Exception
+	 */
+	public List<Tunnel> filterSelectNE(int siteId,Tunnel tunnel, Connection connection) throws Exception {
+		if (null == tunnel) {
+			throw new Exception("tunnel is null");
+		}
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+		StringBuffer sql = new StringBuffer();
+		List<Object> parameterList = new ArrayList<Object>();
+		PreparedStatement preparedStatement = null;
+		List<Tunnel> tunnelList = null;
+		try {
+			sql.append("SELECT * FROM tunnel t ");
+			sql.append(" WHERE ((tunnelId IN (SELECT lsp.tunnelId FROM lspinfo lsp WHERE ( lsp.asiteid = ? AND lsp.aPortId != 0) OR (lsp.zsiteid = ? AND lsp.zportid != 0)) AND t.tunneltype != '0') ");
+			sql.append(" OR (tunnelId IN (SELECT lsp.tunnelId FROM lspinfo lsp WHERE (lsp.asiteid = ? AND lsp.aPortId != 0 AND lsp.aSiteId != t.aSiteId)OR (lsp.zsiteid = ? AND lsp.zportid != 0 AND lsp.zSiteId != t.zSiteId)))) ");
+
+			parameterList.add(siteId);
+			parameterList.add(siteId);
+			parameterList.add(siteId);
+			parameterList.add(siteId);
+
+			// 名称
+			if (null != tunnel.getTunnelName() && !"".equals(tunnel.getTunnelName())) {
+				sql.append(" AND t.tunnelName LIKE ?");
+				parameterList.add("%" + tunnel.getTunnelName() + "%");
+			}
+			// tunnel类型
+			if (null != tunnel.getTunnelType() && !"".equals(tunnel.getTunnelType())) {
+				sql.append(" AND t.tunnelType=?");
+				parameterList.add(tunnel.getTunnelType());
+			}
+			// tunnel类型
+			if (tunnel.getTunnelStatus() > 0) {
+				sql.append(" AND t.tunnelStatus=?");
+				parameterList.add(tunnel.getTunnelStatus());
+			}
+			// 板卡 选了端口，就不用加板卡条件
+			if (tunnel.getCardId() > 0 && tunnel.getaPortId() == 0) {
+				sql.append(" AND (t.tunnelId IN (SELECT lsp.tunnelId FROM lspinfo lsp WHERE lsp.aPortId IN (SELECT p.portid from port_inst p WHERE p.cardid=? AND p.porttype='NNI')");
+				sql.append(" or lsp.zportid IN (SELECT p.portid from port_inst p WHERE p.cardid=? AND p.porttype='NNI')))");
+				parameterList.add(tunnel.getCardId());
+				parameterList.add(tunnel.getCardId());
+			}
+			// 端口
+			if (tunnel.getaPortId() > 0) {
+				sql.append(" AND t.tunnelId IN (SELECT lspinfo.tunnelId FROM lspinfo WHERE lspinfo.aPortId=? OR lspinfo.zPortId=?)");
+				parameterList.add(tunnel.getaPortId());
+				parameterList.add(tunnel.getaPortId());
+			}
+			//角色
+			if(null!=tunnel.getRole() && !"".equals(tunnel.getRole())){
+				if("ingress".equals(tunnel.getRole())){
+					sql.append(" AND t.asiteid=?");
+					parameterList.add(siteId);
+				}else if("egress".equals(tunnel.getRole())){
+					sql.append(" AND t.zsiteid=?");
+					parameterList.add(siteId);
+				}else if("xc".equals(tunnel.getRole())){
+					sql.append(" AND t.zsiteid!=? and t.asiteId!=?");
+					parameterList.add(siteId);
+					parameterList.add(siteId);
+				}
+			}
+			
+
+			preparedStatement = connection.prepareStatement(sql.toString());
+			for (int i = 0; i < parameterList.size(); i++) {
+				preparedStatement.setObject(i + 1, parameterList.get(i));
+			}
+
+			tunnelList = this.executeQuery(preparedStatement);
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (null != preparedStatement) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+			sql = new StringBuffer();
+			parameterList = null;
+		}
+		return tunnelList;
+	}
+
+	/**
+	 * 武汉搜索
+	 * 
+	 * @param siteID
+	 * @param connection
+	 * @return
+	 */
+	public List<Tunnel> searchWh(int siteID, Connection connection) {
+		List<Tunnel> tunnels = null;
+		String sql = "SELECT * FROM tunnel t WHERE t.isSingle = '1' AND ( tunnelId IN ( SELECT lsp.tunnelId FROM lspinfo lsp WHERE ( lsp.asiteid = ? AND lsp.aPortId != 0 ) OR ( lsp.zsiteid = ? AND lsp.zportid != 0 )) OR ( tunnelId IN ( SELECT lsp.tunnelId FROM lspinfo lsp WHERE ( lsp.asiteid = ? AND lsp.aPortId != 0 AND lsp.aSiteId != t.aSiteId ) OR ( lsp.zsiteid = ? AND lsp.zportid != 0 AND lsp.zSiteId != t.zSiteId ))))";
+		PreparedStatement preparedStatement = null;
+		try {
+			preparedStatement = connection.prepareStatement(sql.toString());
+			preparedStatement.setInt(1, siteID);
+			preparedStatement.setInt(2, siteID);
+			preparedStatement.setInt(3, siteID);
+			preparedStatement.setInt(4, siteID);
+			tunnels = this.executeQuery(preparedStatement);
+		} catch (Exception e) {
+			ExceptionManage.dispose(e, this.getClass());
+		} finally {
+			if (null != preparedStatement) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e, this.getClass());
+				}
+				preparedStatement = null;
+			}
+		}
+		return tunnels;
+	}
+
+	public void doSearchWh(List<Tunnel> tunnels, Connection conn) {
+		// 旧的tunnelId
+		String Tid = new String("(");
+		for (Tunnel tunnel : tunnels) {
+			Tid = Tid + tunnel.getTunnelId() + ",";
+		}
+		Tid = Tid.substring(0, Tid.length() - 1) + ")";
+		int newTunnelId = 0;// sql 得到
+		String newTunnelName = "tunnel_" + System.currentTimeMillis();
+		PreparedStatement ps = null;
+		String sql = null;
+		try {
+			if (tunnels.size() == 2) {
+				// 1 插入新tunnel 表 数据
+				sql = new StringBuffer().append(" insert into tunnel (tunnelName,tunnelType,tunnelStatus,bandwidth,aSiteId,zSiteId,aPortId,zPortId,direction,createTime,createUser,isReverse,protectTunnelId,").append(" " + "protectType,protectTunnelName,isSingle,jobStatus,waittime,delaytime,apsenable,position,protectBack,aprotectId,zprotectId,sncpIds,inBandwidthControl,outBandwidthControl,aVlanEnable,aOutVlanValue,aTp_id,zVlanEnable,zOutVlanValue,zTp_id,sourceMac,endMac,snmpTunnelName) ").append(" select '").append(newTunnelName).append("' tunnelName,t1.tunnelType,t1.tunnelStatus,t1.bandwidth,").append(" t1.aSiteId,t2.zSiteId,t1.aPortId,t2.zPortId,t1.direction,now() createTime,t1.createUser,t1.isReverse").append(" ,t1.protectTunnelId,t1.protectType,t1.protectTunnelName,0 isSingle,t1.jobStatus,t1.waittime,t1.delaytime,t1.apsenable,t1.position,t1.protectBack,t1.aprotectId,t2.zprotectId,t1.sncpIds,t1.inBandwidthControl,t1.outBandwidthControl,t1.aVlanEnable,t1.aOutVlanValue,t1.aTp_id,t2.aVlanEnable,t2.aOutVlanValue,t2.aTp_id,t1.sourceMac,t1.endMac,t1.snmpTunnelName").append(
+						" " + " from tunnel t1,tunnel t2 where t1.tunnelId in(").append(tunnels.get(0).getTunnelId()).append(",").append(tunnels.get(1).getTunnelId()).append(") and t2.tunnelId in(").append(tunnels.get(0).getTunnelId()).append(",").append(tunnels.get(1).getTunnelId()).append(") and t1.zSiteId=0 and t2.aSiteId=0  ").toString();
+				// System.out.println("line 1250插入新tunnel . sql : "+sql);
+				ps = conn.prepareStatement(sql);
+				ps.executeUpdate();
+				// 得到新插入的tunnel ID；
+
+				sql = "select tunnelId from tunnel where tunnelName='" + newTunnelName + "' ";
+				PreparedStatement preparedS = null;
+				ResultSet rs = null;
+				try {
+					// System.out.println("line 1262查出新tunnel的ID . sql : "+sql);
+					preparedS = conn.prepareStatement(sql);
+					rs = preparedS.executeQuery();
+					if (rs.next()) {
+						newTunnelId = rs.getInt("tunnelId");
+					}
+				} catch (Exception e) {
+					throw e;
+				} finally {
+					if (rs != null) {
+						try {
+							rs.close();
+						} catch (Exception e) {
+							throw e;
+						}
+						rs = null;
+					}
+					if (preparedS != null) {
+						try {
+							preparedS.close();
+						} catch (Exception e) {
+							throw e;
+						}
+						preparedS = null;
+					}
+				}
+				if (newTunnelId == 0) {
+					ExceptionManage.dispose(new Exception("tunnel Search error. "), this.getClass());
+					return;
+				}
+				List<Lsp> lsps = new ArrayList<Lsp>();
+				lsps.add(tunnels.get(0).getLspParticularList().get(0));
+				lsps.add(tunnels.get(1).getLspParticularList().get(0));
+				lspWhSearchdo(newTunnelId, lsps, conn);
+			} else {
+				Tunnel startTunnel = tunnels.get(0);
+				Tunnel endTunnel = tunnels.get(tunnels.size() - 1);
+				try {
+					// 1 插入新tunnel 表 数据
+					sql = new StringBuffer().append(" insert into tunnel (tunnelName,tunnelType,tunnelStatus,bandwidth,aSiteId,zSiteId,aPortId,zPortId,direction,createTime,createUser,isReverse,protectTunnelId,").append(" protectType,protectTunnelName,isSingle,jobStatus,waittime,delaytime,apsenable,position,protectBack,aprotectId,zprotectId,sncpIds,inBandwidthControl,outBandwidthControl,aVlanEnable,aOutVlanValue,aTp_id,zVlanEnable,zOutVlanValue,zTp_id,sourceMac,endMac) ").append(" select '").append(newTunnelName).append("' tunnelName,t1.tunnelType,t1.tunnelStatus,t1.bandwidth,").append(" t1.aSiteId,t2.zSiteId,t1.aPortId,t2.zPortId,t1.direction,now() createTime,t1.createUser,t1.isReverse").append(" ,t1.protectTunnelId,t1.protectType,t1.protectTunnelName,0 isSingle,t1.jobStatus,t1.waittime,t1.delaytime,t1.apsenable,t1.position,t1.protectBack,t1.aprotectId,t2.zprotectId,t1.sncpIds,t1.inBandwidthControl,t1.outBandwidthControl,t1.aVlanEnable,t1.aOutVlanValue,t1.aTp_id,t2.aVlanEnable,t2.aOutVlanValue,t2.aTp_id,t1.sourceMac,t1.endMac").append(
+							"  from tunnel t1,tunnel t2 where t1.tunnelId in(").append(startTunnel.getTunnelId()).append(",").append(endTunnel.getTunnelId()).append(") and t2.tunnelId in(").append(startTunnel.getTunnelId()).append(",").append(endTunnel.getTunnelId()).append(") and t1.zSiteId=0 and t2.aSiteId=0  ").toString();
+					// System.out.println("1413 插入新tunnel sql : "+sql);
+					ps = conn.prepareStatement(sql);
+					ps.executeUpdate();
+					// 得到新插入的tunnel ID；
+					sql = "select tunnelId from tunnel where tunnelName='" + newTunnelName + "' ";
+					// 得到所有中间tunnelId
+
+					PreparedStatement preparedS = null;
+					ResultSet rs = null;
+					try {
+						// System.out.println("line 1429查出新tunnel的ID . sql : "+sql);
+						preparedS = conn.prepareStatement(sql);
+						rs = preparedS.executeQuery();
+						if (rs.next()) {
+							newTunnelId = rs.getInt("tunnelId");
+						}
+					} catch (Exception e) {
+						throw e;
+					} finally {
+						if (rs != null) {
+							try {
+								rs.close();
+							} catch (Exception e) {
+								throw e;
+							}
+							rs = null;
+						}
+						if (preparedS != null) {
+							try {
+								preparedS.close();
+							} catch (Exception e) {
+								throw e;
+							}
+							preparedS = null;
+						}
+					}
+					if (newTunnelId == 0) {
+						ExceptionManage.dispose(new Exception("tunnel Search error. "), this.getClass());
+						return;
+					}
+					// 插入新的lsp数据
+					for (int i = 0; i < tunnels.size(); i++) {
+						List<Lsp> lsps = new ArrayList<Lsp>();
+						if (i == 0) {
+							lsps.add(tunnels.get(0).getLspParticularList().get(0));
+							lsps.add(tunnels.get(1).getLspParticularList().get(0));
+							lspWhSearchdo(newTunnelId, lsps, conn);
+						} else if (i != tunnels.size() - 1) {
+							lsps.add(tunnels.get(i).getLspParticularList().get(1));
+							lsps.add(tunnels.get(i+1).getLspParticularList().get(0));
+							lspWhSearchdo(newTunnelId, lsps, conn);
+						}
+						
+					}
+				} catch (Exception e) {
+					ExceptionManage.dispose(e, this.getClass());
+				} finally {
+					if (ps != null) {
+						try {
+							ps.close();
+						} catch (Exception e) {
+							ExceptionManage.dispose(e, this.getClass());
+						}
+						ps = null;
+					}
+					sql = null;
+				}
+			}
+			// 更新 pw表 ，把老的tunnel关联更新到新的tunnulid上
+			sql = new StringBuffer().append("update pwinfo set tunnelId= ").append(newTunnelId).append(" where tunnelId in ").append(Tid).toString();
+			// System.out.println("1461更新pw sql : "+sql);
+			ps = conn.prepareStatement(sql);
+			ps.executeUpdate();
+			
+			//更新mspw表
+			sql = new StringBuffer().append("update mspwinfo set frontTunnelId= ").append(newTunnelId).append(" where frontTunnelId in ").append(Tid).toString();
+			// System.out.println("1461更新pw sql : "+sql);
+			ps = conn.prepareStatement(sql);
+			ps.executeUpdate();
+			
+			sql = new StringBuffer().append("update mspwinfo set backTunnelId= ").append(newTunnelId).append(" where backTunnelId in ").append(Tid).toString();
+			// System.out.println("1461更新pw sql : "+sql);
+			ps = conn.prepareStatement(sql);
+			ps.executeUpdate();
+			
+			// 更新 tunnel 表 ，当有保护时候,protectTunnelId =保护的tunnelID.
+			sql = new StringBuffer().append("update tunnel set protectTunnelId= ").append(newTunnelId).append(" where protectTunnelId in ").append(Tid).toString();
+			// System.out.println("1461更新tunnel 保护tunnelID sql : "+sql);
+			ps = conn.prepareStatement(sql);
+			ps.executeUpdate();
+			// 更新qos表
+			sql = new StringBuffer().append("update qosrelevance set objId= ").append(newTunnelId).append(" where objType='TUNNEL' and objId in ").append(Tid).toString();
+			// System.out.println("1461更新qos sql : "+sql);
+			ps = conn.prepareStatement(sql);
+			ps.executeUpdate();
+			// 更新oam表1
+			sql = new StringBuffer().append("update oammepinfo set serviceId= ").append(newTunnelId).append(" where objType='TUNNEL' and serviceId in ").append(Tid).toString();
+			// System.out.println("1461更新oammepinfo sql : "+sql);
+			ps = conn.prepareStatement(sql);
+			ps.executeUpdate();
+			// 更新oam表2
+			sql = new StringBuffer().append("update oammipinfo set serviceId= ").append(newTunnelId).append(" where objType='TUNNEL' and serviceId in ").append(Tid).toString();
+			// System.out.println("1461更新oammipinfo sql : "+sql);
+			ps = conn.prepareStatement(sql);
+			ps.executeUpdate();
+			//更新告警
+			sql = new StringBuffer().append("update current_alarm set objectid= ").append(newTunnelId).append(" where objecttype=3 and objectid in ").append(Tid).toString();
+			ps = conn.prepareStatement(sql);
+			ps.executeUpdate();
+			sql = new StringBuffer().append("update history_alarm set objectid= ").append(newTunnelId).append(" where objecttype=3 and objectid in ").append(Tid).toString();
+			ps = conn.prepareStatement(sql);
+			ps.executeUpdate();
+			//更新性能
+			sql = new StringBuffer().append("update history_performance set objectid= ").append(newTunnelId).append(" where objecttype=3 and objectid in ").append(Tid).toString();
+			ps = conn.prepareStatement(sql);
+			ps.executeUpdate();
+			
+			// 删除老的 tunnel 数据
+			sql = new StringBuffer().append("delete from tunnel where tunnelId in ").append(Tid).toString();
+			// System.out.println("1494删除老tunnel sql : "+sql);
+			ps = conn.prepareStatement(sql);
+			ps.executeUpdate();
+			
+		} catch (Exception e) {
+			ExceptionManage.dispose(e, this.getClass());
+		} finally {
+			if (ps != null) {
+				try {
+					ps.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e, this.getClass());
+				}
+				ps = null;
+			}
+			sql = null;
+		}
+	}
+
+	private void lspWhSearchdo(int newTunnelId, List<Lsp> lsps, Connection conn) {
+		PreparedStatement ps = null;
+		String sql = null;
+		try {
+			sql = new StringBuffer().append("insert into lspinfo (tunnelId,pathStatus,aSiteId,zSiteId,aPortId,zPortId,frontLabelValue,backLabelValue,alspbusinessid,zlspbusinessid,").append("atunnelbusinessid,ztunnelbusinessid,segmentId,aoppositeId,zoppositeId,sourceMac,targetMac,frontTtl,backTtl) values ( ").
+			append(newTunnelId).append(",0,").append(lsps.get(0).getASiteId()).append(",").append(lsps.get(1).getZSiteId()).append(",").append(lsps.get(0).getAPortId()).append(",").append(lsps.get(1).getZPortId()).append(",").append(lsps.get(0).getFrontLabelValue()).append(",").
+			append(lsps.get(0).getBackLabelValue()).append(",0,0,").append(lsps.get(0).getAtunnelbusinessid()).append(",").append(lsps.get(1).getZtunnelbusinessid()).append(",").append(0).append(",'").append(lsps.get(0).getAoppositeId()).append("','").append(lsps.get(1).getZoppositeId()).append("' ,'").append(lsps.get(0).getSourceMac()).append("' ,'").append(lsps.get(0).getTargetMac()).append("' ,'").append(lsps.get(0).getFrontTtl()).append("' ,'").append(lsps.get(0).getBackTtl()).append("' )").toString();
+			// System.out.println("1541 插入新的lspinfo信息 sql : "+sql);
+			ps = conn.prepareStatement(sql);
+			ps.executeUpdate();
+			// 删除老的lsp数据
+			sql = new StringBuffer().append("delete from lspinfo where id in(").append(lsps.get(0).getId()).append(",").append(lsps.get(1).getId()).append(")").toString();
+			// System.out.println("1547删除老的lsp信息 sql : "+sql);
+			ps = conn.prepareStatement(sql);
+			ps.executeUpdate();
+		} catch (Exception e) {
+			ExceptionManage.dispose(e, this.getClass());
+		} finally {
+			if (ps != null) {
+				try {
+					ps.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e, this.getClass());
+				}
+				ps = null;
+			}
+			sql = null;
+		}
+	}
+
+	public Tunnel queryByTunnelId(int tunnelId, Connection connection) throws Exception {
+		if (connection == null) {
+			throw new Exception("connection is null");
+		}
+
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		Tunnel tunnel = null;
+		List<Tunnel> tunnelList = null;
+		try {
+			sql = "select * from tunnel where tunnelId=?";
+			preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.setInt(1, tunnelId);
+			tunnelList = this.executeQuery(preparedStatement);
+
+			if (tunnelList.size() == 1) {
+				tunnel = tunnelList.get(0);
+			}
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+			tunnelList = null;
+		}
+		return tunnel;
+	}
+
+	public List<Tunnel> selectAllTunnel(Connection connection) throws Exception {
+		if (connection == null) {
+			throw new Exception("connection is null");
+		}
+
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		List<Tunnel> tunnelList = null;
+		try {
+			sql = "select tunnelId,tunnelName from tunnel";
+			preparedStatement = connection.prepareStatement(sql);
+			tunnelList = this.executequery(preparedStatement);
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+		return tunnelList;
+	}
+	
+	public Map<Integer,String> selectTunnelNameBySiteId(int siteId, Connection connection) throws Exception {
+		Map<Integer,String> map = new HashMap<Integer, String>();
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+		try {
+			String sql = "select t.tunnelname,l.atunnelbusinessid as atunnelbusinessid," +
+					"l.ztunnelbusinessid as ztunnelbusinessid,l.asiteId as asiteId,l.zsiteId as" +
+					" zsiteId from tunnel t,lspinfo l  where t.tunnelId = l.tunnelId and (l.asiteid = ? or l.zsiteid= ? ) ";
+			preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.setInt(1,siteId);
+			preparedStatement.setInt(2,siteId);
+			resultSet = preparedStatement.executeQuery();
+			while (resultSet.next()) {
+				if(siteId == resultSet.getInt("asiteId")){
+					map.put(resultSet.getInt("atunnelbusinessid"), resultSet.getString("tunnelname"));
+				}else{
+					map.put(resultSet.getInt("ztunnelbusinessid"), resultSet.getString("tunnelname"));
+				}
+			}
+		} finally {
+			if (resultSet != null) {
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e, this.getClass());
+				}
+				resultSet = null;
+			}
+			if(preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e, this.getClass());
+				}
+				preparedStatement = null;
+			}
+		}
+		return map;
+	}
+
+	private List<Tunnel> executequery(PreparedStatement preparedStatement) throws Exception {
+		ResultSet resultSet = null;
+		List<Tunnel> tunnelList = null;
+		Tunnel tunnel = null;
+		try {
+			tunnelList = new ArrayList<Tunnel>();
+			resultSet = preparedStatement.executeQuery();
+
+			while (resultSet.next()) {
+				tunnel = new Tunnel();
+				tunnel.setTunnelId(resultSet.getInt("tunnelId"));
+				tunnel.setTunnelName(resultSet.getString("tunnelName"));
+				tunnelList.add(tunnel);
+			}
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (resultSet != null) {
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				resultSet = null;
+			}
+			tunnel = null;
+		}
+		return tunnelList;
+	}
+	
+	/**
+	 * 通过tunnel名称查询tunnelId
+	 * 
+	 * @param tunneName
+	 * @param connection
+	 * @return
+	 * @throws Exception
+	 */
+	public List<Integer> selectTunnelIdByTunnelName(String tunneName, Connection connection) throws Exception {
+		if (tunneName == null) {
+			throw new Exception("tunnelName is null");
+		}
+		if (connection == null) {
+			throw new Exception("connection is null");
+		}
+		List<Integer> tunnelIdList = null;
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+		try {
+			tunnelIdList = new ArrayList<Integer>();
+			sql = "select * from tunnel t where t.tunnelName like ? ";
+			preparedStatement = connection.prepareStatement(sql);
+			if (UiUtil.isNull(tunneName)) {
+				preparedStatement.setObject(1, "%"+tunneName+"%");
+			}
+			resultSet = preparedStatement.executeQuery();
+			while (resultSet.next()) {
+				tunnelIdList.add(resultSet.getInt("tunnelId"));
+			}
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (resultSet != null) {
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				resultSet = null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+		return tunnelIdList;
+	}
+}

@@ -1,0 +1,1637 @@
+package com.nms.model.ptn.path.eth;
+
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import com.nms.db.bean.equipment.shelf.SiteInst;
+import com.nms.db.bean.ptn.Businessid;
+import com.nms.db.bean.ptn.path.eth.EtreeInfo;
+import com.nms.db.bean.ptn.path.pw.PwInfo;
+import com.nms.db.bean.ptn.path.pw.PwNniInfo;
+import com.nms.db.bean.ptn.port.AcPortInfo;
+import com.nms.db.bean.system.OffLinesiteBusi;
+import com.nms.db.dao.ptn.BusinessidDao;
+import com.nms.db.dao.ptn.path.eth.EtreeDao;
+import com.nms.db.enums.EActionType;
+import com.nms.db.enums.EServiceType;
+import com.nms.model.equipment.shlef.SiteService;
+import com.nms.model.ptn.path.pw.PwInfoService;
+import com.nms.model.ptn.path.pw.PwNniBufferService;
+import com.nms.model.ptn.port.AcInfoService;
+import com.nms.model.util.ObjectService;
+import com.nms.model.util.Services;
+import com.nms.service.impl.util.TypeAndActionUtil;
+import com.nms.ui.manager.BusinessIdException;
+import com.nms.ui.manager.ConstantUtil;
+import com.nms.ui.manager.DateUtil;
+import com.nms.ui.manager.ExceptionManage;
+import com.nms.ui.manager.ResourceUtil;
+import com.nms.ui.manager.UiUtil;
+import com.nms.ui.manager.keys.StringKeysTip;
+
+public class EtreeService extends ObjectService {
+
+	public void setConnection(Connection connection) {
+		super.connection = connection;
+	}
+
+	public void setPtnuser(String ptnuser) {
+		super.ptnuser = ptnuser;
+	}
+
+	private BusinessidDao businessidDao = new BusinessidDao();
+	private EtreeDao etreeDao = new EtreeDao();
+	private final static int ISUSEDSTATUS = 1;
+
+	/*
+	 * 保存etree业务
+	 */
+	public List<Integer> insert(List<EtreeInfo> etreeInfoList) throws Exception, BusinessIdException {
+		
+		if (etreeInfoList == null) {
+			throw new Exception("etreeinfo is null");
+		}
+		List<Integer> resultList = new ArrayList<Integer>();
+		if (etreeInfoList.isEmpty()) {
+			return resultList;
+		}
+		int etreeid = 0;
+		List<EtreeInfo> DBetreeList = null;
+		int etreeServierId = this.etreeDao.selectMaxServiceId(connection) + 1;
+		Businessid rootXCIdInfo = null;
+		PwInfoService pwService = null;
+		AcInfoService acService = null;
+		SiteService siteService = null;
+		PwNniBufferService pwNniBufferService = null;
+		try {
+			connection.setAutoCommit(false);
+			pwService = (PwInfoService) ConstantUtil.serviceFactory.newService(Services.PwInfo, this.connection);
+			acService = (AcInfoService) ConstantUtil.serviceFactory.newService(Services.AcInfo, this.connection);
+			siteService = (SiteService) ConstantUtil.serviceFactory.newService(Services.SITE, this.connection);
+			pwNniBufferService =(PwNniBufferService)ConstantUtil.serviceFactory.newService(Services.PwNniBuffer, this.connection);
+			//！= 0根节点；==0 就是叶子节点  
+			if (etreeInfoList.get(0).getRootSite() != 0) {
+				if (etreeInfoList.get(0).getaXcId() == 0) {
+					rootXCIdInfo = businessidDao.query(etreeInfoList.get(0).getRootSite(), "etree", connection);
+				} else {
+					rootXCIdInfo = businessidDao.query(etreeInfoList.get(0).getaXcId(), etreeInfoList.get(0).getRootSite(), "etree", connection);
+				}
+				if (null == rootXCIdInfo) {
+					throw new BusinessIdException(siteService.getSiteName(etreeInfoList.get(0).getRootSite()) + ResourceUtil.srcStr(StringKeysTip.TIP_ETREEID));
+				}
+				businessidDao.update(rootXCIdInfo.getId(), ISUSEDSTATUS, connection);
+			}
+			DBetreeList = new ArrayList<EtreeInfo>();
+			for (EtreeInfo info : etreeInfoList) {
+				//如果不等于空  axcId == 业务ID 否则为叶子节点 axcId == 0
+				if (null != rootXCIdInfo) {
+					info.setaXcId(rootXCIdInfo.getIdValue());
+				}
+				if (info.getBranchSite() != 0) {
+					Businessid zEtreeXcId = null;
+					if (info.getzXcId() == 0) {
+						zEtreeXcId = businessidDao.query(info.getBranchSite(), "etree", connection);
+					} else {
+						zEtreeXcId = businessidDao.query(info.getzXcId(), info.getBranchSite(), "etree", connection);
+					}
+					if (null == zEtreeXcId) {
+						throw new BusinessIdException(siteService.getSiteName(info.getBranchSite()) + ResourceUtil.srcStr(StringKeysTip.TIP_ETREEID));
+					}
+					info.setzXcId(zEtreeXcId.getIdValue());
+					businessidDao.update(zEtreeXcId.getId(), ISUSEDSTATUS, connection);
+				}
+
+				// 给Etree业务赋值serviID（业务Id）
+				if (info.getId() == 0) {
+					info.setServiceId(etreeServierId);
+				}
+				DBetreeList.add(info);
+			}
+			// 设置pw与etree业务的关联关系
+			List<OffLinesiteBusi> offLineList = new ArrayList<OffLinesiteBusi>();
+			OffLinesiteBusi offLinesiteBusi = null;
+			for (EtreeInfo DBInfo : DBetreeList) {
+                           
+				etreeid = this.etreeDao.insert(DBInfo, connection);
+				DBInfo.setId(etreeid);
+				pwService.setUser(DBInfo.getPwId(), DBInfo);
+										
+				// 被业务使用的acId列表
+				analysisAC(DBInfo,acService);
+			}
+            this.updateLanId(etreeInfoList);
+			
+			// 离线网元数据下载
+			for (EtreeInfo EtreeInfo : DBetreeList) {
+				if (0 != EtreeInfo.getaSiteId()) {
+					super.dateDownLoad(EtreeInfo.getaSiteId(), EtreeInfo.getId(), EServiceType.ETREE.getValue(), EActionType.INSERT.getValue(), EtreeInfo.getServiceId() + "", null, 0, 0, null);
+				}
+				if (0 != EtreeInfo.getzSiteId()) {
+					super.dateDownLoad(EtreeInfo.getzSiteId(), EtreeInfo.getId(), EServiceType.ETREE.getValue(), EActionType.INSERT.getValue(), EtreeInfo.getServiceId() + "", null, 0, 0, null);
+				}
+			}
+			if(!connection.getAutoCommit()){
+				connection.commit();
+			}
+		} catch (BusinessIdException e) {
+			connection.rollback();
+			throw e;
+		} catch (Exception e) {
+			ExceptionManage.dispose(e, this.getClass());
+			connection.rollback();
+		} finally {
+			connection.setAutoCommit(true);
+		}
+		return resultList;
+	}
+
+	/**
+	 * 获取siteID集合
+	 * 
+	 * @param List
+	 *            <EtreeInfo> etreeInfoList
+	 * @return siteID集合
+	 * @throws Exception
+	 */
+	private List<Integer> getSiteIds(List<EtreeInfo> etreeInfoList) throws Exception {
+		List<Integer> siteIds = null;
+		try {
+			siteIds = new ArrayList<Integer>();
+			for (EtreeInfo etreeInfo : etreeInfoList) {
+				if (etreeInfo.getRootSite() > 0 ) {
+					if (!siteIds.contains(etreeInfo.getRootSite()) ) {
+						siteIds.add(etreeInfo.getRootSite());
+					}
+				}
+				if (etreeInfo.getBranchSite() > 0 ) {
+					if (!siteIds.contains(etreeInfo.getBranchSite())) {
+						siteIds.add(etreeInfo.getBranchSite());
+					}
+				}
+			}
+		} catch (Exception e) {
+			throw e;
+		}
+		return siteIds;
+	}
+	
+	private void analysisAC(EtreeInfo dBInfo, AcInfoService acService) 
+	{
+		try 
+		{
+			updateACState(dBInfo.getAmostAcId(),acService,1,true);
+			updateACState(dBInfo.getZmostAcId(),acService,1,true);
+		} catch (Exception e) 
+		{
+			ExceptionManage.dispose(e, getClass());
+		}		
+	}
+	
+	
+	
+	/**
+	 * 释放 和结合AC
+	 * @param amostIds
+	 * @param acService
+	 * @param label 0 表示释放  1 表示结合AC
+	 */
+	private void updateACState(String amostIds,AcInfoService acService,int label,boolean isRelateAc)
+	{
+		Set<Integer> acSet = new HashSet<Integer>();
+		UiUtil uiutil = new UiUtil();
+		try {
+			acSet = uiutil.getAcIdSets(amostIds);
+			if(acSet.size() >0)
+			{
+				for(Integer acId : acSet)
+				{
+					if(isRelateAc)
+					{
+						analysisAc(acService,acId,label);
+					}else
+					{
+						if(!isRelatedAC(acId))
+						{
+							analysisAc(acService,acId,label);
+						}
+					}
+				}
+			}
+		} catch (Exception e) 
+		{
+			ExceptionManage.dispose(e, getClass());
+		}finally
+		{
+			acSet = null;
+			uiutil = null;
+		}
+	}
+	
+	private void analysisAc(AcInfoService acService,int acId,int label)
+	{
+		AcPortInfo acPortInfo;
+		try {
+			acPortInfo = acService.selectById(acId);
+			if(label == 0)
+			{
+				acPortInfo.setIsUser(0);
+			}else
+			{
+				acPortInfo.setIsUser(1);
+			}
+			acService.updateUserType(acPortInfo);	
+		} catch (Exception e) {
+			ExceptionManage.dispose(e, getClass());
+		}finally
+		{
+			acPortInfo = null;
+		}
+	}
+
+	// 更新业务
+	public void update(List<EtreeInfo> etreeInfoList) throws Exception {
+
+		if (null == etreeInfoList || etreeInfoList.size() == 0) {
+			throw new Exception("etreeinfoList is null");
+		}
+		PwInfo pwInfo = null;
+		Businessid businessId = null;
+		PwInfoService pwService = null;
+		AcInfoService acService = null;
+		try {
+			super.connection.setAutoCommit(false);
+			pwService = (PwInfoService) ConstantUtil.serviceFactory.newService(Services.PwInfo, this.connection);
+			acService = (AcInfoService) ConstantUtil.serviceFactory.newService(Services.AcInfo, this.connection);		
+			// 遍历要修改的etree数据，对每一条数据进行修改操作
+			for (EtreeInfo etreeInfo : etreeInfoList) {
+
+				// 修改了pw或者端口
+				if (etreeInfo.getAction() == 1) {
+					// 修改了pw
+					if (null != etreeInfo.getBeforePw()) {
+						// 释放之前的pw
+						pwInfo = etreeInfo.getBeforePw();
+						if(!isRelatedPW(pwInfo.getPwId())){
+							pwInfo.setRelatedServiceId(0);
+							pwInfo.setRelatedServiceType(0);
+							pwService.updateRelatedService(pwInfo);
+						}
+						// 关联新的pw
+						pwService.setUser(etreeInfo.getPwId(), etreeInfo);
+						
+					}
+					// 修改了根端口
+					if (null != etreeInfo.getBeforeAAcList()) {
+						// 释放之前的ac对象
+						for(AcPortInfo acportInst : etreeInfo.getBeforeAAcList())
+						{													    							    							    
+							if(!isRelatedAC(acportInst.getId())){
+								acportInst.setIsUser(0);
+								acportInst.setLanId(0);
+								acService.updateUserType(acportInst);
+							}
+						}
+						
+						
+						// 关联新的AC
+						updateACState(etreeInfo.getAmostAcId(),acService,1,false);
+					}
+					// 修改了叶子端口
+					if (null != etreeInfo.getBeforeZAcList()) 
+					{
+						// 释放之前的ac对象
+						for(AcPortInfo acportInst : etreeInfo.getBeforeZAcList())
+						{
+							if(!isRelatedAC(acportInst.getId())){
+								acportInst.setIsUser(0);
+								acportInst.setLanId(0);
+								acService.updateUserType(acportInst);
+							}
+						}
+						// 关联新的AC
+						updateACState(etreeInfo.getZmostAcId(),acService,1,false);
+					}
+				} 
+				
+				else if (etreeInfo.getAction() == 2) { // 新增了叶子节点
+					
+					SiteService	siteService = (SiteService) ConstantUtil.serviceFactory.newService(Services.SITE, this.connection);
+					if (etreeInfo.getBranchSite() != 0) {
+						Businessid zEtreeXcId = null;
+						if (etreeInfo.getzXcId() == 0) {
+							zEtreeXcId = businessidDao.query(etreeInfo.getBranchSite(), "etree", connection);
+						} else {
+							zEtreeXcId = businessidDao.query(etreeInfo.getzXcId(), etreeInfo.getBranchSite(), "etree", connection);
+						}
+						if (null == zEtreeXcId) {
+							throw new BusinessIdException(siteService.getSiteName(etreeInfo.getBranchSite()) + ResourceUtil.srcStr(StringKeysTip.TIP_ETREEID));
+						}
+						etreeInfo.setzXcId(zEtreeXcId.getIdValue());
+						businessidDao.update(zEtreeXcId.getId(), ISUSEDSTATUS, connection);
+					}
+					
+					int etreeid = this.etreeDao.insert(etreeInfo, connection);
+					etreeInfo.setId(etreeid);
+					
+					// 关联新的pw
+					pwService.setUser(etreeInfo.getPwId(), etreeInfo);
+					
+					// 关联新的AC
+					updateACState(etreeInfo.getZmostAcId(),acService,1,false);
+					
+					// 修改了根端口
+					if (null != etreeInfo.getBeforeRootAc() && etreeInfo.getBeforeRootAc().size()>0) {
+						// 释放之前的ac对象
+						for(AcPortInfo acportInst : etreeInfo.getBeforeRootAc())
+						{
+							if(!isRelatedAC(acportInst.getId())){
+								acportInst.setIsUser(0);
+								acportInst.setLanId(0);
+								acService.updateUserType(acportInst);
+							}
+						}
+						// 关联新的AC
+						updateACState(etreeInfo.getAmostAcId(),acService,1,false);
+					}
+					
+				} else if (etreeInfo.getAction() == 3) { // 删除了叶子节点
+
+					//释放叶子的businessid
+					businessId = new Businessid();
+					businessId.setIdStatus(0);
+					businessId.setIdValue(etreeInfo.getzXcId());
+					businessId.setType("etree");
+					businessId.setSiteId(etreeInfo.getBranchSite());
+					this.businessidDao.updateBusinessid(businessId, connection);
+					
+					// 释放pw
+					pwInfo = new PwInfo();
+					pwInfo.setPwId(etreeInfo.getPwId());
+					if(!isRelatedPW(etreeInfo.getPwId())){
+						pwInfo=pwService.queryByPwId(pwInfo);
+						pwInfo.setRelatedServiceId(0);
+						pwInfo.setRelatedServiceType(0);
+						pwService.updateRelatedService(pwInfo);
+					}
+					// 释放ac对象
+					updateACState(etreeInfo.getZmostAcId(),acService,0,false);
+					//删除叶子数据
+					this.etreeDao.deleteById(etreeInfo.getId(), connection);
+				}
+				// 如果不是新增叶子、删除叶子 就修改etree数据
+				if(etreeInfo.getAction()==1 || etreeInfo.getAction()==0){
+					this.etreeDao.update(etreeInfo, super.connection);
+				}																				
+				}
+			
+			
+			// 离线网元数据下载
+			EtreeInfo EtreeInfo = etreeInfoList.get(0);
+			if (0 != EtreeInfo.getaSiteId()) {
+				super.dateDownLoad(EtreeInfo.getaSiteId(), EtreeInfo.getServiceId(), EServiceType.ETREE.getValue(), EActionType.UPDATE.getValue(), EtreeInfo.getServiceId() + "", null, 0, 0, null);
+			}
+			if (0 != EtreeInfo.getzSiteId()) {
+				super.dateDownLoad(EtreeInfo.getzSiteId(), EtreeInfo.getServiceId(), EServiceType.ETREE.getValue(), EActionType.UPDATE.getValue(), EtreeInfo.getServiceId() + "", null, 0, 0, null);
+			}
+			if(!super.connection.getAutoCommit()){
+				super.connection.commit();
+			}
+		} catch (Exception e) {
+			super.connection.rollback();
+			throw e;
+		} finally {
+			super.connection.setAutoCommit(true);
+		}
+		this.updateLanId(etreeInfoList);
+	}
+	
+	
+	// 更新业务
+		private void updateLanId(List<EtreeInfo> etreeInfoList) throws Exception {
+			AcInfoService acService = null;
+			PwNniBufferService pwNniBufferService = null;
+			UiUtil uiUtil = null;
+			try {
+				connection.setAutoCommit(false);
+				acService = (AcInfoService) ConstantUtil.serviceFactory.newService(Services.AcInfo, this.connection);
+				pwNniBufferService =(PwNniBufferService)ConstantUtil.serviceFactory.newService(Services.PwNniBuffer, this.connection);
+			    //给LANID赋值			
+		        List<EtreeInfo>  etreeInfoList1 = selectByServiceId(etreeInfoList.get(0).getServiceId());
+			    List<Integer> siteIdList = null;			
+			    siteIdList = getSiteIds(etreeInfoList1);
+			    uiUtil = new UiUtil();
+			    for(Integer siteId : siteIdList){
+				    int count=1;
+				    Set<Integer> acIdSet = new HashSet<Integer>();
+				    List<Integer> pwIdList = new ArrayList<Integer>();
+				    for (EtreeInfo etree : etreeInfoList1) {
+				         if (etree.getRootSite() == siteId) {
+					         acIdSet.addAll(uiUtil.getAcIdSets(etree.getAmostAcId()));
+					         pwIdList.add(etree.getPwId());
+				         } else if (etree.getBranchSite() == siteId) {
+					        acIdSet.addAll(uiUtil.getAcIdSets(etree.getZmostAcId()));
+					        pwIdList.add(etree.getPwId());
+				         }				   
+			    }
+				// uni
+				   for (Integer acId : acIdSet) {
+					    AcPortInfo acInfo = new AcPortInfo();   
+					    acInfo.setId(acId);
+					    acInfo.setLanId(count);
+					    acService.updateLanId(acInfo);
+					    count++;
+				   }
+				
+				// nni
+				   PwNniInfo pwNNIInfo= null;
+				   List<PwNniInfo>	pwNNIInfoList = new ArrayList<PwNniInfo>();
+					for (Integer pwId : pwIdList) {
+						pwNNIInfo = new PwNniInfo();
+						pwNNIInfo.setSiteId(siteId);
+						pwNNIInfo.setPwId(pwId);
+						pwNNIInfoList.addAll(pwNniBufferService.select(pwNNIInfo));
+					}
+				    int cou = 11;
+					for (PwNniInfo pwNNI : pwNNIInfoList) {
+						PwNniInfo pwNni = new PwNniInfo();
+						pwNni.setId(pwNNI.getId());
+						pwNni.setLanId(cou);
+						pwNni.setSiteId(siteId);						
+						pwNniBufferService.updateLanId(pwNni);
+						cou++;
+					}
+				   
+			}
+
+			    if(!connection.getAutoCommit()){
+					connection.commit();
+				}
+			} catch (Exception e) {
+				connection.rollback();
+				ExceptionManage.dispose(e, this.getClass());
+			} finally {
+				connection.setAutoCommit(true);
+			}
+		}
+	
+		public void clearLanId(List<EtreeInfo> etreeInfoList) throws Exception {
+			AcInfoService acService = null;
+			PwNniBufferService pwNniBufferService = null;
+			UiUtil uiUtil = null;
+			try {
+				super.connection.setAutoCommit(false);
+				acService = (AcInfoService) ConstantUtil.serviceFactory.newService(Services.AcInfo, this.connection);
+				pwNniBufferService =(PwNniBufferService)ConstantUtil.serviceFactory.newService(Services.PwNniBuffer, this.connection);
+				//释放该条ETREE所关联的AC和PW的LANID
+				
+				List<Integer> siteIdLists = null;			
+				siteIdLists = getSiteIds(etreeInfoList);
+				uiUtil = new UiUtil();
+				for(Integer siteId : siteIdLists){
+					Set<Integer> acIdSet = new HashSet<Integer>();
+					List<Integer> pwIdList = new ArrayList<Integer>();
+					for (EtreeInfo etree : etreeInfoList) {
+					    if (etree.getRootSite() == siteId) {
+						    acIdSet.addAll(uiUtil.getAcIdSets(etree.getAmostAcId()));
+						    pwIdList.add(etree.getPwId());
+					    } else if (etree.getBranchSite() == siteId) {
+						    acIdSet.addAll(uiUtil.getAcIdSets(etree.getZmostAcId()));
+						    pwIdList.add(etree.getPwId());
+					    }
+					   
+				   }
+					// uni
+					   for (Integer acId : acIdSet) {
+						    AcPortInfo acInfo = new AcPortInfo();   
+						    acInfo.setId(acId);
+						    acInfo.setLanId(0);
+						    acService.updateLanId(acInfo);
+					   }
+					
+					// nni
+					   PwNniInfo pwNNIInfo= null;
+					   List<PwNniInfo>	pwNNIInfoList = new ArrayList<PwNniInfo>();
+						for (Integer pwId : pwIdList) {
+							pwNNIInfo = new PwNniInfo();
+							pwNNIInfo.setSiteId(siteId);
+							pwNNIInfo.setPwId(pwId);
+							pwNNIInfoList.addAll(pwNniBufferService.select(pwNNIInfo));
+						}
+						for (PwNniInfo pwNNI : pwNNIInfoList) {
+							PwNniInfo pwNni = new PwNniInfo();
+							pwNni.setId(pwNNI.getId());
+							pwNni.setLanId(0);
+							pwNni.setSiteId(siteId);						
+							pwNniBufferService.updateLanId(pwNni);
+						}
+					   
+				}
+								
+				if(!super.connection.getAutoCommit()){
+					super.connection.commit();
+				}
+			} catch (Exception e) {
+				super.connection.rollback();
+				throw e;
+			} finally {
+				super.connection.setAutoCommit(true);
+			}
+			
+			
+		}
+		
+	/**
+	 * 关联PW
+	 * @param etreeInfoList
+	 * @throws Exception 
+	 */
+	public void relevancePw(List<EtreeInfo> etreeInfoList) throws Exception {
+		Businessid businessId = null;
+		PwInfoService pwService = (PwInfoService) ConstantUtil.serviceFactory.newService(Services.PwInfo, this.connection);
+		SiteService siteService = (SiteService) ConstantUtil.serviceFactory.newService(Services.SITE, this.connection);
+		for (EtreeInfo etreeInfo : etreeInfoList) {
+			if (etreeInfo.getAction() == 2) { // 新增了叶子节点
+				//取叶子节点的businessid
+				businessId = this.businessidDao.query(etreeInfo.getBranchSite(), "etree", super.connection);
+				//如果没有取到，说明已经被用完。不能再创建
+				if (null == businessId&&etreeInfo.getIsSingle()==0) {//单网络侧没有叶子节点
+					throw new BusinessIdException(siteService.getSiteName(etreeInfo.getBranchSite()) + ResourceUtil.srcStr(StringKeysTip.TIP_ETREEID));
+				}
+				if(null != businessId){
+					//如果取到，就把此businessid状态改成已使用
+					etreeInfo.setzXcId(businessId.getIdValue());
+					this.businessidDao.update(businessId.getId(), ISUSEDSTATUS , super.connection);
+				}
+				
+			}
+		}
+//		UiUtil.closeService(pwService);
+//		UiUtil.closeService(siteService);
+	}
+			
+	/*
+	 * 同一类型业务的serviceId不能相同
+	 */
+	public int checkServiceId() {
+
+		return 1;
+	}
+
+	/*
+	 * 删除一条etree(可能包括多条pw路径)
+	 */
+	public int delete(int serviceId) throws Exception {
+
+		int etreeResult = 0;
+		List<EtreeInfo> etreeInfoList = null;
+		PwInfo pwInfo = null;
+//		List<Integer> acIdlist = null;
+//		Set<Integer> acIdSet = null;
+//		List<AcPortInfo> acInfoList = null;
+		EtreeInfo etreeInfo = null;
+		PwInfoService pwService = null;
+		AcInfoService acService = null;
+		PwNniBufferService pwNniBufferService = null;
+		try {
+
+//			acIdSet = new HashSet<Integer>();
+//			acIdlist = new ArrayList<Integer>();
+//
+			pwService = (PwInfoService) ConstantUtil.serviceFactory.newService(Services.PwInfo, this.connection);
+			acService = (AcInfoService) ConstantUtil.serviceFactory.newService(Services.AcInfo, this.connection);
+			pwNniBufferService =(PwNniBufferService)ConstantUtil.serviceFactory.newService(Services.PwNniBuffer, this.connection);
+			// 解除与pw和ac引用关系
+			etreeInfo = new EtreeInfo();
+			etreeInfo.setServiceId(serviceId);
+			etreeInfo.setServiceType(EServiceType.ETREE.getValue());
+			etreeInfoList = this.select(etreeInfo);
+			for (EtreeInfo info : etreeInfoList) {
+				pwInfo = new PwInfo();
+				pwInfo.setPwId(info.getPwId());
+				//释放之前判断这个PW是否还存在其他的关联
+				if(!isRelatedPW(info.getPwId())){
+					pwInfo = pwService.selectBypwid_notjoin(pwInfo);
+					pwInfo.setRelatedServiceId(0);
+					pwInfo.setRelatedServiceType(0);
+					pwService.updateRelatedService(pwInfo);
+				}
+
+				// 释放ac 之前判断这条AC是否被其他的业务所使用
+				updateACState(info.getAmostAcId(),acService,0,false);
+				updateACState(info.getZmostAcId(),acService,0,false);
+				
+//				if (info.getaAcId() != 0) {
+//					if(!isRelatedAC(info.getaAcId())){
+//						acIdSet.add(info.getaAcId());
+//					}
+//				}
+//				if (info.getzAcId() != 0) {
+//					if(!isRelatedAC(info.getzAcId())){
+//						acIdSet.add(info.getzAcId());
+//					}
+//				}
+
+				// 释放id
+				Businessid businessId = new Businessid();
+				businessId.setIdStatus(0);
+				businessId.setIdValue(info.getaXcId());
+				businessId.setType("etree");
+				businessId.setSiteId(info.getRootSite());
+				businessidDao.updateBusinessid(businessId, connection);
+				businessId.setIdValue(info.getzXcId());
+				businessId.setSiteId(info.getBranchSite());
+				businessidDao.updateBusinessid(businessId, connection);
+
+			}
+			offLineAcion(etreeInfoList, pwService, acService);
+
+//			acIdlist.addAll(acIdSet);
+//			if(acIdlist != null && acIdlist.size()>0){
+//				acInfoList = acService.select(acIdlist);
+//				for (AcPortInfo info : acInfoList) {
+//					info.setIsUser(0);
+//					acService.updateUserType(info);
+//				}
+//			}
+
+			
+			etreeResult = this.etreeDao.delete(serviceId, connection);
+			this.clearLanId(etreeInfoList);
+							
+
+		} catch (Exception e) {
+			ExceptionManage.dispose(e, this.getClass());
+		} finally {
+//			UiUtil.closeService(acService);
+//			UiUtil.closeService(pwService);
+		}
+		return etreeResult;
+
+	}
+
+	/*
+	 * 查询所有的etree业务(每一条可能包含多条业务)
+	 */
+	public Map<Integer, List<EtreeInfo>> select() throws Exception {
+		Map<Integer, List<EtreeInfo>> etreeInfoMap = new HashMap<Integer, List<EtreeInfo>>();
+		List<EtreeInfo> etreeServiceList = null;
+
+		try {
+			etreeServiceList = this.etreeDao.queryAll(connection);
+			for (EtreeInfo etreeInfo : etreeServiceList) {
+				int serviceId = etreeInfo.getServiceId();
+				if (etreeInfoMap.get(serviceId) == null) {
+					List<EtreeInfo> etreeInfoList = new ArrayList<EtreeInfo>();
+					for (EtreeInfo etree : etreeServiceList) {
+						if (etree.getServiceId() == serviceId) {
+							etreeInfoList.add(etree);
+						}
+					}
+					etreeInfoMap.put(serviceId, etreeInfoList);
+				}
+
+			}
+		} catch (Exception e) {
+			ExceptionManage.dispose(e, this.getClass());
+		}
+		return etreeInfoMap;
+	}
+
+	/*
+	 * 查询某网元下的etree业务(每一条可能包含多条业务)
+	 */
+	public Map<String, List<EtreeInfo>> selectNodeBySite(int siteid) throws Exception {
+		Map<String, List<EtreeInfo>> etreeInfoMap = new HashMap<String, List<EtreeInfo>>();
+		List<EtreeInfo> etreeServiceList = null;
+
+		try {
+			etreeServiceList = this.etreeDao.queryAllBySite(siteid, connection);
+			for (EtreeInfo etreeInfo : etreeServiceList) {
+				int serviceId = etreeInfo.getServiceId();
+				if (etreeInfoMap.get(serviceId + "/" + etreeInfo.getServiceType()) == null) {
+					List<EtreeInfo> etreeInfoList = new ArrayList<EtreeInfo>();
+					for (EtreeInfo etree : etreeServiceList) {
+						if (etree.getServiceId() == serviceId) {
+							etreeInfoList.add(etree);
+						}
+					}
+					etreeInfoMap.put(serviceId + "/" + etreeInfoList.get(0).getServiceType(), etreeInfoList);
+				}
+
+			}
+		} catch (Exception e) {
+			ExceptionManage.dispose(e, this.getClass());
+		}
+		return etreeInfoMap;
+	}
+
+	/*
+	 * 查询某一条etree业务(可能包含多条pw)
+	 */
+	public List<EtreeInfo> select(EtreeInfo etreeInfo) throws Exception {
+		List<EtreeInfo> etreeInfoList = null;
+
+		try {
+			etreeInfoList = this.etreeDao.queryByCondition(etreeInfo, connection);
+		} catch (Exception e) {
+			ExceptionManage.dispose(e, this.getClass());
+		}
+		return etreeInfoList;
+	}
+
+	/**
+	 * 根据pwID集合查询etree的count
+	 * 
+	 * @param pwIds
+	 *            pw集合
+	 * @return count
+	 * @throws Exception
+	 */
+	public int selectCountByPwId(List<Integer> pwIds) throws Exception {
+		List<EtreeInfo> list = null;
+		try {
+			list = this.etreeDao.queryByPwIdCondition(pwIds, connection);
+		} catch (Exception e) {
+			ExceptionManage.dispose(e, this.getClass());
+		}
+		return list == null ? 0 : list.size();
+	}
+
+	public List<EtreeInfo> selectEtreeByPwId(List<Integer> pwIds) throws Exception {
+		List<EtreeInfo> list = null;
+		try {
+			list = this.etreeDao.queryByPwIdCondition(pwIds, connection);
+		} catch (Exception e) {
+			ExceptionManage.dispose(e, this.getClass());
+		}
+		return list;
+	}
+
+	public void updateStatusActivate(List<Integer> idList, int status) throws Exception {
+		try {
+			this.etreeDao.updateStatus(idList, status, connection);
+		} catch (Exception e) {
+			ExceptionManage.dispose(e, this.getClass());
+		}
+	}
+
+	public void updateStatusActivate(int siteId, int status) throws Exception {
+		try {
+			this.etreeDao.updateStatus(siteId, status, connection);
+		} catch (Exception e) {
+			ExceptionManage.dispose(e, this.getClass());
+		}
+	}
+
+	/**
+	 * 
+	 * 同步etree查询方法
+	 * 
+	 * @author kk
+	 * 
+	 * @param erEtreeInfo
+	 *            etree对象
+	 * @param role
+	 *            角色 root为根 branch为叶
+	 * 
+	 * @return
+	 * @throws Exception
+	 * 
+	 * @Exception 异常对象
+	 */
+	public List<EtreeInfo> select_synchro(EtreeInfo erEtreeInfo, String role) throws Exception {
+		return this.etreeDao.query_synchro(erEtreeInfo, role, connection);
+	}
+
+	/**
+	 * 验证名字是否重复
+	 * 
+	 * @author kk
+	 * 
+	 * @param afterName
+	 *            修改之后的名字
+	 * @param beforeName
+	 *            修改之前的名字
+	 * 
+	 * @return
+	 * @throws Exception
+	 * 
+	 * @Exception 异常对象
+	 */
+	public boolean nameRepetition(String afterName, String beforeName) throws Exception {
+
+		int result = this.etreeDao.query_name(afterName, beforeName, connection);
+		if (0 == result) {
+			return false;
+		} else {
+			return true;
+		}
+
+	}
+
+	/**
+	 * 单网元名称验证
+	 * 
+	 * @param afterName
+	 * @param beforeName
+	 * @param siteId
+	 * @return
+	 * @throws Exception
+	 */
+	public boolean nameRepetitionBySingle(String afterName, String beforeName, int siteId) throws Exception {
+
+		int result = this.etreeDao.query_nameBySingle(afterName, beforeName, connection, siteId);
+		if (0 == result) {
+			return false;
+		} else {
+			return true;
+		}
+
+	}
+
+	/*
+	 * @SuppressWarnings("unchecked")
+	 * 
+	 * @Test public void testInsert() { try { connection = DBManager.getConnection();
+	 * 
+	 * List<PwInfo> pwInfoList = new ArrayList(); List<EtreeInfo> etreeInfoList = new ArrayList();
+	 * 
+	 * PwInfo pwInfo = new PwInfo(); pwInfo.setPwId(0); pwInfo.setPwStatus(1); pwInfo.setTunnelId(3); pwInfo.setInlabelValue(26); pwInfo.setOutlabelValue(27); // pwInfo.setAPortId(7); // pwInfo.setZPortId(40); pwInfo.setASiteId(1); pwInfo.setZSiteId(2); pwInfo.setCreateTime((new Date()).toLocaleString()); pwInfo.setCreateUser("admin"); pwInfo.setApwServiceId(2); pwInfo.setZpwServiceId(2); EtreeInfo etreeInfo = new EtreeInfo(); etreeInfo.setServiceId(2); etreeInfo.setPwId(pwInfo.getPwId()); etreeInfo.setName("etree-1"); etreeInfo.setServiceType(3); etreeInfo.setActiveStatus(1); etreeInfo.setRootSite(1); etreeInfo.setBranchSite(2); pwInfoList.add(pwInfo); etreeInfoList.add(etreeInfo);
+	 * 
+	 * pwInfo = new PwInfo(); pwInfo.setPwId(0); pwInfo.setPwStatus(1); pwInfo.setTunnelId(3); pwInfo.setInlabelValue(28); pwInfo.setOutlabelValue(29); // pwInfo.setAPortId(9); // pwInfo.setZPortId(43); pwInfo.setASiteId(1); pwInfo.setZSiteId(3); pwInfo.setCreateTime((new Date()).toLocaleString()); pwInfo.setCreateUser("admin"); pwInfo.setApwServiceId(3); pwInfo.setZpwServiceId(3); etreeInfo = new EtreeInfo(); etreeInfo.setServiceId(2); etreeInfo.setPwId(pwInfo.getPwId()); etreeInfo.setName("etree-1"); etreeInfo.setServiceType(3); etreeInfo.setActiveStatus(1); etreeInfo.setRootSite(1); etreeInfo.setBranchSite(3); pwInfoList.add(pwInfo); etreeInfoList.add(etreeInfo);
+	 * 
+	 * pwInfo = new PwInfo(); pwInfo.setPwId(0); pwInfo.setPwStatus(1); pwInfo.setTunnelId(3); pwInfo.setInlabelValue(30); pwInfo.setOutlabelValue(31); // pwInfo.setAPortId(11); // pwInfo.setZPortId(45); pwInfo.setASiteId(1); pwInfo.setZSiteId(2); pwInfo.setCreateTime((new Date()).toLocaleString()); pwInfo.setCreateUser("admin"); pwInfo.setApwServiceId(4); pwInfo.setZpwServiceId(4); etreeInfo = new EtreeInfo(); etreeInfo.setServiceId(3); etreeInfo.setPwId(pwInfo.getPwId()); etreeInfo.setName("etree-2"); etreeInfo.setServiceType(3); etreeInfo.setActiveStatus(1); etreeInfo.setRootSite(1); etreeInfo.setBranchSite(2); pwInfoList.add(pwInfo); etreeInfoList.add(etreeInfo); //插入 int i = saveOrUpdate(pwInfoList, etreeInfoList); System.out.println(i); //查询 Map<Integer, List> etreeInfoMap = new HashMap<Integer, List>(); etreeInfoMap = select(); List<Integer> list = new ArrayList(etreeInfoMap.keySet()); for (int s : list) { System.out.println( s +" " + etreeInfoMap.get(s)); } System.out.println(etreeInfoMap.size()); etreeInfo = new EtreeInfo(); etreeInfo.setServiceId(2); etreeInfo.setServiceType(3); etreeInfoList = new ArrayList(); etreeInfoList = select(etreeInfo); System.out.println(2 + " "+etreeInfoList.size()); //根据pw查询 List<Integer>pwIdList = new ArrayList<Integer>(); pwIdList.add(31); pwIdList.add(32); pwIdList.add(33); int count = selectCountByPwId(pwIdList); System.out.println("serviceid " + count); //删除 int suc = delete(2); System.out.println("delete " + suc); } catch (Exception e) { }
+	 * 
+	 * }
+	 */
+
+	/**
+	 * 通过网元id初始化某网元所有etree
+	 */
+	public void initializtionSite(int siteId) throws SQLException {
+		Map<String, List<EtreeInfo>> etreeInfomaps = null;
+		List<EtreeInfo> etreeInfos = null;
+		List<EtreeInfo> etreeInfosList = null;
+		try {
+			etreeInfomaps = this.selectNodeBySite(siteId);
+			for (String str : etreeInfomaps.keySet()) {
+				etreeInfos = etreeInfomaps.get(str);// 一个key，对应一组etree
+				etreeInfosList = this.selectByServiceId(etreeInfos.get(0).getServiceId());
+				if (etreeInfosList != null && etreeInfosList.size() > 0) {
+					if (etreeInfosList.get(0).getIsSingle() == 1) {// 判断是否是单网数据
+						this.delete(etreeInfosList.get(0).getServiceId());
+					} else {
+						for (EtreeInfo etreeInfo : etreeInfosList) {
+							if (etreeInfo.getRootSite() == siteId) {
+								etreeInfo.setRootSite(0);
+								etreeInfo.setaAcId(0);
+								etreeInfo.setaXcId(0);
+								etreeInfo.setASiteName("");
+							} else if (etreeInfo.getBranchSite() == siteId) {
+								etreeInfo.setBranchSite(0);
+								etreeInfo.setzAcId(0);
+								etreeInfo.setzXcId(0);
+								etreeInfo.setZSiteName("");
+								etreeInfo.setIsSingle(1);
+							} else {
+								etreeInfo.setIsSingle(1);
+							}
+						}
+					}
+
+				}
+				this.update(etreeInfosList);
+			}
+
+		} catch (Exception e) {
+			ExceptionManage.dispose(e, this.getClass());
+		} finally {
+			etreeInfomaps = null;
+			etreeInfos = null;
+			etreeInfosList = null;
+		}
+	}
+
+	/**
+	 * 通过acId,siteId查询line
+	 * 
+	 * @param acId
+	 * @return
+	 */
+	public List<EtreeInfo> selectByAcIdAndSiteId(int acId, int siteId) {
+		List<EtreeInfo> etreeInfos = null;
+		List<EtreeInfo> etreeInsts = null;
+		UiUtil uiUtil = null;
+		try {
+			etreeInfos = this.etreeDao.queryByAcIdAndSiteIdCondition(acId, siteId, connection);
+			if(null != etreeInfos && !etreeInfos.isEmpty())
+			{
+				uiUtil = new UiUtil();
+				etreeInsts = new ArrayList<EtreeInfo>();
+				for(EtreeInfo etreeInfo : etreeInfos)
+				{
+				 if((uiUtil.getAcIdSets(etreeInfo.getAmostAcId()).contains(acId) && etreeInfo.getaSiteId() == siteId) 
+					||(uiUtil.getAcIdSets(etreeInfo.getZmostAcId()).contains(acId)&& etreeInfo.getzSiteId() == siteId))
+				 {
+					 etreeInsts.add(etreeInfo);
+				 }
+				}
+			}
+		} catch (Exception e) {
+			ExceptionManage.dispose(e, getClass());
+		}finally
+		{
+			 etreeInfos = null;
+			 uiUtil = null;
+		}
+		return etreeInsts;
+	}
+	
+	
+
+	/**
+	 * 通过serviceId查询一组etree业务
+	 * 
+	 * @param serviceId
+	 * @return
+	 */
+	public List<EtreeInfo> selectByServiceId(int serviceId) {
+		List<EtreeInfo> etreeInfos = null;
+		etreeInfos = this.etreeDao.queryByServiceId(serviceId, connection);
+		return etreeInfos;
+	}
+
+	/**
+	 * 搜索单网元下的etree 组成网络数据
+	 * 
+	 * @param siteInstList
+	 *            网元集合
+	 * @throws Exception
+	 */
+	public void search(List<SiteInst> siteInstList) throws Exception {
+
+		List<Integer> siteIdList = null;
+		Map<Integer, List<EtreeInfo>> map = null;
+		Map<Integer, List<EtreeInfo>> map_create = null; // 要创建的map
+		int createKey = 1; // 创建的map中key标识
+		SiteService siteService=null;
+		try {
+			siteService=(SiteService) ConstantUtil.serviceFactory.newService(Services.SITE, this.connection);
+
+			siteIdList = siteService.getSiteIdList(siteInstList);
+			map_create = new HashMap<Integer, List<EtreeInfo>>();
+
+			for (SiteInst siteInst : siteInstList) {
+				// 查出此网元所有根节点
+				map = this.etreeDao.queryByRoot(siteInst.getSite_Inst_Id(), connection);
+
+				// 遍历每一组根节点。寻找叶子节点
+				for (int serviceId : map.keySet()) {
+					this.putCrateMap(map_create, createKey, map.get(serviceId), siteIdList);
+					createKey++;
+				}
+			}
+
+			// 如果map中有值，就循环创建每一组etree。
+			if (map_create.keySet().size() > 0) {
+				for (int key : map_create.keySet()) {
+					this.createEtree(map_create.get(key));
+				}
+			}
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+//			UiUtil.closeService(siteService);
+		}
+
+	}
+
+	/**
+	 * 根据根节点，查询出叶子节点，验证叶子节点是否在siteids集合中，如果在，把此组etree放到map中
+	 * 
+	 * @param map_create
+	 *            创建的map集合
+	 * @param key
+	 *            创建的map中key
+	 * @param rootEtrees
+	 *            根节点
+	 * @param siteIds
+	 *            网元集合
+	 * @throws Exception
+	 */
+	private void putCrateMap(Map<Integer, List<EtreeInfo>> map_create, int key, List<EtreeInfo> rootEtrees, List<Integer> siteIds) throws Exception {
+		List<EtreeInfo> etreeInfoList = null;
+		boolean flag = true;
+		try {
+			etreeInfoList = this.selectEtreeByPwId(this.getPwIds(rootEtrees));
+
+			// 遍历查询出的etree集合
+			//根节点必须与叶子节点数量完全对应
+			if(etreeInfoList.size() == rootEtrees.size()*2){
+				for (EtreeInfo etreeInfo : etreeInfoList) {
+					// 如果是叶子节点，并且网元集合中不存在此网元，说明此次网元选择不足，不能合并
+					if (etreeInfo.getBranchSite() > 0 && !siteIds.contains(etreeInfo.getBranchSite())) {
+						flag = false;
+						break;
+					}
+				}
+			}else{
+				flag = false;
+			}
+
+			// 如果通过验证，可以合并，把此组etree数据放到map中，统一做合并
+			if (flag) {
+				map_create.put(key, etreeInfoList);
+			}
+
+		} catch (Exception e) {
+			throw e;
+		}
+
+	}
+
+	/**
+	 * 获取etree中的所有pwid
+	 * 
+	 * @param etreeInfoList
+	 *            etree集合
+	 * @return
+	 * @throws Exception
+	 */
+	private List<Integer> getPwIds(List<EtreeInfo> etreeInfoList) throws Exception {
+		List<Integer> pwIds = null;
+		try {
+			pwIds = new ArrayList<Integer>();
+			for (EtreeInfo etreeInfo : etreeInfoList) {
+				pwIds.add(etreeInfo.getPwId());
+			}
+
+		} catch (Exception e) {
+			throw e;
+		}
+		return pwIds;
+	}
+
+	/**
+	 * 合并并且创建etree数据
+	 * 
+	 * @param etreeInfoList
+	 * @throws Exception
+	 */
+	private void createEtree(List<EtreeInfo> etreeInfoList) throws Exception {
+		EtreeInfo branchEtree = null;
+		List<EtreeInfo> etreeInfoList_create = null;
+		int serviceId = 0;
+		String etreeName = null;
+		PwInfoService pwService = null;
+		try {
+			etreeInfoList_create = new ArrayList<EtreeInfo>();
+			for (EtreeInfo etreeInfo : etreeInfoList) {
+
+				if (etreeInfo.getRootSite() > 0) {
+					// 取叶子节点
+					branchEtree = this.getBranch(etreeInfo, etreeInfoList);
+					// 根据根节点和叶节点组成一个etree对象
+					if(branchEtree != null){
+						etreeInfoList_create.add(this.combination(etreeInfo, branchEtree));
+					}
+				}
+			}
+
+			if (etreeInfoList_create.size() > 0) {
+				pwService = (PwInfoService) ConstantUtil.serviceFactory.newService(Services.PwInfo, this.connection);
+				// 取serviceid
+				serviceId = this.etreeDao.selectMaxServiceId(connection) + 1;
+				// 设置etree名称
+				etreeName = "etree_" + new Date().getTime();
+				for (EtreeInfo etreeInfo : etreeInfoList_create) {
+					etreeInfo.setServiceId(serviceId);
+					etreeInfo.setName(etreeName);
+					// 插入
+					int etreeId = this.etreeDao.insert(etreeInfo, connection);
+					etreeInfo.setId(etreeId);
+					// 修改pw关联
+					pwService.setUser(etreeInfo.getPwId(), etreeInfo);
+				}
+
+				// 删除原有的数据
+				for (EtreeInfo etreeInfo : etreeInfoList) {
+					this.etreeDao.deleteByID(etreeInfo.getId(), connection);
+				}
+
+			}
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			branchEtree = null;
+			etreeInfoList_create = null;
+			serviceId = 0;
+			etreeName = null;
+//			UiUtil.closeService(pwService);
+		}
+
+	}
+
+	/**
+	 * 根据根节点 找出对应的叶子节点
+	 * 
+	 * @param rootEtree
+	 *            根节点
+	 * @param etreeInfoList
+	 * @return
+	 * @throws Exception
+	 */
+	private EtreeInfo getBranch(EtreeInfo rootEtree, List<EtreeInfo> etreeInfoList) throws Exception {
+
+		EtreeInfo branchEtree = null;
+		try {
+
+			for (EtreeInfo etreeInfo : etreeInfoList) {
+				if (etreeInfo.getPwId() == rootEtree.getPwId() && etreeInfo.getId() != rootEtree.getId()) {
+					branchEtree = etreeInfo;
+					return branchEtree;
+				}
+			}
+
+		} catch (Exception e) {
+			throw e;
+		}
+		return branchEtree;
+	}
+
+	/**
+	 * 组合根和叶为一个etree对象。
+	 * 
+	 * @param rootEtree
+	 *            根对象
+	 * @param branchEtree
+	 *            叶对象
+	 * @return
+	 * @throws Exception
+	 */
+	private EtreeInfo combination(EtreeInfo rootEtree, EtreeInfo branchEtree) throws Exception {
+
+		EtreeInfo etreeInfo = new EtreeInfo();
+
+		try {
+
+			etreeInfo.setServiceType(rootEtree.getServiceType());
+			etreeInfo.setActiveStatus(rootEtree.getActiveStatus());
+			etreeInfo.setPwId(rootEtree.getPwId());
+			etreeInfo.setaXcId(rootEtree.getaXcId());
+			etreeInfo.setzXcId(branchEtree.getzXcId());
+			etreeInfo.setRootSite(rootEtree.getRootSite());
+			etreeInfo.setBranchSite(branchEtree.getBranchSite());
+			etreeInfo.setaAcId(rootEtree.getaAcId());
+			etreeInfo.setAmostAcId(rootEtree.getAmostAcId());
+			etreeInfo.setZmostAcId(branchEtree.getZmostAcId());
+			etreeInfo.setzAcId(branchEtree.getzAcId());
+			etreeInfo.setCreateUser(branchEtree.getCreateUser());
+			etreeInfo.setCreateTime(DateUtil.getDate(DateUtil.FULLTIME));
+			etreeInfo.setJobStatus(rootEtree.getJobStatus());
+
+		} catch (Exception e) {
+			throw e;
+		}
+		return etreeInfo;
+	}
+
+	/**
+	 * 离线网元操作
+	 * 
+	 * @param etreeInfoList
+	 * @param pwService
+	 * @throws Exception
+	 */
+	private void offLineAcion(List<EtreeInfo> etreeInfoList, PwInfoService pwService,
+								AcInfoService acService) throws Exception {
+		List<PwInfo> pwList;
+		AcPortInfo acPortInfo;
+		String aSitePws = "";
+		PwInfo pwInfo;
+		int zPwServiceId = 0;
+		List<AcPortInfo> acPortInfoList;
+		EtreeInfo offLineAction = etreeInfoList.get(0);
+		if (offLineAction.getIsSingle() == 0) {
+			for (EtreeInfo etree : etreeInfoList)
+				aSitePws += etree.getPwId();
+			pwList = pwService.selectServiceIdsByPwIds(aSitePws);
+			if (null != pwList && pwList.size() > 0) {
+				aSitePws = pwList.get(0).getApwServiceId() + "";
+			}
+			if (0 != offLineAction.getaSiteId()) {
+				acPortInfo = new AcPortInfo();
+				acPortInfo.setId(offLineAction.getaAcId());
+				acPortInfoList = acService.selectByCondition(acPortInfo);
+				if (null != acPortInfoList && acPortInfoList.size() > 0) {
+					acPortInfo = acPortInfoList.get(0);
+					super.dateDownLoad(offLineAction.getaSiteId(), offLineAction.getServiceId(), EServiceType.ETREE.getValue(), EActionType.DELETE.getValue(), offLineAction.getaXcId() + "", aSitePws, acPortInfo.getPortId(), acPortInfo.getAcBusinessId(), TypeAndActionUtil.ACTION_ROOT);
+				}
+			}
+			if (0 != offLineAction.getzSiteId()) {
+				acPortInfo = new AcPortInfo();
+				acPortInfo.setId(offLineAction.getzAcId());
+				acPortInfoList = acService.selectByCondition(acPortInfo);
+				if (null != acPortInfoList && acPortInfoList.size() > 0) {
+					acPortInfo = acPortInfoList.get(0);
+					super.dateDownLoad(offLineAction.getzSiteId(), offLineAction.getServiceId(), EServiceType.ETREE.getValue(), EActionType.DELETE.getValue(), offLineAction.getzXcId() + "", aSitePws, acPortInfo.getPortId(), acPortInfo.getAcBusinessId(), TypeAndActionUtil.ACTION_BRANCH);
+				}
+			}
+		} else {
+			// 按业务保持离线网元数据
+			// a段网元（根）
+			if (null != etreeInfoList && etreeInfoList.size() > 0) {
+				// 查询pwserviceid
+				for (EtreeInfo obj : etreeInfoList) {
+					aSitePws += obj.getPwId() + ",";
+				}
+				aSitePws = aSitePws.substring(0, aSitePws.length() - 1).trim();
+				pwList = pwService.selectServiceIdsByPwIds(aSitePws);
+				if (null != pwList && pwList.size() > 0) {
+					aSitePws = "";
+					for (PwInfo pwObj : pwList) {
+						aSitePws += pwObj.getApwServiceId() + ",";
+					}
+					aSitePws = aSitePws.substring(0, aSitePws.length() - 1);
+					if (0 != offLineAction.getaSiteId()) {
+						acPortInfo = new AcPortInfo();
+						acPortInfo.setId(offLineAction.getaAcId());
+						acPortInfoList = acService.selectByCondition(acPortInfo);
+						if (null != acPortInfoList && acPortInfoList.size() > 0) {
+							acPortInfo = acPortInfoList.get(0);
+							super.dateDownLoad(offLineAction.getaSiteId(), offLineAction.getServiceId(), EServiceType.ETREE.getValue(), EActionType.DELETE.getValue(), offLineAction.getaXcId() + "", aSitePws, acPortInfo.getPortId(), acPortInfo.getAcBusinessId(), TypeAndActionUtil.ACTION_ROOT);
+						}
+					}
+				}
+
+				// z段多网元（子）
+				for (EtreeInfo info : etreeInfoList) {
+					if (info.getaSiteId() > 0) {
+						acPortInfo = new AcPortInfo();
+						if (0 != info.getzAcId()) {
+							acPortInfo.setId(info.getzAcId());
+						} else {
+							acPortInfo.setId(info.getaAcId());
+						}
+						acPortInfo = acService.selectByCondition(acPortInfo).get(0);
+						pwInfo = new PwInfo();
+						pwInfo.setPwId(info.getPwId());
+						pwInfo = pwService.queryByPwId(pwInfo);
+						if (info.getaSiteId() == pwInfo.getASiteId()) {
+							zPwServiceId = pwInfo.getApwServiceId();
+						}
+						if (info.getaSiteId() == pwInfo.getZSiteId()) {
+							zPwServiceId = pwInfo.getZpwServiceId();
+						}
+						super.dateDownLoad(info.getzSiteId(), offLineAction.getServiceId(), EServiceType.ETREE.getValue(), EActionType.DELETE.getValue(), info.getzXcId() + "", zPwServiceId + "", acPortInfo.getPortId(), acPortInfo.getAcBusinessId(), TypeAndActionUtil.ACTION_BRANCH);
+					}
+				}
+			}
+		}
+	}
+	/**
+	 * 通过etree主键ID 查询所有与此ID有关的etree数据（即： 与此ID相同的serviceID ）
+	 * @author sy
+	 * @param id
+	 * @return
+	 * @throws Exception
+	 */
+	public List<EtreeInfo> selectById(int id) throws Exception {
+		List<EtreeInfo> etreeInfoList = null;
+		EtreeInfo etreeInfo=null;
+		try {
+			etreeInfo=new EtreeInfo();
+			etreeInfo.setId(id);
+			etreeInfoList=this.etreeDao.select(etreeInfo, connection);
+			if(etreeInfoList!=null&&etreeInfoList.size()==1){
+				etreeInfo=etreeInfoList.get(0);
+				etreeInfoList = this.etreeDao.queryByCondition(etreeInfo, connection);
+			}
+			
+		} catch (Exception e) {
+			ExceptionManage.dispose(e, this.getClass());
+		}
+		return etreeInfoList;
+	}
+	/**
+	 * 通过etree主键ID 查询etree数据
+	 * @author sy
+	 * @param id
+	 * @return
+	 * @throws Exception
+	 */
+	public List<EtreeInfo> selectByDbId(int id) throws Exception {
+		List<EtreeInfo> etreeInfoList = null;
+		EtreeInfo etreeInfo=null;
+		try {
+			etreeInfo=new EtreeInfo();
+			etreeInfo.setId(id);
+			etreeInfoList=this.etreeDao.select(etreeInfo, connection);
+		} catch (Exception e) {
+			ExceptionManage.dispose(e, this.getClass());
+		}
+		return etreeInfoList;
+	}
+	/**
+	 * @author kk
+	 * 
+	 * @param siteID 和 xcID
+	 *            elan对象
+	 * @return List<EtreeInfo>
+	 * @throws Exception
+	 * 
+	 * @Exception 异常对象
+	 */
+	public List<EtreeInfo> select_etree(int siteID,int xcID) throws Exception {
+		return this.etreeDao.query_etreeInfo(siteID,xcID, connection);
+	}
+	
+	public List<EtreeInfo> selectServiceInfoById(int id) {
+		List<EtreeInfo> cesList = new ArrayList<EtreeInfo>();
+		try {
+			cesList = this.etreeDao.selectServiceInfoById(id, connection);
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		}
+		return cesList;
+	}
+	
+	/**
+	 * 根据网元查询此网元下所有单网元eline业务
+	 * @param siteId 网元主键
+	 * @return 
+	 * @throws Exception
+	 */
+	public Map<Integer, List<EtreeInfo>> selectBySite_node(int siteId) throws Exception{
+		
+		return this.convertListToMap(this.etreeDao.selectBySiteAndisSingle(siteId, 1, super.connection));
+	}
+	
+	/**
+	 * 根据网元查询此网元下所有网络eline业务
+	 * @param siteId 网元主键
+	 * @return 
+	 * @throws Exception
+	 */
+	public Map<Integer, List<EtreeInfo>> selectBySite_network(int siteId) throws Exception{
+		return this.convertListToMap(this.etreeDao.selectBySiteAndisSingle(siteId, 1, super.connection));
+	}
+	
+	/**
+	 * 把所有etree按组转为map 
+	 * @param etreeInfoList
+	 * @return key为组id  value为此组下的etree对象
+	 * @throws Exception
+	 */
+	private Map<Integer, List<EtreeInfo>> convertListToMap(List<EtreeInfo> etreeInfoList) throws Exception{
+		
+		Map<Integer, List<EtreeInfo>> etreeInfoMap = new HashMap<Integer, List<EtreeInfo>>();
+		try {
+			if(null!=etreeInfoList && etreeInfoList.size()>0){
+				for (EtreeInfo etreeInfo : etreeInfoList) {
+					int serviceId = etreeInfo.getServiceId();
+					if (etreeInfoMap.get(serviceId) == null) {
+						List<EtreeInfo> etreeInfoList_map = new ArrayList<EtreeInfo>();
+						etreeInfoMap.put(serviceId, etreeInfoList_map);
+					}
+					etreeInfoMap.get(serviceId).add(etreeInfo);
+				}
+			}
+		} catch (Exception e) {
+			throw e;
+		}
+		
+		return etreeInfoMap;
+	}
+	
+	/**
+	 * 根据主键，查询此组全量的etree对象
+	 * @param id 其中一条的主键
+	 * @return
+	 * @throws Exception 
+	 */
+	public List<EtreeInfo> selectById_all(int id) throws Exception{
+		return this.etreeDao.queryById(id, connection);
+	}
+	
+	/**
+	 * 界面过滤查询
+	 * @param etreeInfo 查询条件
+	 * @return
+	 * @throws Exception
+	 */
+	public Map<Integer, List<EtreeInfo>> filterSelect(EtreeInfo etreeInfo) throws Exception {
+		Map<Integer, List<EtreeInfo>> etreeInfoMap = new HashMap<Integer, List<EtreeInfo>>();
+		List<EtreeInfo> etreeServiceList = null;
+		AcInfoService acService = null;
+		List<Integer> acIds = null;
+		try {
+			acService = (AcInfoService) ConstantUtil.serviceFactory.newService(Services.AcInfo,this.connection);
+			etreeServiceList = this.etreeDao.filterSelect(etreeInfo, connection);
+			
+			if(etreeInfo.getAportId() >0)
+			{
+				acIds = acService.acByPort(etreeInfo.getAportId());
+			}
+			
+			for (EtreeInfo etreeInfo_result : etreeServiceList) {
+				//存在通过端口查询
+				if(acIds != null)
+				{
+					if(!acIds.isEmpty())
+					{
+						if(acByFilter(acIds,etreeInfo_result.getAmostAcId()) || acByFilter(acIds,etreeInfo_result.getZmostAcId()))
+						{
+							etreeByFilter(etreeInfo_result,etreeInfoMap,etreeServiceList);
+						}	
+					}
+				}else
+				{
+					etreeByFilter(etreeInfo_result,etreeInfoMap,etreeServiceList);
+				}
+//				int serviceId = etreeInfo_result.getServiceId();
+//				if (etreeInfoMap.get(serviceId) == null) {
+//					List<EtreeInfo> etreeInfoList = new ArrayList<EtreeInfo>();
+//					for (EtreeInfo etree : etreeServiceList) {
+//						if (etree.getServiceId() == serviceId) {
+//							etreeInfoList.add(etree);
+//						}
+//					}
+//					etreeInfoMap.put(serviceId, etreeInfoList);
+//				}
+			}
+		} catch (Exception e) {
+			ExceptionManage.dispose(e, this.getClass());
+		}finally
+		{
+			acIds = null;
+		}
+		return etreeInfoMap;
+	}
+	
+	
+	private void etreeByFilter(EtreeInfo etreeInfo_result,Map<Integer, List<EtreeInfo>> etreeInfoMap,List<EtreeInfo> etreeServiceList)
+	{
+		int serviceId = etreeInfo_result.getServiceId();
+		if (etreeInfoMap.get(serviceId) == null) {
+			List<EtreeInfo> etreeInfoList = new ArrayList<EtreeInfo>();
+			for (EtreeInfo etree : etreeServiceList) {
+				if (etree.getServiceId() == serviceId) {
+					etreeInfoList.add(etree);
+				}
+			}
+			etreeInfoMap.put(serviceId, etreeInfoList);
+		}
+	}
+	
+	/**
+	 * 查询a/Z端是否满足查询条件
+	 * @param acIds
+	 * @param etreeInfo_result
+	 * @return
+	 */
+	private boolean acByFilter(List<Integer> acIds,String mostAcId)
+	{
+	 Set<Integer> acList = null;
+	 UiUtil uiutil  = null;
+		try {
+			uiutil = new UiUtil();
+			acList = uiutil.getAcIdSets(mostAcId);
+			for(Integer acId : acList)
+			{
+				if(acIds.contains(acId))
+				{
+					return true;
+				}
+			}
+			
+		} catch (Exception e) {
+			ExceptionManage.dispose(e, getClass());
+		}finally
+		{
+			acList = null;
+			uiutil = null;
+		}
+		return false;
+	}
+	
+	/**
+	 * 
+	 * 通过业务ID删除业务
+	 * @param idList
+	 */
+	public void deleteById(List<Integer> idList){
+		try {
+			if(idList != null && idList.size() >0){
+				for (Integer id : idList) {
+					 this.etreeDao.deleteById(id, connection);
+				}
+			}
+		} catch (Exception e) {
+			ExceptionManage.dispose(e, this.getClass());
+		}
+	}
+	
+	/**
+	 * 在删除之前判断着PW是否存在其他的业务的关联
+	 * @param pwId
+	 * @return true存在 false 不存在
+	 */
+	private boolean isRelatedPW(int pwId){
+		try {
+			return  this.etreeDao.isRelatedPW(pwId, connection);
+		} catch (Exception e) {
+			ExceptionManage.dispose(e, getClass());
+		}
+		return false;
+	}
+	
+	/**
+	 * 在删除之前判断着AC是否存在其他的业务的关联
+	 * @param AcId
+	 * @return true存在 false 不存在
+	 */
+	private boolean isRelatedAC(int acId){
+		List<String> azAcIds = null;
+		Set<Integer> azAcSet = new HashSet<Integer>();
+		UiUtil uiUtil = new UiUtil();
+		boolean isRelatedAc = false;
+		try {
+			isRelatedAc = this.etreeDao.isRelatedAcByEline(acId, connection);
+			if(isRelatedAc)
+			{
+				return true;
+			}else
+			{
+				azAcIds = this.etreeDao.isRelatedAc(connection);
+				if(null != azAcIds && !azAcIds.isEmpty())
+				{
+					for(String acid : azAcIds)
+					{
+						azAcSet.addAll(uiUtil.getAcIdSets(acid));
+					}
+				}
+				if(azAcSet.contains(acId))
+				{
+					return true;
+				}
+			}
+		} catch (Exception e) {
+			ExceptionManage.dispose(e, getClass());
+		}finally
+		{
+			 azAcIds = null;
+			 azAcSet = null;
+			 uiUtil = null;
+		}
+		return false;
+	}
+	
+	
+	/**
+	 * 查询所有业务
+	 * 
+	 * @param serviceId
+	 * @return
+	 */
+	public List<EtreeInfo> selectAll(int serviceType,String name) {
+		List<EtreeInfo> etreeInfoList = null;
+		try {
+		   etreeInfoList = this.etreeDao.queryAllEtree(serviceType,name, connection);		
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			ExceptionManage.dispose(e, getClass());
+		}
+		return etreeInfoList;
+	}
+	
+	
+
+	/**
+	 * 查询所有业务
+	 * 
+	 * @param serviceId
+	 * @return
+	 */
+	public List<EtreeInfo> selectAcIds(int serviceType,String name,int branchSite) {
+		List<EtreeInfo> etreeInfoList = null;    
+		try {
+		   etreeInfoList = this.etreeDao.queryAllEtrees(serviceType,name,branchSite, connection);		
+		} catch (SQLException e) {
+			ExceptionManage.dispose(e, getClass());
+		}
+		return etreeInfoList;
+	}
+	
+	
+	
+}

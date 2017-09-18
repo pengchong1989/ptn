@@ -1,0 +1,147 @@
+package com.nms.model.ptn;
+
+import java.sql.Connection;
+import java.util.List;
+import com.nms.db.bean.ptn.clock.PtpPortinfo;
+import com.nms.db.bean.ptn.clock.TimeSyncInfo;
+import com.nms.db.dao.ptn.TimeSyncDao;
+import com.nms.model.util.ObjectService;
+import com.nms.ui.manager.ExceptionManage;
+
+public class TimeSyncService extends ObjectService{
+	
+	public void setConnection(Connection connection) {
+		super.connection = connection;
+	}
+
+	public void setPtnuser(String ptnuser) {
+		super.ptnuser = ptnuser;
+	}
+	
+	private TimeSyncDao timesyncdao = new TimeSyncDao();
+	
+	public void update(TimeSyncInfo timesync, List<TimeSyncInfo> timesyns) throws Exception{
+		if(timesyncdao == null){
+			throw new Exception("timesyncdao is null");
+		}
+		List<PtpPortinfo> ptpPortList = null;
+		try {
+			connection.setAutoCommit(false);
+			ptpPortList = timesync.getPtpPortlist();
+			timesyncdao.update(timesync, connection);
+			timesyncdao.delete(timesync.getSiteId(), connection);
+			if(ptpPortList != null && ptpPortList.size()>0){
+				
+			    	 for(PtpPortinfo ptpPortInfo:ptpPortList)
+					   {
+						   PtpPortinfo info = new PtpPortinfo();
+						   info.setIndexId(ptpPortInfo.getIndexId());
+						   info.setPortNum(ptpPortInfo.getPortNum());
+						   info.setPortId(ptpPortInfo.getPortId());
+						   info.setWorkModel(ptpPortInfo.getWorkModel());
+						   info.setLine(ptpPortInfo.getLine());
+						   info.setLineCpn(ptpPortInfo.getLineCpn());
+						   info.setDelayMeca(ptpPortInfo.getDelayMeca());
+						   info.setMessageMode(ptpPortInfo.getMessageMode());
+						   info.setSiteId(timesync.getSiteId());
+						   timesyncdao.insertPtpPort(info, connection);					
+					  }
+			    	
+			   
+			}
+			if(!connection.getAutoCommit()){
+				connection.commit();
+			}
+		} catch (Exception e) {
+			connection.rollback();
+			ExceptionManage.dispose(e,this.getClass());
+		}finally{
+			connection.setAutoCommit(true);
+		}
+	}
+	public void save(TimeSyncInfo timesync) throws Exception{
+		if(timesyncdao == null){
+			throw new Exception("timesyncdao is null");
+		}
+		List<PtpPortinfo> ptpPortList = null;
+		
+		try {
+			
+			connection.setAutoCommit(false);
+			timesyncdao.insert(timesync, connection);
+			ptpPortList = timesync.getPtpPortlist();
+			if(ptpPortList != null && ptpPortList.size()>0){
+				for(PtpPortinfo ptpPortInfo:ptpPortList)
+				{
+					PtpPortinfo info = new PtpPortinfo();
+					info.setIndexId(ptpPortInfo.getIndexId());
+					info.setPortNum(ptpPortInfo.getPortNum());
+					info.setPortId(ptpPortInfo.getPortId());
+					info.setWorkModel(ptpPortInfo.getWorkModel());
+					info.setLine(ptpPortInfo.getLine());
+					info.setLineCpn(ptpPortInfo.getLineCpn());
+					info.setDelayMeca(ptpPortInfo.getDelayMeca());
+					info.setMessageMode(ptpPortInfo.getMessageMode());
+					info.setSiteId(timesync.getSiteId());
+					timesyncdao.insertPtpPort(info, connection);
+					
+				}
+				
+			}			
+			
+			if(!connection.getAutoCommit()){
+				connection.commit();
+			}
+		} catch (Exception e) {
+			connection.rollback();
+			ExceptionManage.dispose(e,this.getClass());
+		}finally{
+			connection.setAutoCommit(true);
+			ptpPortList = null;
+			
+		}
+	}
+	
+	
+	public void deleteBySiteId(int siteId) throws Exception{		
+		if(siteId == 0){
+			throw new Exception("siteId is null");
+		}
+		try {
+			connection.setAutoCommit(false);
+			timesyncdao.deleteBySiteId(siteId, connection);
+			if(!connection.getAutoCommit()){
+				connection.commit();
+			}
+		} catch (Exception e) {
+			connection.rollback();
+			ExceptionManage.dispose(e,this.getClass());
+		}finally{
+			connection.setAutoCommit(true);
+		}
+		
+	}
+	
+	public List<TimeSyncInfo> select(int siteId) throws Exception{
+		List<TimeSyncInfo> timesyncs = null;
+		if(siteId == 0){
+			throw new Exception("siteId is null");
+		}
+		try {
+			connection.setAutoCommit(false);
+			timesyncs = timesyncdao.queryByCondition(siteId, connection);
+			if(!connection.getAutoCommit()){
+				connection.commit();
+			}
+		} catch (Exception e) {
+			connection.rollback();
+			ExceptionManage.dispose(e,this.getClass());
+		}finally{
+			connection.setAutoCommit(true);
+		}
+		return timesyncs;
+	}
+	
+	
+}
+	

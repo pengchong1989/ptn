@@ -1,0 +1,18 @@
+package com.nms.db.dao.ptn.clock;
+
+import com.nms.db.bean.ptn.clock.TodConfigInfo;
+
+
+public interface TodConfigInfoMapper {
+    int deleteByPrimaryKey(Integer id);
+
+    int insert(TodConfigInfo record);
+
+    int insertSelective(TodConfigInfo record);
+
+    TodConfigInfo selectByPrimaryKey(Integer id);
+
+    int updateByPrimaryKeySelective(TodConfigInfo record);
+
+    int updateByPrimaryKey(TodConfigInfo record);
+}

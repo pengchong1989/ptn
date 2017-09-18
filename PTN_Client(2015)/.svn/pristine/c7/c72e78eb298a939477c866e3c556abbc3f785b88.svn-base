@@ -1,0 +1,22 @@
+package com.nms.model.perform;
+
+import org.apache.ibatis.session.SqlSession;
+
+import com.nms.db.dao.perform.CapabilityMapper;
+import com.nms.model.util.ObjectService_Mybatis;
+
+public class CapabilityService_MB extends ObjectService_Mybatis {
+	private CapabilityMapper mapper = null;
+	
+	public void setPtnuser(String ptnuser) {
+		super.ptnuser = ptnuser;
+	}
+
+	public void setSqlSession(SqlSession sqlSession) {
+		super.sqlSession = sqlSession;
+	}
+	
+	public void setMapper(CapabilityMapper mapper) {
+		this.mapper = mapper;
+	}
+}

@@ -1,0 +1,137 @@
+package com.nms.model.ptn.clock;
+
+import java.sql.Connection;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.nms.db.bean.ptn.clock.LineClockInterface;
+import com.nms.db.dao.ptn.clock.TimeLineClockInterfaceDao;
+import com.nms.db.enums.EActionType;
+import com.nms.db.enums.EServiceType;
+import com.nms.model.util.ObjectService;
+import com.nms.ui.manager.ExceptionManage;
+
+public class TimeLineClockInterfaceService extends ObjectService {
+	public void setConnection(Connection connection) {
+		super.connection = connection;
+	}
+
+	public void setPtnuser(String prnuser) {
+		super.ptnuser = prnuser;
+	}
+
+	private TimeLineClockInterfaceDao timeLineClockInterfaceDao = new TimeLineClockInterfaceDao();
+
+	/**
+	 *添加数据
+	 *
+	 * @param lineClockInterfaces 实体
+	 * @return 只要不是0就是插入成功
+	 * @throws Exception 
+	 */
+	public int insert(LineClockInterface lineClockInterface) throws Exception {
+		if (null == lineClockInterface) {
+			throw new Exception("lineClockInterface is null");
+		}
+		int information = 0;
+		try {
+			connection.setAutoCommit(false);
+			information = timeLineClockInterfaceDao.insert(lineClockInterface, connection);
+			if(!connection.getAutoCommit()){
+				connection.commit();
+			}
+		} catch (Exception e) {
+			connection.rollback();
+			ExceptionManage.dispose(e,this.getClass());
+		} finally {
+			connection.setAutoCommit(true);
+		}
+		return information;
+	}
+
+	/**
+	 * function:删除相关联数据
+	 * 
+	 * @param lineClockInterface
+	 *            实体
+	 * @return
+	 * @throws Exception
+	 */
+	public int delete(List<LineClockInterface> lineClockInterfaceList)throws Exception {
+		int information = 0;
+		try {
+			connection.setAutoCommit(false);
+			for(LineClockInterface lineClockInterface:lineClockInterfaceList){
+				information = timeLineClockInterfaceDao.delete(lineClockInterface, connection);
+			}
+			if(!connection.getAutoCommit()){
+				connection.commit();
+			}
+		} catch (Exception e) {
+			connection.rollback();
+			ExceptionManage.dispose(e,this.getClass());
+		} finally {
+			connection.setAutoCommit(true);
+		}
+		return information;
+	}
+	/**
+	 * 查询相关信息
+	 * 
+	 * @return lineClockInterface
+	 * @throws Exception
+	 */
+
+	public List<LineClockInterface> select(int id) throws Exception {
+		List<LineClockInterface> lists=null;
+		try {
+			lists=new ArrayList<LineClockInterface>();
+			lists = timeLineClockInterfaceDao.select(connection,id);
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		}
+		return lists;
+	}
+
+	/**
+	 * 删除相关的数据
+	 * 
+	 * @param lineClockInterface
+	 *            实体
+	 * @return int 1:成功，0不成功
+	 * @throws Exception
+	 */
+	public int update(LineClockInterface lineClockInterface)throws Exception {
+		if (null == lineClockInterface) {
+			throw new Exception("lineClockInterface is null");
+		}
+		int isOK = 0;
+		try {
+			connection.setAutoCommit(false);
+			isOK = timeLineClockInterfaceDao.update(lineClockInterface,connection);
+			//离线网元数据下载
+			super.dateDownLoad(lineClockInterface.getSiteId(),lineClockInterface.getId(), EServiceType.CLOCKPORTCONFIG.getValue(), EActionType.UPDATE.getValue());
+			if(!connection.getAutoCommit()){
+				connection.commit();
+			}
+		} catch (Exception e) {
+			connection.rollback();
+			ExceptionManage.dispose(e,this.getClass());
+		} finally {
+			connection.setAutoCommit(true);
+		}
+		return isOK;
+	}
+
+	public List<LineClockInterface> select(LineClockInterface lineClockInterface) {
+		List<LineClockInterface> lists=null;
+		try {
+			lists=new ArrayList<LineClockInterface>();
+			lists = timeLineClockInterfaceDao.select(connection,lineClockInterface);
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		}
+		return lists;
+	}
+
+}

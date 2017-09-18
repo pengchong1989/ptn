@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<driveRoot  xmlns="http://drive.bean.com">
+	<attribute length="1" description="条目数" value="1" mapping="(1)">
+		<listRoot file="">
+			<attribute length="1" description="保护类型" value="0" mapping="(00)/01/02=(无保护)/Ring Wrapping_V2/Ring Wrapping_V1"/>
+			<attribute length="1" description="西向槽位" value="255" mapping="(255)/10/11/14/15/16/17/18/19H=(无)/Slot10/Slot11/Slot14/Slot15/Slot16/Slot17/Slot18/Slot19"/>
+			<attribute length="1" description="西向端口" value="0" mapping="(0)/1/2/3/4=(无)/WAN1/WAN2/WAN3/WAN4"/>
+			<attribute length="1" description="东向槽位" value="255" mapping="(255)/10/11/14/15/16/17/18/19H=(无)/Slot10/Slot11/Slot14/Slot15/Slot16/Slot17/Slot18/Slot19"/>
+			<attribute length="1" description="东向端口" value="0" mapping="(0)/1/2/3/4=(无)/WAN1/WAN2/WAN3/WAN4"/>
+			<attribute length="1" description="环网节点总数" value="0" mapping="(00)"/>
+			<attribute length="1" description="本站节点ID" value="0" mapping="(00)"/>
+			<attribute length="1" description="逻辑环ID" value="0" mapping="(00)"/>
+			<attribute length="1" description="拖延时间" value="0" mapping="(00)"/>
+			<attribute length="1" description="返回类型" value="0" mapping="(00)/01=(返回型)/不返回型"/>
+			<attribute length="1" description="环网ID" value="0" mapping="(0)"/>
+			<attribute length="1" description="目的节点id" value="0" mapping="(0)"/>
+			<attribute length="2" description="西向lspID" value="0" mapping="(0)"/>
+			<attribute length="2" description="东向lspID" value="0" mapping="(0)"/>
+			<attribute length="4" description="备用" value="0" mapping="(00)"/>
+		</listRoot>
+	</attribute>
+</driveRoot>

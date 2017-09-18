@@ -1,0 +1,904 @@
+﻿package com.nms.model.ptn.path.eth;
+
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import com.nms.db.bean.equipment.shelf.SiteInst;
+import com.nms.db.bean.ptn.Businessid;
+import com.nms.db.bean.ptn.oam.OamInfo;
+import com.nms.db.bean.ptn.oam.OamMepInfo;
+import com.nms.db.bean.ptn.oam.OamMipInfo;
+import com.nms.db.bean.ptn.path.eth.ElineInfo;
+import com.nms.db.bean.ptn.path.pw.PwInfo;
+import com.nms.db.bean.ptn.path.pw.PwNniInfo;
+import com.nms.db.bean.ptn.port.AcPortInfo;
+import com.nms.db.dao.ptn.BusinessidDao;
+import com.nms.db.dao.ptn.path.eth.ElineDao;
+import com.nms.db.dao.ptn.path.pw.PwInfoDao;
+import com.nms.db.dao.ptn.port.AcDao;
+import com.nms.db.enums.EActionType;
+import com.nms.db.enums.EServiceType;
+import com.nms.db.enums.OamTypeEnum;
+import com.nms.model.equipment.shlef.SiteService;
+import com.nms.model.ptn.oam.OamInfoService;
+import com.nms.model.ptn.path.pw.PwInfoService;
+import com.nms.model.ptn.port.AcInfoService;
+import com.nms.model.util.ObjectService;
+import com.nms.model.util.Services;
+import com.nms.ui.manager.BusinessIdException;
+import com.nms.ui.manager.ConstantUtil;
+import com.nms.ui.manager.ExceptionManage;
+import com.nms.ui.manager.ResourceUtil;
+import com.nms.ui.manager.UiUtil;
+import com.nms.ui.manager.keys.StringKeysTip;
+
+public class ElineService extends ObjectService {
+
+	public void setConnection(Connection connection) {
+		super.connection = connection;
+	}
+
+	public void setPtnuser(String ptnuser) {
+		super.ptnuser = ptnuser;
+	}
+
+	private ElineDao elineDao = new ElineDao();
+	private PwInfoDao pwInfoDao = new PwInfoDao();
+	private BusinessidDao businessidDao = new BusinessidDao();
+	private AcDao acDao = new AcDao();
+
+	public void save(List<ElineInfo> elineinfoList) throws Exception {
+		for (ElineInfo elineInfo : elineinfoList) {
+			this.save(elineInfo);
+		}
+	}
+
+	public int save(ElineInfo elineinfo) throws Exception,BusinessIdException {
+
+		if (elineinfo == null) {
+			throw new Exception("elineinfo is null");
+		}
+
+		int result = 0;
+		OamInfoService oamInfoService = null;
+		SiteService siteService = null;
+		try {
+			connection.setAutoCommit(false);
+			siteService=(SiteService) ConstantUtil.serviceFactory.newService(Services.SITE, this.connection);
+			oamInfoService = (OamInfoService) ConstantUtil.serviceFactory.newService(Services.OamInfo, this.connection);
+			// 如果A端配置网元和端口。取设备ID
+			if (elineinfo.getaAcId() != 0) {
+				Businessid aElineServiceId = null;
+				if(elineinfo.getaXcId() == 0){
+					aElineServiceId = businessidDao.query(elineinfo.getaSiteId(), "eline", connection);
+				}else {
+					aElineServiceId = businessidDao.query(elineinfo.getaXcId(), elineinfo.getaSiteId(), "eline",connection);
+				}
+				if (aElineServiceId == null) {
+					throw new BusinessIdException(siteService.getSiteName(elineinfo.getaSiteId())+ResourceUtil.srcStr(StringKeysTip.TIP_ELINEID));
+				}
+					
+				elineinfo.setaXcId(aElineServiceId.getIdValue());
+				businessidDao.update(aElineServiceId.getId(), 1, connection);
+			}
+			// 如果Z端配置网元和端口。取设备ID
+			if (elineinfo.getzAcId() != 0) {
+				Businessid zElineServiceId = null;
+				if(elineinfo.getzXcId() == 0){
+					zElineServiceId = businessidDao.query(elineinfo.getzSiteId(), "eline", connection);
+				}else {
+					zElineServiceId=businessidDao.query(elineinfo.getzXcId(), elineinfo.getzSiteId(), "eline",connection);
+				}
+				if (zElineServiceId == null) {
+					throw new BusinessIdException(siteService.getSiteName(elineinfo.getzSiteId())+ResourceUtil.srcStr(StringKeysTip.TIP_ELINEID));
+				}
+					
+				elineinfo.setzXcId(zElineServiceId.getIdValue());
+				businessidDao.update(zElineServiceId.getId(), 1, connection);
+			}
+			result = elineDao.insert(elineinfo, connection);
+
+			pwInfoDao.setUser(elineinfo.getPwId(), result, EServiceType.ELINE.getValue(), connection);
+			// 判断ac不等于0 就修改ac状态
+			if (elineinfo.getaAcId() != 0) {
+				acDao.setUser(elineinfo.getaAcId(), 1, connection);
+			}
+			if (elineinfo.getzAcId() != 0) {
+				acDao.setUser(elineinfo.getzAcId(), 1, connection);
+			}
+
+			List<OamInfo> oamList = elineinfo.getOamList();
+			for (OamInfo oamInfo : oamList) {
+				if (oamInfo.getOamType() == OamTypeEnum.AMEP) {
+					oamInfo.getOamMep().setServiceId(result);
+					oamInfo.getOamMep().setObjId(elineinfo.getaXcId());
+					oamInfo.setOamType(OamTypeEnum.AMEP);
+				} else if (oamInfo.getOamType() == OamTypeEnum.ZMEP) {
+					oamInfo.getOamMep().setServiceId(result);
+					oamInfo.getOamMep().setObjId(elineinfo.getzXcId());
+					oamInfo.setOamType(OamTypeEnum.ZMEP);
+				}
+				if (oamInfo.getOamType() == OamTypeEnum.MIP) {
+
+				}
+				oamInfoService.saveOrUpdate(oamInfo);
+			}
+			
+			//离线网元数据下载
+			if(0!=elineinfo.getaSiteId()){
+				super.dateDownLoad(elineinfo.getaSiteId(),result, EServiceType.ELINE.getValue(), EActionType.INSERT.getValue());
+			}
+			if(0!=elineinfo.getzSiteId()){
+				super.dateDownLoad(elineinfo.getzSiteId(),result, EServiceType.ELINE.getValue(), EActionType.INSERT.getValue());
+			}
+			if(!connection.getAutoCommit()){
+				connection.commit();
+			}
+		} catch (BusinessIdException e) {
+			connection.rollback();
+			throw e;
+		}catch (Exception e) {
+			connection.rollback();
+			ExceptionManage.dispose(e,this.getClass());
+		} finally {
+			connection.setAutoCommit(true);
+		}
+		return result;
+	}
+
+	public void update(List<ElineInfo> elineinfoList) throws Exception {
+		for (ElineInfo elineInfo : elineinfoList) {
+			this.update(elineInfo);
+		}
+	}
+
+	public int update(ElineInfo elineinfo) throws Exception {
+
+		if (elineinfo == null) {
+			throw new Exception("elineinfo is null");
+		}
+
+		int result = 0;
+		ElineInfo elineBefore = null;
+		Businessid businessId = null;
+		SiteService siteService = null;
+		try {
+			connection.setAutoCommit(false);
+			siteService=(SiteService) ConstantUtil.serviceFactory.newService(Services.SITE, this.connection);
+			elineBefore = new ElineInfo();
+			elineBefore.setId(elineinfo.getId());
+			elineBefore = elineDao.queryByCondition_notjoin(elineBefore, connection).get(0);
+
+			result = elineDao.update(elineinfo, connection);
+
+			if (elineBefore.getPwId() != elineinfo.getPwId()) {
+				if(!isRelatedPW(elineBefore.getPwId())){
+					pwInfoDao.setUser(elineBefore.getPwId(), 0, 0, connection);
+				}
+				pwInfoDao.setUser(elineinfo.getPwId(), elineinfo.getId(), EServiceType.ELINE.getValue(), connection);
+			}
+			
+			//释放之前的id
+			businessId = new Businessid();
+			businessId.setIdStatus(0);
+			businessId.setIdValue(elineBefore.getaXcId());
+			businessId.setSiteId(elineBefore.getaSiteId());
+			businessId.setType("eline");
+			businessidDao.updateBusinessid(businessId, connection);
+			//释放之前的id
+			businessId = new Businessid();
+			businessId.setIdStatus(0);
+			businessId.setIdValue(elineBefore.getzXcId());
+			businessId.setSiteId(elineBefore.getzSiteId());
+			businessId.setType("eline");
+			businessidDao.updateBusinessid(businessId, connection);
+			
+			// 判断ac不等于0 就修改ac状态
+			if (elineinfo.getaAcId() != 0) {
+				if(elineBefore.getaAcId() != elineinfo.getaAcId()){
+					if(!isRelatedAC(elineBefore.getaAcId())){
+						acDao.setUser(elineBefore.getaAcId(), 0, connection);
+					}
+					acDao.setUser(elineinfo.getaAcId(), 1, connection);
+				}
+				
+				if(elineinfo.getaXcId() != 0){
+					businessId = businessidDao.query(elineinfo.getaXcId(), elineinfo.getaSiteId(), "eline",connection);
+				}else{
+					businessId = businessidDao.query(elineinfo.getaSiteId(), "eline", connection);
+				}
+				
+				if (businessId == null) {
+					throw new BusinessIdException(siteService.getSiteName(elineinfo.getaSiteId())+ResourceUtil.srcStr(StringKeysTip.TIP_ELINEID));
+				}else{
+					elineinfo.setaXcId(businessId.getIdValue());
+					businessidDao.update(businessId.getId(), 1, connection);
+				}
+			}
+			if (elineinfo.getzAcId() != 0) {
+				if(elineBefore.getzAcId() != elineinfo.getzAcId()){
+					if(!isRelatedAC(elineBefore.getzAcId())){
+						acDao.setUser(elineBefore.getzAcId(), 0, connection);
+					}
+					acDao.setUser(elineinfo.getzAcId(), 1, connection);
+				}
+				
+				if(elineinfo.getzXcId() != 0){
+					businessId = businessidDao.query(elineinfo.getzXcId(), elineinfo.getzSiteId(), "eline",connection);
+				}else{
+					businessId = businessidDao.query(elineinfo.getzSiteId(), "eline", connection);
+				}
+				if (businessId == null) {
+					throw new BusinessIdException(siteService.getSiteName(elineinfo.getzSiteId())+ResourceUtil.srcStr(StringKeysTip.TIP_ELINEID));
+				}else{
+					elineinfo.setzXcId(businessId.getIdValue());
+					businessidDao.update(businessId.getId(), 1, connection);
+				}
+			}
+			//离线网元数据下载
+			if(0!=elineinfo.getaSiteId()){
+				super.dateDownLoad(elineinfo.getaSiteId(),result, EServiceType.ELINE.getValue(), EActionType.UPDATE.getValue());
+			}
+			if(0!=elineinfo.getzSiteId()){
+				super.dateDownLoad(elineinfo.getzSiteId(),result, EServiceType.ELINE.getValue(), EActionType.UPDATE.getValue());
+			}
+			if(!connection.getAutoCommit()){
+				connection.commit();
+			}
+		} catch (Exception e) {
+			connection.rollback();
+			ExceptionManage.dispose(e,this.getClass());
+		} finally {
+			connection.setAutoCommit(true);
+		}
+		return result;
+	}
+
+	public void updateActiveStatus(List<Integer> idList, int status) throws Exception {
+
+		try {
+			connection.setAutoCommit(false);
+
+			elineDao.updateStatus(idList, status, connection);
+			if(!connection.getAutoCommit()){
+				connection.commit();
+			}
+		} catch (Exception e) {
+			connection.rollback();
+			ExceptionManage.dispose(e,this.getClass());
+		} finally {
+			connection.setAutoCommit(true);
+		}
+
+	}
+	public void updateActiveStatus(int siteId, int status) throws Exception {
+		
+		try {
+			connection.setAutoCommit(false);
+			
+			elineDao.updateStatus(siteId, status, connection);
+			if(!connection.getAutoCommit()){
+				connection.commit();
+			}
+		} catch (Exception e) {
+			connection.rollback();
+			ExceptionManage.dispose(e,this.getClass());
+		} finally {
+			connection.setAutoCommit(true);
+		}
+		
+	}
+
+	public void delete(List<ElineInfo> elineList) throws Exception {
+		OamInfo oamInfo = null;
+		OamMepInfo oamMepInfo = null;
+		OamInfoService oamInfoService = null;
+		try {
+			connection.setAutoCommit(false);
+			oamInfoService = (OamInfoService) ConstantUtil.serviceFactory.newService(Services.OamInfo, this.connection);
+			
+			for (ElineInfo eline : elineList) {
+				oamInfo = new OamInfo();
+				oamMepInfo = new OamMepInfo();
+				oamMepInfo.setServiceId(eline.getId());
+				oamMepInfo.setObjType(EServiceType.ELINE.toString());
+				oamInfo.setOamMep(oamMepInfo);
+				oamInfoService.delete(oamInfo);
+
+				// 释放pw使权限
+				if(!isRelatedPW(eline.getPwId())){
+					pwInfoDao.setUser(eline.getPwId(), 0, 0, connection);
+				}
+
+				// 释放AC使用权限
+				if (eline.getaAcId() != 0) {
+					if(!isRelatedAC(eline.getaAcId())){
+						acDao.setUser(eline.getaAcId(), 0, connection);
+					}
+				}
+				if (eline.getzAcId() != 0) {
+					if(!isRelatedAC(eline.getzAcId())){
+						acDao.setUser(eline.getzAcId(), 0, connection);
+					}
+				}
+
+				// 释放id
+				Businessid businessId = new Businessid();
+				businessId.setIdStatus(0);
+				businessId.setIdValue(eline.getaXcId());
+				businessId.setType("eline");
+				businessId.setSiteId(eline.getaSiteId());
+				businessidDao.updateBusinessid(businessId, connection);
+				businessId.setIdValue(eline.getzXcId());
+				businessId.setSiteId(eline.getzSiteId());
+				businessidDao.updateBusinessid(businessId, connection);
+				elineDao.delete(eline.getId(), connection);
+				//离线网元操作
+				offLineAcion(eline);
+			}
+			if(!connection.getAutoCommit()){
+				connection.commit();
+			}
+		} catch (Exception e) {
+			connection.rollback();
+			ExceptionManage.dispose(e,this.getClass());
+		} finally {
+			connection.setAutoCommit(true);
+		}
+
+	}
+
+	public List<ElineInfo> select() throws Exception {
+		List<ElineInfo> elineinfoList = null;
+		OamInfo oamInfo;
+		OamMepInfo oamMepInfo;
+		OamMipInfo oamMipInfo;
+		OamInfoService oamInfoService = null;
+		try {
+			ElineInfo elineinfo = new ElineInfo();
+			elineinfoList = elineDao.queryByCondition(elineinfo, connection);
+			oamInfoService=(OamInfoService) ConstantUtil.serviceFactory.newService(Services.OamInfo, this.connection);
+			for (ElineInfo elineInfo : elineinfoList) {
+				oamInfo = new OamInfo();
+				oamMepInfo = new OamMepInfo();
+				oamMepInfo.setServiceId(elineInfo.getId());
+				oamMepInfo.setObjType("ELINE");
+				oamInfo.setOamMep(oamMepInfo);
+
+				oamMipInfo = new OamMipInfo();
+				oamMipInfo.setServiceId(elineInfo.getId());
+				oamMipInfo.setObjType("ELINE");
+				oamInfo.setOamMip(oamMipInfo);
+				elineInfo.setOamList(oamInfoService.queryByServiceId(oamInfo));
+			}
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		} finally {
+//			UiUtil.closeService(oamInfoService);
+		}
+		return elineinfoList;
+	}
+
+	public List<ElineInfo> selectByCondition(ElineInfo elineinfo) throws Exception {
+		List<ElineInfo> elineinfoList = null;
+		try {
+			elineinfoList = elineDao.queryByCondition(elineinfo, connection);
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		} finally {
+		}
+		return elineinfoList;
+	}
+	
+	public List<ElineInfo> selectElineByCondition(ElineInfo elineinfo) throws Exception {
+		List<ElineInfo> elineinfoList = null;
+		try {
+			elineinfoList = elineDao.querySingleByCondition(elineinfo, connection);
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		} finally {
+		}
+		return elineinfoList;
+	}
+	
+	public List<ElineInfo> selectByCondition_nojoin(ElineInfo elineinfo) throws Exception {
+		List<ElineInfo> elineinfoList = null;
+		try {
+			elineinfoList = elineDao.queryByCondition_notjoin(elineinfo, connection);
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		} finally {
+		}
+		return elineinfoList;
+	}
+	
+
+	/**
+	 * 根据pwID集合查询eline的count
+	 * 
+	 * @param pwIds
+	 *            pw集合
+	 * @return count
+	 * @throws Exception
+	 */
+	public int selectCountByPwId(List<Integer> pwIds) throws Exception {
+		List<ElineInfo> list = null;
+		try {
+			list = elineDao.queryByPwIdCondition(pwIds, connection);
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		}
+		return list == null ? 0 : list.size();
+	}
+
+	public List<ElineInfo> selectElineByPwId(List<Integer> pwIds) throws Exception {
+		List<ElineInfo> list = null;
+		try {
+			list = elineDao.queryAllElineByPwId(pwIds, connection);
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		}
+		return list;
+	}
+	
+	/**
+	 * 查询单网元下的所有eline
+	 * 
+	 * @param siteId
+	 *            网元id
+	 * @return
+	 * @throws Exception
+	 */
+	public List<ElineInfo> selectNodeBySite(int siteId) throws Exception {
+
+		List<ElineInfo> elineInfoList = null;
+		OamInfoService oamInfoService=null;
+		OamInfo oamInfo=null;
+		OamMepInfo oamMepInfo=null;
+		OamMipInfo oamMipInfo=null;
+		try {
+			oamInfoService=(OamInfoService) ConstantUtil.serviceFactory.newService(Services.OamInfo, this.connection);
+			elineInfoList = this.elineDao.queryNodeBySite(siteId, connection);
+			for (ElineInfo elineInfo : elineInfoList) {
+				elineInfo.setNode(true);
+				
+				oamInfo = new OamInfo();
+				oamMepInfo = new OamMepInfo();
+				oamMepInfo.setServiceId(elineInfo.getId());
+				oamMepInfo.setObjType(EServiceType.ELINE.toString());
+				oamInfo.setOamMep(oamMepInfo);
+
+				oamMipInfo = new OamMipInfo();
+				oamMipInfo.setServiceId(elineInfo.getId());
+				oamMipInfo.setObjType(EServiceType.ELINE.toString());
+				oamInfo.setOamMip(oamMipInfo);
+				elineInfo.setOamList(oamInfoService.queryByServiceId(oamInfo));
+			}
+
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		} finally {
+//			UiUtil.closeService(oamInfoService);
+		}
+		return elineInfoList;
+	}
+
+	/**
+	 * 查询单网元下的所有eline
+	 * 
+	 * @param siteId
+	 *            网元id
+	 * @return
+	 * @throws Exception
+	 */
+	public List<ElineInfo> selectNodeBySiteAndServiceId(int siteId, int serviceId) throws Exception {
+
+		List<ElineInfo> elineInfoList = null;
+		try {
+			elineInfoList = this.elineDao.queryNodeBySiteAndServiceId(siteId, serviceId, connection);
+			for (ElineInfo elineInfo : elineInfoList) {
+				elineInfo.setNode(true);
+			}
+
+		} catch (Exception e) {
+			throw e;
+		}
+		return elineInfoList;
+	}
+	
+	public boolean isElineVPWS(int siteId, int serviceId) throws Exception {
+		boolean flag = false;
+		List<ElineInfo> elineInfoList = null;
+		
+		try {
+			elineInfoList = this.elineDao.queryNodeBySiteAndServiceId(siteId, serviceId, connection);
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		}
+		
+		if(elineInfoList!=null && elineInfoList.size()>0)
+		{
+			flag = true;
+		}
+		
+		return flag;
+	}
+
+	/**
+	 * 查询单网元下的所有eline
+	 * 
+	 * @param siteId
+	 *            网元id
+	 * @return
+	 * @throws Exception
+	 */
+	public List<ElineInfo> select_synchro(int siteId, int xcid) throws Exception {
+
+		List<ElineInfo> elineInfoList = null;
+		try {
+			elineInfoList = this.elineDao.querySynchro(siteId, xcid, connection);
+
+		} catch (Exception e) {
+			throw e;
+		}
+		return elineInfoList;
+	}
+	
+	/**
+	 * 验证名字是否重复
+	 * 
+	 * @author kk
+	 * 
+	 * @param afterName 修改之后的名字
+	 * @param beforeName 修改之前的名字
+	 * 
+	 * @return
+	 * @throws Exception 
+	 * 
+	 * @Exception 异常对象
+	 */
+	public boolean nameRepetition(String afterName, String beforeName) throws Exception {
+		
+		int result=this.elineDao.query_name(afterName, beforeName, connection);
+		if(0== result){
+			return false;
+		}else{
+			return true;
+		}		
+	}
+	
+	/**
+	 * 单网元名称验证
+	 * @param afterName
+	 * @param beforeName
+	 * @param siteId
+	 * @return
+	 * @throws Exception
+	 */
+	public boolean nameRepetitionBySingle(String afterName, String beforeName,int siteId) throws Exception {
+		
+		int result=this.elineDao.query_nameBySingle(afterName, beforeName, connection,siteId);
+		if(0== result){
+			return false;
+		}else{
+			return true;
+		}		
+	}
+	
+	public void searchActive(List<SiteInst> siteInstList) {		
+		if(siteInstList.size()>1){
+			String siteidin =" (0,";	
+			for(SiteInst si : siteInstList){
+				siteidin=siteidin+si.getSite_Inst_Id()+"," ;
+			}
+			siteidin = siteidin.substring(0, siteidin.length()-1)+") ";
+//System.out.println("line 1508 . siteidin = "+siteidin);			
+		try {
+				elineDao.exeSearchEline(connection,siteidin);
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		}
+		}else{
+			System.out.println("ElineService.SearchEline . siteInstList.size <=1 . error");
+		}
+	}
+	
+	/**
+	 * 通过网元id初始化某网元所有eline
+	 * @param siteId
+	 * @throws SQLException
+	 */
+	public void initializtionSite(int siteId) throws SQLException{
+		List<ElineInfo> elineInfos = null;
+		List<ElineInfo> singleElines = null;
+		List<ElineInfo> eInfos = null;
+		try {
+			elineInfos = this.selectNodeBySite(siteId);
+			singleElines = new ArrayList<ElineInfo>();
+			eInfos = new ArrayList<ElineInfo>();
+			if(elineInfos != null && elineInfos.size()>0){
+				for(ElineInfo elineInfo : elineInfos){
+					if(elineInfo.getIsSingle() ==1){//单网元数据，直接删除
+						singleElines.add(elineInfo);
+					}else{//网络侧的，初始化该网元，并成为单网元业务
+						if(elineInfo.getaSiteId() == siteId){
+							elineInfo.setaAcId(0);
+							elineInfo.setAportId(0);
+							elineInfo.setaXcId(0);
+							elineInfo.setASiteName("");
+							elineInfo.setaSiteId(0);
+							elineInfo.setIsSingle(1);
+						}else{
+							elineInfo.setzAcId(0);
+							elineInfo.setZportId(0);
+							elineInfo.setzXcId(0);
+							elineInfo.setZSiteName("");
+							elineInfo.setzSiteId(0);
+							elineInfo.setIsSingle(1);
+						}
+						eInfos.add(elineInfo);
+					}
+					
+				}
+			}
+			this.delete(singleElines);
+			this.update(eInfos);
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		}finally{
+			elineInfos = null;
+			singleElines = null;
+			eInfos = null;
+		}
+	}
+	
+	/**
+	 * 通过acId,siteId查询line
+	 * @param acId
+	 * @return
+	 * @throws SQLException 
+	 */
+	public List<ElineInfo> selectByAcIdAndSiteId(int acId,int siteId) throws Exception{
+		List<ElineInfo> elineInfos = null;
+		elineInfos = this.elineDao.queryByAcIdAndSiteIdCondition(acId,siteId, connection);
+		return elineInfos;
+	}
+	/**
+	 * 离线网元操作
+	 * @param etreeInfoList
+	 * @param pwService
+	 * @throws Exception
+	 */
+	private void offLineAcion(ElineInfo offLineAction) throws Exception {
+		PwInfoService pwService = (PwInfoService) ConstantUtil.serviceFactory.newService(Services.PwInfo, this.connection);
+		AcInfoService acInfoService= (AcInfoService) ConstantUtil.serviceFactory.newService(Services.AcInfo, this.connection);
+		AcPortInfo acPortInfo;
+		PwInfo pwInfo = new PwInfo();
+		pwInfo.setPwId(offLineAction.getPwId());
+		pwInfo = pwService.selectBypwid_notjoin(pwInfo);
+		List<AcPortInfo> acPortInfoList = null;
+		 //a段网元
+		if(0!=offLineAction.getaSiteId()){
+			acPortInfo = new AcPortInfo();
+			acPortInfo.setId(offLineAction.getaAcId());
+			acPortInfoList = acInfoService.selectByCondition(acPortInfo);
+			if(null!=acPortInfoList&&acPortInfoList.size()>0){
+				acPortInfo = acPortInfoList.get(0);
+				super.dateDownLoad(offLineAction.getaSiteId(),offLineAction.getServiceId(), EServiceType.ELINE.getValue(), EActionType.DELETE.getValue(),offLineAction.getaXcId()+"",pwInfo.getApwServiceId()+"",acPortInfo.getPortId(),acPortInfo.getAcBusinessId(),null);
+			}
+		}
+		 //z段网元
+		if(0!=offLineAction.getzSiteId()){
+			acPortInfo = new AcPortInfo();
+			acPortInfo.setId(offLineAction.getzAcId());
+			acPortInfoList = acInfoService.selectByCondition(acPortInfo);
+		 	if(null!=acPortInfoList&&acPortInfoList.size()>0){
+		 		acPortInfo = acPortInfoList.get(0);
+		 		super.dateDownLoad(offLineAction.getzSiteId(),offLineAction.getServiceId(), EServiceType.ELINE.getValue(), EActionType.DELETE.getValue(),offLineAction.getzXcId()+"",pwInfo.getZpwServiceId()+"",acPortInfo.getPortId(),acPortInfo.getAcBusinessId(),null);
+			}
+		}
+//		UiUtil.closeService(acInfoService);
+//		UiUtil.closeService(pwService);
+	}
+	
+	/**
+	 * 通过serviceId查询一组eline业务
+	 * 
+	 * @param serviceId
+	 * @return
+	 */
+	public List<ElineInfo> selectByServiceId(int serviceId) {
+		List<ElineInfo> elineInfos = null;
+		elineInfos = this.elineDao.queryByServiceId(serviceId, connection);
+		return elineInfos;
+	}
+	
+
+	public void updateStatusByServiceId(List<Integer> serviceIdList, int status) throws Exception {
+
+		try {
+			connection.setAutoCommit(false);
+
+			elineDao.updateStatusByServiceId(serviceIdList, status, connection);
+			if(!connection.getAutoCommit()){
+				connection.commit();
+			}
+		} catch (Exception e) {
+			connection.rollback();
+			ExceptionManage.dispose(e,this.getClass());
+		} finally {
+			connection.setAutoCommit(true);
+		}
+
+	}
+	
+	/**
+	 * 查询单网元下的指定业务
+	 * @return
+	 * @throws Exception
+	 */
+	public List<ElineInfo> selectServiceInfoById(int id) throws Exception {
+
+		List<ElineInfo> elineInfoList = new ArrayList<ElineInfo>();
+		try {
+			elineInfoList = this.elineDao.selectServiceInfoById(id, connection);
+		} catch (Exception e) {
+			throw e;
+		}
+		return elineInfoList;
+	}
+	
+	/**
+	 * 根据网元查询此网元下所有单网元eline业务
+	 * @param siteId 网元主键
+	 * @return 
+	 * @throws Exception
+	 */
+	public List<ElineInfo> selectBySite_node(int siteId) throws Exception{
+		return this.elineDao.selectBySiteAndisSingle(siteId, 1, super.connection);
+	}
+	
+	/**
+	 * 根据网元查询此网元下所有网络eline业务
+	 * @param siteId 网元主键
+	 * @return 
+	 * @throws Exception
+	 */
+	public List<ElineInfo> selectBySite_network(int siteId) throws Exception{
+		return this.elineDao.selectBySiteAndisSingle(siteId, 0, super.connection);
+	}
+	
+	/**
+	 * 搜索eline
+	 * @param elineInfos
+	 */
+	public void doSearch(List<ElineInfo> elineInfos){
+		try {
+			elineDao.doSearche(elineInfos, connection);
+		} catch (Exception e) {
+			ExceptionManage.dispose(e, this.getClass());
+		}
+	}
+
+	public List<ElineInfo> selectElineBySite(int siteId) {
+		List<ElineInfo> elineInfoList = new ArrayList<ElineInfo>();
+		AcInfoService acService = null;
+		PwInfoService pwService = null;
+		try {
+			acService = (AcInfoService) ConstantUtil.serviceFactory.newService(Services.AcInfo, this.connection);
+			pwService = (PwInfoService) ConstantUtil.serviceFactory.newService(Services.PwInfo, this.connection);
+			elineInfoList = this.elineDao.queryNodeBySite(siteId, connection);
+			for (ElineInfo elineInfo : elineInfoList) {
+				elineInfo.setNode(true);
+				elineInfo.getAcPortList().add(this.getAcInfo(siteId, elineInfo, acService));
+				elineInfo.getPwNniList().add(this.getPwNniInfo(siteId, elineInfo, pwService));
+			}
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		}
+		return elineInfoList;
+	}
+
+	private AcPortInfo getAcInfo(int siteId, ElineInfo elineInfo, AcInfoService acService) throws Exception {
+		int id = 0;
+		if(elineInfo.getaSiteId() == siteId){
+			id = elineInfo.getaAcId();
+		}else{
+			id = elineInfo.getzAcId();
+		}
+		return acService.selectById(id);
+	}
+
+	private PwNniInfo getPwNniInfo(int siteId, ElineInfo elineInfo, PwInfoService pwService) throws Exception {
+		PwInfo pw = new PwInfo();
+		pw.setPwId(elineInfo.getPwId());
+		pw = pwService.selectBypwid_notjoin(pw);
+		if(pw != null){
+			if(pw.getASiteId() == siteId){
+				return pw.getaPwNniInfo();
+			}else if(pw.getZSiteId() == siteId){
+				return pw.getzPwNniInfo();
+			}
+		}
+		return null;
+	}
+	
+	/**
+	 * 在删除之前判断着PW是否存在其他的业务的关联
+	 * @param pwId
+	 * @return true存在 false 不存在
+	 */
+	private boolean isRelatedPW(int pwId){
+		try {
+			return  this.elineDao.isRelatedPW(pwId, connection);
+		} catch (Exception e) {
+			ExceptionManage.dispose(e, getClass());
+		}
+		return false;
+	}
+	
+	/**
+	 * 在删除之前判断着AC是否存在其他的业务的关联
+	 * @param AcId
+	 * @return true存在 false 不存在
+	 */
+	private boolean isRelatedAC(int acId){
+		List<String> azAcIds = null;
+		Set<Integer> azAcSet = new HashSet<Integer>();
+		UiUtil uiUtil = new UiUtil();
+		boolean isRelatedAc = false;
+		try {
+			isRelatedAc = this.elineDao.isRelatedAcByVPWS(acId, connection);
+			if(isRelatedAc)
+			{
+				return true;
+			}else
+			{
+				azAcIds = this.elineDao.isRelatedACByVPLS(connection);
+				if(null != azAcIds && !azAcIds.isEmpty())
+				{
+					for(String acid : azAcIds)
+					{
+						azAcSet.addAll(uiUtil.getAcIdSets(acid));
+					}
+				}
+				if(azAcSet.contains(acId))
+				{
+					return true;
+				}
+			}
+		} catch (Exception e) {
+			ExceptionManage.dispose(e, getClass());
+		}
+		return false;
+	}
+	
+	public void updateActiveStatusByType(int siteId, int status, int type) throws Exception {
+		try {
+			connection.setAutoCommit(false);
+			elineDao.updateStatusByType(siteId, status, type, connection);
+			if(!connection.getAutoCommit()){
+				connection.commit();
+			}
+		} catch (Exception e) {
+			connection.rollback();
+			ExceptionManage.dispose(e,this.getClass());
+		} finally {
+			connection.setAutoCommit(true);
+		}
+	}
+
+	public List<ElineInfo> selectByPwId(ElineInfo eline) {
+		List<ElineInfo> list = null;
+		try {
+			list = this.elineDao.selectByPwId(eline, connection);
+		} catch (Exception e) {
+			ExceptionManage.dispose(e, this.getClass());
+		}
+		return list;
+	}
+}

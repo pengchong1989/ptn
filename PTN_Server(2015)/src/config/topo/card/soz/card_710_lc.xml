@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 710_LIGHT板卡下所有端口配置 (710的光口板) -->
+<xml-boby>
+
+<card cardName="IPG8" cardType="" imagePath="/com/nms/ui/images/topo/soz/yixun_card_lc.png" x="226" y="55" >
+    <port portName="ge" seq="1" portType="NONE" bandWidth="" imagePath="/com/nms/ui/images/topo/soz/port_l.png" x="93" y="23" number="1"  module="(e)"></port>
+    <port portName="ge" seq="2" portType="NONE" bandWidth="" imagePath="/com/nms/ui/images/topo/soz/port_l.png" x="120" y="23" number="2"  module="(e)"></port>
+    <port portName="ge" seq="3" portType="NONE" bandWidth="" imagePath="/com/nms/ui/images/topo/soz/port_l.png" x="147" y="23" number="3"  module="(e)"></port>
+    <port portName="ge" seq="4" portType="NONE" bandWidth="" imagePath="/com/nms/ui/images/topo/soz/port_l.png" x="174" y="23" number="4"  module="(e)"></port>
+    <port portName="ge" seq="5" portType="NONE" bandWidth="" imagePath="/com/nms/ui/images/topo/soz/port_l.png" x="212" y="23" number="5"  module="(e)"></port>
+    <port portName="ge" seq="6" portType="NONE" bandWidth="" imagePath="/com/nms/ui/images/topo/soz/port_l.png" x="239" y="23" number="6"  module="(e)"></port>
+    <port portName="ge" seq="7" portType="NONE" bandWidth="" imagePath="/com/nms/ui/images/topo/soz/port_l.png" x="266" y="23" number="7"  module="(e)"></port>
+    <port portName="ge" seq="8" portType="NONE" bandWidth="" imagePath="/com/nms/ui/images/topo/soz/port_l.png" x="293" y="23" number="8"  module="(e)"></port>
+</card>
+
+</xml-boby>

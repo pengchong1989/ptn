@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<driveRoot  xmlns="http://drive.bean.com">
+	<attribute length="2" description="条目数" value="1" mapping="(1)">
+		<listRoot file="com/nms/drive/analysis/xmltool/file/TMC通道保护(0EH)_sub.xml">
+		</listRoot>
+	</attribute>
+	<attribute length="11" description="校验码" value="0" mapping="(00)"/>
+</driveRoot>

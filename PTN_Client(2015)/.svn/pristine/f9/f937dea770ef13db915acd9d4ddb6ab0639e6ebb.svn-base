@@ -1,0 +1,311 @@
+package com.nms.model.ptn.path.qinq;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.nms.db.bean.ptn.path.qinq.QinqChildInst;
+import com.nms.ui.manager.ExceptionManage;
+
+public class QinQChildDao {
+
+	public List<QinqChildInst> queryBySiteId(int siteId, int qinqId,Connection connection) throws Exception {
+		if (0 == siteId) {
+			throw new Exception("siteId is null");
+		}
+
+		List<QinqChildInst> childList = null;
+		String sql = null;
+
+		try {
+			sql = "select * from qinqchildinst where qinqId = " + qinqId + " and (aSiteId=" + siteId + " or zSiteId=" + siteId + ") order by id";
+
+			childList = this.excuteQuery(sql, connection);
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		} finally {
+			sql = null;
+		}
+		return childList;
+	}
+
+	private List<QinqChildInst> excuteQuery(String sql, Connection connection) throws Exception {
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		List<QinqChildInst> childInstList = null;
+		ResultSet resultSet = null;
+		PreparedStatement preparedStatement = null;
+		QinqChildInst child = null;
+
+		try {
+			childInstList = new ArrayList<QinqChildInst>();
+
+			preparedStatement = connection.prepareStatement(sql);
+			resultSet = preparedStatement.executeQuery();
+
+			while (resultSet.next()) {
+				child = new QinqChildInst();
+				child.setQinqId(resultSet.getInt("qinqId"));
+				child.setId(resultSet.getInt("id"));
+				child.setaSiteId(resultSet.getInt("aSiteId"));
+				child.setzSiteId(resultSet.getInt("zSiteId"));
+				child.setaPortId(resultSet.getInt("aPortId"));
+				child.setzPortId(resultSet.getInt("zPortId"));
+				child.setaServiceId(resultSet.getInt("aServiceId"));
+				child.setzServiceId(resultSet.getInt("zServiceId"));
+				child.setSegmentId(resultSet.getInt("segmentId"));
+				child.setPathStatus(resultSet.getInt("pathStatus"));
+				child.setaSiteVlanIdRule(resultSet.getInt("aSiteVlanIdRule"));
+				child.setzSiteVlanIdRule(resultSet.getInt("zSiteVlanIdRule"));
+				childInstList.add(child);
+			}
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		} finally {
+			if (resultSet != null) {
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}finally{
+					resultSet = null;
+				}
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}finally{
+					preparedStatement = null;
+				}
+			}
+			sql = null;
+			child = null;
+		}
+		return childInstList;
+	}
+
+	public int insert(QinqChildInst childInst, Connection connection) throws Exception {
+		if (null == childInst) {
+			throw new Exception("childInst is null");
+		}
+
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		int result = 0;
+		ResultSet resultSet = null;
+
+		try {
+			sql = "insert into qinqchildinst(qinqId,aSiteId,zSiteId,aPortId,zPortId,aServiceId,zServiceId," +
+					"segmentId,pathStatus,aSiteVlanIdRule,zSiteVlanIdRule) values(?,?,?,?,?,?,?,?,?,?,?)";
+			preparedStatement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+			preparedStatement.setInt(1, childInst.getQinqId());
+			preparedStatement.setInt(2, childInst.getaSiteId());
+			preparedStatement.setInt(3, childInst.getzSiteId());
+			preparedStatement.setInt(4, childInst.getaPortId());
+			preparedStatement.setInt(5, childInst.getzPortId());
+			preparedStatement.setInt(6, childInst.getaServiceId());
+			preparedStatement.setInt(7, childInst.getzServiceId());
+			preparedStatement.setInt(8, childInst.getSegmentId());
+			preparedStatement.setInt(9, childInst.getPathStatus());
+			preparedStatement.setInt(10, childInst.getaSiteVlanIdRule());
+			preparedStatement.setInt(11, childInst.getzSiteVlanIdRule());
+			preparedStatement.executeUpdate();
+			resultSet = preparedStatement.getGeneratedKeys();
+			if (resultSet.next()) {
+				result = resultSet.getInt(1);
+			}
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		} finally {
+              if(resultSet != null){
+            	  try {
+            		  resultSet.close();
+				} catch (Exception e2) {
+					throw e2;
+				}finally{
+					resultSet = null;
+				}
+              }
+			
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}finally{
+					preparedStatement = null;
+				}
+			}
+
+			sql = null;
+		}
+
+		return result;
+		
+	}
+
+	/**
+	 * 根据条件查询
+	 * 
+	 * @param childInst
+	 *            查询条件
+	 * @param connection
+	 *            数据库连接
+	 * @return List<QinqChildInst> 集合
+	 * @throws Exception 
+	 * @throws Exception
+	 */
+	public List<QinqChildInst> queryByCondition(QinqChildInst childInst,Connection connection) throws Exception {
+		if (null == childInst) {
+			throw new Exception("childInst is null");
+		}
+
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		List<QinqChildInst> childList = null;
+		String sql = null;
+
+		try {
+			sql = "select * from qinqchildinst where 1=1";
+
+			if (childInst.getId() > 0) {
+				sql += " and id=" + childInst.getId();
+			}
+
+			if (childInst.getQinqId() > 0) {
+				sql += " and qinqId=" + childInst.getQinqId();
+			}
+			if (childInst.getSegmentId() > 0) {
+				sql += " and segmentId=" + childInst.getSegmentId();
+			}
+
+			childList = this.excuteQuery(sql, connection);
+
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		} finally {
+			sql = null;
+		}
+
+		return childList;
+
+	}
+
+	public List<QinqChildInst> queryByQinqId(int qinqId, Connection connection) throws Exception {
+		if(0 == qinqId) {
+			throw new Exception("qinqId is null");
+		}
+
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		List<QinqChildInst> childList = null;
+		String sql = null;
+
+		try {
+			sql = "select * FROM qinqchildinst where qinqId = " + qinqId;
+
+			childList = this.excuteQuery(sql, connection);
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		} finally {
+			sql = null;
+		}
+		return childList;
+	}
+
+	public int deleteByQinqId(int qinqId, Connection connection) throws Exception {
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		int result = 0;
+
+		try {
+			sql = "DELETE from qinqchildinst where qinqId = " + qinqId;
+			preparedStatement = connection.prepareStatement(sql);
+
+			result = preparedStatement.executeUpdate();
+
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		} finally {
+
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}finally{
+					preparedStatement = null;
+				}
+			}
+			sql = null;
+		}
+
+		return result;
+	}
+
+	public int update(QinqChildInst qinqChildInst, Connection connection) throws Exception {
+		if (null == qinqChildInst) {
+			throw new Exception("qinqChildInst is null");
+		}
+
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		int result = 0;
+		try {
+			sql = "update qinqchildinst set qinqId=?,aSiteId=?,zSiteId=?,aPortId=? ,zPortId = ?,aServiceId = ?,zServiceId = ?," +
+					" segmentId =? , pathStatus = ? , aSiteVlanIdRule=? , zSiteVlanIdRule=? where Id=?";
+			preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.setInt(1, qinqChildInst.getQinqId());
+			preparedStatement.setInt(2, qinqChildInst.getaSiteId());
+			preparedStatement.setInt(3, qinqChildInst.getzSiteId());
+			preparedStatement.setInt(4, qinqChildInst.getaPortId());
+			preparedStatement.setInt(5, qinqChildInst.getzPortId());
+			preparedStatement.setInt(6, qinqChildInst.getaServiceId());
+			preparedStatement.setInt(7, qinqChildInst.getzServiceId());
+			preparedStatement.setInt(8, qinqChildInst.getSegmentId());
+			preparedStatement.setInt(9, qinqChildInst.getPathStatus());
+			preparedStatement.setInt(10, qinqChildInst.getaSiteVlanIdRule());
+			preparedStatement.setInt(11, qinqChildInst.getzSiteVlanIdRule());
+			preparedStatement.setInt(12, qinqChildInst.getId());
+			result = preparedStatement.executeUpdate();
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		} finally {
+
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}finally{
+					preparedStatement = null;
+				}
+			}
+			sql = null;
+		}
+		return result;
+	}
+}

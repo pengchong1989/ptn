@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nms.db.dao.system.PtndbInstMapper" >
+  <resultMap id="BaseResultMap" type="DataBaseInfo" >
+    <id column="ptnDb_inst_id" property="id" jdbcType="INTEGER" />
+    <result column="ptnDb_instPath_id" property="pathId" jdbcType="INTEGER" />
+    <result column="tableName" property="name" jdbcType="VARCHAR" />
+    <result column="criticalLimit" property="criticalRate" jdbcType="VARCHAR" />
+    <result column="majorLimit" property="majorRate" jdbcType="VARCHAR" />
+    <result column="minorLimit" property="minorRate" jdbcType="VARCHAR" />
+    <result column="warningLimit" property="warningRate" jdbcType="VARCHAR" />
+    <result column="mointorType" property="mointorType" jdbcType="INTEGER" />
+    <result column="montorLevel" property="mointorLevel" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ptnDb_inst_id, ptnDb_instPath_id, tableName, criticalLimit, majorLimit, minorLimit, 
+    warningLimit, mointorType, montorLevel
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from ptndb_inst
+    where ptnDb_inst_id = #{ptndbInstId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from ptndb_inst
+    where ptnDb_inst_id = #{ptndbInstId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="DataBaseInfo" >
+    insert into ptndb_inst (ptnDb_inst_id, ptnDb_instPath_id, tableName, 
+      criticalLimit, majorLimit, minorLimit, 
+      warningLimit, mointorType, montorLevel
+      )
+    values (#{ptndbInstId,jdbcType=INTEGER}, #{ptndbInstpathId,jdbcType=INTEGER}, #{tablename,jdbcType=VARCHAR}, 
+      #{criticallimit,jdbcType=VARCHAR}, #{majorlimit,jdbcType=VARCHAR}, #{minorlimit,jdbcType=VARCHAR}, 
+      #{warninglimit,jdbcType=VARCHAR}, #{mointortype,jdbcType=INTEGER}, #{montorlevel,jdbcType=INTEGER}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="DataBaseInfo" >
+    insert into ptndb_inst
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="ptndbInstId != null" >
+        ptnDb_inst_id,
+      </if>
+      <if test="ptndbInstpathId != null" >
+        ptnDb_instPath_id,
+      </if>
+      <if test="tablename != null" >
+        tableName,
+      </if>
+      <if test="criticallimit != null" >
+        criticalLimit,
+      </if>
+      <if test="majorlimit != null" >
+        majorLimit,
+      </if>
+      <if test="minorlimit != null" >
+        minorLimit,
+      </if>
+      <if test="warninglimit != null" >
+        warningLimit,
+      </if>
+      <if test="mointortype != null" >
+        mointorType,
+      </if>
+      <if test="montorlevel != null" >
+        montorLevel,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="ptndbInstId != null" >
+        #{ptndbInstId,jdbcType=INTEGER},
+      </if>
+      <if test="ptndbInstpathId != null" >
+        #{ptndbInstpathId,jdbcType=INTEGER},
+      </if>
+      <if test="tablename != null" >
+        #{tablename,jdbcType=VARCHAR},
+      </if>
+      <if test="criticallimit != null" >
+        #{criticallimit,jdbcType=VARCHAR},
+      </if>
+      <if test="majorlimit != null" >
+        #{majorlimit,jdbcType=VARCHAR},
+      </if>
+      <if test="minorlimit != null" >
+        #{minorlimit,jdbcType=VARCHAR},
+      </if>
+      <if test="warninglimit != null" >
+        #{warninglimit,jdbcType=VARCHAR},
+      </if>
+      <if test="mointortype != null" >
+        #{mointortype,jdbcType=INTEGER},
+      </if>
+      <if test="montorlevel != null" >
+        #{montorlevel,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="DataBaseInfo" >
+    update ptndb_inst
+    <set >
+      <if test="ptndbInstpathId != null" >
+        ptnDb_instPath_id = #{ptndbInstpathId,jdbcType=INTEGER},
+      </if>
+      <if test="tablename != null" >
+        tableName = #{tablename,jdbcType=VARCHAR},
+      </if>
+      <if test="criticallimit != null" >
+        criticalLimit = #{criticallimit,jdbcType=VARCHAR},
+      </if>
+      <if test="majorlimit != null" >
+        majorLimit = #{majorlimit,jdbcType=VARCHAR},
+      </if>
+      <if test="minorlimit != null" >
+        minorLimit = #{minorlimit,jdbcType=VARCHAR},
+      </if>
+      <if test="warninglimit != null" >
+        warningLimit = #{warninglimit,jdbcType=VARCHAR},
+      </if>
+      <if test="mointortype != null" >
+        mointorType = #{mointortype,jdbcType=INTEGER},
+      </if>
+      <if test="montorlevel != null" >
+        montorLevel = #{montorlevel,jdbcType=INTEGER},
+      </if>
+    </set>
+    where ptnDb_inst_id = #{ptndbInstId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="DataBaseInfo" >
+    update ptndb_inst
+    set ptnDb_instPath_id = #{ptndbInstpathId,jdbcType=INTEGER},
+      tableName = #{tablename,jdbcType=VARCHAR},
+      criticalLimit = #{criticallimit,jdbcType=VARCHAR},
+      majorLimit = #{majorlimit,jdbcType=VARCHAR},
+      minorLimit = #{minorlimit,jdbcType=VARCHAR},
+      warningLimit = #{warninglimit,jdbcType=VARCHAR},
+      mointorType = #{mointortype,jdbcType=INTEGER},
+      montorLevel = #{montorlevel,jdbcType=INTEGER}
+    where ptnDb_inst_id = #{ptndbInstId,jdbcType=INTEGER}
+  </update>
+</mapper>

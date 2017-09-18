@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><unloadManager>
+	<unload>
+		<unloadType>1</unloadType>
+		<cellType>1</cellType>
+		<unloadLimit>0</unloadLimit>
+		<spillEntry>5000</spillEntry>
+		<holdEntry>1</holdEntry>
+		<unloadMod>0</unloadMod>
+		<fileWay> </fileWay>
+		<isAuto>1</isAuto>
+		<autoTime> </autoTime>
+		<timeInterval>6</timeInterval>
+	</unload>
+	<unload>
+		<unloadType>2</unloadType>
+		<cellType>1</cellType>
+		<unloadLimit>0</unloadLimit>
+		<spillEntry>5000</spillEntry>
+		<holdEntry>1</holdEntry>
+		<unloadMod>0</unloadMod>
+		<fileWay> </fileWay>
+		<isAuto>1</isAuto>
+		<autoTime> </autoTime>
+		<timeInterval>6</timeInterval>
+	</unload>
+	<unload>
+		<unloadType>3</unloadType>
+		<cellType>1</cellType>
+		<unloadLimit>0</unloadLimit>
+		<spillEntry>500</spillEntry>
+		<holdEntry>1</holdEntry>
+		<unloadMod>0</unloadMod>
+		<fileWay> </fileWay>
+		<isAuto>1</isAuto>
+		<autoTime> </autoTime>
+		<timeInterval>6</timeInterval>
+	</unload>
+	<unload>
+		<unloadType>4</unloadType>
+		<cellType>1</cellType>
+		<unloadLimit>0</unloadLimit>
+		<spillEntry>5000</spillEntry>
+		<holdEntry>1</holdEntry>
+		<unloadMod>0</unloadMod>
+		<fileWay> </fileWay>
+		<isAuto>0</isAuto>
+		<autoTime> </autoTime>
+		<timeInterval>6</timeInterval>
+	</unload>
+</unloadManager>

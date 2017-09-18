@@ -1,0 +1,677 @@
+package com.nms.db.dao.ptn.qos;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.nms.db.bean.ptn.qos.QosInfo;
+import com.nms.ui.manager.ExceptionManage;
+
+public class QosInfoDao {
+
+	/**
+	 * 查询全部sql语句
+	 */
+	private final String SQL_SELECT = "select * from qosinfo where 1=1";
+
+	/**
+	 * 查询最大的groupid语句
+	 */
+	private final String SQL_SELECT_MAXGROUPID = "select max(groupid) as groupid from qosinfo";
+
+	/**
+	 * 修改状态
+	 */
+	private final String SQL_UPDATE_STATUS = "update qosinfo set status=? where 1=1 ";
+
+	/**
+	 * 新增qosInfo
+	 * 
+	 * @param qosInfo
+	 *            插入实体对象
+	 * @param connection
+	 *            数据库链接
+	 * @return 插入记录数
+	 * @throws Exception
+	 */
+	public int insert(QosInfo qosInfo, Connection conn) throws Exception {
+		if (qosInfo == null) {
+			throw new Exception("code is null");
+		}
+		if (conn == null) {
+			throw new Exception("connection is null");
+		}
+
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		int result = 0;
+
+		try {
+			sql = "insert into QosInfo(siteId,groupId,qosType,qosname,seq,cos,direction," + "cir,cbs,eir,ebs,pir,pbs,strategy,colorSense,status) " + "values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+			preparedStatement = conn.prepareStatement(sql);
+			preparedStatement.setInt(1, qosInfo.getSiteId());
+			preparedStatement.setInt(2, qosInfo.getGroupId());
+			preparedStatement.setString(3, qosInfo.getQosType());
+			preparedStatement.setString(4, qosInfo.getQosname());
+			preparedStatement.setInt(5, qosInfo.getSeq());
+			preparedStatement.setInt(6, qosInfo.getCos());
+			preparedStatement.setString(7, qosInfo.getDirection());
+			preparedStatement.setInt(8, qosInfo.getCir());
+			preparedStatement.setInt(9, qosInfo.getCbs());
+			preparedStatement.setInt(10, qosInfo.getEir());
+			preparedStatement.setInt(11, qosInfo.getEbs());
+			preparedStatement.setInt(12, qosInfo.getPir());
+			preparedStatement.setInt(13, qosInfo.getPbs());
+			preparedStatement.setInt(14, qosInfo.getStrategy());
+			preparedStatement.setInt(15, qosInfo.getColorSence());
+			preparedStatement.setInt(16, qosInfo.getStatus());
+			result = preparedStatement.executeUpdate();
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+
+		return result;
+	}
+
+	/**
+	 * 根据网元ID删除qosInfo
+	 * 
+	 * @param connection
+	 *            数据库链接
+	 * @return 删除记录数
+	 * @throws Exception
+	 * @throws Exception
+	 */
+	public int delete(int siteId, Connection conn) throws Exception {
+
+		if (null == conn) {
+			throw new Exception("connection is null");
+		}
+
+		StringBuffer sql = new StringBuffer();
+		PreparedStatement preparedStatement = null;
+		int result = 0;
+
+		try {
+			sql.append(" delete from QosInfo where siteId=?");
+			preparedStatement = conn.prepareStatement(sql.toString());
+			preparedStatement.setInt(1, siteId);
+			result = preparedStatement.executeUpdate();
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+
+		return result;
+	}
+
+	/**
+	 * 修改qosInfo 根据siteID,qosName,Direction进行修改 llsp
+	 * 
+	 * @param qosInfo
+	 * 
+	 * @param connection
+	 *            连接数据库
+	 * @return 修改的条数
+	 * @throws Exception
+	 * @throws Exception
+	 */
+	public int update(QosInfo qosInfo, Connection conn) throws Exception {
+		if (null == conn) {
+			throw new Exception("connection is null");
+		}
+
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		int result = 0;
+
+		try {
+			sql = " update QosInfo set cos = ? , seq = ?" + "  , cir = ? , cbs = ? , eir = ? , ebs = ?" + " , pir = ? , pbs = ? , strategy = ? , colorSense = ? , status=? " + "  where siteId = ? and qosname=?";
+			if(null != qosInfo.getDirection() && !"".equals(qosInfo.getDirection())){
+				sql+= " and Direction=?";
+			}
+			preparedStatement = conn.prepareStatement(sql);
+			preparedStatement.setInt(1, qosInfo.getCos());
+			preparedStatement.setInt(2, qosInfo.getSeq());
+			preparedStatement.setInt(3, qosInfo.getCir());
+			preparedStatement.setInt(4, qosInfo.getCbs());
+			preparedStatement.setInt(5, qosInfo.getEir());
+			preparedStatement.setInt(6, qosInfo.getEbs());
+			preparedStatement.setInt(7, qosInfo.getPir());
+			preparedStatement.setInt(8, qosInfo.getPbs());
+			preparedStatement.setInt(9, qosInfo.getStrategy());
+			preparedStatement.setInt(10, qosInfo.getColorSence());
+			preparedStatement.setInt(11, qosInfo.getStatus());
+			preparedStatement.setInt(12, qosInfo.getSiteId());
+			preparedStatement.setString(13, qosInfo.getQosname());
+			if(null != qosInfo.getDirection() && !"".equals(qosInfo.getDirection())){
+				preparedStatement.setString(14, qosInfo.getDirection());
+			}
+		
+			result = preparedStatement.executeUpdate();
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+		return result;
+	}
+	
+	/**
+	 * 修改qosInfo 根据siteID,cos,qosName,Direction进行修改
+	 * 
+	 * @param qosInfo
+	 * 
+	 * @param connection
+	 *            连接数据库
+	 * @return 修改的条数
+	 * @throws Exception
+	 * @throws Exception
+	 */
+	public int updateElsp(QosInfo qosInfo, Connection conn) throws Exception {
+		if (null == conn) {
+			throw new Exception("connection is null");
+		}
+
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		int result = 0;
+
+		try {
+			sql = " update QosInfo set seq = ?" + "  , cir = ? , cbs = ? , eir = ? , ebs = ?" + " , pir = ? , pbs = ? , strategy = ? , colorSense = ? , status=? " + "  where siteId = ? and cos = ? and qosname=? and direction=?";
+			preparedStatement = conn.prepareStatement(sql);
+			preparedStatement.setInt(1, qosInfo.getSeq());
+			preparedStatement.setInt(2, qosInfo.getCir());
+			preparedStatement.setInt(3, qosInfo.getCbs());
+			preparedStatement.setInt(4, qosInfo.getEir());
+			preparedStatement.setInt(5, qosInfo.getEbs());
+			preparedStatement.setInt(6, qosInfo.getPir());
+			preparedStatement.setInt(7, qosInfo.getPbs());
+			preparedStatement.setInt(8, qosInfo.getStrategy());
+			preparedStatement.setInt(9, qosInfo.getColorSence());
+			preparedStatement.setInt(10, qosInfo.getStatus());
+			preparedStatement.setInt(11, qosInfo.getSiteId());
+			preparedStatement.setInt(12, qosInfo.getCos());
+			preparedStatement.setString(13, qosInfo.getQosname());
+			preparedStatement.setString(14, qosInfo.getDirection());
+			result = preparedStatement.executeUpdate();
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+		return result;
+	}
+
+	/**
+	 * 执行查询方法，返回结果集
+	 * 
+	 * @param preparedStatement
+	 * @return
+	 * @throws Exception
+	 */
+	private List<QosInfo> executeQuery(PreparedStatement preparedStatement) throws Exception {
+		QosInfo qosInfo = null;
+		ResultSet resultSet = null;
+		List<QosInfo> qosList = null;
+		try {
+			qosList = new ArrayList<QosInfo>();
+			resultSet = preparedStatement.executeQuery();
+			while (resultSet.next()) {
+				qosInfo = new QosInfo();
+				qosInfo.setId(resultSet.getInt("id"));
+				qosInfo.setQosType(resultSet.getString("qosType"));
+				qosInfo.setSeq(resultSet.getInt("seq"));
+				qosInfo.setCos(resultSet.getInt("cos"));
+				qosInfo.setDirection(resultSet.getString("direction"));
+				qosInfo.setCir(resultSet.getInt("cir"));
+				qosInfo.setCbs(resultSet.getInt("cbs"));
+				qosInfo.setEir(resultSet.getInt("eir"));
+				qosInfo.setEbs(resultSet.getInt("ebs"));
+				qosInfo.setPir(resultSet.getInt("pir"));
+				qosInfo.setPbs(resultSet.getInt("pbs"));
+				qosInfo.setStrategy(resultSet.getInt("strategy"));
+				qosInfo.setColorSence(resultSet.getInt("colorSense"));
+				qosInfo.setQosname(resultSet.getString("qosname"));
+				qosInfo.setSiteId(resultSet.getInt("siteId"));
+				qosInfo.setGroupId(resultSet.getInt("groupId"));
+				qosInfo.setStatus(resultSet.getInt("status"));
+				qosList.add(qosInfo);
+			}
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (resultSet != null) {
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				resultSet = null;
+			}
+			qosInfo = null;
+		}
+		return qosList;
+	}
+
+	/*
+	 * 查询全部对象qos信息
+	 */
+	public List<QosInfo> select(Connection conn) throws Exception {
+		if (null == conn) {
+			throw new Exception("connection is null");
+		}
+
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		List<QosInfo> qosList = null;
+
+		try {
+			sql = " select * from QosInfo where 1 = 1";
+			preparedStatement = conn.prepareStatement(sql);
+
+			qosList = this.executeQuery(preparedStatement);
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+		return qosList;
+	}
+
+	/**
+	 * 根据条件查询
+	 * 
+	 * @param siteId
+	 *            网元ID
+	 * @param groupId
+	 *            qos组ID
+	 * @param conn
+	 *            数据库连接
+	 * @return
+	 * @throws Exception
+	 */
+	public List<QosInfo> queryByCondition(QosInfo qosInfo, Connection conn) throws Exception {
+		if (null == conn) {
+			throw new Exception("connection is null");
+		}
+		StringBuffer sql = new StringBuffer();
+		PreparedStatement preparedStatement = null;
+		List<QosInfo> qosInfoList = null;
+		List<Object> paramList = null;
+		try {
+			sql.append(this.SQL_SELECT);
+
+			if (null != qosInfo) {
+				paramList = new ArrayList<Object>();
+				if (qosInfo.getSiteId() > 0) {
+					sql.append(" and siteId=?");
+					paramList.add(qosInfo.getSiteId());
+				}
+
+				if (qosInfo.getGroupId() > 0) {
+					sql.append(" and groupid=?");
+					paramList.add(qosInfo.getGroupId());
+				}
+
+				if (null != qosInfo.getQosType() && !"".equals(qosInfo.getQosType())) {
+					sql.append(" and qostype=?");
+					paramList.add(qosInfo.getQosType());
+				}
+
+				if (null != qosInfo.getQosname() && !"".equals(qosInfo.getQosname())) {
+					sql.append(" and qosname=?");
+					paramList.add(qosInfo.getQosname());
+				}
+				if (qosInfo.getStatus() > 0) {
+					sql.append(" and status=?");
+					paramList.add(qosInfo.getStatus());
+				}
+				if (qosInfo.getId() > 0) {
+					sql.append(" and id=?");
+					paramList.add(qosInfo.getId());
+				}
+			}
+
+			preparedStatement = conn.prepareStatement(sql.toString());
+
+			if (null != paramList && paramList.size() > 0) {
+				for (int i = 0; i < paramList.size(); i++) {
+					preparedStatement.setObject(i + 1, paramList.get(i));
+				}
+			}
+			qosInfoList = this.executeQuery(preparedStatement);
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+		return qosInfoList;
+
+	}
+
+	/**
+	 * 获取最大的groupId 新建用
+	 * 
+	 * @param connection
+	 *            数据库连接
+	 * @return 最大的groupid
+	 * @throws Exception
+	 */
+	public int queryMaxGroupId(Connection connection) throws Exception {
+
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+		int result = 0;
+		try {
+			preparedStatement = connection.prepareStatement(this.SQL_SELECT_MAXGROUPID);
+			resultSet = preparedStatement.executeQuery();
+			if (resultSet.next()) {
+				result = resultSet.getInt("groupid");
+			}
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if(null!=resultSet){
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				resultSet = null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+		}
+
+		return result;
+	}
+
+	/**
+	 * 根据网元ID或者组id集合删除
+	 * 
+	 * @param siteId
+	 *            网元主键
+	 * @param type 
+	 * 				ac或者path
+	 * @param groupIds
+	 *            以逗号区分的组ID
+	 * @param status
+	 *            状态 1=设备不存在，2=设备存在
+	 * @param connection
+	 *            数据库连接
+	 * @throws Exception
+	 */
+	public void updateStatus(int siteId,String type, String groupIds, int status, Connection connection) throws Exception {
+		PreparedStatement preparedStatement = null;
+		StringBuffer stringBuffer = null;
+		List<Object> paramList = null;
+		try {
+			stringBuffer = new StringBuffer(this.SQL_UPDATE_STATUS);
+
+			paramList = new ArrayList<Object>();
+			if (siteId > 0) {
+				stringBuffer.append(" and siteId="+siteId);
+				paramList.add(siteId);
+			}
+			if (null != groupIds && !"".equals(groupIds)) {
+				stringBuffer.append(" and groupid in ("+groupIds+")");
+			}
+			
+			if(null != type && !"".equals(type)){
+				if("ac".equals(type)){
+					stringBuffer.append(" and qostype in ('L2','L3','vlanpri')");
+				}else{
+					stringBuffer.append(" and qostype in ('LLSP','ELSP')");
+				}
+			}
+
+			preparedStatement = connection.prepareStatement(stringBuffer.toString());
+			preparedStatement.setInt(1, status);
+			
+			preparedStatement.executeUpdate();
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e,this.getClass());
+				}
+				preparedStatement = null;
+			}
+			stringBuffer = null;
+			paramList = null;
+		}
+	}
+	
+	/**
+	 * 根据条件查询
+	 * 
+	 * @param siteId
+	 *            网元ID
+	 * @param groupId
+	 *            qos组ID
+	 * @param conn
+	 *            数据库连接
+	 * @return
+	 * @throws Exception
+	 */
+	public List<QosInfo> queryByConditionDetail(QosInfo qosInfo, Connection conn) throws Exception {
+		if (null == conn) {
+			throw new Exception("connection is null");
+		}
+		StringBuffer sql = new StringBuffer();
+		PreparedStatement preparedStatement = null;
+		List<QosInfo> qosInfoList = null;
+		List<Object> paramList = null;
+		try {
+			sql.append(this.SQL_SELECT);
+
+			if (null != qosInfo) {
+				paramList = new ArrayList<Object>();
+				if (qosInfo.getSiteId() > 0) {
+					sql.append(" and siteId=?");
+					paramList.add(qosInfo.getSiteId());
+				}
+
+				if (qosInfo.getGroupId() > 0) {
+					sql.append(" and groupid=?");
+					paramList.add(qosInfo.getGroupId());
+				}
+
+				if (null != qosInfo.getQosType() && !"".equals(qosInfo.getQosType())) {
+					sql.append(" and qostype=?");
+					paramList.add(qosInfo.getQosType());
+				}
+
+				if (null != qosInfo.getQosname() && !"".equals(qosInfo.getQosname())) {
+					sql.append(" and qosname=?");
+					paramList.add(qosInfo.getQosname());
+				}
+				if (qosInfo.getStatus() > 0) {
+					sql.append(" and status=?");
+					paramList.add(qosInfo.getStatus());
+				}
+				if (qosInfo.getCos() > 0) {
+					sql.append(" and cos=?");
+					paramList.add(qosInfo.getCos());
+				}
+				if (qosInfo.getCir() > 0) {
+					sql.append(" and cir=?");
+					paramList.add(qosInfo.getCir());
+				}
+				if (qosInfo.getSeq() > 0) {
+					sql.append(" and seq=?");
+					paramList.add(qosInfo.getSeq());
+				}
+				if (qosInfo.getCbs() > 0) {
+					sql.append(" and cbs=?");
+					paramList.add(qosInfo.getCbs());
+				}
+				if (qosInfo.getEir() > 0) {
+					sql.append(" and eir=?");
+					paramList.add(qosInfo.getEir());
+				}
+				if (qosInfo.getEbs() > 0) {
+					sql.append(" and ebs=?");
+					paramList.add(qosInfo.getEbs());
+				}
+				if (qosInfo.getColorSence() > 0) {
+					sql.append(" and ColorSence=?");
+					paramList.add(qosInfo.getColorSence());
+				}
+				if (qosInfo.getPir() > 0) {
+					sql.append(" and pir=?");
+					paramList.add(qosInfo.getPir());
+				}
+				
+			}
+
+			preparedStatement = conn.prepareStatement(sql.toString());
+
+			if (null != paramList && paramList.size() > 0) {
+				for (int i = 0; i < paramList.size(); i++) {
+					preparedStatement.setObject(i + 1, paramList.get(i));
+				}
+			}
+			qosInfoList = this.executeQuery(preparedStatement);
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+			paramList = null;
+		}
+		return qosInfoList;
+
+	}
+
+	public List<QosInfo> selectByCondition(String objType, List<Integer> objectIdList, Connection conn) throws Exception {
+		if (null == conn) {
+			throw new Exception("connection is null");
+		}
+		PreparedStatement preparedStatement = null;
+		List<QosInfo> qosInfoList = new ArrayList<QosInfo>();
+		try {
+			if(objectIdList.size() > 0){
+				StringBuffer sb = new StringBuffer();
+				for (int id : objectIdList) {
+					sb.append(id+",");
+				}
+				String sql = "select * from qosinfo where groupId in (select qosGroupId from qosrelevance " +
+				"where objType = '"+objType+"' and objId in ("+sb.toString().substring(0, 
+						sb.toString().length()-1)+"))"; 
+				preparedStatement = conn.prepareStatement(sql);
+				qosInfoList = this.executeQuery(preparedStatement);
+			}
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+		}
+		return qosInfoList;
+	}
+
+	public void deleteByGroupId(int qosGroupId, Connection connection) throws Exception {
+		if (null == connection) {
+			throw new Exception("connection is null");
+		}
+		StringBuffer sql = new StringBuffer();
+		PreparedStatement preparedStatement = null;
+		try {
+			sql.append(" delete from QosInfo where groupId=?");
+			preparedStatement = connection.prepareStatement(sql.toString());
+			preparedStatement.setInt(1, qosGroupId);
+			preparedStatement.executeUpdate();
+		} finally {
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					ExceptionManage.dispose(e, this.getClass());
+				}
+				preparedStatement = null;
+			}
+		}
+	}
+}

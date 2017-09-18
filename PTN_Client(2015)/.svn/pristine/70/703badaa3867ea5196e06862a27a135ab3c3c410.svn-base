@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nms.db.dao.system.code.CodeGroupMapper" >
+  <resultMap id="BaseResultMap" type="CodeGroup" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="codeGroupName" property="codeGroupName" jdbcType="VARCHAR" />
+    <result column="codeIdentily" property="codeIdentily" jdbcType="VARCHAR" />
+    <result column="codeDesc" property="codeDesc" jdbcType="VARCHAR" />
+  </resultMap>
+
+  <sql id="Base_Column_List" >
+    id, codeGroupName, codeIdentily, codeDesc
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from codegroup
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from codegroup
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="CodeGroup" >
+    insert into codegroup (id, codeGroupName, codeIdentily, 
+      codeDesc)
+    values (#{id,jdbcType=INTEGER}, #{codegroupname,jdbcType=VARCHAR}, #{codeidentily,jdbcType=VARCHAR}, 
+      #{codedesc,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="CodeGroup" >
+    insert into codegroup
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="codegroupname != null" >
+        codeGroupName,
+      </if>
+      <if test="codeidentily != null" >
+        codeIdentily,
+      </if>
+      <if test="codedesc != null" >
+        codeDesc,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="codegroupname != null" >
+        #{codegroupname,jdbcType=VARCHAR},
+      </if>
+      <if test="codeidentily != null" >
+        #{codeidentily,jdbcType=VARCHAR},
+      </if>
+      <if test="codedesc != null" >
+        #{codedesc,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="CodeGroup" >
+    update codegroup
+    <set >
+      <if test="codegroupname != null" >
+        codeGroupName = #{codegroupname,jdbcType=VARCHAR},
+      </if>
+      <if test="codeidentily != null" >
+        codeIdentily = #{codeidentily,jdbcType=VARCHAR},
+      </if>
+      <if test="codedesc != null" >
+        codeDesc = #{codedesc,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="CodeGroup" >
+    update codegroup
+    set codeGroupName = #{codegroupname,jdbcType=VARCHAR},
+      codeIdentily = #{codeidentily,jdbcType=VARCHAR},
+      codeDesc = #{codedesc,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  
+  <select id="queryByCondition" resultMap="BaseResultMap" parameterType="CodeGroup" >
+   select id,codeGroupName,codeIdentily , codeDesc from codegroup where 1=1
+   <if test="id>0"> and id=#{id}</if>
+   <if test="codeIdentily!=null"> and codeIdentily=#{codeIdentily}</if>
+  </select>
+
+  <select id="queryByConditionall" resultMap="BaseResultMap" >
+  select id,codeGroupName,codeIdentily , codeDesc from codegroup
+  </select> 
+</mapper>

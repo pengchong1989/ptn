@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xml-body>
+	<qosTablePHB typeName="PHB_EXP" type="1" tableName="表" xmlPath="config/topo/equipment/equipment_b.xml" imagePath="/com/nms/ui/images/topo/b/" >
+	<table grade="BE" name="TMC" value="0" bandWidth="" imagePath="/com/nms/ui/images/topo/soz/port_l.png" x="278" y="20" number="1" ></table>
+	<table grade="BE" name="TMP" value="0" bandWidth="" imagePath="/com/nms/ui/images/topo/soz/port_l.png" x="278" y="20" number="1" ></table>
+	<table grade="AF1" name="TMC" value="1" bandWidth="" imagePath="/com/nms/ui/images/topo/soz/port_l.png" x="278" y="20" number="1" ></table>
+	<table grade="AF1" name="TMP" value="1" bandWidth="" imagePath="/com/nms/ui/images/topo/soz/port_l.png" x="278" y="20" number="1" ></table>
+	<table grade="AF2" name="TMC" value="2" bandWidth="" imagePath="/com/nms/ui/images/topo/soz/port_l.png" x="278" y="20" number="1" ></table>
+	<table grade="AF2" name="TMP" value="2" bandWidth="" imagePath="/com/nms/ui/images/topo/soz/port_l.png" x="278" y="20" number="1" ></table>
+	<table grade="AF3" name="TMC" value="3" bandWidth="" imagePath="/com/nms/ui/images/topo/soz/port_l.png" x="278" y="20" number="1" ></table>
+	<table grade="AF3" name="TMP" value="3" bandWidth="" imagePath="/com/nms/ui/images/topo/soz/port_l.png" x="278" y="20" number="1" ></table>
+	<table grade="AF4" name="TMC" value="4" bandWidth="" imagePath="/com/nms/ui/images/topo/soz/port_l.png" x="278" y="20" number="1" ></table>
+	<table grade="AF4" name="TMP" value="4" bandWidth="" imagePath="/com/nms/ui/images/topo/soz/port_l.png" x="278" y="20" number="1" ></table>
+	<table grade="EF" name="TMC" value="5" bandWidth="" imagePath="/com/nms/ui/images/topo/soz/port_l.png" x="278" y="20" number="1" ></table>
+	<table grade="EF" name="TMP" value="5" bandWidth="" imagePath="/com/nms/ui/images/topo/soz/port_l.png" x="278" y="20" number="1" ></table>
+	<table grade="CS6" name="TMC" value="6" bandWidth="" imagePath="/com/nms/ui/images/topo/soz/port_l.png" x="278" y="20" number="1" ></table>
+	<table grade="CS6" name="TMP" value="6" bandWidth="" imagePath="/com/nms/ui/images/topo/soz/port_l.png" x="278" y="20" number="1" ></table>
+	<table grade="CS7" name="TMC" value="7" bandWidth="" imagePath="/com/nms/ui/images/topo/soz/port_l.png" x="278" y="20" number="1" ></table>
+	<table grade="CS7" name="TMP" value="7" bandWidth="" imagePath="/com/nms/ui/images/topo/soz/port_l.png" x="278" y="20" number="1" ></table>
+	</qosTablePHB>
+</xml-body>

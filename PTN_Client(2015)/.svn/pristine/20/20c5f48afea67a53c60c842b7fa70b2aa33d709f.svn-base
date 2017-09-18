@@ -1,0 +1,5 @@
+#EXP2PHB信息#########################################
+#映射表名称
+tableName=LBL_MAPPING_TABLE_NAME
+#等级值
+valueLog=OBJ_LEVEL_CODE

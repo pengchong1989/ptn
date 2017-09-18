@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- ACTS_B板卡下所有端口配置 (700E的主控卡) -->
+<xml-boby>
+
+<card cardName="ACTS_B" cardType="" imagePath="/com/nms/ui/images/topo/tza/card.png" x="72" y="56" >
+       <port portName="NMS"  seq="" portType="system" bandWidth="" imagePath="/com/nms/ui/images/topo/tza/port.png" x="325" y="38" number="1" module="(o)"></port>
+       <port portName=""  seq="" portType="system" bandWidth="" imagePath="/com/nms/ui/images/topo/tza/port.png" x="361" y="38" number="1" module="(o)"></port>
+       <port portName="e1"  seq="1" portType="e1" bandWidth="" imagePath="/com/nms/ui/images/topo/tza/port.png" x="397" y="38" number="1" module="(o)"></port>
+       <port portName="e1"  seq="3" portType="e1" bandWidth="" imagePath="/com/nms/ui/images/topo/tza/port.png" x="433" y="38" number="1" module="(o)"></port>
+       <port portName="fe"  seq="1" portType="NONE" bandWidth="" imagePath="/com/nms/ui/images/topo/tza/port.png" x="480" y="38" number="1" module="(o)"></port>
+       <port portName="fe"  seq="2" portType="NONE" bandWidth="" imagePath="/com/nms/ui/images/topo/tza/port.png" x="516" y="38" number="1" module="(o)"></port>
+       <port portName="fe"  seq="3" portType="NONE" bandWidth="" imagePath="/com/nms/ui/images/topo/tza/port.png" x="552" y="38" number="1" module="(o)"></port>
+       <port portName="fe"  seq="4" portType="NONE" bandWidth="" imagePath="/com/nms/ui/images/topo/tza/port.png" x="588" y="38" number="1" module="(o)"></port>
+       <port portName="ge"  seq="1" portType="NONE" bandWidth="" imagePath="/com/nms/ui/images/topo/tza/port_g.png" x="644" y="45" number="1" module="(e)"></port>
+       <port portName="ge"  seq="2" portType="NONE" bandWidth="" imagePath="/com/nms/ui/images/topo/tza/port_g.png" x="694" y="45" number="1" module="(e)"></port>
+</card>
+
+</xml-boby>

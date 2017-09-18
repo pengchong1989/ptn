@@ -1,0 +1,772 @@
+﻿package com.nms.db.dao.ptn.oam;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.nms.db.bean.ptn.oam.OamEthernetInfo;
+
+
+public class OamEthernetDao {
+
+	/**
+	 * 新增OamEthernetInfo
+	 * 
+	 * @param oamEthernetInfo
+	 *            插入实体对象
+	 * @param connection
+	 *            数据库链接
+	 * @return 插入记录数
+	 * @throws Exception
+	 */
+	public int insert(OamEthernetInfo oamEthernetInfo, Connection conn) throws Exception {
+		if (oamEthernetInfo == null) {
+			throw new Exception("oamEthernetInfo is null");
+		}
+		if (conn == null) {
+			throw new Exception("connection is null");
+		}
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		ResultSet rs=null;
+		int result = 0;
+		try {
+			sql = " insert into ethernetOam(siteId,thernetOAMEnabl,mdMLevel,mpLable,mdName,mdLevel," +
+					                        "maName,ccmsend,vlan,mepId,mepType,port,ccmSendEnable," +
+					                        "ccmReceiveEnable,ccmPriority,lbmTlvType,lbmTlvTypeLength,lbmPriority,lbmDiscard,ltmPriority," +
+					                        "aisSendEnabel,clientMdLevel,aisPriority,lckSendEnabel,lckPriority,aisLckSendCycle,tstSendEnabel," +
+					                        "tstSendLevel,tstPurposeMepMac,tstPriority,sendWay,tstDiscard,tstTlvType,tstTlvLength," +
+					                        "tstSendCycle,lmENable,lmPriority,lmSendCycle,dmENable,dmPriority,dmSendCycle,remoteMepId1," +
+					                        "macAddress1,remoteMepId2,macAddress2,remoteMepId3,macAddress3,remoteMepId4,macAddress4," +
+					                        "mipCreate,mipPort,slot,mipSlot,itemNumber)" + 
+//					                        "mipCreate,mipPort,slot,mipSlot,PortName,mipPortName)" + 
+					                        "values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?," +
+					                        "?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+
+			preparedStatement = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+			preparedStatement.setInt(1, oamEthernetInfo.getSiteId());
+			preparedStatement.setInt(2, oamEthernetInfo.getThernetOAMEnabl());
+			preparedStatement.setString(3, oamEthernetInfo.getMdMLevel());
+			preparedStatement.setInt(4, oamEthernetInfo.getMpLable());
+			preparedStatement.setString(5, oamEthernetInfo.getMdName());
+			preparedStatement.setString(6, oamEthernetInfo.getMdLevel());
+			preparedStatement.setString(7, oamEthernetInfo.getMaName());
+			preparedStatement.setInt(8, oamEthernetInfo.getCcmsend());
+			preparedStatement.setString(9, oamEthernetInfo.getVlan());
+			preparedStatement.setString(10, oamEthernetInfo.getMepId());
+			preparedStatement.setInt(11, oamEthernetInfo.getMepType());
+			preparedStatement.setString(12, oamEthernetInfo.getPort());
+			preparedStatement.setInt(13, oamEthernetInfo.getCcmSendEnable());
+			preparedStatement.setInt(14, oamEthernetInfo.getCcmReceiveEnable());
+			preparedStatement.setString(15, oamEthernetInfo.getCcmPriority());
+			preparedStatement.setInt(16, oamEthernetInfo.getLbmTlvType());
+			preparedStatement.setString(17, oamEthernetInfo.getLbmTlvTypeLength());
+			preparedStatement.setString(18, oamEthernetInfo.getLbmPriority());
+			preparedStatement.setInt(19,oamEthernetInfo.getLbmDiscard());
+			preparedStatement.setString(20, oamEthernetInfo.getLtmPriority());
+			preparedStatement.setInt(21, oamEthernetInfo.getAisSendEnabel());
+			preparedStatement.setString(22, oamEthernetInfo.getClientMdLevel());
+			preparedStatement.setString(23,oamEthernetInfo.getAisPriority());
+			preparedStatement.setInt(24, oamEthernetInfo.getLckSendEnabel());
+			preparedStatement.setString(25, oamEthernetInfo.getLckPriority());
+			preparedStatement.setInt(26, oamEthernetInfo.getAisLckSendCycle());
+			preparedStatement.setInt(27, oamEthernetInfo.getTstSendEnabel());
+			preparedStatement.setString(28, oamEthernetInfo.getTstSendLevel());
+			preparedStatement.setString(29, oamEthernetInfo.getTstPurposeMepMac());
+			preparedStatement.setString(30, oamEthernetInfo.getTstPriority());
+			preparedStatement.setInt(31, oamEthernetInfo.getSendWay());
+			preparedStatement.setInt(32, oamEthernetInfo.getTstDiscard());
+			preparedStatement.setInt(33,oamEthernetInfo.getTstTlvType());
+			preparedStatement.setString(34, oamEthernetInfo.getTstTlvLength());
+			preparedStatement.setInt(35, oamEthernetInfo.getTstSendCycle());
+			preparedStatement.setInt(36,oamEthernetInfo.getLmENable());
+			preparedStatement.setString(37, oamEthernetInfo.getLmPriority());
+			preparedStatement.setInt(38, oamEthernetInfo.getLmSendCycle());
+			preparedStatement.setInt(39, oamEthernetInfo.getDmENable());
+			preparedStatement.setString(40, oamEthernetInfo.getDmPriority());
+			preparedStatement.setInt(41, oamEthernetInfo.getDmSendCycle());
+			preparedStatement.setString(42, oamEthernetInfo.getRemoteMepId1());
+			preparedStatement.setString(43, oamEthernetInfo.getMacAddress1());
+			preparedStatement.setString(44, oamEthernetInfo.getRemoteMepId2());
+			preparedStatement.setString(45, oamEthernetInfo.getMacAddress2());
+			preparedStatement.setString(46, oamEthernetInfo.getRemoteMepId3());
+			preparedStatement.setString(47, oamEthernetInfo.getMacAddress3());
+			preparedStatement.setString(48, oamEthernetInfo.getRemoteMepId4());
+			preparedStatement.setString(49, oamEthernetInfo.getMacAddress4());
+			preparedStatement.setInt(50, oamEthernetInfo.getMipCreate());
+			preparedStatement.setString(51, oamEthernetInfo.getMipPort());
+			preparedStatement.setInt(52, oamEthernetInfo.getSlot());
+			preparedStatement.setInt(53, oamEthernetInfo.getMipSlot());
+			preparedStatement.setInt(54, oamEthernetInfo.getItemNumber());
+//			preparedStatement.setString(54, oamEthernetInfo.getPortName());
+//			preparedStatement.setString(55, oamEthernetInfo.getMipPortName());
+			
+			       preparedStatement.executeUpdate();
+			  rs = preparedStatement.getGeneratedKeys();
+				if (rs.next()) {
+					result = rs.getInt(1);
+				} 
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if(rs!=null){
+				try {
+					rs.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				rs = null;	
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+		return result;
+	}
+
+
+/**
+ *刪除以太网 OAM 
+ * @param oamLinkInfo
+ * @param conn
+ * @return
+ * @throws Exception
+ */
+	public int delete(OamEthernetInfo oamEthernetInfo, Connection conn) throws Exception {
+		if (oamEthernetInfo == null) {
+			throw new Exception("oamEthernetInfo is null");
+		}
+		if (conn == null) {
+			throw new Exception("conn is null");
+		}
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		int result = 0;
+		try {
+			sql = "delete from ethernetOam where id= ? and siteId= ? ";
+			preparedStatement = conn.prepareStatement(sql);
+			preparedStatement.setInt(1, oamEthernetInfo.getId());
+			preparedStatement.setInt(2, oamEthernetInfo.getSiteId());
+			result = preparedStatement.executeUpdate();
+
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+		return result;
+	}
+
+	/**
+	 *刪除以太网 OAM 单站测 
+	 * @param oamLinkInfo
+	 * @param conn
+	 * @return
+	 * @throws Exception
+	 */
+		public int delete(int siteId, Connection conn) throws Exception {
+			if (conn == null) {
+				throw new Exception("conn is null");
+			}
+			String sql = null;
+			PreparedStatement preparedStatement = null;
+			int result = 0;
+			try {
+				sql = "delete from ethernetOam where  siteId= ? ";
+				preparedStatement = conn.prepareStatement(sql);
+				preparedStatement.setInt(1, siteId);
+				result = preparedStatement.executeUpdate();
+
+			} catch (Exception e) {
+				throw e;
+			} finally {
+				if (preparedStatement != null) {
+					try {
+						preparedStatement.close();
+
+					} catch (Exception e) {
+						throw e;
+					}
+					preparedStatement = null;
+				}
+				sql = null;
+			}
+			return result;
+		}
+		
+		/**
+		 *刪除以太网 OAM 单站测 
+		 * @param oamLinkInfo
+		 * @param conn
+		 * @return
+		 * @throws Exception
+		 */
+			public int delete(Connection conn) throws Exception {
+				if (conn == null) {
+					throw new Exception("conn is null");
+				}
+				String sql = null;
+				PreparedStatement preparedStatement = null;
+				int result = 0;
+				try {
+					sql = "delete from ethernetOam";
+					preparedStatement = conn.prepareStatement(sql);
+					result = preparedStatement.executeUpdate();
+
+				} catch (Exception e) {
+					throw e;
+				} finally {
+					if (preparedStatement != null) {
+						try {
+							preparedStatement.close();
+
+						} catch (Exception e) {
+							throw e;
+						}
+						preparedStatement = null;
+					}
+					sql = null;
+				}
+				return result;
+			}
+	/**
+	 * 修改oamEthernetInfo
+	 * 
+	 * @param oamEthernetInfo
+	 * 
+	 * @param connection
+	 *            连接数据库
+	 * @return 修改的条数
+	 * @throws Exception
+	 * @throws Exception
+	 */
+	public int update(OamEthernetInfo oamEthernetInfo, Connection conn) throws Exception {
+
+		if (null == oamEthernetInfo) {
+			throw new Exception("oamEthernetInfo is null");
+		}
+
+		if (null == conn) {
+			throw new Exception("connection is null");
+		}
+
+		StringBuffer sql = new StringBuffer();
+		PreparedStatement preparedStatement = null;
+		int result = 0;
+
+		try {
+			sql.append("update ethernetOam set thernetOAMEnabl = ? , mdMLevel = ? , mpLable = ?,mdName = ? ," + " mdLevel = ? , " +
+					"maName = ?,ccmsend = ?, vlan = ? ,mepId = ? , mepType = ?,port = ? , ccmSendEnable = ?," +
+							" ccmReceiveEnable = ?,ccmPriority = ?, lbmTlvType = ?, lbmTlvTypeLength = ?, lbmPriority = ?," + " lbmDiscard = ? , ltmPriority = ? ," +
+							" aisSendEnabel = ? , clientMdLevel = ? , aisPriority = ?," + " lckSendEnabel = ? ,lckPriority = ? , aisLckSendCycle = ? , tstSendEnabel=?," + 
+							"tstSendLevel=?,tstPurposeMepMac = ? , tstPriority = ? , sendWay = ? , tstDiscard = ? , tstTlvType = ? , tstTlvLength = ?, " +
+							"tstSendCycle= ? , lmENable = ? ,lmPriority = ? ,lmSendCycle=? ,dmENable=? ,dmPriority=?,dmSendCycle=?,remoteMepId1=?," +
+							"macAddress1=?,remoteMepId2=?,macAddress2=?,remoteMepId3=?,macAddress3=?,remoteMepId4=?,macAddress4=?," +
+									"mipCreate=?,mipPort=?,slot=?,mipSlot=?,itemNumber=?");
+//									",PortName=?,mipPortName=?");
+		
+			if (oamEthernetInfo.getSiteId()!= 0) {
+				sql.append(" where siteId = ?");
+			}
+			if (oamEthernetInfo.getId()!= 0) {
+				sql.append(" and id = ?");
+			}
+			preparedStatement = conn.prepareStatement(sql.toString());
+			
+			preparedStatement.setInt(1, oamEthernetInfo.getThernetOAMEnabl());
+			preparedStatement.setString(2, oamEthernetInfo.getMdMLevel());
+			preparedStatement.setInt(3, oamEthernetInfo.getMpLable());
+			preparedStatement.setString(4, oamEthernetInfo.getMdName());
+			preparedStatement.setString(5, oamEthernetInfo.getMdLevel());
+			preparedStatement.setString(6, oamEthernetInfo.getMaName());
+			preparedStatement.setInt(7, oamEthernetInfo.getCcmsend());
+			preparedStatement.setString(8, oamEthernetInfo.getVlan());
+			preparedStatement.setString(9, oamEthernetInfo.getMepId());
+			preparedStatement.setInt(10, oamEthernetInfo.getMepType());
+			preparedStatement.setString(11, oamEthernetInfo.getPort());
+			preparedStatement.setInt(12, oamEthernetInfo.getCcmSendEnable());
+			preparedStatement.setInt(13, oamEthernetInfo.getCcmReceiveEnable());
+			preparedStatement.setString(14, oamEthernetInfo.getCcmPriority());
+			preparedStatement.setInt(15, oamEthernetInfo.getLbmTlvType());
+			preparedStatement.setString(16, oamEthernetInfo.getLbmTlvTypeLength());
+			preparedStatement.setString(17, oamEthernetInfo.getLbmPriority());
+			preparedStatement.setInt(18,oamEthernetInfo.getLbmDiscard());
+			preparedStatement.setString(19, oamEthernetInfo.getLtmPriority());
+			preparedStatement.setInt(20, oamEthernetInfo.getAisSendEnabel());
+			preparedStatement.setString(21, oamEthernetInfo.getClientMdLevel());
+			preparedStatement.setString(22,oamEthernetInfo.getAisPriority());
+			preparedStatement.setInt(23, oamEthernetInfo.getLckSendEnabel());
+			preparedStatement.setString(24, oamEthernetInfo.getLckPriority());
+			preparedStatement.setInt(25, oamEthernetInfo.getAisLckSendCycle());
+			preparedStatement.setInt(26, oamEthernetInfo.getTstSendEnabel());
+			preparedStatement.setString(27, oamEthernetInfo.getTstSendLevel());
+			preparedStatement.setString(28, oamEthernetInfo.getTstPurposeMepMac());
+			preparedStatement.setString(29, oamEthernetInfo.getTstPriority());
+			preparedStatement.setInt(30, oamEthernetInfo.getSendWay());
+			preparedStatement.setInt(31, oamEthernetInfo.getTstDiscard());
+			preparedStatement.setInt(32,oamEthernetInfo.getTstTlvType());
+			preparedStatement.setString(33, oamEthernetInfo.getTstTlvLength());
+			preparedStatement.setInt(34, oamEthernetInfo.getTstSendCycle());
+			preparedStatement.setInt(35,oamEthernetInfo.getLmENable());
+			preparedStatement.setString(36, oamEthernetInfo.getLmPriority());
+			preparedStatement.setInt(37, oamEthernetInfo.getLmSendCycle());
+			preparedStatement.setInt(38, oamEthernetInfo.getDmENable());
+			preparedStatement.setString(39, oamEthernetInfo.getDmPriority());
+			preparedStatement.setInt(40, oamEthernetInfo.getDmSendCycle());
+			preparedStatement.setString(41, oamEthernetInfo.getRemoteMepId1());
+			preparedStatement.setString(42, oamEthernetInfo.getMacAddress1());
+			preparedStatement.setString(43, oamEthernetInfo.getRemoteMepId2());
+			preparedStatement.setString(44, oamEthernetInfo.getMacAddress2());
+			preparedStatement.setString(45, oamEthernetInfo.getRemoteMepId3());
+			preparedStatement.setString(46, oamEthernetInfo.getMacAddress3());
+			preparedStatement.setString(47, oamEthernetInfo.getRemoteMepId4());
+			preparedStatement.setString(48, oamEthernetInfo.getMacAddress4());
+			preparedStatement.setInt(49, oamEthernetInfo.getMipCreate());
+			preparedStatement.setString(50, oamEthernetInfo.getMipPort());
+			preparedStatement.setInt(51, oamEthernetInfo.getSlot());
+			preparedStatement.setInt(52, oamEthernetInfo.getMipSlot());
+			preparedStatement.setInt(53, oamEthernetInfo.getItemNumber());
+//			preparedStatement.setString(53, oamEthernetInfo.getPortName());
+//			preparedStatement.setString(54, oamEthernetInfo.getMipPortName());
+
+			if (oamEthernetInfo.getSiteId() != 0) {
+				preparedStatement.setInt(54, oamEthernetInfo.getSiteId());
+			}
+			if (oamEthernetInfo.getId()!= 0) {
+				if(oamEthernetInfo.getSiteId()!=0){
+					preparedStatement.setInt(55, oamEthernetInfo.getId());
+				}else{
+					preparedStatement.setInt(54, oamEthernetInfo.getId());
+				}
+			}
+			result = preparedStatement.executeUpdate();
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+		return result;
+	}
+
+	
+
+	public List<OamEthernetInfo> queryOamLinkInfoByCondition(OamEthernetInfo oamEthernetInfo, Connection conn) throws Exception {
+		if (oamEthernetInfo == null) {
+			throw new Exception("oamEthernetInfo is null");
+		}
+		if (conn == null) {
+			throw new Exception("conn is null");
+		}
+		StringBuffer sql = new StringBuffer();
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+		OamEthernetInfo oamEthernetInfos = null;
+		
+		List<OamEthernetInfo> lists=null;
+		try {
+			lists=new ArrayList<OamEthernetInfo>();
+			
+			sql.append("select * from  ethernetoam");
+				sql.append(" where siteId = ?");
+				sql.append(" and id = ?");
+				sql.append(" and mdMLevel = ?");
+				sql.append(" and mdName = ?");
+				sql.append(" and mdLevel = ?");
+				sql.append(" and vlan = ?");
+				sql.append(" and mepId = ?");
+				sql.append(" and port = ?");
+				sql.append(" and maName = ?");
+				sql.append(" and ccmPriority = ?");
+				sql.append(" and lbmTlvTypeLength = ?");
+				sql.append(" and lbmPriority = ?");
+				sql.append(" and ltmPriority = ?");
+				sql.append(" and clientMdLevel = ?");
+				sql.append(" and aisPriority = ?");
+				sql.append(" and lckPriority = ?");
+				sql.append(" and tstSendLevel = ?"); 
+				sql.append(" and tstPurposeMepMac = ?");
+				sql.append(" and tstPriority = ?");
+				sql.append(" and tstTlvLength = ?");
+				sql.append(" and lmPriority = ?");
+				sql.append(" and dmPriority = ?");
+				sql.append(" and remoteMepId1 = ?");
+				sql.append(" and macAddress1 = ?");
+				sql.append(" and remoteMepId2 = ?");
+				sql.append(" and macAddress2= ?");
+				sql.append(" and remoteMepId3 = ?");
+				sql.append(" and macAddress3= ?");
+				sql.append(" and remoteMepId4 = ?");
+				sql.append(" and macAddress4= ?");
+				sql.append(" and mipPort= ?");
+			    sql.append(" and thernetOAMEnabl = ?");
+			    sql.append(" and mpLable = ?");
+			    sql.append(" and ccmsend = ?");
+	            sql.append(" and mepType = ?");
+	            sql.append(" and ccmSendEnable = ?");
+	            sql.append(" and ccmReceiveEnable = ?");
+	            sql.append(" and lbmTlvType = ?");
+	            sql.append(" and lbmDiscard = ?");
+	            
+	            sql.append(" and aisSendEnabel = ?");
+	            sql.append(" and lckSendEnabel = ?");
+	            sql.append(" and aisLckSendCycle = ?");
+	            sql.append(" and tstSendEnabel = ?");
+	            sql.append(" and sendWay = ?");
+	            sql.append(" and tstDiscard = ?");
+	            sql.append(" and tstTlvType = ?");
+	            sql.append(" and tstSendCycle = ?");
+	            sql.append(" and lmENable = ?");
+	            sql.append(" and lmSendCycle = ?");
+	            sql.append(" and dmENable = ?");
+	            sql.append(" and dmSendCycle = ?");
+	            sql.append(" and mipCreate = ?");
+	            sql.append(" and slot = ?");
+	            sql.append(" and mipSlot = ?");
+	            sql.append(" and itemNumber = ?");
+	
+			preparedStatement = conn.prepareStatement(sql.toString());
+				preparedStatement.setInt(1, oamEthernetInfo.getSiteId());
+				preparedStatement.setInt(2, oamEthernetInfo.getId());
+				preparedStatement.setString(3, oamEthernetInfo.getMdMLevel());
+				preparedStatement.setString(4, oamEthernetInfo.getMdName());
+				preparedStatement.setString(5, oamEthernetInfo.getMdLevel());
+				preparedStatement.setString(6, oamEthernetInfo.getVlan());
+				preparedStatement.setString(7, oamEthernetInfo.getMepId());
+				preparedStatement.setString(8, oamEthernetInfo.getPort());
+				preparedStatement.setString(9, oamEthernetInfo.getMaName());
+				preparedStatement.setString(10, oamEthernetInfo.getCcmPriority());
+				preparedStatement.setString(11, oamEthernetInfo.getLbmTlvTypeLength());
+				preparedStatement.setString(12, oamEthernetInfo.getLbmPriority());
+				preparedStatement.setString(13, oamEthernetInfo.getLtmPriority());
+				preparedStatement.setString(14, oamEthernetInfo.getClientMdLevel());
+				preparedStatement.setString(15, oamEthernetInfo.getAisPriority());
+				preparedStatement.setString(16, oamEthernetInfo.getLckPriority());
+				preparedStatement.setString(17, oamEthernetInfo.getTstSendLevel());
+				preparedStatement.setString(18, oamEthernetInfo.getTstPurposeMepMac());
+				preparedStatement.setString(19, oamEthernetInfo.getTstPriority());
+				preparedStatement.setString(20, oamEthernetInfo.getTstTlvLength());
+				preparedStatement.setString(21, oamEthernetInfo.getLmPriority());
+				preparedStatement.setString(22, oamEthernetInfo.getDmPriority());
+				preparedStatement.setString(23, oamEthernetInfo.getRemoteMepId1());
+				preparedStatement.setString(24, oamEthernetInfo.getMacAddress1());
+				preparedStatement.setString(25, oamEthernetInfo.getRemoteMepId2());
+				preparedStatement.setString(26, oamEthernetInfo.getMacAddress2());
+				preparedStatement.setString(27, oamEthernetInfo.getRemoteMepId3());
+				preparedStatement.setString(28, oamEthernetInfo.getMacAddress3());
+				preparedStatement.setString(29, oamEthernetInfo.getRemoteMepId4());
+				preparedStatement.setString(30, oamEthernetInfo.getMacAddress4());
+				preparedStatement.setString(31, oamEthernetInfo.getMipPort());
+				preparedStatement.setInt(32, oamEthernetInfo.getThernetOAMEnabl());
+				preparedStatement.setInt(33, oamEthernetInfo.getMpLable());
+				preparedStatement.setInt(34, oamEthernetInfo.getCcmsend());
+				preparedStatement.setInt(35, oamEthernetInfo.getMepType());
+				preparedStatement.setInt(36, oamEthernetInfo.getCcmSendEnable());
+				preparedStatement.setInt(37, oamEthernetInfo.getCcmReceiveEnable());
+				preparedStatement.setInt(38, oamEthernetInfo.getLbmTlvType());
+				preparedStatement.setInt(39, oamEthernetInfo.getLbmDiscard());
+				preparedStatement.setInt(40, oamEthernetInfo.getAisSendEnabel());
+				preparedStatement.setInt(41, oamEthernetInfo.getLckSendEnabel());
+				preparedStatement.setInt(42, oamEthernetInfo.getAisLckSendCycle());
+				preparedStatement.setInt(43, oamEthernetInfo.getTstSendEnabel());
+				preparedStatement.setInt(44, oamEthernetInfo.getSendWay());
+				preparedStatement.setInt(45, oamEthernetInfo.getTstDiscard());
+				preparedStatement.setInt(46, oamEthernetInfo.getTstTlvType());
+				preparedStatement.setInt(47, oamEthernetInfo.getTstSendCycle());
+				preparedStatement.setInt(48, oamEthernetInfo.getLmENable());
+				preparedStatement.setInt(49, oamEthernetInfo.getLmSendCycle());
+				preparedStatement.setInt(50, oamEthernetInfo.getDmENable());
+				preparedStatement.setInt(51, oamEthernetInfo.getDmSendCycle());
+				preparedStatement.setInt(52, oamEthernetInfo.getMipCreate());
+				preparedStatement.setInt(53, oamEthernetInfo.getSlot());
+				preparedStatement.setInt(54, oamEthernetInfo.getMipSlot());
+				preparedStatement.setInt(55, oamEthernetInfo.getItemNumber());
+			
+			resultSet = preparedStatement.executeQuery();
+			while (resultSet.next()) {
+				oamEthernetInfos = new OamEthernetInfo();
+				oamEthernetInfos.setId(resultSet.getInt("id")); 
+				oamEthernetInfos.setSiteId(resultSet.getInt("siteId"));
+				oamEthernetInfos.setThernetOAMEnabl(resultSet.getInt("thernetOAMEnabl"));
+				oamEthernetInfos.setMdMLevel(resultSet.getString("mdMLevel"));
+				oamEthernetInfos.setMpLable(resultSet.getInt("mpLable"));
+				oamEthernetInfos.setMdName(resultSet.getString("mdName"));
+				oamEthernetInfos.setMdLevel(resultSet.getString("mdLevel"));
+				oamEthernetInfos.setMaName(resultSet.getString("maName"));
+				oamEthernetInfos.setCcmsend(resultSet.getInt("ccmsend"));
+				oamEthernetInfos.setVlan(resultSet.getString("vlan"));
+				oamEthernetInfos.setMepId(resultSet.getString("mepId"));
+				oamEthernetInfos.setMepType(resultSet.getInt("mepType"));
+				oamEthernetInfos.setPort(resultSet.getString("port"));
+				oamEthernetInfos.setCcmSendEnable(resultSet.getInt("ccmSendEnable"));
+				oamEthernetInfos.setCcmReceiveEnable(resultSet.getInt("ccmReceiveEnable"));
+				oamEthernetInfos.setCcmPriority(resultSet.getString("ccmPriority"));
+				oamEthernetInfos.setLbmTlvType(resultSet.getInt("lbmTlvType"));
+				oamEthernetInfos.setLbmTlvTypeLength(resultSet.getString("lbmTlvTypeLength"));
+				oamEthernetInfos.setLbmPriority(resultSet.getString("lbmPriority"));
+				oamEthernetInfos.setLbmDiscard(resultSet.getInt("lbmDiscard"));
+				oamEthernetInfos.setLtmPriority(resultSet.getString("ltmPriority"));
+				oamEthernetInfos.setAisSendEnabel(resultSet.getInt("aisSendEnabel"));
+				oamEthernetInfos.setClientMdLevel(resultSet.getString("clientMdLevel"));
+				oamEthernetInfos.setAisPriority(resultSet.getString("aisPriority"));
+				oamEthernetInfos.setLckSendEnabel(resultSet.getInt("lckSendEnabel"));
+				oamEthernetInfos.setLckPriority(resultSet.getString("lckPriority"));
+				oamEthernetInfos.setAisLckSendCycle(resultSet.getInt("aisLckSendCycle"));
+				oamEthernetInfos.setTstSendEnabel(resultSet.getInt("tstSendEnabel"));
+				oamEthernetInfos.setTstSendLevel(resultSet.getString("tstSendLevel"));
+				oamEthernetInfos.setTstPurposeMepMac(resultSet.getString("tstPurposeMepMac"));
+				oamEthernetInfos.setTstPriority(resultSet.getString("tstPriority"));
+				oamEthernetInfos.setSendWay(resultSet.getInt("sendWay"));
+				oamEthernetInfos.setTstDiscard(resultSet.getInt("tstDiscard"));
+				oamEthernetInfos.setTstTlvType(resultSet.getInt("tstTlvType"));
+				oamEthernetInfos.setTstTlvLength(resultSet.getString("tstTlvLength"));
+				oamEthernetInfos.setTstSendCycle(resultSet.getInt("tstSendCycle"));
+				oamEthernetInfos.setLmENable(resultSet.getInt("lmENable"));
+				oamEthernetInfos.setLmPriority(resultSet.getString("lmPriority"));
+				oamEthernetInfos.setLmSendCycle(resultSet.getInt("lmSendCycle"));
+				oamEthernetInfos.setDmENable(resultSet.getInt("dmENable"));
+				oamEthernetInfos.setDmPriority(resultSet.getString("dmPriority"));
+				oamEthernetInfos.setDmSendCycle(resultSet.getInt("dmSendCycle"));
+				oamEthernetInfos.setRemoteMepId1(resultSet.getString("remoteMepId1"));
+				oamEthernetInfos.setMacAddress1(resultSet.getString("macAddress1"));
+				oamEthernetInfos.setRemoteMepId2(resultSet.getString("remoteMepId2"));
+				oamEthernetInfos.setMacAddress2(resultSet.getString("macAddress2"));
+				oamEthernetInfos.setRemoteMepId3(resultSet.getString("remoteMepId3"));
+				oamEthernetInfos.setMacAddress3(resultSet.getString("macAddress3"));
+				oamEthernetInfos.setRemoteMepId4(resultSet.getString("remoteMepId4"));
+				oamEthernetInfos.setMacAddress4(resultSet.getString("macAddress4"));
+				oamEthernetInfos.setMipCreate(resultSet.getInt("mipCreate"));
+				oamEthernetInfos.setMipPort(resultSet.getString("mipPort"));
+				oamEthernetInfos.setSlot(resultSet.getInt("slot"));
+				oamEthernetInfos.setMipSlot(resultSet.getInt("mipSlot"));
+				oamEthernetInfos.setItemNumber(resultSet.getInt("itemNumber"));
+				
+				lists.add(oamEthernetInfos);
+
+			}
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (resultSet != null) {
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				resultSet = null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+			 oamEthernetInfos = null;
+		}
+
+		return lists;
+	}
+	
+	
+	
+	public List<OamEthernetInfo> queryOamLinkInfoByConditionSide(OamEthernetInfo oamEthernetInfo, Connection conn) throws Exception {
+		if (oamEthernetInfo == null) {
+			throw new Exception("oamEthernetInfo is null");
+		}
+		if (conn == null) {
+			throw new Exception("conn is null");
+		}
+		StringBuffer sql = new StringBuffer();
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+		OamEthernetInfo oamEthernetInfos = new OamEthernetInfo();
+		
+		List<OamEthernetInfo> lists=null;
+		List<Object> paraList;
+		try {
+			paraList = new ArrayList<Object>();
+			lists=new ArrayList<OamEthernetInfo>();
+			
+			sql.append("select * from  ethernetoam where 1=1 ");
+			if(oamEthernetInfo.getSiteId()!=0){
+				sql.append(" and siteId = ?");
+				paraList.add(oamEthernetInfo.getSiteId());
+			}
+			if(oamEthernetInfo.getId()!=0){
+				sql.append(" and id = ?");
+				paraList.add(oamEthernetInfo.getId());
+			}
+	
+			preparedStatement = conn.prepareStatement(sql.toString());
+			for (int i = 0; i < paraList.size(); i++) {
+				preparedStatement.setObject(i+1, paraList.get(i));
+			}
+				
+			resultSet = preparedStatement.executeQuery();
+			while (resultSet.next()) {
+				oamEthernetInfos = new OamEthernetInfo();
+				oamEthernetInfos.setId(resultSet.getInt("id")); 
+				oamEthernetInfos.setSiteId(resultSet.getInt("siteId"));
+				oamEthernetInfos.setThernetOAMEnabl(resultSet.getInt("thernetOAMEnabl"));
+				oamEthernetInfos.setMdMLevel(resultSet.getString("mdMLevel"));
+				oamEthernetInfos.setMpLable(resultSet.getInt("mpLable"));
+				oamEthernetInfos.setMdName(resultSet.getString("mdName"));
+				oamEthernetInfos.setMdLevel(resultSet.getString("mdLevel"));
+				oamEthernetInfos.setMaName(resultSet.getString("maName"));
+				oamEthernetInfos.setCcmsend(resultSet.getInt("ccmsend"));
+				oamEthernetInfos.setVlan(resultSet.getString("vlan"));
+				oamEthernetInfos.setMepId(resultSet.getString("mepId"));
+				oamEthernetInfos.setMepType(resultSet.getInt("mepType"));
+				oamEthernetInfos.setPort(resultSet.getString("port"));
+				oamEthernetInfos.setCcmSendEnable(resultSet.getInt("ccmSendEnable"));
+				oamEthernetInfos.setCcmReceiveEnable(resultSet.getInt("ccmReceiveEnable"));
+				oamEthernetInfos.setCcmPriority(resultSet.getString("ccmPriority"));
+				oamEthernetInfos.setLbmTlvType(resultSet.getInt("lbmTlvType"));
+				oamEthernetInfos.setLbmTlvTypeLength(resultSet.getString("lbmTlvTypeLength"));
+				oamEthernetInfos.setLbmPriority(resultSet.getString("lbmPriority"));
+				oamEthernetInfos.setLbmDiscard(resultSet.getInt("lbmDiscard"));
+				oamEthernetInfos.setLtmPriority(resultSet.getString("ltmPriority"));
+				oamEthernetInfos.setAisSendEnabel(resultSet.getInt("aisSendEnabel"));
+				oamEthernetInfos.setClientMdLevel(resultSet.getString("clientMdLevel"));
+				oamEthernetInfos.setAisPriority(resultSet.getString("aisPriority"));
+				oamEthernetInfos.setLckSendEnabel(resultSet.getInt("lckSendEnabel"));
+				oamEthernetInfos.setLckPriority(resultSet.getString("lckPriority"));
+				oamEthernetInfos.setAisLckSendCycle(resultSet.getInt("aisLckSendCycle"));
+				oamEthernetInfos.setTstSendEnabel(resultSet.getInt("tstSendEnabel"));
+				oamEthernetInfos.setTstSendLevel(resultSet.getString("tstSendLevel"));
+				oamEthernetInfos.setTstPurposeMepMac(resultSet.getString("tstPurposeMepMac"));
+				oamEthernetInfos.setTstPriority(resultSet.getString("tstPriority"));
+				oamEthernetInfos.setSendWay(resultSet.getInt("sendWay"));
+				oamEthernetInfos.setTstDiscard(resultSet.getInt("tstDiscard"));
+				oamEthernetInfos.setTstTlvType(resultSet.getInt("tstTlvType"));
+				oamEthernetInfos.setTstTlvLength(resultSet.getString("tstTlvLength"));
+				oamEthernetInfos.setTstSendCycle(resultSet.getInt("tstSendCycle"));
+				oamEthernetInfos.setLmENable(resultSet.getInt("lmENable"));
+				oamEthernetInfos.setLmPriority(resultSet.getString("lmPriority"));
+				oamEthernetInfos.setLmSendCycle(resultSet.getInt("lmSendCycle"));
+				oamEthernetInfos.setDmENable(resultSet.getInt("dmENable"));
+				oamEthernetInfos.setDmPriority(resultSet.getString("dmPriority"));
+				oamEthernetInfos.setDmSendCycle(resultSet.getInt("dmSendCycle"));
+				oamEthernetInfos.setRemoteMepId1(resultSet.getString("remoteMepId1"));
+				oamEthernetInfos.setMacAddress1(resultSet.getString("macAddress1"));
+				oamEthernetInfos.setRemoteMepId2(resultSet.getString("remoteMepId2"));
+				oamEthernetInfos.setMacAddress2(resultSet.getString("macAddress2"));
+				oamEthernetInfos.setRemoteMepId3(resultSet.getString("remoteMepId3"));
+				oamEthernetInfos.setMacAddress3(resultSet.getString("macAddress3"));
+				oamEthernetInfos.setRemoteMepId4(resultSet.getString("remoteMepId4"));
+				oamEthernetInfos.setMacAddress4(resultSet.getString("macAddress4"));
+				oamEthernetInfos.setMipCreate(resultSet.getInt("mipCreate"));
+				oamEthernetInfos.setMipPort(resultSet.getString("mipPort"));
+				oamEthernetInfos.setSlot(resultSet.getInt("slot"));
+				oamEthernetInfos.setMipSlot(resultSet.getInt("mipSlot"));
+				oamEthernetInfos.setItemNumber(resultSet.getInt("itemNumber"));
+				lists.add(oamEthernetInfos);
+
+			}
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if (resultSet != null) {
+				try {
+					resultSet.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				resultSet = null;
+			}
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+			 oamEthernetInfos = null;
+		}
+
+		return lists;
+	}
+	
+	/**
+	 *用来查询siteId网元的 OAm的个数
+	 * @param oamEthernetInfo
+	 * @param conn
+	 * @return
+	 * @throws Exception
+	 */
+	public List<Integer>  count(OamEthernetInfo oamEthernetInfo, Connection conn) throws Exception {
+		if (oamEthernetInfo == null) {
+			throw new Exception("oamEthernetInfo is null");
+		}
+		if (conn == null) {
+			throw new Exception("conn is null");
+		}
+		List<Integer> itemNumber=null;
+		String sql = null;
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet=null;
+		try {
+			itemNumber=new ArrayList<Integer>();
+			sql = "select * from ethernetOam where siteId= ? ";
+			preparedStatement = conn.prepareStatement(sql);
+			preparedStatement.setInt(1, oamEthernetInfo.getSiteId());
+			resultSet = preparedStatement.executeQuery();
+			while (resultSet.next()) {
+				itemNumber.add(resultSet.getInt("itemNumber"));
+			}
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if(null!=resultSet){
+				try {
+					resultSet.close();
+				} catch (Exception e2) {
+					throw e2;
+				}
+				resultSet=null;
+			}
+			
+			if (preparedStatement != null) {
+				try {
+					preparedStatement.close();
+
+				} catch (Exception e) {
+					throw e;
+				}
+				preparedStatement = null;
+			}
+			sql = null;
+		}
+		return itemNumber;
+	}
+}

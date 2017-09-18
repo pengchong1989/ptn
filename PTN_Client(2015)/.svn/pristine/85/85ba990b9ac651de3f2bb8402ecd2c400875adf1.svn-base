@@ -1,0 +1,231 @@
+package com.nms.ui.ptn.ne.tdmloopbock.view.dialog;
+
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.Enumeration;
+
+import javax.swing.AbstractButton;
+import javax.swing.ButtonGroup;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JRadioButton;
+
+import com.nms.db.bean.equipment.port.E1Info;
+import com.nms.db.bean.equipment.port.TdmLoopInfo;
+import com.nms.db.enums.EOperationLogType;
+import com.nms.rmi.ui.util.RmiKeys;
+import com.nms.ui.manager.ConstantUtil;
+import com.nms.ui.manager.DialogBoxUtil;
+import com.nms.ui.manager.DispatchUtil;
+import com.nms.ui.manager.ExceptionManage;
+import com.nms.ui.manager.MyActionListener;
+import com.nms.ui.manager.ResourceUtil;
+import com.nms.ui.manager.UiUtil;
+import com.nms.ui.manager.control.PtnButton;
+import com.nms.ui.manager.control.PtnDialog;
+import com.nms.ui.manager.keys.StringKeysBtn;
+import com.nms.ui.ptn.safety.roleManage.RootFactory;
+/**
+ * @author guoqc
+ */
+public class TdmLoopConfigDialog extends PtnDialog {
+	private static final long serialVersionUID = -4147934782855305867L;
+	private E1Info e1Info;
+	private TdmLoopInfo tdmLoop = new TdmLoopInfo();
+	
+	public TdmLoopConfigDialog(E1Info e1Info, String title, int type) {
+		this.setTitle(title);
+		this.e1Info = e1Info;
+		this.tdmLoop.setLoopType(type);
+		this.tdmLoop.setSiteId(ConstantUtil.siteId);
+		this.initComponent();
+		this.setLayout();
+		this.addListener();
+		UiUtil.showWindow(this, 350, 300);
+	}
+
+	private void initComponent() {
+		this.switchlLbl = new JLabel("开关设置");//开关设置
+		this.openModel = new JRadioButton("开");//开
+		this.openModel.setName("1");
+		this.openModel.setSelected(true);
+		this.closeModel = new JRadioButton("关");//关
+		this.closeModel.setName("0");
+		this.switchBtnGroup = new ButtonGroup();
+		this.switchBtnGroup.add(this.openModel);
+		this.switchBtnGroup.add(this.closeModel);
+		this.isAllLoopLbl = new JLabel("全部链路环回");//全部链路环回
+		this.allSelect = new JRadioButton("是");//是
+		this.allSelect.setName("4");
+		this.notAllSelect = new JRadioButton("否");//否
+		this.notAllSelect.setSelected(true);
+		this.notAllSelect.setName((this.e1Info.getLegId()-1)+"");
+		this.allBtnGroup = new ButtonGroup();
+		this.allBtnGroup.add(this.allSelect);
+		this.allBtnGroup.add(this.notAllSelect);
+		this.saveBtn = new PtnButton(ResourceUtil.srcStr(StringKeysBtn.BTN_SAVE),true,RootFactory.CORE_MANAGE);
+		this.cancelBtn = new JButton(ResourceUtil.srcStr(StringKeysBtn.BTN_CANEL));
+		this.buttonPanel = new JPanel();
+	}
+	
+	/**
+	 *  主界面布局
+	 */
+	private void setLayout(){
+		this.setButtonLayout();
+		GridBagLayout componentLayout = new GridBagLayout();
+		componentLayout.columnWidths = new int[] { 40, 40, 100, 130, 40};
+		componentLayout.columnWeights = new double[] { 0, 0, 0 };
+		componentLayout.rowHeights = new int[] {30, 30, 30, 30, 30, 30};
+		componentLayout.rowWeights = new double[] { 0.1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+		this.setLayout(componentLayout);
+	
+		GridBagConstraints c = new GridBagConstraints();
+		c.fill = GridBagConstraints.BOTH;
+		//第一行
+		c.gridx = 1;
+		c.gridy = 0;
+		c.gridwidth = 1;
+		c.insets = new Insets(30, 10, 10, 10);
+		componentLayout.setConstraints(this.switchlLbl, c);
+		this.add(this.switchlLbl);
+		c.gridx = 2;
+		c.gridy = 0;
+		componentLayout.setConstraints(this.openModel, c);
+		this.add(this.openModel);
+		c.gridx = 3;
+		c.gridy = 0;
+		componentLayout.setConstraints(this.closeModel, c);
+		this.add(this.closeModel);
+		// 第二行
+		c.gridx = 1;
+		c.gridy = 1;
+		c.insets = new Insets(10, 10, 15, 10);
+		componentLayout.setConstraints(this.isAllLoopLbl, c);
+		this.add(this.isAllLoopLbl);
+		c.gridx = 2;
+		c.gridy = 1;
+		c.insets = new Insets(10, 10, 15, 10);
+		componentLayout.setConstraints(this.allSelect, c);
+		this.add(this.allSelect);
+		c.gridx = 3;
+		c.gridy = 1;
+		componentLayout.setConstraints(this.notAllSelect, c);
+		this.add(this.notAllSelect);
+		//第五行 
+		c.fill = GridBagConstraints.NONE;
+		c.anchor = GridBagConstraints.WEST;
+		c.gridx = 3;
+		c.gridy = 4;
+		c.insets = new Insets(5, 5, 5, 5);
+		componentLayout.setConstraints(this.buttonPanel, c);
+		this.add(this.buttonPanel);
+	}
+	
+	private void setButtonLayout() {
+		GridBagLayout componentLayout = new GridBagLayout();
+		componentLayout.columnWidths = new int[] {250, 50, 50};
+		componentLayout.columnWeights = new double[] {0.1, 0, 0};
+		componentLayout.rowHeights = new int[] {30};
+		componentLayout.rowWeights = new double[] {0};
+		this.setLayout(componentLayout);
+		GridBagConstraints c = new GridBagConstraints();
+		c.fill = GridBagConstraints.BOTH;
+		c.gridx = 1;
+		c.gridy = 0;
+		c.gridheight = 1;
+		c.gridwidth = 1;
+		c.insets = new Insets(5, 5, 5, 5);
+		componentLayout.setConstraints(this.saveBtn, c);
+		buttonPanel.add(this.saveBtn);
+		c.gridx=2;
+		componentLayout.setConstraints(this.cancelBtn, c);
+		buttonPanel.add(this.cancelBtn);
+		
+	}
+	
+	/**
+	 * 添加监听事件
+	 */
+	private void addListener(){
+		this.saveBtn.addActionListener(new MyActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				saveAction();
+				dispose();			
+			}
+
+			@Override
+			public boolean checking() {
+				return true;
+			}
+			
+		});			
+	
+		this.cancelBtn.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				dispose();
+			}
+		});
+	}
+
+	/**
+	 * 保存按钮事件
+	 */
+	private void saveAction(){
+		try {
+			this.getTdmLoopInfo();
+			DispatchUtil tdmLoopBackDispatch = new DispatchUtil(RmiKeys.RMI_TDMLOOPBACK);
+			String resultStr = tdmLoopBackDispatch.excuteInsert(this.tdmLoop);
+			DialogBoxUtil.succeedDialog(null, resultStr);
+			UiUtil.insertOperationLog(EOperationLogType.TDMLOOPCONFIG.getValue(), resultStr);
+		} catch (Exception e) {
+			ExceptionManage.dispose(e, this.getClass());
+		}
+	}
+	
+	/**
+	 * 获取对象
+	 */
+	private void getTdmLoopInfo() {
+		JRadioButton radioButton = null;
+		try {
+			//遍历所有radiobutton 获取选中的button
+			Enumeration<AbstractButton> elements = this.switchBtnGroup.getElements();
+			while (elements.hasMoreElements()) {
+				radioButton = (JRadioButton) elements.nextElement();
+				if (radioButton.isSelected()) {
+					this.tdmLoop.setSwitchStatus(Integer.parseInt(radioButton.getName()));
+					break;
+				}
+			}
+			Enumeration<AbstractButton> elements1 = this.allBtnGroup.getElements();
+			while (elements1.hasMoreElements()) {
+				radioButton = (JRadioButton) elements1.nextElement();
+				if (radioButton.isSelected()) {
+					this.tdmLoop.setLegId(Integer.parseInt(radioButton.getName()));
+					break;
+				}
+			}
+		}catch(Exception e){
+			ExceptionManage.dispose(e, this.getClass());
+		}
+	}
+	
+	private JLabel switchlLbl;//开关设置
+	private JRadioButton openModel;//开
+	private JRadioButton closeModel;//关
+	private ButtonGroup switchBtnGroup;
+	private JLabel isAllLoopLbl;//全部链路环回 
+	private JRadioButton allSelect;//是
+	private JRadioButton notAllSelect;//否
+	private ButtonGroup allBtnGroup;
+	private PtnButton saveBtn;//确认
+	private JButton cancelBtn;//取消
+	private JPanel buttonPanel;
+}

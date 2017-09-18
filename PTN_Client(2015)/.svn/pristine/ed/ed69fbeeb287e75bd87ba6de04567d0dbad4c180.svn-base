@@ -1,0 +1,18 @@
+package com.nms.db.dao.ptn.clock;
+
+import com.nms.db.bean.ptn.clock.FrequencyInfoNeClock;
+
+
+public interface FrequencyInfoNeClockMapper {
+    int deleteByPrimaryKey(Integer id);
+
+    int insert(FrequencyInfoNeClock record);
+
+    int insertSelective(FrequencyInfoNeClock record);
+
+    FrequencyInfoNeClock selectByPrimaryKey(Integer id);
+
+    int updateByPrimaryKeySelective(FrequencyInfoNeClock record);
+
+    int updateByPrimaryKey(FrequencyInfoNeClock record);
+}
