@@ -2,7 +2,7 @@
 <node type="telnet">
 	<user>tt</user>
 	<password>12345</password>
-	<serverIp>10.18.1.15</serverIp>
+	<serverIp>10.18.1.151</serverIp>
         <neIp>10.18.8.1</neIp>  
         <nePassword>123</nePassword>      
 </node>
