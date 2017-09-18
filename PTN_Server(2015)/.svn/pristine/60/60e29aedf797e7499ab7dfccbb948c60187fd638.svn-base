@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<driveRoot xmlns="http://drive.bean.com">
-
-	<attribute length="1" description="性能代码" value="1" mapping="1" />
-	<attribute length="2" description="性能(高/低)" value="1" mapping="1" />
-
-</driveRoot>

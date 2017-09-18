@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!-- 703设备槽位对应的图片途径 -->
-<xml-body>
-
-<equipment imagePath="/com/nms/ui/images/topo/szt/rack.png" x="50" y="50">
-	<slot imagePath="/com/nms/ui/images/topo/szt/slot.png" x="72" y="56" type="703"  bestCardName="703_CARD" number="1" masterCardAddress="257"></slot>
-</equipment>
-
-</xml-body>

@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<driveRoot  xmlns="http://drive.bean.com">
-	<attribute length="2" description="NE地址" value="" mapping=""/>
-	<attribute length="1" description="网元数" value="1" mapping="(0)">
-		<listRoot file="com/nms/drive/analysis/xmltool/file/网元连接状态_SUB(2).xml">
-			
-		</listRoot>
-	</attribute>
-</driveRoot>

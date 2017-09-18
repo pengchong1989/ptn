@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!-- 设备名称对应的xml路径 -->
-<xml-body>
-	<equipment typeName="CSG T5000" manufacturer="WUHAN" xmlPath="config/topo/equipment/keda/equipment_keDa_CSG T5000.xml" imagePath="/com/nms/ui/images/topo/soz/" ></equipment>
-    <equipment typeName="CSG T2000" manufacturer="WUHAN" xmlPath="config/topo/equipment/keda/equipment_keDa_CSG T2000.xml" imagePath="/com/nms/ui/images/topo/szt4a/" ></equipment>
-</xml-body> 

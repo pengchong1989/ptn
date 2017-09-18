@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!-- 710_LEFT板卡下所有端口配置 (710电源板) -->
-<xml-boby>
-
-<card cardName="FAN" cardType="" imagePath="/com/nms/ui/images/topo/soz/fengshan_yixun.png" x="150" y="56" >
-          
-</card>
-
-</xml-boby>

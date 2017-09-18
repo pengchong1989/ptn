@@ -1,9 +1,0 @@
-#扩容信息#########################################
-#选择扩容路径
-addLspName=LBL_SELECT_ADD_LSP
-#选择加入网元
-addSiteName=LBL_SELECT_ADD_NODE
-#和A端网元相连端口
-portNameWithA=LBL_PORT_WITH_A
-#和Z端网元相连端口
-portNameWithZ=LBL_PORT_WITH_Z

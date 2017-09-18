@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!-- 710_LEFT板卡下所有端口配置 (710电源板) -->
-<xml-boby>
-
-<card cardName="PWR" cardType="" imagePath="/com/nms/ui/images/topo/soz/card_e.png" x="72" y="56" >
-          
-</card>
-
-</xml-boby>

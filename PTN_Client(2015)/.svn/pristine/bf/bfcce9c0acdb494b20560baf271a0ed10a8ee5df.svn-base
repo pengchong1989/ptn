@@ -1,9 +1,0 @@
-package com.nms.db.dao.ptn.qos;
-
-import java.util.List;
-
-import com.nms.db.bean.ptn.qos.QosMappingAttr;
-
-public interface QosMappingAttrMapper {
-	public List<QosMappingAttr> queryByCondition(QosMappingAttr qosMappingAttr);
-}

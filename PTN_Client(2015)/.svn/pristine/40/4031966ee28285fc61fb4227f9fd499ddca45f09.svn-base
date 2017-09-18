@@ -1,5 +1,0 @@
-#NNI端口迁移信息#########################################
-#原端口
-sourcePortName=LBL_SOURCE_PORT
-#已选目的端口
-selectedPortName=LBL_SELECTED_END_PORT

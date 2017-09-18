@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<driveRoot  xmlns="http://drive.bean.com">
-	<attribute length="2" description="条目总数" value="1" mapping="(1)">
-		<listRoot file="com/nms/drive/analysis/xmltool/file/IGMP SNOOPING_sub.xml" />
-	</attribute>
-</driveRoot>

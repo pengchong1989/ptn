@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<driveRoot  xmlns="http://drive.bean.com">
-	<attribute length="1" description="时钟源名称" value="0" mapping="(0)/1=(不关联)/关联"/>
-	<attribute length="1" description="输入源状态" value="0" mapping="(0)/1=(不关联)/关联"/>
-	<attribute length="1" description="输入源QL值" value="0" mapping="(0)/1=(不关联)/关联"/>
-	<attribute length="1" description="输出源QL值" value="0" mapping="(0)/1=(不关联)/关联"/>
-</driveRoot>

@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!-- 700B_LEFT板卡下所有端口配置 (70B的风扇卡) -->
-<xml-boby>
-
-<card cardName="FAN" cardType="" imagePath="/com/nms/ui/images/topo/szza/fan.png" x="72" y="56" >
-          
-</card>
-
-</xml-boby>

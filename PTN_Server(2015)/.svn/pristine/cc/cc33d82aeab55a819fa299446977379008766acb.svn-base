@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<driveRoot  xmlns="http://drive.bean.com">
-			<attribute length="2" description="条目ID" value="1" mapping="(1)"/>
-			<attribute length="2" description="VPN ID" value="1" mapping="(1)"/>
-			<attribute length="1" description="IGMP SNOOPING" value="0" mapping="(0)/1=(不使能)/使能"/>
-			<attribute length="15" description="备用" value="0" mapping="(00)"/>
-</driveRoot>

@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<driveRoot xmlns="http://drive.bean.com">
-   <attribute length="1" description="条目数" value="1" mapping="(1)" >
-		<listRoot file="com/nms/drive/analysis/xmltool/file/端口二层属性(3eH)_sub.xml">
-		</listRoot>
-	</attribute>
-	<attribute length="11" description="校验码" value="0" mapping="(00)"/>
-</driveRoot>

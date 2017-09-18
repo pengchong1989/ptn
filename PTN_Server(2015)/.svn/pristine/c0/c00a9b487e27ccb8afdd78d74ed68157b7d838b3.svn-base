@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<driveRoot  xmlns="http://drive.bean.com">
-	<attribute length="1" description="条目Id" value="0" mapping="1~3"/>
-	<attribute length="1" description="风扇模式" value="0" mapping="0/1=自选模式/智能模式"/>	
-	<attribute length="1" description="风扇档位" value="0" mapping="0/1/2/3=智能模式/档位1/档位2/档位3"/>	
-	<attribute length="2" description="备用" value="0" mapping="(00)"/>	
-</driveRoot> 

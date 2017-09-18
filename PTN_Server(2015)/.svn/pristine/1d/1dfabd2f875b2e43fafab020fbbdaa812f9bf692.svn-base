@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<driveRoot  xmlns="http://drive.bean.com">
-	<attribute length="1" description="LinkOAM条目数" value="1" mapping="(0)">
-		<listRoot file="com/nms/drive/analysis/xmltool/file/以太网链路OAM(1BH)_SUB.xml">
-			
-		</listRoot>
-	</attribute>
-	<attribute length="11" description="校验码" value="0" mapping="(00)"/>
-</driveRoot>

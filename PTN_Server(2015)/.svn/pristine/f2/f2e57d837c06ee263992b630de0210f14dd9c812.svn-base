@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<driveRoot  xmlns="http://drive.bean.com">
-	<attribute length="1" description="表总数" value="8" mapping="(0)">
-		<listRoot file="com/nms/drive/analysis/xmltool/file/TMP EXP到PHB映射表(0AH)_SUB.xml">
-		</listRoot>
-	</attribute>
-	<attribute length="11" description="校验码" value="0" mapping="(00)"/>
-</driveRoot>

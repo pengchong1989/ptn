@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<driveRoot xmlns="http://drive.bean.com">
-	<attribute length="2" description="条目总数" value="3" mapping="(3)">
-		<listRoot file="com/nms/drive/analysis/xmltool/file/QinQ表(21H)_SUB.xml" />
-	</attribute>
-	<attribute length="11" description="校验码" value="0" mapping="(00)"/>
-</driveRoot>
