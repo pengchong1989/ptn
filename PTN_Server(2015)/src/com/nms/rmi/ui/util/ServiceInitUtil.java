@@ -136,8 +136,11 @@ public class ServiceInitUtil {
 		this.registry = registry;
 		this.initDate();
 		this.initSite();
+		ExceptionManage.infor("加载网元信息", this.getClass());
 		this.initRmi();
+		ExceptionManage.infor("加载rmi信息", this.getClass());
 		this.initThread();
+		ExceptionManage.infor("加载线程信息", this.getClass());
 	}
 	public ServiceInitUtil(Registry registry,int label) throws Exception {
 		this.registry = registry;
@@ -176,7 +179,7 @@ public class ServiceInitUtil {
 			ConstantUtil.cxDriveService.setAlarmObjectService(ConstantUtil.alarmObjectService);
 			
 			initNeAddress();//加载网元内存信息
-			ExceptionManage.infor("加载网元信息", this.getClass());
+			ExceptionManage.infor("加载驱动信息", this.getClass());
 		} catch (Exception e) {
 			throw e;
 		}
@@ -316,7 +319,7 @@ public class ServiceInitUtil {
 		startPerformanceTask();
 		
 		//开启自动的默认备份数据 不影响其他的启动线程任务
-		CheckBoxPanel checkBoxPanel = new CheckBoxPanel();
+		/*CheckBoxPanel checkBoxPanel = new CheckBoxPanel();
 		List<String> tableNames = new ArrayList<String>();
 		long cycleTime = ServerConstant.CYCLETIME*60*60*1000;
 		AutoDatabaseBackThradUtil autoDatabaseBackThradUtil = new AutoDatabaseBackThradUtil();
@@ -333,7 +336,7 @@ public class ServiceInitUtil {
 			 tableNames = null;
 			 autoDatabaseBackThradUtil = null;
 			 tables = null;
-		}
+		}*/
 		
 	}
 

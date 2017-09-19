@@ -15,7 +15,7 @@ import com.nms.ui.manager.ExceptionManage;
  *
  */
 public class Broker {
-    private static BrokerService broker = new BrokerService();
+    private static BrokerService broker;
     public static void init(String path) throws Exception { 
         ApplicationContext ctx = new ClassPathXmlApplicationContext(new String[] { path });  
         broker = (BrokerService) ctx.getBean("broker");  
