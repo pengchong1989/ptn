@@ -61,7 +61,7 @@ public class WhImplUtil{
 			cardService = (CardService_MB) ConstantUtil.serviceFactory.newService_MB(Services.CARD);
 			if("710B".equals(siteType)){
 				neObject.setControlPanelType(118492006);
-			}else if("710A".equals(siteType)||"710".equals(siteType)){
+			}else if("710A".equals(siteType)||"710".equals(siteType)||"ETN-5000".equals(siteType)){
 				 cardInsts = cardService.selectBySiteId(siteId);
 				for(CardInst cardInst : cardInsts){
 					if("XCTO1".equals(cardInst.getCardName())){
@@ -89,7 +89,8 @@ public class WhImplUtil{
 					|| "ZXCTN 605-GF222".endsWith(siteType) || "ZXCTN 605-F12".endsWith(siteType)|| "ZXCTN 605-G12".endsWith(siteType)
 					|| "ZXCTN 605-F24".endsWith(siteType) || "ZXCTN 605-F22".endsWith(siteType)|| "ZXCTN 605-G22".endsWith(siteType)){
 				neObject.setControlPanelType(117637234);
-			}else if (("703-2C".equals(siteType)) || ("703-2B".equals(siteType)) || ("703-2A".equals(siteType))) {
+			}else if (("703-2C".equals(siteType)) || ("703-2B".equals(siteType)) || ("703-2A".equals(siteType))
+					|| ("ETN-200-204E".equals(siteType))|| ("ETN-200-204".equals(siteType))) {
 				 neObject.setControlPanelType(117637232);
 			 }
 		}finally{

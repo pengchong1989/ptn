@@ -206,14 +206,14 @@ public class TunnelDispatch extends DispatchBase implements DispatchInterface {
 				result = ResultString.CONFIG_SUCCESS;
 			}
 			//成功上报操作信息到corba
-			for (Tunnel t : tunnelList) {
-				String type = "CrossConnection";//单网元
-				if (t.getIsSingle() == 0) {
-					//端到端
-					type = "SubnetworkConnection";
-				}
-				super.notifyCorba(type, MessageType.CREATION, t, ELayerRate.TUNNEL.getValue()+"",result);
-			}
+//			for (Tunnel t : tunnelList) {
+//				String type = "CrossConnection";//单网元
+//				if (t.getIsSingle() == 0) {
+//					//端到端
+//					type = "SubnetworkConnection";
+//				}
+//				super.notifyCorba(type, MessageType.CREATION, t, ELayerRate.TUNNEL.getValue()+"",result);
+//			}
 		} catch (Exception e) {
 			for (Tunnel tunnel : tunnels) {
 				tunnel.setTunnelStatus(EActiveStatus.UNACTIVITY.getValue());

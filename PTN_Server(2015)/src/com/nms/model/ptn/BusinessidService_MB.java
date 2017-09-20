@@ -100,7 +100,8 @@ public class BusinessidService_MB extends ObjectService_Mybatis {
 				fileName = "businessid_700d.xml";
 			} else if (siteInst.getCellType().equals("700B")) {
 				fileName = "businessid_700b.xml";
-			} else if (siteInst.getCellType().equals("710A") || siteInst.getCellType().equals("710") || siteInst.getCellType().equals("CSG T5000")) {
+			} else if (siteInst.getCellType().equals("710A") || siteInst.getCellType().equals("710") 
+					|| siteInst.getCellType().equals("CSG T5000")|| siteInst.getCellType().equals("ETN-5000")) {
 				fileName = "businessid_710.xml";
 			} else if (siteInst.getCellType().equals("700E")) {
 				fileName = "businessid_20a.xml";
@@ -124,7 +125,13 @@ public class BusinessidService_MB extends ObjectService_Mybatis {
 				fileName = "businessid_710.xml";
 			} else if (siteInst.getCellType().equals("ZXWT CTN180") || siteInst.getCellType().equals("IPA500") || siteInst.getCellType().contains("ZXCTN")) {
 				fileName = "businessid_703b.xml";
-			} else if (siteInst.getCellType().equals("703-1A") || siteInst.getCellType().equals("703-2A") || siteInst.getCellType().equals("703-4A") || siteInst.getCellType().equals("703-1") || siteInst.getCellType().equals("703-2") || siteInst.getCellType().equals("703-3") || siteInst.getCellType().equals("703-4") || siteInst.getCellType().equals("703-5") || siteInst.getCellType().equals("703-6") || siteInst.getCellType().equals("703-7") || siteInst.getCellType().equals("CSG T2000")|| siteInst.getCellType().equals("703-6A")) {
+			} else if (siteInst.getCellType().equals("703-2C") ||siteInst.getCellType().equals("703-1A") 
+					|| siteInst.getCellType().equals("703-2A") || siteInst.getCellType().equals("703-4A") 
+					|| siteInst.getCellType().equals("703-1") || siteInst.getCellType().equals("703-2") 
+					|| siteInst.getCellType().equals("703-3") || siteInst.getCellType().equals("703-4") 
+					|| siteInst.getCellType().equals("703-5") || siteInst.getCellType().equals("703-6") 
+					|| siteInst.getCellType().equals("703-7") || siteInst.getCellType().equals("ETN-200-204E")
+					|| siteInst.getCellType().equals("ETN-200-204") || siteInst.getCellType().equals("703-6A")) {
 				fileName = "businessid_703c-4a.xml";
 			}
 			BusinessIdUtil businessIdUtil = new BusinessIdUtil();
