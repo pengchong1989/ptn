@@ -89,7 +89,9 @@ public class WhImplUtil{
 					|| "ZXCTN 605-GF222".endsWith(siteType) || "ZXCTN 605-F12".endsWith(siteType)|| "ZXCTN 605-G12".endsWith(siteType)
 					|| "ZXCTN 605-F24".endsWith(siteType) || "ZXCTN 605-F22".endsWith(siteType)|| "ZXCTN 605-G22".endsWith(siteType)){
 				neObject.setControlPanelType(117637234);
-			}
+			}else if (("703-2C".equals(siteType)) || ("703-2B".equals(siteType)) || ("703-2A".equals(siteType))) {
+				 neObject.setControlPanelType(117637232);
+			 }
 		}finally{
 			UiUtil.closeService_MB(siteService);
 			UiUtil.closeService_MB(cardService);
