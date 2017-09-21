@@ -78,7 +78,7 @@ public class E1WHServiceImpl extends WHOperationBase implements OperationService
 				neObject = whImplUtil.siteIdToNeObject(e1InfoList.get(0).getSiteId());
 				siteType=siteService.getSiteType(e1InfoList.get(0).getSiteId());
 //				if("710B".equals(siteType) || "710A".equals(siteType)){
-				 if(siteType.contains("710")||"CSG T5000".equals(siteType)){
+				 if(siteType.contains("710")||"CSG T5000".equals(siteType)||"ETN-5000".equals(siteType)){
 					e1ObjectList = new ArrayList<E1Object>();
 					card1Object = new E1Object();
 					card2Object = new E1Object();
