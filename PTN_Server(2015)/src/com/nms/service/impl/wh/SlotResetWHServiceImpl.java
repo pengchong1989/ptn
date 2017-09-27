@@ -60,7 +60,7 @@ public class SlotResetWHServiceImpl extends WHOperationBase implements Operation
 			WhImplUtil whImplUtil = new WhImplUtil();
 			neObject = whImplUtil.siteIdToNeObject(cardInst.getSiteId());
 			slotService=(SlotService_MB) ConstantUtil.serviceFactory.newService_MB(Services.SLOT);
-			if("SP16".equals(cardInst.getCardName())){
+			if("SP16".equals(cardInst.getCardName()) || "EE16".equals(cardInst.getCardName())){
 			    neObject.setControlPanelType(118489105);				
 			    int number=slotService.selectNumber(cardInst, cardInst.getSiteId());
 			    if(number == 2){
