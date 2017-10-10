@@ -150,4 +150,7 @@ public class DateUtil {
 		return "";
 	}
 	
+	public static void main(String[] args) {
+		System.out.println(DateUtil.getDate(new Date(), "yyyy-MM-dd HH:mm:ss").replace(" ", "T"));
+	}
 }

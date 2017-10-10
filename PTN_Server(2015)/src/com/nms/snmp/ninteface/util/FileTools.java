@@ -287,7 +287,7 @@ public class FileTools {
 			TransformerFactory tf = TransformerFactory.newInstance();
 			Transformer transformer = tf.newTransformer();
 			DOMSource source = new DOMSource(doc);
-			transformer.setOutputProperty(OutputKeys.ENCODING, "gbk");
+			transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
 			transformer.setOutputProperty(OutputKeys.INDENT, "yes");
 			PrintWriter pw = new PrintWriter(new FileOutputStream(filePath));
 			StreamResult result = new StreamResult(pw);

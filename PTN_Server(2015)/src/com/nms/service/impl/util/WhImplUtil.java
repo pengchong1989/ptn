@@ -72,6 +72,10 @@ public class WhImplUtil{
 						neObject.setControlPanelType(118491767);
 						break;
 					}
+					if("ESMC".equals(cardInst.getCardName())){
+						neObject.setControlPanelType(118491767);
+						break;
+					}
 				}
 				
 			}else if("ZXWT CTN280".equals(siteType) || "PAS 100/200".equals(siteType)){
