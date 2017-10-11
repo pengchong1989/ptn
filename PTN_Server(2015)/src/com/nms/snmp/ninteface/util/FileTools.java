@@ -287,6 +287,7 @@ public class FileTools {
 			TransformerFactory tf = TransformerFactory.newInstance();
 			Transformer transformer = tf.newTransformer();
 			DOMSource source = new DOMSource(doc);
+			tf.setAttribute("indent-number", 2);
 			transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
 			transformer.setOutputProperty(OutputKeys.INDENT, "yes");
 			PrintWriter pw = new PrintWriter(new FileOutputStream(filePath));

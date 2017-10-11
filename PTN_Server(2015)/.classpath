@@ -12,13 +12,11 @@
 	<classpathentry kind="lib" path="lib/msutil.jar"/>
 	<classpathentry kind="lib" path="lib/twaver.jar"/>
 	<classpathentry kind="lib" path="lib/mysql-connector-java-5.1.13-bin.jar"/>
-	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="lib/swingstyle.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry kind="lib" path="lib/log4j-1.2.14.jar"/>
 	<classpathentry kind="lib" path="lib/poi-3.8-20120326.jar"/>
 	<classpathentry kind="lib" path="lib/poi-ooxml-3.8-20120326.jar"/>
-	<classpathentry kind="lib" path="lib/activemq-all-5.3.0.jar"/>
 	<classpathentry kind="lib" path="lib/ant.jar"/>
 	<classpathentry kind="lib" path="lib/antlr-2.7.2.jar"/>
 	<classpathentry kind="lib" path="lib/backport-util-concurrent.jar"/>
@@ -47,5 +45,11 @@
 	<classpathentry kind="lib" path="lib/snmp4j-agent-2.2.2.jar"/>
 	<classpathentry kind="lib" path="lib/spring.jar"/>
 	<classpathentry kind="lib" path="lib/wrapper-3.1.0.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6">
+		<attributes>
+			<attribute name="owner.project.facets" value="java"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="lib/activemq-all-5.5.1.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
