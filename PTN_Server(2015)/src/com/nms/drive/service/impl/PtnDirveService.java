@@ -5,7 +5,9 @@ import java.util.Properties;
 
 import com.nms.drive.network.UDPNetworkServer;
 import com.nms.drive.service.impl.bean.DriveUtilObject;
+import com.nms.service.bean.ActionObject;
 import com.nms.service.bean.AlarmObjectService;
+import com.nms.service.bean.OperationObject;
 import com.nms.service.bean.PerformanceObjectService;
 
 public class PtnDirveService {

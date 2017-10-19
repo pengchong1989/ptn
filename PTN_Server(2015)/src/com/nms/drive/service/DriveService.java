@@ -3559,6 +3559,62 @@ public class DriveService extends PtnDirveService implements DriveServiceI {
 		
 		Thread.sleep(200);// 休眠防止拥塞
 	}
-	
-	
+
+	public void macVlan(OperationObject operationObject, ActionObject actionObject) throws Exception{
+		try {
+			DriveUtilObject driveUtilObject = new DriveUtilObject();
+			driveUtilObject.setPtnDataObject(actionObject.getProtectRorateObject());// 赋值对象
+			driveUtilObject.setPtnService("CM0101");// 赋值业务类型
+			driveUtilObject.setDirection(0);// WS向PTN发送
+			driveUtilObject.setStates(0);// 待发送状态
+			driveUtilObject.setSendDate(new Date());// 赋值发送时间
+			driveUtilObject.setOperID(actionObject.getActionId() + "");// 操作ID
+			driveUtilObject.setOperationObject(operationObject);// 赋值回调函数
+			driveUtilObject.setDestinationIP(actionObject.getNeObject().getManageIP());//设置目的IP
+			byte[] dataCommand = new byte[17];
+			// NE地址
+			byte[] neaddress = CoderUtils.intToBytes(actionObject.getNeObject().getNeAddress());
+			dataCommand[0] = neaddress[2];
+			dataCommand[1] = neaddress[3];
+			// 盘类型
+			byte[] platetype = CoderUtils.intToBytes(actionObject.getNeObject().getControlPanelType());
+			dataCommand[2] = platetype[3];
+			//盘组号
+			byte[] controlPanelGroupId = CoderUtils.intToBytes(actionObject.getNeObject().getControlPanelGroupId());
+			dataCommand[3] = controlPanelGroupId[3];
+			// 盘地址
+			byte[] plateaddress = CoderUtils.intToBytes(actionObject.getNeObject().getControlPanelAddress());	
+			dataCommand[4] = plateaddress[3];
+			//控制代码
+			dataCommand[5] = CoderUtils.intToBytes(254)[3];
+			//命令类型
+			dataCommand[6] = CoderUtils.intToBytes(0x20)[3];
+			//指命令			
+			dataCommand[7] = CoderUtils.intToBytes(9)[3];
+			//指令附加字节
+			dataCommand[8] = CoderUtils.intToBytes(0)[3];
+			dataCommand[9] = CoderUtils.intToBytes(0x43)[3];
+			
+			dataCommand[10] = CoderUtils.intToBytes(Integer.parseInt(actionObject.getNeObject().getVlanMac().get(0)))[2];
+			dataCommand[11] = CoderUtils.intToBytes(Integer.parseInt(actionObject.getNeObject().getVlanMac().get(0)))[3];
+			
+			dataCommand[12] = CoderUtils.intToBytes(Integer.parseInt(actionObject.getNeObject().getVlanMac().get(1)))[2];
+			dataCommand[13] = CoderUtils.intToBytes(Integer.parseInt(actionObject.getNeObject().getVlanMac().get(1)))[3];
+			
+			dataCommand[14] = CoderUtils.intToBytes(Integer.parseInt(actionObject.getNeObject().getVlanMac().get(2)))[3];
+			dataCommand[15] = CoderUtils.intToBytes(Integer.parseInt(actionObject.getNeObject().getVlanMac().get(3)))[3];
+			dataCommand[16] = CoderUtils.intToBytes(Integer.parseInt(actionObject.getNeObject().getVlanMac().get(4)))[3];
+			
+			CoderUtils.print16String(dataCommand);
+			driveUtilObject = super.analysisData(dataCommand, driveUtilObject,"Request-PDU",0);// 解析对象为命令
+			driveUtilObject = super.dividePage(driveUtilObject);// 将整体命令分片
+			
+			super.monitorSendCommandThread.addDriveUtilObject(driveUtilObject);// 放到代发命令列表中
+			Thread.sleep(200);// 休眠防止拥塞
+		} catch (Exception e) {
+			throw e;
+		}
+		
+	}
+
 }

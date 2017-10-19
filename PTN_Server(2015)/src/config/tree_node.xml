@@ -100,8 +100,8 @@
 	<childNode nodename="状态数据块管理" clickNodeClass="" whClickNodeClass="com.nms.ui.ptn.ne.statusData.view.StatusDataPanel" iconName="tree_maintain.png"></childNode>
 	<childNode nodename="性能门限值管理" clickNodeClass="" whClickNodeClass="com.nms.ui.ptn.ne.pmlimite.PMConfigView" iconName="tree_maintain.png"></childNode>
 	<childNode nodename="接入链路的以太网OAM查询" clickNodeClass="" whClickNodeClass="com.nms.ui.ptn.ne.statusData.view.ethOamSelect" iconName="tree_maintain.png"></childNode>                                                                                
-    <!--<childNode nodename="MAC地址学习数目查询" clickNodeClass="" whClickNodeClass="com.nms.ui.ptn.ne.statusData.view.MacStudySelect" iconName="tree_maintain.png"></childNode>    
-   	<childNode nodename="CFM状态管理" clickNodeClass="" whClickNodeClass="com.nms.ui.ptn.ne.statusData.cfmStatus.CfmStatusPanel" iconName="tree_maintain.png"></childNode>                                    
+   <childNode nodename="MAC地址学习数目查询" clickNodeClass="" whClickNodeClass="com.nms.ui.ptn.ne.statusData.view.MacStudySelect" iconName="tree_maintain.png"></childNode>    
+   	 <!--<childNode nodename="CFM状态管理" clickNodeClass="" whClickNodeClass="com.nms.ui.ptn.ne.statusData.cfmStatus.CfmStatusPanel" iconName="tree_maintain.png"></childNode>                                    
     <childNode nodename="EFM状态管理" clickNodeClass="" whClickNodeClass="com.nms.ui.ptn.ne.statusData.efmStatus.EfmStatusPanel" iconName="tree_maintain.png"></childNode>
    	
    	 -->

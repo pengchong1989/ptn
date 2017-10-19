@@ -1558,4 +1558,26 @@ public class PwInfoService_MB extends ObjectService_Mybatis{
 	public List<PwInfo> selectServiceIdsByPwIds(String pwIdList) {
 		return this.mapper.selectServiceIdsByPwIds(pwIdList);
 	}
+	
+	public List<PwInfo> selectAll_North() {
+		List<PwInfo> pwinfoList = new ArrayList<PwInfo>();
+		try {
+			MsPwInfoMapper msPwMapper = this.sqlSession.getMapper(MsPwInfoMapper.class);
+			pwinfoList = this.mapper.selectAll_North();
+			if(pwinfoList != null && pwinfoList.size() > 0){
+				for (PwInfo pwInfo : pwinfoList) {// 封装对应的pwnniInfo
+					pwInfo.setCreateTime(DateUtil.strDate(pwInfo.getCreateTime(), DateUtil.FULLTIME));
+					MsPwInfo mspwinfoCondition = new MsPwInfo();
+					mspwinfoCondition.setPwId(pwInfo.getPwId());
+					pwInfo.setMsPwInfos(msPwMapper.queryByCondition(mspwinfoCondition));
+				}
+				this.getOAMandQoSforPw(pwinfoList);
+			}else{
+				return new ArrayList<PwInfo>();
+			}
+		} catch (Exception e) {
+			ExceptionManage.dispose(e,this.getClass());
+		}
+		return pwinfoList;
+	}
 }

@@ -840,7 +840,16 @@ public class SiteDispatch extends DispatchBase implements SiteDispatchI {
 		return result;
 	}
 
- 
+	public String vlanMac(SiteInst siteInst,List<String> value)throws RemoteException{
+		String result ="";
+		SiteWHServiceImpl siteWHServiceImpl = new SiteWHServiceImpl();
+		try {
+			result = siteWHServiceImpl.vlanMac(siteInst,value);
+		} catch (Exception e) {
+			ExceptionManage.dispose(e, this.getClass());
+		}
+		return result;
+	}
   
    
   

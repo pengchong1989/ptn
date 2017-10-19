@@ -166,4 +166,13 @@
   createUser=#{createUser},createTime=#{createTime},aSiteId=#{aSiteId},zSiteId=#{zSiteId},jobstatus=#{jobStatus},isSingle=#{isSingle},
   aacid=#{aAcId},zacid=#{zAcId},clientId=#{clientId},amostAcIds=#{amostAcId},zmostAcIds=#{zmostAcId} where id=#{id} and serviceType=2
   </update>
+  
+  <select id="selectAll_ETHNorth" resultType="java.util.Map">
+  SELECT id,serviceId,pwId,serviceType,`name`,activeStatus FROM `serviceinfo` GROUP BY name;
+  </select>
+  
+  <select id="selectAll_ESINorth" resultType="java.util.Map">
+  SELECT id,serviceId,pwId,serviceType,`name`,activeStatus,aSiteId,zSiteId FROM `serviceinfo`;
+  </select>
+  
 </mapper>

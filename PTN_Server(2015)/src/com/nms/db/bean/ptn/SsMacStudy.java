@@ -25,6 +25,8 @@ public class SsMacStudy extends ViewDataObj implements Serializable{
 	private List<CommonBean> commonList = new ArrayList<CommonBean>();
 	private int siteId;//设备id
 	private String portNa;
+	private int lanid;
+	private int elanid;
 	
 	public List<CommonBean> getCommonList() {
 		return commonList;
@@ -191,6 +193,22 @@ public class SsMacStudy extends ViewDataObj implements Serializable{
 
 	public void setMacAddressList(List<String> macAddressList) {
 		this.macAddressList = macAddressList;
+	}
+
+	public int getLanid() {
+		return lanid;
+	}
+
+	public void setLanid(int lanid) {
+		this.lanid = lanid;
+	}
+
+	public int getElanid() {
+		return elanid;
+	}
+
+	public void setElanid(int elanid) {
+		this.elanid = elanid;
 	}
 
 

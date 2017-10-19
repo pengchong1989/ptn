@@ -61,4 +61,8 @@ public interface ElanInfoMapper {
 	public void deleteById(int id);
 
 	public void update(ElanInfo info);
+
+	public List<Map<String, Object>> selectAll_ETHNorth();
+
+	public List<Map<String, Object>> selectAll_ESINorth();
 }

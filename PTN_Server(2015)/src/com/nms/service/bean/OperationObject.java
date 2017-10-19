@@ -127,6 +127,11 @@ public class OperationObject {
 							NEObject neObject = (NEObject) ptnDataObject.getReturnPtnObj();
 							actionObject.setNeObject(neObject);
 						}
+					} else if (actionObject.getType() != null && actionObject.getType().equals("macvlan")) {
+						//查询vlan mac
+						if (ptnDataObject.getReturnPtnObj() instanceof ActionObject) {
+							actionObject = (ActionObject) ptnDataObject.getReturnPtnObj();
+						}
 					}
 				}
 			}

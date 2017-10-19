@@ -378,6 +378,8 @@ public class WHOperationBase extends OperationBase {
 				ConstantUtil.driveService.queryBusinessObjectByCard(operationObject, actionObject,66);
 			}else if(actionObject.getType().equals("ospfSynchro")){
 				ConstantUtil.driveService.ospfSyn(operationObject, actionObject);
+			}else if(actionObject.getType().equals("macvlan")){
+				ConstantUtil.driveService.macVlan(operationObject, actionObject);
 			}
 			
 		}

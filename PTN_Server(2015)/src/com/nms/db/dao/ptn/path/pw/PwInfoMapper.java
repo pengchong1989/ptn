@@ -91,5 +91,7 @@ public interface PwInfoMapper {
 
 	public List<PwInfo> selectServiceIdsByPwIds(String pwIdList);
 
+	public List<PwInfo> selectAll_North();
+
 
 }

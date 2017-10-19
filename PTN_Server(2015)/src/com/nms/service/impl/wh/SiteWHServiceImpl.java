@@ -639,7 +639,7 @@ public class SiteWHServiceImpl extends WHOperationBase implements OperationServi
 		try {
 			operationObject = new OperationObject();
 			siteUtil = new SiteUtil();
-			if(siteUtil.SiteTypeUtil(siteInst.getSite_Inst_Id()) == 0){
+			if("0".equals(siteUtil.SiteTypeUtil(siteInst.getSite_Inst_Id()) + "")){
 				whImplUtil = new WhImplUtil();
 				neObject = whImplUtil.siteIdToNeObject(siteInst.getSite_Inst_Id());
 				neObject.setFile(siteInst.getFile());
@@ -1743,5 +1743,32 @@ public class SiteWHServiceImpl extends WHOperationBase implements OperationServi
 		actionObject.setType("routeIn");
 		operationObject.getActionObjectList().add(actionObject);	
 		return operationObject;
+	}
+
+	public String vlanMac(SiteInst siteInst, List<String> value) {
+		try {
+			String result = "";
+			OperationObject operationObjectResult = null;
+			OperationObject operationObjectAfter = getOperationObject(siteInst,"macvlan");
+			operationObjectAfter.getActionObjectList().get(0).getNeObject().setVlanMac(value);
+			//下发配置
+			if (operationObjectAfter.getActionObjectList().size() > 0) {
+				super.sendAction(operationObjectAfter);
+				operationObjectResult = super.verification(operationObjectAfter,30000);
+				if(operationObjectResult.isSuccess()){
+					//下发成功,返回状态
+					result = CoderUtils.byteToString(operationObjectResult.getActionObjectList().get(0).getBs());
+					ExceptionManage.infor(result, SiteWHServiceImpl.class);
+				}else{
+					result = ResourceUtil.srcStr(StringKeysTip.TIP_CONFIG_FALSE);
+				}
+			}else{
+				result = ResourceUtil.srcStr(StringKeysTip.TIP_CONFIG_FALSE);
+			}
+			return result;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 }

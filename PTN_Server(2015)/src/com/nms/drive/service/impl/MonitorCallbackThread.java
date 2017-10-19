@@ -193,8 +193,6 @@ public class MonitorCallbackThread extends Thread {
 					CG41(ptnDataObject, dataBody, pduHand, commandHand);
 				} else if ("CM12".equalsIgnoreCase(commandHandObj.getCommandLable())) {// WS向M网元校时
 					CM12(ptnDataObject, dataBody, pduHand, commandHand);
-				} else if ("CM11".equalsIgnoreCase(commandHandObj.getCommandLable())) {// 清除设备性能
-					ptnDataObject.setStatus(dataBody[0] == 1 ? "配置成功" : "配置失败");
 				} else if ("TS54".equalsIgnoreCase(commandHandObj.getCommandLable())) {// oam性能监视
 					TS54(ptnDataObject, dataBody, pduHand, commandHand);
 				} else if ("UD23".equalsIgnoreCase(commandHandObj.getCommandLable())) {// 软件摘要
@@ -613,11 +611,14 @@ public class MonitorCallbackThread extends Thread {
 	public void CM11(PtnDataObject ptnDataObject, byte[] dataBody) {
 		String message = "配置成功";
 		try {
-			Properties props = new Properties();
-			InputStream propsIs = MonitorCallbackThread.class.getClassLoader().getResourceAsStream("com/nms/drive/service/impl/returnValue.properties");
-			props.load(propsIs);
-			// message =
-			// props.getProperty(CoderUtils.bytesToInt(dataBody[0]) + "");
+			if(dataBody.length>1){
+				ptnDataObject.setStatus(message);
+				ActionObject actionObject = new ActionObject();
+				actionObject.setBs(dataBody);
+				ptnDataObject.setReturnPtnObj(actionObject);
+			}else if(dataBody.length==1){
+				ptnDataObject.setStatus(dataBody[0]==1?"配置成功":"配置失败");
+			}
 		} catch (Exception e) {
 			ExceptionManage.dispose(e, this.getClass());
 		}
@@ -1242,5 +1243,19 @@ public class MonitorCallbackThread extends Thread {
 
 	public void setPtnDirveService(PtnDirveService ptnDirveService) {
 		this.ptnDirveService = ptnDirveService;
+	}
+	
+	public void CM11(PtnDataObject ptnDataObject, byte[] dataBody, byte[] pduHand, byte[] commandHand) {
+		AnalysisObjectService analysisObjectService;
+		try {
+			analysisObjectService = new AnalysisObjectService();
+			ActionObject actionObject = analysisObjectService.AnalysisOamStatusTable(dataBody);
+			ptnDataObject.setStatus("配置成功");
+			ptnDataObject.setReturnPtnObj(actionObject);
+		} catch (Exception e) {
+			ExceptionManage.dispose(e, this.getClass());
+		} finally {
+			analysisObjectService = null;
+		}
 	}
 }

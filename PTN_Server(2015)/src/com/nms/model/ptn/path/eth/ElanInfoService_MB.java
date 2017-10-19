@@ -1418,4 +1418,22 @@ public class ElanInfoService_MB extends ObjectService_Mybatis{
 			return elanList;
 		}
 	}
+	
+	public List<Map<String,Object>> selectAll_ETHNorth() {
+		List<Map<String,Object>> list = null;
+		list = this.mapper.selectAll_ETHNorth();
+		if(list == null){
+			return new ArrayList<Map<String,Object>>();
+		}
+		return list;
+	}
+	
+	public List<Map<String,Object>> selectAll_ESINorth() {
+		List<Map<String,Object>> list = null;
+		list = this.mapper.selectAll_ESINorth();
+		if(list == null){
+			return new ArrayList<Map<String,Object>>();
+		}
+		return list;
+	}
 }

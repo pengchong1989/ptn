@@ -1,6 +1,7 @@
 package com.nms.drive.service.bean;
 
 import java.io.File;
+import java.util.List;
 
 public class NEObject {
 
@@ -38,7 +39,7 @@ public class NEObject {
 	private String linkPort;//端口号
 	private long l;//网元时间
     private String neMAC;//设备MAC地址
-	
+	private List<String> vlanMac;
 
 	public String getNeMAC() {
 		return neMAC;
@@ -310,5 +311,14 @@ public class NEObject {
 	public void setLinkPort(String linkPort) {
 		this.linkPort = linkPort;
 	}
+
+	public List<String> getVlanMac() {
+		return vlanMac;
+	}
+
+	public void setVlanMac(List<String> vlanMac) {
+		this.vlanMac = vlanMac;
+	}
+	
 	
 }

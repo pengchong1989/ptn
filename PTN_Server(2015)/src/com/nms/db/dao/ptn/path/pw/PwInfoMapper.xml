@@ -405,4 +405,34 @@
   <select id="selectServiceIdsByPwIds" resultMap="BaseResultMap" parameterType="java.lang.String">
   select * from pwinfo p where p.pwid in (#{0})
   </select>
+  
+  <select id="selectAll_North" resultMap="BaseResultMap">
+  SELECT
+	p.backInlabel,
+	p.backOutlabel,
+	p.zOutVlanValue,
+	p.zVlanEnable,
+	p.aOutVlanValue,
+	p.aVlanEnable,
+	p.jobstatus,
+	p.aoppositeId,
+	p.zoppositeId,
+	p.isSingle,
+	p.pwId,
+	p.pwName,
+	p.pwStatus,
+	p.tunnelId,
+	p.aSiteId,
+	p.zSiteId,
+	p.type,
+	p.inlabelValue,
+	p.outlabelValue,
+	p.apwServiceId,
+	p.zpwServiceId,
+	t.aPortId AS showaSiteName,
+	t.zPortId AS showzSiteName
+FROM
+	pwinfo p INNER JOIN tunnel t on p.tunnelId = t.id 
+  </select>
+  
 </mapper>
