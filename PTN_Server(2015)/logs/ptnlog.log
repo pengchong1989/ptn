@@ -1,118 +1,598 @@
-[2017-10-11 19:02:17] INFO com.mchange.v2.log.MLog - MLog clients using log4j logging.
-[2017-10-11 19:02:17] INFO com.mchange.v2.c3p0.C3P0Registry - Initializing c3p0-0.9.5-pre8 [built 04-April-2014 04:20:15 -0700; debug? true; trace: 10]
-[2017-10-11 19:02:19] INFO com.mchange.v2.c3p0.impl.AbstractPoolBackedDataSource - Initializing c3p0 pool... com.mchange.v2.c3p0.ComboPooledDataSource [ acquireIncrement -> 3, acquireRetryAttempts -> 30, acquireRetryDelay -> 1000, autoCommitOnClose -> false, automaticTestTable -> null, breakAfterAcquireFailure -> false, checkoutTimeout -> 0, connectionCustomizerClassName -> null, connectionTesterClassName -> com.mchange.v2.c3p0.impl.DefaultConnectionTester, contextClassLoaderSource -> caller, dataSourceName -> 1hge0yu9r32v9qf1l8gmjb|787c16, debugUnreturnedConnectionStackTraces -> false, description -> null, driverClass -> com.mysql.jdbc.Driver, extensions -> {}, factoryClassLocation -> null, forceIgnoreUnresolvedTransactions -> false, forceUseNamedDriverClass -> false, identityToken -> 1hge0yu9r32v9qf1l8gmjb|787c16, idleConnectionTestPeriod -> 0, initialPoolSize -> 20, jdbcUrl -> jdbc:mysql://127.0.0.1:3308/ptn?useUnicode=true&characterEncoding=utf-8&autoReconnect=true&failOverReadOnly=false, maxAdministrativeTaskTime -> 0, maxConnectionAge -> 0, maxIdleTime -> 0, maxIdleTimeExcessConnections -> 0, maxPoolSize -> 30, maxStatements -> 20, maxStatementsPerConnection -> 0, minPoolSize -> 1, numHelperThreads -> 3, preferredTestQuery -> null, privilegeSpawnedThreads -> false, properties -> {user=******, password=******}, propertyCycle -> 0, statementCacheNumDeferredCloseThreads -> 0, testConnectionOnCheckin -> true, testConnectionOnCheckout -> false, unreturnedConnectionTimeout -> 0, userOverrides -> {}, usesTraditionalReflectiveProxies -> false ]
-[2017-10-11 19:03:10] INFO com.nms.rmi.ui.util.ServiceInitUtil - 加载驱动信息
-[2017-10-11 19:03:10] INFO com.nms.rmi.ui.util.ServiceInitUtil - 加载网元信息
-[2017-10-11 19:03:10] INFO com.nms.rmi.ui.util.ServiceInitUtil - 加载rmi信息
-[2017-10-11 19:03:10] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager3
-[2017-10-11 19:03:10] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager17
-[2017-10-11 19:03:10] INFO com.nms.rmi.ui.util.ServiceInitUtil - 加载线程信息
-[2017-10-11 19:03:10] INFO org.springframework.context.support.ClassPathXmlApplicationContext - Refreshing org.springframework.context.support.ClassPathXmlApplicationContext@8d41f2: display name [org.springframework.context.support.ClassPathXmlApplicationContext@8d41f2]; startup date [Wed Oct 11 19:03:10 CST 2017]; root of context hierarchy
-[2017-10-11 19:03:10] INFO org.springframework.beans.factory.xml.XmlBeanDefinitionReader - Loading XML bean definitions from class path resource [applicationContext-jms-broker.xml]
-[2017-10-11 19:03:11] INFO org.springframework.context.support.ClassPathXmlApplicationContext - Bean factory for application context [org.springframework.context.support.ClassPathXmlApplicationContext@8d41f2]: org.springframework.beans.factory.support.DefaultListableBeanFactory@439d3b
-[2017-10-11 19:03:11] INFO org.springframework.beans.factory.support.DefaultListableBeanFactory - Pre-instantiating singletons in org.springframework.beans.factory.support.DefaultListableBeanFactory@439d3b: defining beans [broker]; root of factory hierarchy
-[2017-10-11 19:03:12] INFO com.nms.jms.jmsMeanager.Broker - DATAX:   broker start
-[2017-10-11 19:03:12] INFO org.springframework.context.support.ClassPathXmlApplicationContext - Refreshing org.springframework.context.support.ClassPathXmlApplicationContext@1ee69d3: display name [org.springframework.context.support.ClassPathXmlApplicationContext@1ee69d3]; startup date [Wed Oct 11 19:03:12 CST 2017]; root of context hierarchy
-[2017-10-11 19:03:12] INFO org.springframework.beans.factory.xml.XmlBeanDefinitionReader - Loading XML bean definitions from class path resource [applicationContext-jms-send.xml]
-[2017-10-11 19:03:12] INFO org.springframework.context.support.ClassPathXmlApplicationContext - Bean factory for application context [org.springframework.context.support.ClassPathXmlApplicationContext@1ee69d3]: org.springframework.beans.factory.support.DefaultListableBeanFactory@18bf6bf
-[2017-10-11 19:03:12] INFO org.springframework.beans.factory.support.DefaultListableBeanFactory - Pre-instantiating singletons in org.springframework.beans.factory.support.DefaultListableBeanFactory@18bf6bf: defining beans [jmsTemplate,jmsTemplateaa,targetConnectionFactory,connectionFactory,serverOtherNotify,JmsSender]; root of factory hierarchy
-[2017-10-11 19:03:12] INFO com.nms.jms.common.ApplicationBeanFactory - DATAX:   告警send已启动2017-10-11
-[2017-10-11 19:03:12] INFO org.springframework.context.support.ClassPathXmlApplicationContext - Refreshing org.springframework.context.support.ClassPathXmlApplicationContext@1e3bfb6: display name [org.springframework.context.support.ClassPathXmlApplicationContext@1e3bfb6]; startup date [Wed Oct 11 19:03:12 CST 2017]; root of context hierarchy
-[2017-10-11 19:03:12] INFO org.springframework.beans.factory.xml.XmlBeanDefinitionReader - Loading XML bean definitions from class path resource [applicationContext-jms-serviceCourse.xml]
-[2017-10-11 19:03:12] INFO org.springframework.context.support.ClassPathXmlApplicationContext - Bean factory for application context [org.springframework.context.support.ClassPathXmlApplicationContext@1e3bfb6]: org.springframework.beans.factory.support.DefaultListableBeanFactory@ef1df6
-[2017-10-11 19:03:12] INFO org.springframework.beans.factory.support.DefaultListableBeanFactory - Pre-instantiating singletons in org.springframework.beans.factory.support.DefaultListableBeanFactory@ef1df6: defining beans [jmsTemplate,targetConnectionFactory,connectionFactory,serverOtherNotify,alarmCourseMessageListener,responseQueueMessageListenerContainer]; root of factory hierarchy
-[2017-10-11 19:03:13] INFO com.nms.jms.common.ApplicationBeanFactory - DATAX:   告警receive已启动2017-10-11
-[2017-10-11 19:03:13] INFO com.nms.rmi.thread.StartThread - JMS初始化成功
-[2017-10-11 19:03:18] INFO org.springframework.jms.connection.SingleConnectionFactory - Established shared JMS Connection: ActiveMQConnection {id=ID:pc-PC-59563-1507719791998-2:2,clientId=null,started=false}
-[2017-10-11 19:03:18] INFO org.springframework.jms.listener.DefaultMessageListenerContainer - Successfully refreshed JMS Connection
-[2017-10-11 19:03:20] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
-[2017-10-11 19:03:20] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
-[2017-10-11 19:03:30] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
-[2017-10-11 19:03:30] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
-[2017-10-11 19:03:40] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
-[2017-10-11 19:03:40] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
-[2017-10-11 19:03:50] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
-[2017-10-11 19:03:50] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
-[2017-10-11 19:04:00] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
-[2017-10-11 19:04:00] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager17
-[2017-10-11 19:04:10] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
-[2017-10-11 19:04:10] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
-[2017-10-11 19:04:20] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
-[2017-10-11 19:04:20] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
-[2017-10-11 19:04:30] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
-[2017-10-11 19:04:30] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
-[2017-10-11 19:04:40] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
-[2017-10-11 19:04:40] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
-[2017-10-11 19:04:50] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
-[2017-10-11 19:04:50] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
-[2017-10-11 19:05:00] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
-[2017-10-11 19:05:00] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
-[2017-10-11 19:05:10] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
-[2017-10-11 19:05:10] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
-[2017-10-11 19:05:20] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
-[2017-10-11 19:05:20] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
-[2017-10-11 19:05:30] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
-[2017-10-11 19:05:30] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
-[2017-10-11 19:05:40] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
-[2017-10-11 19:05:40] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
-[2017-10-11 19:05:50] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
-[2017-10-11 19:05:50] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
-[2017-10-11 19:06:00] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
-[2017-10-11 19:06:00] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
-[2017-10-11 19:06:10] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
-[2017-10-11 19:06:10] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
-[2017-10-11 19:06:20] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
-[2017-10-11 19:06:20] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
-[2017-10-11 19:06:30] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
-[2017-10-11 19:06:30] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
-[2017-10-11 19:06:40] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
-[2017-10-11 19:06:40] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
-[2017-10-11 19:06:50] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
-[2017-10-11 19:06:50] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
-[2017-10-11 19:07:00] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
-[2017-10-11 19:07:00] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
-[2017-10-11 19:07:10] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
-[2017-10-11 19:07:10] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
-[2017-10-11 19:07:20] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
-[2017-10-11 19:07:20] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
-[2017-10-11 19:07:30] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
-[2017-10-11 19:07:30] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
-[2017-10-11 19:07:40] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
-[2017-10-11 19:07:40] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
-[2017-10-11 19:07:50] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
-[2017-10-11 19:07:50] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
-[2017-10-11 19:08:00] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
-[2017-10-11 19:08:00] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
-[2017-10-11 19:08:10] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
-[2017-10-11 19:08:10] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
-[2017-10-11 20:02:22] ERROR com.nms.snmp.ninteface.impl.config.NELXml - java.lang.NullPointerException
-	at com.nms.util.Mybatis_DBManager.getSqlSession(Mybatis_DBManager.java:84)
-	at com.nms.model.util.ServiceFactory.newService_MB(ServiceFactory.java:240)
-	at com.nms.snmp.ninteface.impl.config.NELXml.getAllSites(NELXml.java:68)
-	at com.nms.snmp.ninteface.impl.config.NELXml.getNELXml(NELXml.java:50)
-	at com.nms.snmp.ninteface.impl.config.NELXml.main(NELXml.java:39)
-
-[2017-10-11 20:02:22] ERROR com.nms.snmp.ninteface.impl.config.NELXml - java.lang.NullPointerException
-	at com.nms.snmp.ninteface.impl.config.NELXml.createFileContent(NELXml.java:147)
-	at com.nms.snmp.ninteface.impl.config.NELXml.createXML(NELXml.java:123)
-	at com.nms.snmp.ninteface.impl.config.NELXml.getNELXml(NELXml.java:53)
-	at com.nms.snmp.ninteface.impl.config.NELXml.main(NELXml.java:39)
-
-[2017-10-11 20:04:25] INFO com.mchange.v2.log.MLog - MLog clients using log4j logging.
-[2017-10-11 20:04:25] INFO com.mchange.v2.c3p0.C3P0Registry - Initializing c3p0-0.9.5-pre8 [built 04-April-2014 04:20:15 -0700; debug? true; trace: 10]
-[2017-10-11 20:04:27] INFO com.mchange.v2.c3p0.impl.AbstractPoolBackedDataSource - Initializing c3p0 pool... com.mchange.v2.c3p0.ComboPooledDataSource [ acquireIncrement -> 3, acquireRetryAttempts -> 30, acquireRetryDelay -> 1000, autoCommitOnClose -> false, automaticTestTable -> null, breakAfterAcquireFailure -> false, checkoutTimeout -> 0, connectionCustomizerClassName -> null, connectionTesterClassName -> com.mchange.v2.c3p0.impl.DefaultConnectionTester, contextClassLoaderSource -> caller, dataSourceName -> 1hge0yu9r35363i1paikmt|1c56c60, debugUnreturnedConnectionStackTraces -> false, description -> null, driverClass -> com.mysql.jdbc.Driver, extensions -> {}, factoryClassLocation -> null, forceIgnoreUnresolvedTransactions -> false, forceUseNamedDriverClass -> false, identityToken -> 1hge0yu9r35363i1paikmt|1c56c60, idleConnectionTestPeriod -> 0, initialPoolSize -> 20, jdbcUrl -> jdbc:mysql://127.0.0.1:3308/ptn?useUnicode=true&characterEncoding=utf-8&autoReconnect=true&failOverReadOnly=false, maxAdministrativeTaskTime -> 0, maxConnectionAge -> 0, maxIdleTime -> 0, maxIdleTimeExcessConnections -> 0, maxPoolSize -> 30, maxStatements -> 20, maxStatementsPerConnection -> 0, minPoolSize -> 1, numHelperThreads -> 3, preferredTestQuery -> null, privilegeSpawnedThreads -> false, properties -> {user=******, password=******}, propertyCycle -> 0, statementCacheNumDeferredCloseThreads -> 0, testConnectionOnCheckin -> true, testConnectionOnCheckout -> false, unreturnedConnectionTimeout -> 0, userOverrides -> {}, usesTraditionalReflectiveProxies -> false ]
-[2017-10-11 20:18:11] INFO com.mchange.v2.log.MLog - MLog clients using log4j logging.
-[2017-10-11 20:18:11] INFO com.mchange.v2.c3p0.C3P0Registry - Initializing c3p0-0.9.5-pre8 [built 04-April-2014 04:20:15 -0700; debug? true; trace: 10]
-[2017-10-11 20:18:13] INFO com.mchange.v2.c3p0.impl.AbstractPoolBackedDataSource - Initializing c3p0 pool... com.mchange.v2.c3p0.ComboPooledDataSource [ acquireIncrement -> 3, acquireRetryAttempts -> 30, acquireRetryDelay -> 1000, autoCommitOnClose -> false, automaticTestTable -> null, breakAfterAcquireFailure -> false, checkoutTimeout -> 0, connectionCustomizerClassName -> null, connectionTesterClassName -> com.mchange.v2.c3p0.impl.DefaultConnectionTester, contextClassLoaderSource -> caller, dataSourceName -> 1hge0yu9r35kvvx1v6pbk5|4e280c, debugUnreturnedConnectionStackTraces -> false, description -> null, driverClass -> com.mysql.jdbc.Driver, extensions -> {}, factoryClassLocation -> null, forceIgnoreUnresolvedTransactions -> false, forceUseNamedDriverClass -> false, identityToken -> 1hge0yu9r35kvvx1v6pbk5|4e280c, idleConnectionTestPeriod -> 0, initialPoolSize -> 20, jdbcUrl -> jdbc:mysql://127.0.0.1:3308/ptn?useUnicode=true&characterEncoding=utf-8&autoReconnect=true&failOverReadOnly=false, maxAdministrativeTaskTime -> 0, maxConnectionAge -> 0, maxIdleTime -> 0, maxIdleTimeExcessConnections -> 0, maxPoolSize -> 30, maxStatements -> 20, maxStatementsPerConnection -> 0, minPoolSize -> 1, numHelperThreads -> 3, preferredTestQuery -> null, privilegeSpawnedThreads -> false, properties -> {user=******, password=******}, propertyCycle -> 0, statementCacheNumDeferredCloseThreads -> 0, testConnectionOnCheckin -> true, testConnectionOnCheckout -> false, unreturnedConnectionTimeout -> 0, userOverrides -> {}, usesTraditionalReflectiveProxies -> false ]
-[2017-10-11 20:19:38] INFO com.mchange.v2.log.MLog - MLog clients using log4j logging.
-[2017-10-11 20:19:38] INFO com.mchange.v2.c3p0.C3P0Registry - Initializing c3p0-0.9.5-pre8 [built 04-April-2014 04:20:15 -0700; debug? true; trace: 10]
-[2017-10-11 20:19:39] INFO com.mchange.v2.c3p0.impl.AbstractPoolBackedDataSource - Initializing c3p0 pool... com.mchange.v2.c3p0.ComboPooledDataSource [ acquireIncrement -> 3, acquireRetryAttempts -> 30, acquireRetryDelay -> 1000, autoCommitOnClose -> false, automaticTestTable -> null, breakAfterAcquireFailure -> false, checkoutTimeout -> 0, connectionCustomizerClassName -> null, connectionTesterClassName -> com.mchange.v2.c3p0.impl.DefaultConnectionTester, contextClassLoaderSource -> caller, dataSourceName -> 1hge0yu9r35mqjgzpy8oz|1275d39, debugUnreturnedConnectionStackTraces -> false, description -> null, driverClass -> com.mysql.jdbc.Driver, extensions -> {}, factoryClassLocation -> null, forceIgnoreUnresolvedTransactions -> false, forceUseNamedDriverClass -> false, identityToken -> 1hge0yu9r35mqjgzpy8oz|1275d39, idleConnectionTestPeriod -> 0, initialPoolSize -> 20, jdbcUrl -> jdbc:mysql://127.0.0.1:3308/ptn?useUnicode=true&characterEncoding=utf-8&autoReconnect=true&failOverReadOnly=false, maxAdministrativeTaskTime -> 0, maxConnectionAge -> 0, maxIdleTime -> 0, maxIdleTimeExcessConnections -> 0, maxPoolSize -> 30, maxStatements -> 20, maxStatementsPerConnection -> 0, minPoolSize -> 1, numHelperThreads -> 3, preferredTestQuery -> null, privilegeSpawnedThreads -> false, properties -> {user=******, password=******}, propertyCycle -> 0, statementCacheNumDeferredCloseThreads -> 0, testConnectionOnCheckin -> true, testConnectionOnCheckout -> false, unreturnedConnectionTimeout -> 0, userOverrides -> {}, usesTraditionalReflectiveProxies -> false ]
-[2017-10-11 20:22:41] INFO com.mchange.v2.log.MLog - MLog clients using log4j logging.
-[2017-10-11 20:22:41] INFO com.mchange.v2.c3p0.C3P0Registry - Initializing c3p0-0.9.5-pre8 [built 04-April-2014 04:20:15 -0700; debug? true; trace: 10]
-[2017-10-11 20:22:42] INFO com.mchange.v2.c3p0.impl.AbstractPoolBackedDataSource - Initializing c3p0 pool... com.mchange.v2.c3p0.ComboPooledDataSource [ acquireIncrement -> 3, acquireRetryAttempts -> 30, acquireRetryDelay -> 1000, autoCommitOnClose -> false, automaticTestTable -> null, breakAfterAcquireFailure -> false, checkoutTimeout -> 0, connectionCustomizerClassName -> null, connectionTesterClassName -> com.mchange.v2.c3p0.impl.DefaultConnectionTester, contextClassLoaderSource -> caller, dataSourceName -> 1hge0yu9r35qno4njqbvs|1c56c60, debugUnreturnedConnectionStackTraces -> false, description -> null, driverClass -> com.mysql.jdbc.Driver, extensions -> {}, factoryClassLocation -> null, forceIgnoreUnresolvedTransactions -> false, forceUseNamedDriverClass -> false, identityToken -> 1hge0yu9r35qno4njqbvs|1c56c60, idleConnectionTestPeriod -> 0, initialPoolSize -> 20, jdbcUrl -> jdbc:mysql://127.0.0.1:3308/ptn?useUnicode=true&characterEncoding=utf-8&autoReconnect=true&failOverReadOnly=false, maxAdministrativeTaskTime -> 0, maxConnectionAge -> 0, maxIdleTime -> 0, maxIdleTimeExcessConnections -> 0, maxPoolSize -> 30, maxStatements -> 20, maxStatementsPerConnection -> 0, minPoolSize -> 1, numHelperThreads -> 3, preferredTestQuery -> null, privilegeSpawnedThreads -> false, properties -> {user=******, password=******}, propertyCycle -> 0, statementCacheNumDeferredCloseThreads -> 0, testConnectionOnCheckin -> true, testConnectionOnCheckout -> false, unreturnedConnectionTimeout -> 0, userOverrides -> {}, usesTraditionalReflectiveProxies -> false ]
-[2017-10-11 21:12:33] INFO com.mchange.v2.log.MLog - MLog clients using log4j logging.
-[2017-10-11 21:12:33] INFO com.mchange.v2.c3p0.C3P0Registry - Initializing c3p0-0.9.5-pre8 [built 04-April-2014 04:20:15 -0700; debug? true; trace: 10]
-[2017-10-11 21:12:35] INFO com.mchange.v2.c3p0.impl.AbstractPoolBackedDataSource - Initializing c3p0 pool... com.mchange.v2.c3p0.ComboPooledDataSource [ acquireIncrement -> 3, acquireRetryAttempts -> 30, acquireRetryDelay -> 1000, autoCommitOnClose -> false, automaticTestTable -> null, breakAfterAcquireFailure -> false, checkoutTimeout -> 0, connectionCustomizerClassName -> null, connectionTesterClassName -> com.mchange.v2.c3p0.impl.DefaultConnectionTester, contextClassLoaderSource -> caller, dataSourceName -> 1hge0yu9r37isd113f2gt0|1c56c60, debugUnreturnedConnectionStackTraces -> false, description -> null, driverClass -> com.mysql.jdbc.Driver, extensions -> {}, factoryClassLocation -> null, forceIgnoreUnresolvedTransactions -> false, forceUseNamedDriverClass -> false, identityToken -> 1hge0yu9r37isd113f2gt0|1c56c60, idleConnectionTestPeriod -> 0, initialPoolSize -> 20, jdbcUrl -> jdbc:mysql://127.0.0.1:3308/ptn?useUnicode=true&characterEncoding=utf-8&autoReconnect=true&failOverReadOnly=false, maxAdministrativeTaskTime -> 0, maxConnectionAge -> 0, maxIdleTime -> 0, maxIdleTimeExcessConnections -> 0, maxPoolSize -> 30, maxStatements -> 20, maxStatementsPerConnection -> 0, minPoolSize -> 1, numHelperThreads -> 3, preferredTestQuery -> null, privilegeSpawnedThreads -> false, properties -> {user=******, password=******}, propertyCycle -> 0, statementCacheNumDeferredCloseThreads -> 0, testConnectionOnCheckin -> true, testConnectionOnCheckout -> false, unreturnedConnectionTimeout -> 0, userOverrides -> {}, usesTraditionalReflectiveProxies -> false ]
-[2017-10-11 21:17:47] INFO com.mchange.v2.log.MLog - MLog clients using log4j logging.
-[2017-10-11 21:17:47] INFO com.mchange.v2.c3p0.C3P0Registry - Initializing c3p0-0.9.5-pre8 [built 04-April-2014 04:20:15 -0700; debug? true; trace: 10]
-[2017-10-11 21:17:49] INFO com.mchange.v2.c3p0.impl.AbstractPoolBackedDataSource - Initializing c3p0 pool... com.mchange.v2.c3p0.ComboPooledDataSource [ acquireIncrement -> 3, acquireRetryAttempts -> 30, acquireRetryDelay -> 1000, autoCommitOnClose -> false, automaticTestTable -> null, breakAfterAcquireFailure -> false, checkoutTimeout -> 0, connectionCustomizerClassName -> null, connectionTesterClassName -> com.mchange.v2.c3p0.impl.DefaultConnectionTester, contextClassLoaderSource -> caller, dataSourceName -> 1hge0yu9r37piw51bjciv|4e280c, debugUnreturnedConnectionStackTraces -> false, description -> null, driverClass -> com.mysql.jdbc.Driver, extensions -> {}, factoryClassLocation -> null, forceIgnoreUnresolvedTransactions -> false, forceUseNamedDriverClass -> false, identityToken -> 1hge0yu9r37piw51bjciv|4e280c, idleConnectionTestPeriod -> 0, initialPoolSize -> 20, jdbcUrl -> jdbc:mysql://127.0.0.1:3308/ptn?useUnicode=true&characterEncoding=utf-8&autoReconnect=true&failOverReadOnly=false, maxAdministrativeTaskTime -> 0, maxConnectionAge -> 0, maxIdleTime -> 0, maxIdleTimeExcessConnections -> 0, maxPoolSize -> 30, maxStatements -> 20, maxStatementsPerConnection -> 0, minPoolSize -> 1, numHelperThreads -> 3, preferredTestQuery -> null, privilegeSpawnedThreads -> false, properties -> {user=******, password=******}, propertyCycle -> 0, statementCacheNumDeferredCloseThreads -> 0, testConnectionOnCheckin -> true, testConnectionOnCheckout -> false, unreturnedConnectionTimeout -> 0, userOverrides -> {}, usesTraditionalReflectiveProxies -> false ]
+[2017-10-19 20:56:13] INFO com.mchange.v2.log.MLog - MLog clients using log4j logging.
+[2017-10-19 20:56:13] INFO com.mchange.v2.c3p0.C3P0Registry - Initializing c3p0-0.9.5-pre8 [built 04-April-2014 04:20:15 -0700; debug? true; trace: 10]
+[2017-10-19 20:56:15] INFO com.mchange.v2.c3p0.impl.AbstractPoolBackedDataSource - Initializing c3p0 pool... com.mchange.v2.c3p0.ComboPooledDataSource [ acquireIncrement -> 3, acquireRetryAttempts -> 30, acquireRetryDelay -> 1000, autoCommitOnClose -> false, automaticTestTable -> null, breakAfterAcquireFailure -> false, checkoutTimeout -> 0, connectionCustomizerClassName -> null, connectionTesterClassName -> com.mchange.v2.c3p0.impl.DefaultConnectionTester, contextClassLoaderSource -> caller, dataSourceName -> 1hge0yu9remglrhjfffst|7941e525, debugUnreturnedConnectionStackTraces -> false, description -> null, driverClass -> com.mysql.jdbc.Driver, extensions -> {}, factoryClassLocation -> null, forceIgnoreUnresolvedTransactions -> false, forceUseNamedDriverClass -> false, identityToken -> 1hge0yu9remglrhjfffst|7941e525, idleConnectionTestPeriod -> 0, initialPoolSize -> 20, jdbcUrl -> jdbc:mysql://127.0.0.1:3308/ptn?useUnicode=true&characterEncoding=utf-8&autoReconnect=true&failOverReadOnly=false, maxAdministrativeTaskTime -> 0, maxConnectionAge -> 0, maxIdleTime -> 0, maxIdleTimeExcessConnections -> 0, maxPoolSize -> 30, maxStatements -> 20, maxStatementsPerConnection -> 0, minPoolSize -> 1, numHelperThreads -> 3, preferredTestQuery -> null, privilegeSpawnedThreads -> false, properties -> {user=******, password=******}, propertyCycle -> 0, statementCacheNumDeferredCloseThreads -> 0, testConnectionOnCheckin -> true, testConnectionOnCheckout -> false, unreturnedConnectionTimeout -> 0, userOverrides -> {}, usesTraditionalReflectiveProxies -> false ]
+[2017-10-19 20:58:00] INFO com.mchange.v2.log.MLog - MLog clients using log4j logging.
+[2017-10-19 20:58:00] INFO com.mchange.v2.c3p0.C3P0Registry - Initializing c3p0-0.9.5-pre8 [built 04-April-2014 04:20:15 -0700; debug? true; trace: 10]
+[2017-10-19 20:58:02] INFO com.mchange.v2.c3p0.impl.AbstractPoolBackedDataSource - Initializing c3p0 pool... com.mchange.v2.c3p0.ComboPooledDataSource [ acquireIncrement -> 3, acquireRetryAttempts -> 30, acquireRetryDelay -> 1000, autoCommitOnClose -> false, automaticTestTable -> null, breakAfterAcquireFailure -> false, checkoutTimeout -> 0, connectionCustomizerClassName -> null, connectionTesterClassName -> com.mchange.v2.c3p0.impl.DefaultConnectionTester, contextClassLoaderSource -> caller, dataSourceName -> 1hge0yu9remiw771e6dk4h|5e076f60, debugUnreturnedConnectionStackTraces -> false, description -> null, driverClass -> com.mysql.jdbc.Driver, extensions -> {}, factoryClassLocation -> null, forceIgnoreUnresolvedTransactions -> false, forceUseNamedDriverClass -> false, identityToken -> 1hge0yu9remiw771e6dk4h|5e076f60, idleConnectionTestPeriod -> 0, initialPoolSize -> 20, jdbcUrl -> jdbc:mysql://127.0.0.1:3308/ptn?useUnicode=true&characterEncoding=utf-8&autoReconnect=true&failOverReadOnly=false, maxAdministrativeTaskTime -> 0, maxConnectionAge -> 0, maxIdleTime -> 0, maxIdleTimeExcessConnections -> 0, maxPoolSize -> 30, maxStatements -> 20, maxStatementsPerConnection -> 0, minPoolSize -> 1, numHelperThreads -> 3, preferredTestQuery -> null, privilegeSpawnedThreads -> false, properties -> {user=******, password=******}, propertyCycle -> 0, statementCacheNumDeferredCloseThreads -> 0, testConnectionOnCheckin -> true, testConnectionOnCheckout -> false, unreturnedConnectionTimeout -> 0, userOverrides -> {}, usesTraditionalReflectiveProxies -> false ]
+[2017-10-19 20:58:44] INFO com.nms.rmi.ui.util.ServiceInitUtil - 加载驱动信息
+[2017-10-19 20:58:44] INFO com.nms.rmi.ui.util.ServiceInitUtil - 加载网元信息
+[2017-10-19 20:58:45] INFO com.nms.rmi.ui.util.ServiceInitUtil - 加载rmi信息
+[2017-10-19 20:58:45] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager4
+[2017-10-19 20:58:45] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager13
+[2017-10-19 20:58:45] INFO com.nms.rmi.ui.util.ServiceInitUtil - 加载线程信息
+[2017-10-19 20:58:45] INFO org.springframework.context.support.ClassPathXmlApplicationContext - Refreshing org.springframework.context.support.ClassPathXmlApplicationContext@2e20a282: display name [org.springframework.context.support.ClassPathXmlApplicationContext@2e20a282]; startup date [Thu Oct 19 20:58:45 CST 2017]; root of context hierarchy
+[2017-10-19 20:58:45] INFO org.springframework.beans.factory.xml.XmlBeanDefinitionReader - Loading XML bean definitions from class path resource [applicationContext-jms-broker.xml]
+[2017-10-19 20:58:45] INFO org.springframework.context.support.ClassPathXmlApplicationContext - Bean factory for application context [org.springframework.context.support.ClassPathXmlApplicationContext@2e20a282]: org.springframework.beans.factory.support.DefaultListableBeanFactory@4d2ff195
+[2017-10-19 20:58:45] INFO org.springframework.beans.factory.support.DefaultListableBeanFactory - Pre-instantiating singletons in org.springframework.beans.factory.support.DefaultListableBeanFactory@4d2ff195: defining beans [broker]; root of factory hierarchy
+[2017-10-19 20:58:46] INFO com.nms.jms.jmsMeanager.Broker - DATAX:   broker start
+[2017-10-19 20:58:46] INFO org.springframework.context.support.ClassPathXmlApplicationContext - Refreshing org.springframework.context.support.ClassPathXmlApplicationContext@779becbd: display name [org.springframework.context.support.ClassPathXmlApplicationContext@779becbd]; startup date [Thu Oct 19 20:58:46 CST 2017]; root of context hierarchy
+[2017-10-19 20:58:46] INFO org.springframework.beans.factory.xml.XmlBeanDefinitionReader - Loading XML bean definitions from class path resource [applicationContext-jms-send.xml]
+[2017-10-19 20:58:46] INFO org.springframework.context.support.ClassPathXmlApplicationContext - Bean factory for application context [org.springframework.context.support.ClassPathXmlApplicationContext@779becbd]: org.springframework.beans.factory.support.DefaultListableBeanFactory@1b186cb
+[2017-10-19 20:58:46] INFO org.springframework.beans.factory.support.DefaultListableBeanFactory - Pre-instantiating singletons in org.springframework.beans.factory.support.DefaultListableBeanFactory@1b186cb: defining beans [jmsTemplate,jmsTemplateaa,targetConnectionFactory,connectionFactory,serverOtherNotify,JmsSender]; root of factory hierarchy
+[2017-10-19 20:58:46] INFO com.nms.jms.common.ApplicationBeanFactory - DATAX:   告警send已启动2017-10-19
+[2017-10-19 20:58:46] INFO org.springframework.context.support.ClassPathXmlApplicationContext - Refreshing org.springframework.context.support.ClassPathXmlApplicationContext@4c773690: display name [org.springframework.context.support.ClassPathXmlApplicationContext@4c773690]; startup date [Thu Oct 19 20:58:46 CST 2017]; root of context hierarchy
+[2017-10-19 20:58:46] INFO org.springframework.beans.factory.xml.XmlBeanDefinitionReader - Loading XML bean definitions from class path resource [applicationContext-jms-serviceCourse.xml]
+[2017-10-19 20:58:46] INFO org.springframework.context.support.ClassPathXmlApplicationContext - Bean factory for application context [org.springframework.context.support.ClassPathXmlApplicationContext@4c773690]: org.springframework.beans.factory.support.DefaultListableBeanFactory@5b9a1072
+[2017-10-19 20:58:46] INFO org.springframework.beans.factory.support.DefaultListableBeanFactory - Pre-instantiating singletons in org.springframework.beans.factory.support.DefaultListableBeanFactory@5b9a1072: defining beans [jmsTemplate,targetConnectionFactory,connectionFactory,serverOtherNotify,alarmCourseMessageListener,responseQueueMessageListenerContainer]; root of factory hierarchy
+[2017-10-19 20:58:47] INFO com.nms.jms.common.ApplicationBeanFactory - DATAX:   告警receive已启动2017-10-19
+[2017-10-19 20:58:47] INFO com.nms.rmi.thread.StartThread - JMS初始化成功
+[2017-10-19 20:58:52] INFO org.springframework.jms.connection.SingleConnectionFactory - Established shared JMS Connection: ActiveMQConnection {id=ID:pc-PC-53515-1508417925924-2:2,clientId=null,started=false}
+[2017-10-19 20:58:52] INFO org.springframework.jms.listener.DefaultMessageListenerContainer - Successfully refreshed JMS Connection
+[2017-10-19 20:58:55] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager3
+[2017-10-19 20:58:55] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager17
+[2017-10-19 20:59:05] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 20:59:05] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 20:59:15] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 20:59:15] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 20:59:25] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 20:59:25] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 20:59:35] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 20:59:35] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 20:59:45] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 20:59:45] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 20:59:55] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 20:59:55] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:00:05] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:00:05] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:00:15] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:00:15] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:00:25] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:00:25] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:00:35] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:00:35] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:00:45] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:00:45] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:00:55] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:00:55] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:01:05] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:01:05] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:01:15] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:01:15] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:01:25] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:01:25] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:01:35] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:01:35] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:01:45] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:01:45] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:01:55] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:01:55] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:02:05] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:02:05] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:02:15] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:02:15] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:02:25] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:02:25] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:02:35] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:02:35] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:02:45] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:02:45] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:02:55] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:02:55] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:03:05] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:03:05] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:03:15] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:03:15] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:03:25] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:03:25] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:03:35] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:03:35] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:03:45] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:03:45] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:03:55] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:03:55] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:04:05] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:04:05] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:04:15] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:04:15] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:04:25] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:04:25] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:04:35] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:04:35] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:04:45] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:04:45] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:04:55] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:04:55] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:05:05] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:05:05] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:05:15] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:05:15] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:05:25] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:05:25] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:05:35] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:05:35] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:05:45] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:05:45] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:05:55] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:05:55] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:06:05] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:06:05] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:06:15] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:06:15] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:06:25] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:06:25] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:06:35] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:06:35] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:06:45] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:06:45] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:06:55] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:06:55] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:07:05] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:07:05] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:07:15] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:07:15] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:07:25] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:07:25] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:07:35] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:07:35] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:07:45] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:07:45] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:07:55] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:07:55] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:08:05] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:08:05] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:08:15] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:08:15] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:08:25] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:08:25] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:08:35] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:08:35] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:08:45] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:08:45] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:08:55] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:08:55] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:09:05] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:09:05] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:09:15] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:09:15] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:09:25] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:09:25] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:09:35] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:09:35] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:09:45] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:09:45] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:09:55] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:09:55] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:10:05] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:10:05] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:10:15] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:10:15] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:10:25] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:10:25] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:10:35] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:10:35] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:10:45] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:10:45] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:10:55] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:10:55] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:11:05] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:11:05] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:11:15] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:11:15] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:11:34] INFO com.mchange.v2.log.MLog - MLog clients using log4j logging.
+[2017-10-19 21:11:34] INFO com.mchange.v2.c3p0.C3P0Registry - Initializing c3p0-0.9.5-pre8 [built 04-April-2014 04:20:15 -0700; debug? true; trace: 10]
+[2017-10-19 21:11:35] INFO com.mchange.v2.c3p0.impl.AbstractPoolBackedDataSource - Initializing c3p0 pool... com.mchange.v2.c3p0.ComboPooledDataSource [ acquireIncrement -> 3, acquireRetryAttempts -> 30, acquireRetryDelay -> 1000, autoCommitOnClose -> false, automaticTestTable -> null, breakAfterAcquireFailure -> false, checkoutTimeout -> 0, connectionCustomizerClassName -> null, connectionTesterClassName -> com.mchange.v2.c3p0.impl.DefaultConnectionTester, contextClassLoaderSource -> caller, dataSourceName -> 1hge0yu9ren0c0m14cu27j|5e72d283, debugUnreturnedConnectionStackTraces -> false, description -> null, driverClass -> com.mysql.jdbc.Driver, extensions -> {}, factoryClassLocation -> null, forceIgnoreUnresolvedTransactions -> false, forceUseNamedDriverClass -> false, identityToken -> 1hge0yu9ren0c0m14cu27j|5e72d283, idleConnectionTestPeriod -> 0, initialPoolSize -> 20, jdbcUrl -> jdbc:mysql://127.0.0.1:3308/ptn?useUnicode=true&characterEncoding=utf-8&autoReconnect=true&failOverReadOnly=false, maxAdministrativeTaskTime -> 0, maxConnectionAge -> 0, maxIdleTime -> 0, maxIdleTimeExcessConnections -> 0, maxPoolSize -> 30, maxStatements -> 20, maxStatementsPerConnection -> 0, minPoolSize -> 1, numHelperThreads -> 3, preferredTestQuery -> null, privilegeSpawnedThreads -> false, properties -> {user=******, password=******}, propertyCycle -> 0, statementCacheNumDeferredCloseThreads -> 0, testConnectionOnCheckin -> true, testConnectionOnCheckout -> false, unreturnedConnectionTimeout -> 0, userOverrides -> {}, usesTraditionalReflectiveProxies -> false ]
+[2017-10-19 21:11:36] INFO com.nms.rmi.ui.util.ServiceInitUtil - 加载驱动信息
+[2017-10-19 21:11:36] INFO com.nms.rmi.ui.util.ServiceInitUtil - 加载网元信息
+[2017-10-19 21:11:36] INFO com.nms.rmi.ui.util.ServiceInitUtil - 加载rmi信息
+[2017-10-19 21:11:36] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager5
+[2017-10-19 21:11:36] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager15
+[2017-10-19 21:11:36] INFO com.nms.rmi.ui.util.ServiceInitUtil - 加载线程信息
+[2017-10-19 21:11:36] INFO org.springframework.context.support.ClassPathXmlApplicationContext - Refreshing org.springframework.context.support.ClassPathXmlApplicationContext@50838d21: display name [org.springframework.context.support.ClassPathXmlApplicationContext@50838d21]; startup date [Thu Oct 19 21:11:36 CST 2017]; root of context hierarchy
+[2017-10-19 21:11:36] INFO org.springframework.beans.factory.xml.XmlBeanDefinitionReader - Loading XML bean definitions from class path resource [applicationContext-jms-broker.xml]
+[2017-10-19 21:11:36] INFO org.springframework.context.support.ClassPathXmlApplicationContext - Bean factory for application context [org.springframework.context.support.ClassPathXmlApplicationContext@50838d21]: org.springframework.beans.factory.support.DefaultListableBeanFactory@13c470d4
+[2017-10-19 21:11:36] INFO org.springframework.beans.factory.support.DefaultListableBeanFactory - Pre-instantiating singletons in org.springframework.beans.factory.support.DefaultListableBeanFactory@13c470d4: defining beans [broker]; root of factory hierarchy
+[2017-10-19 21:11:37] INFO com.nms.jms.jmsMeanager.Broker - DATAX:   broker start
+[2017-10-19 21:11:37] INFO org.springframework.context.support.ClassPathXmlApplicationContext - Refreshing org.springframework.context.support.ClassPathXmlApplicationContext@74eca9b3: display name [org.springframework.context.support.ClassPathXmlApplicationContext@74eca9b3]; startup date [Thu Oct 19 21:11:37 CST 2017]; root of context hierarchy
+[2017-10-19 21:11:37] INFO org.springframework.beans.factory.xml.XmlBeanDefinitionReader - Loading XML bean definitions from class path resource [applicationContext-jms-send.xml]
+[2017-10-19 21:11:37] INFO org.springframework.context.support.ClassPathXmlApplicationContext - Bean factory for application context [org.springframework.context.support.ClassPathXmlApplicationContext@74eca9b3]: org.springframework.beans.factory.support.DefaultListableBeanFactory@2f0d0a57
+[2017-10-19 21:11:37] INFO org.springframework.beans.factory.support.DefaultListableBeanFactory - Pre-instantiating singletons in org.springframework.beans.factory.support.DefaultListableBeanFactory@2f0d0a57: defining beans [jmsTemplate,jmsTemplateaa,targetConnectionFactory,connectionFactory,serverOtherNotify,JmsSender]; root of factory hierarchy
+[2017-10-19 21:11:37] INFO com.nms.jms.common.ApplicationBeanFactory - DATAX:   告警send已启动2017-10-19
+[2017-10-19 21:11:37] INFO org.springframework.context.support.ClassPathXmlApplicationContext - Refreshing org.springframework.context.support.ClassPathXmlApplicationContext@44d916e6: display name [org.springframework.context.support.ClassPathXmlApplicationContext@44d916e6]; startup date [Thu Oct 19 21:11:37 CST 2017]; root of context hierarchy
+[2017-10-19 21:11:37] INFO org.springframework.beans.factory.xml.XmlBeanDefinitionReader - Loading XML bean definitions from class path resource [applicationContext-jms-serviceCourse.xml]
+[2017-10-19 21:11:37] INFO org.springframework.context.support.ClassPathXmlApplicationContext - Bean factory for application context [org.springframework.context.support.ClassPathXmlApplicationContext@44d916e6]: org.springframework.beans.factory.support.DefaultListableBeanFactory@68c6c730
+[2017-10-19 21:11:37] INFO org.springframework.beans.factory.support.DefaultListableBeanFactory - Pre-instantiating singletons in org.springframework.beans.factory.support.DefaultListableBeanFactory@68c6c730: defining beans [jmsTemplate,targetConnectionFactory,connectionFactory,serverOtherNotify,alarmCourseMessageListener,responseQueueMessageListenerContainer]; root of factory hierarchy
+[2017-10-19 21:11:38] INFO com.nms.jms.common.ApplicationBeanFactory - DATAX:   告警receive已启动2017-10-19
+[2017-10-19 21:11:38] INFO com.nms.rmi.thread.StartThread - JMS初始化成功
+[2017-10-19 21:11:43] INFO org.springframework.jms.connection.SingleConnectionFactory - Established shared JMS Connection: ActiveMQConnection {id=ID:pc-PC-53715-1508418697196-2:2,clientId=null,started=false}
+[2017-10-19 21:11:43] INFO org.springframework.jms.listener.DefaultMessageListenerContainer - Successfully refreshed JMS Connection
+[2017-10-19 21:11:46] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:11:46] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:11:56] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:11:56] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:12:06] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:12:06] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:12:16] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:12:16] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:12:26] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:12:26] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:12:36] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:12:36] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:12:46] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:12:46] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:12:56] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:12:56] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:13:06] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:13:06] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:13:16] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:13:16] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:13:26] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:13:26] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:13:36] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:13:36] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:13:46] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:13:46] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:13:56] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:13:56] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:14:14] INFO com.mchange.v2.log.MLog - MLog clients using log4j logging.
+[2017-10-19 21:14:14] INFO com.mchange.v2.c3p0.C3P0Registry - Initializing c3p0-0.9.5-pre8 [built 04-April-2014 04:20:15 -0700; debug? true; trace: 10]
+[2017-10-19 21:14:15] INFO com.mchange.v2.c3p0.impl.AbstractPoolBackedDataSource - Initializing c3p0 pool... com.mchange.v2.c3p0.ComboPooledDataSource [ acquireIncrement -> 3, acquireRetryAttempts -> 30, acquireRetryDelay -> 1000, autoCommitOnClose -> false, automaticTestTable -> null, breakAfterAcquireFailure -> false, checkoutTimeout -> 0, connectionCustomizerClassName -> null, connectionTesterClassName -> com.mchange.v2.c3p0.impl.DefaultConnectionTester, contextClassLoaderSource -> caller, dataSourceName -> 1hge0yu9ren3rkc1nwu1og|17ce6983, debugUnreturnedConnectionStackTraces -> false, description -> null, driverClass -> com.mysql.jdbc.Driver, extensions -> {}, factoryClassLocation -> null, forceIgnoreUnresolvedTransactions -> false, forceUseNamedDriverClass -> false, identityToken -> 1hge0yu9ren3rkc1nwu1og|17ce6983, idleConnectionTestPeriod -> 0, initialPoolSize -> 20, jdbcUrl -> jdbc:mysql://127.0.0.1:3308/ptn?useUnicode=true&characterEncoding=utf-8&autoReconnect=true&failOverReadOnly=false, maxAdministrativeTaskTime -> 0, maxConnectionAge -> 0, maxIdleTime -> 0, maxIdleTimeExcessConnections -> 0, maxPoolSize -> 30, maxStatements -> 20, maxStatementsPerConnection -> 0, minPoolSize -> 1, numHelperThreads -> 3, preferredTestQuery -> null, privilegeSpawnedThreads -> false, properties -> {user=******, password=******}, propertyCycle -> 0, statementCacheNumDeferredCloseThreads -> 0, testConnectionOnCheckin -> true, testConnectionOnCheckout -> false, unreturnedConnectionTimeout -> 0, userOverrides -> {}, usesTraditionalReflectiveProxies -> false ]
+[2017-10-19 21:14:16] INFO com.nms.rmi.ui.util.ServiceInitUtil - 加载驱动信息
+[2017-10-19 21:14:16] INFO com.nms.rmi.ui.util.ServiceInitUtil - 加载网元信息
+[2017-10-19 21:14:16] INFO com.nms.rmi.ui.util.ServiceInitUtil - 加载rmi信息
+[2017-10-19 21:14:16] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager4
+[2017-10-19 21:14:16] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager16
+[2017-10-19 21:14:16] INFO com.nms.rmi.ui.util.ServiceInitUtil - 加载线程信息
+[2017-10-19 21:14:16] INFO org.springframework.context.support.ClassPathXmlApplicationContext - Refreshing org.springframework.context.support.ClassPathXmlApplicationContext@277d4ae4: display name [org.springframework.context.support.ClassPathXmlApplicationContext@277d4ae4]; startup date [Thu Oct 19 21:14:16 CST 2017]; root of context hierarchy
+[2017-10-19 21:14:16] INFO org.springframework.beans.factory.xml.XmlBeanDefinitionReader - Loading XML bean definitions from class path resource [applicationContext-jms-broker.xml]
+[2017-10-19 21:14:16] INFO org.springframework.context.support.ClassPathXmlApplicationContext - Bean factory for application context [org.springframework.context.support.ClassPathXmlApplicationContext@277d4ae4]: org.springframework.beans.factory.support.DefaultListableBeanFactory@3c203038
+[2017-10-19 21:14:16] INFO org.springframework.beans.factory.support.DefaultListableBeanFactory - Pre-instantiating singletons in org.springframework.beans.factory.support.DefaultListableBeanFactory@3c203038: defining beans [broker]; root of factory hierarchy
+[2017-10-19 21:14:17] INFO com.nms.jms.jmsMeanager.Broker - DATAX:   broker start
+[2017-10-19 21:14:17] INFO org.springframework.context.support.ClassPathXmlApplicationContext - Refreshing org.springframework.context.support.ClassPathXmlApplicationContext@2610b27b: display name [org.springframework.context.support.ClassPathXmlApplicationContext@2610b27b]; startup date [Thu Oct 19 21:14:17 CST 2017]; root of context hierarchy
+[2017-10-19 21:14:17] INFO org.springframework.beans.factory.xml.XmlBeanDefinitionReader - Loading XML bean definitions from class path resource [applicationContext-jms-send.xml]
+[2017-10-19 21:14:17] INFO org.springframework.context.support.ClassPathXmlApplicationContext - Bean factory for application context [org.springframework.context.support.ClassPathXmlApplicationContext@2610b27b]: org.springframework.beans.factory.support.DefaultListableBeanFactory@2bff9505
+[2017-10-19 21:14:17] INFO org.springframework.beans.factory.support.DefaultListableBeanFactory - Pre-instantiating singletons in org.springframework.beans.factory.support.DefaultListableBeanFactory@2bff9505: defining beans [jmsTemplate,jmsTemplateaa,targetConnectionFactory,connectionFactory,serverOtherNotify,JmsSender]; root of factory hierarchy
+[2017-10-19 21:14:17] INFO com.nms.jms.common.ApplicationBeanFactory - DATAX:   告警send已启动2017-10-19
+[2017-10-19 21:14:17] INFO org.springframework.context.support.ClassPathXmlApplicationContext - Refreshing org.springframework.context.support.ClassPathXmlApplicationContext@17006d1d: display name [org.springframework.context.support.ClassPathXmlApplicationContext@17006d1d]; startup date [Thu Oct 19 21:14:17 CST 2017]; root of context hierarchy
+[2017-10-19 21:14:17] INFO org.springframework.beans.factory.xml.XmlBeanDefinitionReader - Loading XML bean definitions from class path resource [applicationContext-jms-serviceCourse.xml]
+[2017-10-19 21:14:17] INFO org.springframework.context.support.ClassPathXmlApplicationContext - Bean factory for application context [org.springframework.context.support.ClassPathXmlApplicationContext@17006d1d]: org.springframework.beans.factory.support.DefaultListableBeanFactory@7bf797c5
+[2017-10-19 21:14:17] INFO org.springframework.beans.factory.support.DefaultListableBeanFactory - Pre-instantiating singletons in org.springframework.beans.factory.support.DefaultListableBeanFactory@7bf797c5: defining beans [jmsTemplate,targetConnectionFactory,connectionFactory,serverOtherNotify,alarmCourseMessageListener,responseQueueMessageListenerContainer]; root of factory hierarchy
+[2017-10-19 21:14:18] INFO com.nms.jms.common.ApplicationBeanFactory - DATAX:   告警receive已启动2017-10-19
+[2017-10-19 21:14:18] INFO com.nms.rmi.thread.StartThread - JMS初始化成功
+[2017-10-19 21:14:23] INFO org.springframework.jms.connection.SingleConnectionFactory - Established shared JMS Connection: ActiveMQConnection {id=ID:pc-PC-53785-1508418857349-2:2,clientId=null,started=false}
+[2017-10-19 21:14:23] INFO org.springframework.jms.listener.DefaultMessageListenerContainer - Successfully refreshed JMS Connection
+[2017-10-19 21:14:26] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:14:26] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:14:36] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:14:36] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:14:46] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:14:46] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:14:56] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:14:56] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:15:06] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:15:06] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:15:16] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:15:16] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:15:26] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:15:26] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:15:36] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:15:36] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:15:46] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:15:46] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:15:56] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:15:56] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:16:06] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:16:06] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:16:16] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:16:16] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:16:26] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:16:26] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:16:36] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:16:36] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:16:46] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:16:46] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:16:56] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:16:56] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:17:06] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:17:06] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:17:16] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:17:16] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:17:26] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:17:26] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:17:36] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:17:36] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:17:46] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:17:46] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:17:56] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:17:56] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:18:06] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:18:06] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:18:16] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:18:16] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:18:26] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:18:26] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:18:36] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:18:36] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:18:46] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:18:46] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:18:56] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:18:56] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:19:06] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:19:06] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:19:16] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:19:16] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:19:26] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:19:26] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:19:36] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:19:36] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:19:46] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:19:46] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:19:56] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:19:56] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:20:06] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:20:06] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:20:16] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:20:16] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:20:26] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:20:26] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:20:36] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:20:36] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:20:46] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:20:46] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:20:56] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:20:56] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:21:06] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:21:06] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:21:16] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:21:16] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:21:26] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:21:26] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:21:36] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:21:36] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:21:46] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:21:46] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:21:56] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:21:56] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:22:06] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:22:06] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:22:16] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:22:16] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:22:26] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:22:26] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:22:36] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:22:36] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:22:46] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:22:46] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:22:56] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:22:56] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:23:06] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:23:06] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:23:16] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:23:16] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:23:26] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:23:26] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:23:36] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:23:36] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:23:46] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:23:46] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:23:56] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:23:56] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:24:06] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:24:06] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:24:16] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:24:16] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:24:26] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:24:26] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:24:36] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:24:36] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:24:46] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:24:46] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:24:56] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:24:56] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:25:06] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:25:06] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:25:16] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:25:16] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:25:26] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:25:26] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:25:36] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:25:36] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:25:46] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:25:46] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:25:56] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:25:56] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:26:06] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:26:06] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:26:16] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:26:16] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:26:26] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:26:26] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:26:36] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:26:36] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:26:46] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:26:46] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:26:56] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:26:56] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:27:06] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:27:06] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:27:16] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:27:16] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:27:26] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:27:26] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:27:36] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:27:36] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:27:46] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:27:46] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:27:56] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:27:56] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:28:06] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:28:06] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:28:16] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:28:16] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:28:26] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:28:26] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:28:36] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:28:36] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:28:47] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:28:47] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:28:57] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:28:57] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:29:07] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:29:07] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:29:17] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:29:17] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:29:27] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:29:27] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:29:37] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:29:37] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:29:47] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:29:47] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:29:57] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:29:57] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:30:07] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:30:07] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:30:17] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:30:17] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:30:27] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:30:27] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:30:37] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:30:37] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:30:47] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:30:47] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:30:57] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:30:57] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:31:07] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:31:07] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:31:17] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:31:17] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:31:27] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:31:27] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:31:37] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:31:37] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:31:47] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:31:47] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:31:57] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:31:57] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:32:07] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:32:07] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:32:17] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:32:17] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:32:27] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:32:27] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:32:37] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:32:37] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:32:47] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:32:47] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:32:57] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:32:57] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:33:07] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:33:07] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:33:17] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:33:17] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:33:27] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:33:27] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:33:37] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:33:37] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:33:47] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:33:47] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:33:57] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:33:57] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:34:07] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:34:07] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:34:17] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:34:17] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:34:27] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:34:27] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:34:37] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:34:37] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:34:47] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:34:47] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:34:57] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:34:57] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:35:07] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:35:07] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:35:17] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:35:17] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:35:27] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:35:27] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:35:37] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:35:37] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:35:47] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:35:47] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:35:57] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:35:57] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:36:07] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:36:07] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:36:17] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:36:17] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:36:27] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:36:27] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:36:37] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:36:37] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:36:47] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:36:47] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:36:57] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:36:57] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:37:07] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:37:07] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:37:17] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:37:17] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:37:27] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:37:27] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:37:37] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:37:37] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:37:47] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:37:47] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:37:57] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:37:57] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:38:07] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:38:07] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:38:17] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:38:17] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:38:27] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:38:27] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:38:37] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:38:37] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:38:47] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:38:47] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:38:57] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:38:57] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:39:07] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:39:07] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:39:17] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:39:17] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:39:27] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:39:27] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:39:37] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:39:37] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:39:47] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:39:47] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:39:57] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:39:57] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:40:07] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:40:07] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:40:17] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:40:17] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:40:27] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:40:27] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:40:37] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:40:37] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:40:47] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:40:47] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:40:57] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:40:57] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:41:07] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:41:07] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:41:17] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:41:17] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:41:27] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:41:27] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:41:37] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:41:37] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:41:47] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:41:47] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:41:57] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:41:57] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:42:07] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:42:07] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
+[2017-10-19 21:42:17] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 已经用了的最大连接数Mybatis_DBManager2
+[2017-10-19 21:42:17] INFO com.nms.ui.ptn.alarm.controller.SiteConnectTask - 空闲的最大连接数Mybatis_DBManager18
