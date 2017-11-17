@@ -48,17 +48,13 @@ public class CRDXml {
 		//CMCC-PTN-NRM-ME-V1.0.0-20140411-1602-P00.xml
 		String filePath = "";
 		String version = ResourceUtil.srcStr(StringKeysLbl.LBL_SNMPMODEL_VERSION);
-		String[] xmlPath = {"snmpData\\NRM", "CM-PTN-CRD-A1-"+version+"-"+this.getTime()+".xml"};
-		FileTools fileTools = null;
+		String[] xmlPath = {"snmpData\\NRM", "CM-PTN-CRD-A1-"+version+"-"+XmlUtil.getTime()+".xml"};
 		try {
-			filePath = xmlPath[0] + File.separator + xmlPath[1];//生成文件路径
 			List<CardInst> cardList = this.getCardList();
 	    	this.createFile(xmlPath);//根据文件路径和文件名生成xml文件
 	    	Document doc = this.getDocument(xmlPath);//生成doucument
 		    this.createXML(doc,cardList);//生成xml文件内容
-		    fileTools = new FileTools();
-		    fileTools.putFile(doc, filePath);//根据xml文件内容生成对应的文件
-		    fileTools.zipFile(filePath, filePath.substring(0, filePath.length()-5)+".zip");
+		    XmlUtil.createFile(doc, "CM-PTN-CRD-A1-");
 		} catch (Exception e){
 			ExceptionManage.dispose(e, this.getClass());
 		}
@@ -70,7 +66,7 @@ public class CRDXml {
 		CardService_MB cardService = null;
 		try {
 			cardService = (CardService_MB) ConstantUtil.serviceFactory.newService_MB(Services.CARD);
-			cardList = cardService.select();
+			cardList = cardService.select_north();
 		} catch (Exception e) {
 			ExceptionManage.dispose(e, this.getClass());
 		} finally {
@@ -122,7 +118,7 @@ public class CRDXml {
 		root.setAttribute("xmlns:dm", "http://www.tmforum.org/mtop/mtnm/Configure/v1");
 		root.setAttribute("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance");
 		root.setAttribute("xsi:schemaLocation", "http://www.tmforum.org/mtop/mtnm/Configure/v1 ../Inventory.xsd");
-		root.appendChild(XmlUtil.fileHeader(doc));
+		root.appendChild(XmlUtil.fileHeader(doc,"Card"));
 		Element emsList = this.createFileContent(doc,cardList);
 		root.appendChild(emsList);
 		doc.appendChild(root);
@@ -148,15 +144,15 @@ public class CRDXml {
 		Element FieldValue = doc.createElement("FieldValue");
 		for (CardInst cardInst :cardList) {
 			Element Object = doc.createElement("Object");
-			Object.setAttribute("rmUID","4201EBCRD1"+cardInst.getId());
-			this.createElementNode(doc, "N", "4201EBCRD1"+cardInst.getId(), Object, "i", "1");
-			this.createElementNode(doc, "N", "4201EBNEL1"+cardInst.getSiteId(), Object, "i", "2");
-			this.createElementNode(doc, "N", "4201EBEQHSLOT1"+cardInst.getSlotId(), Object, "i", "3");
+			Object.setAttribute("rmUID","3301EBCRD1"+cardInst.getId());
+			this.createElementNode(doc, "N", "3301EBCRD1"+cardInst.getId(), Object, "i", "1");
+			this.createElementNode(doc, "N", "3301EBNEL1"+cardInst.getSiteId(), Object, "i", "2");
+			this.createElementNode(doc, "N", "3301EBEQHSLOT1"+cardInst.getSlotId(), Object, "i", "3");
 			this.createElementNode(doc, "N", cardInst.getCardName(), Object, "i", "4");
 			this.createElementNode(doc, "N", cardInst.getCardName(), Object, "i", "5");
 			this.createElementNode(doc, "N", "", Object, "i", "6");
-			this.createElementNode(doc, "N", "V1.1", Object, "i", "7");
-			this.createElementNode(doc, "N", "V1.1", Object, "i", "8");
+			this.createElementNode(doc, "N", cardInst.getSnmpName(), Object, "i", "7");
+			this.createElementNode(doc, "N", "V1.2", Object, "i", "8");
 			this.createElementNode(doc, "N", "", Object, "i", "9");
 			this.createElementNode(doc, "N", "IN_SERVICE", Object, "i", "10");
 			this.createElementNode(doc, "N", "NA", Object, "i", "11");

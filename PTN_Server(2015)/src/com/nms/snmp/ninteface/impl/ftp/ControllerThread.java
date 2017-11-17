@@ -24,10 +24,10 @@ private int count = 0;
 	public static final ThreadLocal<String> USER = new ThreadLocal<String>();
 
 	//数据连接的ip
-	private String dataIp;
+	private String dataIp ="127.0.0.1";
 	
 	//数据连接的port
-	private  String dataPort;
+	private  String dataPort ="21";
 	
 	//用于标记用户是否已经登录
 	private boolean isLogin = false;
@@ -81,6 +81,7 @@ private int count = 0;
 	public void run() {
 		 System.out.println("hello");
 		 BufferedReader reader;
+		 System.out.println("ControllerThread:"+this);
 		try {
 			  reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));	
 			  Writer writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
@@ -100,6 +101,7 @@ private int count = 0;
 						  String command = reader.readLine();  
 						  if(command !=null) {
 						      String[] datas = command.split(" ");
+						      System.out.println("ddd:"+datas[0]);
 						      Command commandSolver = CommandFactory.createCommand(datas[0]); 
 						      //登录验证,在没有登录的情况下，无法使用除了user,pass之外的命令
 						      if(loginValiate(commandSolver)) {
@@ -141,7 +143,7 @@ private int count = 0;
 	
 	
 	public  boolean loginValiate(Command command) {
-		if(command instanceof UserCommand || command instanceof PassCommand) {
+		if(command instanceof UserCommand || command instanceof PassCommand ) {
 			return true;
 		}
 		else 

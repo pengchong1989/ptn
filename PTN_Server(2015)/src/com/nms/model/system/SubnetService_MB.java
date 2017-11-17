@@ -259,5 +259,8 @@ public class SubnetService_MB extends ObjectService_Mybatis{
 		field = this.mapper.getSiteParent(siteInst);
 		return field;
 	}
-
+	 public List<Field> select_SBN_north()
+	  {
+	    return this.mapper.select_SBN_north();
+	  }
 }

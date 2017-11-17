@@ -1,7 +1,7 @@
 package com.nms.snmp.ninteface.impl.config;
 
-import com.nms.db.bean.ptn.path.tunnel.Tunnel;
-import com.nms.model.ptn.path.tunnel.TunnelService_MB;
+import com.nms.db.bean.system.Field;
+import com.nms.model.system.SubnetService_MB;
 import com.nms.model.util.ServiceFactory;
 import com.nms.service.impl.dispatch.rmi.bean.ServiceBean;
 import com.nms.snmp.ninteface.framework.SnmpConfig;
@@ -18,37 +18,36 @@ import java.io.FileOutputStream;
 import java.net.InetAddress;
 import java.rmi.ConnectException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.List;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-public class TPIXml
+public class SBNXml
 {
   public static void main(String[] args)
   {
     Mybatis_DBManager.init("127.0.0.1");
     ConstantUtil.serviceFactory = new ServiceFactory();
     SnmpConfig.getInstanse().init();
-    new TPIXml().getTPIXml();
+    new SBNXml().getSBNXml();
   }
   
-  public String getTPIXml()
+  public String getSBNXml()
   {
     String filePath = "";
     String version = ResourceUtil.srcStr("LBL_SNMPMODEL_VERSION");
-    String[] xmlPath = { "snmpData\\NRM", "CM-PTN-TPI-A1-" + version + "-" + getTime() + ".xml" };
+    String[] xmlPath = { "snmpData\\NRM", "CM-PTN-SBN-A1-" + version + "-" + getTime() + ".xml" };
     FileTools fileTools = null;
     try
     {
       filePath = xmlPath[0] + File.separator + xmlPath[1];
-      List<Tunnel> tunnelList = getProtTunnelList();
+      List<Field> mapList = getSBNList();
       createFile(xmlPath);
       Document doc = getDocument(xmlPath);
-      createXML(doc, tunnelList);
-      XmlUtil.createFile(doc, "CM-PTN-TPI-A1-");
+      createXML(doc, mapList);
+      XmlUtil.createFile(doc, "CM-PTN-SBN-A1-");
     }
     catch (Exception e)
     {
@@ -57,29 +56,24 @@ public class TPIXml
     return filePath;
   }
   
-  private List<Tunnel> getProtTunnelList()
+  private List<Field> getSBNList()
   {
-    List<Tunnel> tunnelList = new ArrayList();
-    TunnelService_MB tunnelService = null;
+    SubnetService_MB subnetService_MB = null;
+    List<Field> fields = null;
     try
     {
-      tunnelService = (TunnelService_MB)ConstantUtil.serviceFactory.newService_MB(28);
-      List<Tunnel> tList = tunnelService.select();
-      for (Tunnel tunnel : tList) {
-        if (!tunnel.getTunnelType().equals("185")) {
-          tunnelList.add(tunnel);
-        }
-      }
+      subnetService_MB = (SubnetService_MB)ConstantUtil.serviceFactory.newService_MB(88);
+      fields = subnetService_MB.select_SBN_north();
     }
     catch (Exception e)
     {
-      ExceptionManage.dispose(e, getClass());
+      e.printStackTrace();
     }
     finally
     {
-      UiUtil.closeService_MB(tunnelService);
+      UiUtil.closeService_MB(subnetService_MB);
     }
-    return tunnelList;
+    return fields;
   }
   
   private String getTime()
@@ -114,7 +108,7 @@ public class TPIXml
     return null;
   }
   
-  private void createXML(Document doc, List<Tunnel> tunnelList)
+  private void createXML(Document doc, List<Field> mapList)
   {
     doc.setXmlVersion("1.0");
     doc.setXmlStandalone(true);
@@ -122,32 +116,34 @@ public class TPIXml
     root.setAttribute("xmlns:dm", "http://www.tmforum.org/mtop/mtnm/Configure/v1");
     root.setAttribute("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance");
     root.setAttribute("xsi:schemaLocation", "http://www.tmforum.org/mtop/mtnm/Configure/v1 ../Inventory.xsd");
-    root.appendChild(XmlUtil.fileHeader(doc,"TunnelPGInfo"));
-    Element emsList = createFileContent(doc, tunnelList);
+    root.appendChild(XmlUtil.fileHeader(doc,"SubNet"));
+    Element emsList = createFileContent(doc, mapList);
     root.appendChild(emsList);
     doc.appendChild(root);
   }
   
-  private Element createFileContent(Document doc, List<Tunnel> tunnelList)
+  private Element createFileContent(Document doc, List<Field> mapList)
   {
     Element Objects = doc.createElement("Objects");
     
     Element FieldName = doc.createElement("FieldName");
     createElementNode(doc, "N", "rmUID", FieldName, "i", "1");
     createElementNode(doc, "N", "nativeName", FieldName, "i", "2");
-    createElementNode(doc, "N", "reversionMode", FieldName, "i", "3");
-    createElementNode(doc, "N", "type", FieldName, "i", "4");
+    createElementNode(doc, "N", "parentSubnetrmUID", FieldName, "i", "3");
+    createElementNode(doc, "N", "xPos", FieldName, "i", "4");
+    createElementNode(doc, "N", "yPos", FieldName, "i", "5");
     Objects.appendChild(FieldName);
     
     Element FieldValue = doc.createElement("FieldValue");
-    for (Tunnel tunnel : tunnelList)
+    for (Field field : mapList)
     {
       Element Object = doc.createElement("Object");
-      Object.setAttribute("rmUID", "3301EBCRD1" + tunnel.getAprotectId());
-      createElementNode(doc, "N", "3301EBCRD1" + tunnel.getAprotectId(), Object, "i", "1");
-      createElementNode(doc, "N", "3301EBCRD1" + tunnel.getName(), Object, "i", "2");
-      createElementNode(doc, "N", "RM_REVERTIVE", Object, "i", "3");
-      createElementNode(doc, "N", "1:1", Object, "i", "4");
+      Object.setAttribute("rmUID", "3301EBSBN" + field.getId());
+      createElementNode(doc, "N", "3301EBSBN" + field.getId(), Object, "i", "1");
+      createElementNode(doc, "N", field.getFieldName(), Object, "i", "2");
+      createElementNode(doc, "N", "", Object, "i", "3");
+      createElementNode(doc, "N", field.getFieldX()+"", Object, "i", "4");
+      createElementNode(doc, "N", field.getFieldY()+"", Object, "i", "5");
       FieldValue.appendChild(Object);
     }
     Objects.appendChild(FieldValue);

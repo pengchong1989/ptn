@@ -37,7 +37,7 @@ public class FtpTransThread implements Runnable {
 			TimerTask task = new FtpTransTimerTask();
 			Timer timer = new Timer();
 			long interval_24hour = EMonitorCycle.HOUR24.getInterval();
-			timer.schedule(task, interValTime, interval_24hour);//安排指定的任务开始进行重复的固定延迟执行
+			timer.schedule(task, 5*60*1000, interval_24hour);//安排指定的任务开始进行重复的固定延迟执行
 		} catch (Exception e) {
 			ExceptionManage.dispose(e,this.getClass());
 		}

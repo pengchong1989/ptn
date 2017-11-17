@@ -121,5 +121,7 @@ public interface FieldMapper {
 	 * @throws Exception
 	 */
 	public List<Field> queryByNameCondition(@Param("name")String name);
+
+	List<Field> select_SBN_north();
 	
 }

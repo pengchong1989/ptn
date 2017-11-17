@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -11,6 +12,7 @@ import javax.management.AttributeValueExp;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
+import org.apache.log4j.xml.XMLLayout;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -26,24 +28,23 @@ import com.nms.ui.manager.ResourceUtil;
 import com.nms.ui.manager.keys.StringKeysLbl;
 
 public class OMCXml {
-	public static void main(String[] args) {
-		new OMCXml().getOMCXml();
+	public static void main(String[] args) throws UnknownHostException {
+//		new OMCXml().getOMCXml();
+		System.out.println(InetAddress.getLocalHost().getHostAddress());
 	}
 	
 	public String getOMCXml() {
 		//CMCC-PTN-NRM-ME-V1.0.0-20140411-1602-P00.xml
 		String filePath = "";
 		String version = ResourceUtil.srcStr(StringKeysLbl.LBL_SNMPMODEL_VERSION);
-		String[] xmlPath = {"snmpData\\NRM", "CM-PTN-OMC-A1-"+version+"-"+this.getTime()+".xml"};
+		String[] xmlPath = {"snmpData\\NRM", "CM-PTN-OMC-A1-"+version+"-"+XmlUtil.getTime()+".xml"};
 		FileTools fileTools = null;
 		try {
 			filePath = xmlPath[0] + File.separator + xmlPath[1];//生成文件路径
 	    	this.createFile(xmlPath);//根据文件路径和文件名生成xml文件
 	    	Document doc = this.getDocument(xmlPath);//生成doucument
 		    this.createXML(doc);//生成xml文件内容
-		    fileTools = new FileTools();
-		    fileTools.putFile(doc, filePath);//根据xml文件内容生成对应的文件
-		    fileTools.zipFile(filePath, filePath.substring(0, filePath.length()-5)+".zip");
+		    XmlUtil.createFile(doc, "CM-PTN-OMC-A1-");
 		} catch (Exception e){
 			ExceptionManage.dispose(e, this.getClass());
 		}
@@ -93,7 +94,7 @@ public class OMCXml {
 		root.setAttribute("xmlns:dm", "http://www.tmforum.org/mtop/mtnm/Configure/v1");
 		root.setAttribute("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance");
 		root.setAttribute("xsi:schemaLocation", "http://www.tmforum.org/mtop/mtnm/Configure/v1 ../Inventory.xsd");
-		root.appendChild(XmlUtil.fileHeader(doc));
+		root.appendChild(XmlUtil.fileHeader(doc,"OMC"));
 		Element emsList = this.createFileContent(doc);
 		root.appendChild(emsList);
 		doc.appendChild(root);
@@ -114,12 +115,19 @@ public class OMCXml {
 		
 		Element FieldValue = doc.createElement("FieldValue");
 		Element Object = doc.createElement("Object");
-		Object.setAttribute("rmUID","4201EBCS1");
-		this.createElementNode(doc, "N", "4201EBCS1", Object, "i", "1");
-		this.createElementNode(doc, "N", "YINMS", Object, "i", "2");
-		this.createElementNode(doc, "N", "127.0.0.1", Object, "i", "3");
+		Object.setAttribute("rmUID","3301EBCS1");
+		this.createElementNode(doc, "N", "3301EBCS1", Object, "i", "1");
+		this.createElementNode(doc, "N", "EBNG –EMS-Client", Object, "i", "2");
+		String ip = "";
+		try {
+			ip = InetAddress.getLocalHost().getHostAddress();
+		} catch (UnknownHostException e) {
+			e.printStackTrace();
+		}
+		this.createElementNode(doc, "N",ip , Object, "i", "3");
+		
 		this.createElementNode(doc, "N", "V1.2", Object, "i", "4");
-		this.createElementNode(doc, "N", "V1.2", Object, "i", "5");
+		this.createElementNode(doc, "N", "V1.0", Object, "i", "5");
 		this.createElementNode(doc, "N", "PTN", Object, "i", "6");
 		this.createElementNode(doc, "N", "EBANG", Object, "i", "7");
 		FieldValue.appendChild(Object);

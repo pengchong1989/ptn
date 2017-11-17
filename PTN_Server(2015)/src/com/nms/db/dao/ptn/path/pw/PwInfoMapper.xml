@@ -429,10 +429,11 @@
 	p.outlabelValue,
 	p.apwServiceId,
 	p.zpwServiceId,
+	p.createTime,
 	t.aPortId AS showaSiteName,
 	t.zPortId AS showzSiteName
 FROM
-	pwinfo p INNER JOIN tunnel t on p.tunnelId = t.id 
+	pwinfo p INNER JOIN tunnel t on p.tunnelId = t.tunnelId
   </select>
   
 </mapper>

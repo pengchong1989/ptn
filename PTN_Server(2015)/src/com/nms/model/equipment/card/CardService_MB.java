@@ -452,4 +452,8 @@ public class CardService_MB extends ObjectService_Mybatis {
 			port2LayerMapper = null;
 		}
 	}
+	
+	public List<CardInst> select_north(){
+		return this.mapper.select_north();
+	}
 }

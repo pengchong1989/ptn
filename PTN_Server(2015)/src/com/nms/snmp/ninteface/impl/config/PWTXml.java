@@ -45,14 +45,14 @@ public class PWTXml {
 		Mybatis_DBManager.init("127.0.0.1");
 		ConstantUtil.serviceFactory = new ServiceFactory();
 		SnmpConfig.getInstanse().init();
-		new PWTXml().getTNLXml();
+		new PWTXml().getPWTXml();
 	}
 	
-	public String getTNLXml() {
+	public String getPWTXml() {
 		//CMCC-PTN-NRM-ME-V1.0.0-20140411-1602-P00.xml
 		String filePath = "";
 		String version = ResourceUtil.srcStr(StringKeysLbl.LBL_SNMPMODEL_VERSION);
-		String[] xmlPath = {"snmpData\\NRM", "CM-PTN-TNL-A1-"+version+"-"+this.getTime()+".xml"};
+		String[] xmlPath = {"snmpData\\NRM", "CM-PTN-PWT-A1-"+version+"-"+XmlUtil.getTime()+".xml"};
 		FileTools fileTools = null;
 		try {
 			filePath = xmlPath[0] + File.separator + xmlPath[1];//生成文件路径
@@ -60,9 +60,7 @@ public class PWTXml {
 	    	this.createFile(xmlPath);//根据文件路径和文件名生成xml文件
 	    	Document doc = this.getDocument(xmlPath);//生成doucument
 		    this.createXML(doc,pwList);//生成xml文件内容
-		    fileTools = new FileTools();
-		    fileTools.putFile(doc, filePath);//根据xml文件内容生成对应的文件
-		    fileTools.zipFile(filePath, filePath.substring(0, filePath.length()-5)+".zip");
+		    XmlUtil.createFile(doc, "CM-PTN-PWT-A1-");
 		} catch (Exception e){
 			ExceptionManage.dispose(e, this.getClass());
 		}
@@ -126,7 +124,7 @@ public class PWTXml {
 		root.setAttribute("xmlns:dm", "http://www.tmforum.org/mtop/mtnm/Configure/v1");
 		root.setAttribute("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance");
 		root.setAttribute("xsi:schemaLocation", "http://www.tmforum.org/mtop/mtnm/Configure/v1 ../Inventory.xsd");
-		root.appendChild(XmlUtil.fileHeader(doc));
+		root.appendChild(XmlUtil.fileHeader(doc,"PWTunnel"));
 		Element emsList = this.createFileContent(doc,pwList);
 		root.appendChild(emsList);
 		doc.appendChild(root);
@@ -145,9 +143,9 @@ public class PWTXml {
 		Element FieldValue = doc.createElement("FieldValue");
 		for (PwInfo pwInfo :pwList) {
 			Element Object = doc.createElement("Object");
-			Object.setAttribute("rmUID","4201EBPSW"+pwInfo.getPwId());
-			this.createElementNode(doc, "N", "4201EBPSW"+pwInfo.getPwId(), Object, "i", "1");
-			this.createElementNode(doc, "N", "4201EBTNL"+pwInfo.getTunnelId(), Object, "i", "2");
+			Object.setAttribute("rmUID","3301EBPSW"+pwInfo.getPwId());
+			this.createElementNode(doc, "N", "3301EBPSW"+pwInfo.getPwId(), Object, "i", "1");
+			this.createElementNode(doc, "N", "3301EBTNL"+pwInfo.getTunnelId(), Object, "i", "2");
 			this.createElementNode(doc, "N", "1", Object, "i", "3");
 			this.createElementNode(doc, "N", "1", Object, "i", "4");
 			FieldValue.appendChild(Object);

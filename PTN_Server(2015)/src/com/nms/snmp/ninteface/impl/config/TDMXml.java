@@ -1,7 +1,7 @@
 package com.nms.snmp.ninteface.impl.config;
 
-import com.nms.db.bean.ptn.path.tunnel.Tunnel;
-import com.nms.model.ptn.path.tunnel.TunnelService_MB;
+import com.nms.db.bean.ptn.path.ces.CesInfo;
+import com.nms.model.ptn.path.ces.CesInfoService_MB;
 import com.nms.model.util.ServiceFactory;
 import com.nms.service.impl.dispatch.rmi.bean.ServiceBean;
 import com.nms.snmp.ninteface.framework.SnmpConfig;
@@ -18,37 +18,35 @@ import java.io.FileOutputStream;
 import java.net.InetAddress;
 import java.rmi.ConnectException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.List;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-public class TPIXml
-{
+public class TDMXml{
   public static void main(String[] args)
   {
     Mybatis_DBManager.init("127.0.0.1");
     ConstantUtil.serviceFactory = new ServiceFactory();
     SnmpConfig.getInstanse().init();
-    new TPIXml().getTPIXml();
+    new TDMXml().getTDMXml();
   }
   
-  public String getTPIXml()
+  public String getTDMXml()
   {
     String filePath = "";
     String version = ResourceUtil.srcStr("LBL_SNMPMODEL_VERSION");
-    String[] xmlPath = { "snmpData\\NRM", "CM-PTN-TPI-A1-" + version + "-" + getTime() + ".xml" };
+    String[] xmlPath = { "snmpData\\NRM", "CM-PTN-TDM-A1-" + version + "-" + getTime() + ".xml" };
     FileTools fileTools = null;
     try
     {
       filePath = xmlPath[0] + File.separator + xmlPath[1];
-      List<Tunnel> tunnelList = getProtTunnelList();
+      List<CesInfo> cesinfos = getCESList();
       createFile(xmlPath);
       Document doc = getDocument(xmlPath);
-      createXML(doc, tunnelList);
-      XmlUtil.createFile(doc, "CM-PTN-TPI-A1-");
+      createXML(doc, cesinfos);
+      XmlUtil.createFile(doc, "CM-PTN-TDM-A1-");
     }
     catch (Exception e)
     {
@@ -57,29 +55,24 @@ public class TPIXml
     return filePath;
   }
   
-  private List<Tunnel> getProtTunnelList()
+  private List<CesInfo> getCESList()
   {
-    List<Tunnel> tunnelList = new ArrayList();
-    TunnelService_MB tunnelService = null;
+    CesInfoService_MB cesInfoService_MB = null;
+    List<CesInfo> cesInfos = null;
     try
     {
-      tunnelService = (TunnelService_MB)ConstantUtil.serviceFactory.newService_MB(28);
-      List<Tunnel> tList = tunnelService.select();
-      for (Tunnel tunnel : tList) {
-        if (!tunnel.getTunnelType().equals("185")) {
-          tunnelList.add(tunnel);
-        }
-      }
+      cesInfoService_MB = (CesInfoService_MB)ConstantUtil.serviceFactory.newService_MB(45);
+      cesInfos = cesInfoService_MB.select();
     }
     catch (Exception e)
     {
-      ExceptionManage.dispose(e, getClass());
+      e.printStackTrace();
     }
     finally
     {
-      UiUtil.closeService_MB(tunnelService);
+      UiUtil.closeService_MB(cesInfoService_MB);
     }
-    return tunnelList;
+    return cesInfos;
   }
   
   private String getTime()
@@ -114,7 +107,7 @@ public class TPIXml
     return null;
   }
   
-  private void createXML(Document doc, List<Tunnel> tunnelList)
+  private void createXML(Document doc, List<CesInfo> cesinfos)
   {
     doc.setXmlVersion("1.0");
     doc.setXmlStandalone(true);
@@ -122,32 +115,74 @@ public class TPIXml
     root.setAttribute("xmlns:dm", "http://www.tmforum.org/mtop/mtnm/Configure/v1");
     root.setAttribute("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance");
     root.setAttribute("xsi:schemaLocation", "http://www.tmforum.org/mtop/mtnm/Configure/v1 ../Inventory.xsd");
-    root.appendChild(XmlUtil.fileHeader(doc,"TunnelPGInfo"));
-    Element emsList = createFileContent(doc, tunnelList);
+    root.appendChild(XmlUtil.fileHeader(doc,"TDM"));
+    Element emsList = createFileContent(doc, cesinfos);
     root.appendChild(emsList);
     doc.appendChild(root);
   }
   
-  private Element createFileContent(Document doc, List<Tunnel> tunnelList)
+  private Element createFileContent(Document doc, List<CesInfo> cesinfos)
   {
     Element Objects = doc.createElement("Objects");
     
     Element FieldName = doc.createElement("FieldName");
     createElementNode(doc, "N", "rmUID", FieldName, "i", "1");
     createElementNode(doc, "N", "nativeName", FieldName, "i", "2");
-    createElementNode(doc, "N", "reversionMode", FieldName, "i", "3");
-    createElementNode(doc, "N", "type", FieldName, "i", "4");
+    createElementNode(doc, "N", "rate", FieldName, "i", "3");
+    createElementNode(doc, "N", "direction", FieldName, "i", "4");
+    createElementNode(doc, "N", "activeState", FieldName, "i", "5");
+    createElementNode(doc, "N", "owner", FieldName, "i", "6");
+    createElementNode(doc, "N", "owneSserviceType", FieldName, "i", "7");
+    createElementNode(doc, "N", "aEnd1TprmUID", FieldName, "i", "8");
+    createElementNode(doc, "N", "aEnd1NermUID", FieldName, "i", "9");
+    createElementNode(doc, "N", "aEnd1PortrmUID", FieldName, "i", "10");
+    createElementNode(doc, "N", "aEnd1CTPID", FieldName, "i", "11");
+    createElementNode(doc, "N", "aEnd2TprmUID", FieldName, "i", "12");
+    createElementNode(doc, "N", "aEnd2NermUID", FieldName, "i", "13");
+    createElementNode(doc, "N", "aEnd2PortrmUID", FieldName, "i", "14");
+    createElementNode(doc, "N", "aEnd2CTPID", FieldName, "i", "15");
+    createElementNode(doc, "N", "zEnd1TprmUID", FieldName, "i", "16");
+    createElementNode(doc, "N", "zEnd1NermUID", FieldName, "i", "17");
+    createElementNode(doc, "N", "zEnd1PortrmUID", FieldName, "i", "18");
+    createElementNode(doc, "N", "zEnd1CTPID", FieldName, "i", "19");
+    createElementNode(doc, "N", "zEnd2TprmUID", FieldName, "i", "20");
+    createElementNode(doc, "N", "zEnd2NermUID", FieldName, "i", "21");
+    createElementNode(doc, "N", "zEnd2PortrmUID", FieldName, "i", "22");
+    createElementNode(doc, "N", "zEnd2CTPID", FieldName, "i", "23");
+    createElementNode(doc, "N", "PW1rmUID", FieldName, "i", "24");
+    createElementNode(doc, "N", "PW2rmUI", FieldName, "i", "25");
     Objects.appendChild(FieldName);
     
     Element FieldValue = doc.createElement("FieldValue");
-    for (Tunnel tunnel : tunnelList)
+    for (CesInfo cesInfo : cesinfos)
     {
       Element Object = doc.createElement("Object");
-      Object.setAttribute("rmUID", "3301EBCRD1" + tunnel.getAprotectId());
-      createElementNode(doc, "N", "3301EBCRD1" + tunnel.getAprotectId(), Object, "i", "1");
-      createElementNode(doc, "N", "3301EBCRD1" + tunnel.getName(), Object, "i", "2");
-      createElementNode(doc, "N", "RM_REVERTIVE", Object, "i", "3");
-      createElementNode(doc, "N", "1:1", Object, "i", "4");
+      Object.setAttribute("rmUID", "3301EBTDM" + cesInfo.getId());
+      createElementNode(doc, "N", "3301EBTDM" + cesInfo.getId(), Object, "i", "1");
+      createElementNode(doc, "N", cesInfo.getName(), Object, "i", "2");
+      createElementNode(doc, "N", "2M", Object, "i", "3");
+      createElementNode(doc, "N", "CD_UNI", Object, "i", "4");
+      createElementNode(doc, "N", cesInfo.getActiveStatus() == 1 ? "ACTIVE" : "PENDING", Object, "i", "5");
+      createElementNode(doc, "N", cesInfo.getName(), Object, "i", "6");
+      createElementNode(doc, "N", "", Object, "i", "7");
+      createElementNode(doc, "N", "aEnd1TprmUID" + cesInfo.getAxcId(), Object, "i", "8");
+      createElementNode(doc, "N", "aEnd1NermUID" + cesInfo.getaSiteId(), Object, "i", "9");
+      createElementNode(doc, "N", "aEnd1PortrmUID" + cesInfo.getAxcId(), Object, "i", "10");
+      createElementNode(doc, "N", "", Object, "i", "11");
+      createElementNode(doc, "N", "", Object, "i", "12");
+      createElementNode(doc, "N", "", Object, "i", "13");
+      createElementNode(doc, "N", "", Object, "i", "14");
+      createElementNode(doc, "N", "", Object, "i", "15");
+      createElementNode(doc, "N", "zEnd1TprmUID" + cesInfo.getZxcId(), Object, "i", "16");
+      createElementNode(doc, "N", "zEnd1NermUID" + cesInfo.getzSiteId(), Object, "i", "17");
+      createElementNode(doc, "N", "zEnd1PortrmUID" + cesInfo.getZxcId(), Object, "i", "18");
+      createElementNode(doc, "N", "", Object, "i", "19");
+      createElementNode(doc, "N", "", Object, "i", "20");
+      createElementNode(doc, "N", "", Object, "i", "21");
+      createElementNode(doc, "N", "", Object, "i", "22");
+      createElementNode(doc, "N", "", Object, "i", "23");
+      createElementNode(doc, "N", "3301EBPSW" + cesInfo.getPwId(), Object, "i", "24");
+      createElementNode(doc, "N", "PW2rmUI", Object, "i", "25");
       FieldValue.appendChild(Object);
     }
     Objects.appendChild(FieldValue);

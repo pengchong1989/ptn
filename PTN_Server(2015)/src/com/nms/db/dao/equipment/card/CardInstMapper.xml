@@ -217,4 +217,10 @@
   <delete id="deleteBySiteId" parameterType="java.lang.Integer" >
     delete from card_inst where siteId=#{siteId}
   </delete>
+  
+  <select id="select_north" resultType="CardInst">
+  	select 
+    c.id, c.siteId, c.equipId, c.slotId, c.cardName, c.cardType, c.imagePath, c.cardx, c.cardy,s.hardversion as "snmpName"
+    from card_inst c inner join site_inst s on c.siteId = s.site_inst_id
+  </select>
 </mapper>

@@ -513,4 +513,9 @@ public class SegmentService_MB extends ObjectService_Mybatis {
 		}
 	}
 	
+	  public List<Segment> select_north()
+	  {
+	    List<Segment> segments = this.mapper.select_north();
+	    return segments;
+	  }
 }

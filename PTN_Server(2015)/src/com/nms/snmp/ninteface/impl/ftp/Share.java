@@ -14,7 +14,7 @@ import org.jdom.input.SAXBuilder;
 
 public class Share {
 	/*根目录的路径*/
-	public static  String rootDir = "C:"+File.separator;
+	public static  String rootDir = "D:"+File.separator;
 	
 	/*允许登录的用户*/
 	public static Map<String,String> users = new HashMap<String,String>();

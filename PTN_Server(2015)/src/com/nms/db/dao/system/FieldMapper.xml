@@ -312,5 +312,8 @@
 	<if test="name!=null"> and fieldName!=#{name}</if>	
 	
    </select>
-
+   
+   <select id="select_SBN_north" resultMap="BaseResultMap">
+   select*from field where objectType = 'subnet'
+   </select>
 </mapper>

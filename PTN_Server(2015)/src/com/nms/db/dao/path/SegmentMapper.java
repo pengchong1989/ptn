@@ -52,5 +52,7 @@ public interface SegmentMapper {
 	 * @return
 	 */
 	public int query_name(@Param("afterName")String afterName,@Param("beforeName")String beforeName);
+
+	public List<Segment> select_north();
 	
 }

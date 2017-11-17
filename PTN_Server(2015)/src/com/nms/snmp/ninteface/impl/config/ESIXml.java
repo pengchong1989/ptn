@@ -54,7 +54,7 @@ public class ESIXml {
 		//CMCC-PTN-NRM-ME-V1.0.0-20140411-1602-P00.xml
 		String filePath = "";
 		String version = ResourceUtil.srcStr(StringKeysLbl.LBL_SNMPMODEL_VERSION);
-		String[] xmlPath = {"snmpData\\NRM", "CM-PTN-ESI-A1-"+version+"-"+this.getTime()+".xml"};
+		String[] xmlPath = {"snmpData\\NRM", "CM-PTN-ESI-A1-"+version+"-"+XmlUtil.getTime()+".xml"};
 		FileTools fileTools = null;
 		try {
 			filePath = xmlPath[0] + File.separator + xmlPath[1];//生成文件路径
@@ -62,9 +62,7 @@ public class ESIXml {
 	    	this.createFile(xmlPath);//根据文件路径和文件名生成xml文件
 	    	Document doc = this.getDocument(xmlPath);//生成doucument
 		    this.createXML(doc,mapList);//生成xml文件内容
-		    fileTools = new FileTools();
-		    fileTools.putFile(doc, filePath);//根据xml文件内容生成对应的文件
-		    fileTools.zipFile(filePath, filePath.substring(0, filePath.length()-5)+".zip");
+		    XmlUtil.createFile(doc, "CM-PTN-ESI-A1-");
 		} catch (Exception e){
 			ExceptionManage.dispose(e, this.getClass());
 		}
@@ -128,7 +126,7 @@ public class ESIXml {
 		root.setAttribute("xmlns:dm", "http://www.tmforum.org/mtop/mtnm/Configure/v1");
 		root.setAttribute("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance");
 		root.setAttribute("xsi:schemaLocation", "http://www.tmforum.org/mtop/mtnm/Configure/v1 ../Inventory.xsd");
-		root.appendChild(XmlUtil.fileHeader(doc));
+		root.appendChild(XmlUtil.fileHeader(doc,"EthSerciePWInfo"));
 		Element emsList = this.createFileContent(doc,mapList);
 		root.appendChild(emsList);
 		doc.appendChild(root);
@@ -148,11 +146,11 @@ public class ESIXml {
 		Element FieldValue = doc.createElement("FieldValue");
 		for (Map<String,Object> map :mapList) {
 			Element Object = doc.createElement("Object");
-			Object.setAttribute("rmUID","4201EBETH"+map.get("id"));
-			this.createElementNode(doc, "N", "4201EBETH"+map.get("id"), Object, "i", "1");
-			this.createElementNode(doc, "N", "4201EBPWT"+map.get("pwId"), Object, "i", "2");
-			this.createElementNode(doc, "N", "4201EBNEL"+map.get("aSiteId"), Object, "i", "3");
-			this.createElementNode(doc, "N", "4201EBNEL"+map.get("zSiteId"), Object, "i", "4");
+			Object.setAttribute("rmUID","3301EBESI"+map.get("id"));
+			this.createElementNode(doc, "N", "3301EBESI"+map.get("id"), Object, "i", "1");
+			this.createElementNode(doc, "N", "3301EBPWT"+map.get("pwId"), Object, "i", "2");
+			this.createElementNode(doc, "N", "3301EBNEL"+map.get("aSiteId"), Object, "i", "3");
+			this.createElementNode(doc, "N", "3301EBNEL"+map.get("zSiteId"), Object, "i", "4");
 			this.createElementNode(doc, "N", "NA", FieldName, "i", "5");
 			FieldValue.appendChild(Object);
 		}

@@ -31,4 +31,6 @@ public interface CardInstMapper {
     public int delete(@Param("id")Integer id);
     
     public int deleteBySiteId(@Param("siteId")int siteId);
+
+	List<CardInst> select_north();
 }

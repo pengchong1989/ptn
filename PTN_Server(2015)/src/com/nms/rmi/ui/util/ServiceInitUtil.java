@@ -111,6 +111,7 @@ import com.nms.service.impl.dispatch.rmi.SegmentDispatchI;
 import com.nms.service.impl.dispatch.rmi.SiteDispatchI;
 import com.nms.service.impl.dispatch.rmi.impl.RmiInitImpl;
 import com.nms.service.impl.util.WhImplUtil;
+import com.nms.snmp.ninteface.impl.ftp.FtpTransThread;
 import com.nms.ui.PerforTaskThreadFactory;
 import com.nms.ui.manager.ConstantUtil;
 import com.nms.ui.manager.ExceptionManage;
@@ -337,7 +338,9 @@ public class ServiceInitUtil {
 			 autoDatabaseBackThradUtil = null;
 			 tables = null;
 		}*/
-		
+
+	    FtpTransThread ftpTransThread = new FtpTransThread();
+	    new Thread(ftpTransThread).start();
 	}
 
 	/**

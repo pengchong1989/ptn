@@ -16,6 +16,7 @@ public class PortCommand implements Command{
 			System.out.println("port is "+port);
 			t.setDataIp(ip);
 			t.setDataPort(port);
+			System.out.println("ip::"+ip+"::port::"+port);
 			writer.write(response);
 			writer.write("\r\n");
 			writer.flush();

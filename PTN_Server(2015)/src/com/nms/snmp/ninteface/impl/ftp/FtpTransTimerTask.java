@@ -7,15 +7,37 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.TimerTask;
 
+import com.nms.snmp.ninteface.impl.config.CRDXml;
 import com.nms.snmp.ninteface.impl.config.EMSConvertXml;
+import com.nms.snmp.ninteface.impl.config.EPGXml;
+import com.nms.snmp.ninteface.impl.config.EPUXml;
+import com.nms.snmp.ninteface.impl.config.EQHXml;
+import com.nms.snmp.ninteface.impl.config.ESIXml;
+import com.nms.snmp.ninteface.impl.config.ESPXml;
+import com.nms.snmp.ninteface.impl.config.ETHXml;
 import com.nms.snmp.ninteface.impl.config.EquipmentConvertXml;
 import com.nms.snmp.ninteface.impl.config.EquipmentHolderConvertXml;
 import com.nms.snmp.ninteface.impl.config.FDFrConvertXml;
 import com.nms.snmp.ninteface.impl.config.ManagedElementConvertXml;
+import com.nms.snmp.ninteface.impl.config.NELXml;
+import com.nms.snmp.ninteface.impl.config.OMCXml;
+import com.nms.snmp.ninteface.impl.config.PGUXml;
+import com.nms.snmp.ninteface.impl.config.PRBXml;
+import com.nms.snmp.ninteface.impl.config.PRTXml;
+import com.nms.snmp.ninteface.impl.config.PSWXml;
+import com.nms.snmp.ninteface.impl.config.PTGXml;
 import com.nms.snmp.ninteface.impl.config.PTPConvertXml;
+import com.nms.snmp.ninteface.impl.config.PWTXml;
 import com.nms.snmp.ninteface.impl.config.ProtectionGroupConvertXml;
+import com.nms.snmp.ninteface.impl.config.SBNXml;
 import com.nms.snmp.ninteface.impl.config.SNCConvertXml;
+import com.nms.snmp.ninteface.impl.config.SNNXml;
+import com.nms.snmp.ninteface.impl.config.TDMXml;
+import com.nms.snmp.ninteface.impl.config.TNLXml;
 import com.nms.snmp.ninteface.impl.config.TNPConvertXml;
+import com.nms.snmp.ninteface.impl.config.TPBXml;
+import com.nms.snmp.ninteface.impl.config.TPIXml;
+import com.nms.snmp.ninteface.impl.config.TPLXml;
 import com.nms.snmp.ninteface.impl.config.TopologicalLinkConvertXml;
 import com.nms.ui.manager.ExceptionManage;
 
@@ -50,7 +72,7 @@ public class FtpTransTimerTask extends TimerTask {
 			//生成配置文件
 			this.createNRMFile();
 			//上传当天的文件
-			this.transferFile();
+//			this.transferFile();
 			//删除7天前的数据
 			this.deleteFile();
 		} catch (Exception e) {
@@ -62,16 +84,34 @@ public class FtpTransTimerTask extends TimerTask {
 	 * 生成配置文件
 	 */
 	private void createNRMFile() {
-		new EMSConvertXml().getEMSXml();
-		new EquipmentConvertXml().getEquipmentXml();
-		new FDFrConvertXml().getFDFrXml();
-		new ManagedElementConvertXml().getManagedEquipmentXml();
-		new ProtectionGroupConvertXml().getProtectionGroupXml();
-		new PTPConvertXml().getPTPxml();
-		new SNCConvertXml().getSNCXml();
-		new TopologicalLinkConvertXml().getTopologicalLinkXml();
-		new EquipmentHolderConvertXml().getEquipmentHolderXml();
-		new TNPConvertXml().getTNPXml();
+		new OMCXml().getOMCXml();
+		new NELXml().getNELXml();
+		new EQHXml().getEQHXml();
+		new CRDXml().getCRDXml();
+		new PRTXml().getPRTXml();
+		new PRBXml().getPRBXml();
+		new TNLXml().getTNLXml();
+//		new LBSXml().getLBSXml();
+		new TPIXml().getTPIXml();
+		new TPBXml().getTPBXml();
+		
+		new PSWXml().getPSWXml();
+//		new PWPXml().getPWPXml();
+		new PWTXml().getPWTXml();
+		new ETHXml().getETHXml();
+		new ESPXml().getESPXml();
+		new ESIXml().getESIXml();
+		
+		new TDMXml().getTDMXml();
+//		new ETPXml().getETPXml();
+		new TPLXml().getTPLXml();
+		new SBNXml().getSBNXml();
+		new SNNXml().getSNNXml();
+		new EPGXml().getEPGXml();
+		new EPUXml().getEPUXml();
+		
+		new PTGXml().getPTGXml();
+		new PGUXml().getPGUXml();
 	}
 
 	/**

@@ -112,4 +112,26 @@
     select count(*) as selectcount from segment where name=#{afterName}
     <if test="beforeName!=null">and name!=#{beforeName}</if>
   </select>
+  
+  <select id="select_north" resultMap="BaseResultMap">
+  SELECT
+	s.id,s.`NAME`,s.ASITEID,s.ZSITEID, (
+		SELECT
+			portName
+		FROM
+			port_inst p
+		WHERE
+			s.APORTID = p.portId
+	) AS "ShowPortAname",
+	(
+		SELECT
+			portName
+		FROM
+			port_inst p
+		WHERE
+			s.ZPORTID = p.portId
+	) AS "ShowPortZname"
+FROM
+	`segment` s
+  </select>
 </mapper>
