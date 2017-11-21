@@ -14,7 +14,7 @@ import java.util.Properties;
 
 import com.nms.service.impl.dispatch.rmi.DispatchInterface;
 import com.nms.ui.manager.ExceptionManage;
-import com.sun.management.OperatingSystemMXBean;
+//import com.sun.management.OperatingSystemMXBean;
 
 public class ServiceDispatch implements DispatchInterface{
 
@@ -273,22 +273,23 @@ public class ServiceDispatch implements DispatchInterface{
     private List<Long> getMemoryValue() {
     	int kb = 1024;
     	List<Long> memoryList = new ArrayList<Long>();
-    	OperatingSystemMXBean osmxb = null;
+//    	OperatingSystemMXBean osmxb = null;
     	try {
-    		osmxb = (OperatingSystemMXBean) ManagementFactory .getOperatingSystemMXBean(); 
-    		//// 总的物理内存 
-    		long totalMemorySize = osmxb.getTotalPhysicalMemorySize() / kb; 
-    		memoryList.add(totalMemorySize);
-    		// 已使用的物理内存 
-    		long usedMemory = (osmxb.getTotalPhysicalMemorySize() - osmxb .getFreePhysicalMemorySize())  / kb; 
-    		memoryList.add(usedMemory);
-    		// 剩余的物理内存 
-    		long freePhysicalMemorySize = osmxb.getFreePhysicalMemorySize() / kb;
-    		memoryList.add(freePhysicalMemorySize);
+//    		SystemMXBean) ManagementFactory .getOperatingSystemMXBean(); 
+//    		//// 总的物理内存 
+//    		long totalMemorySize = osmxb.getTotalPhysicalMemorySize() / kb; 
+//    		memoryList.add(totalMemorySize);
+//    		// 已使用的物理内存 
+//    		long usedMemory = (osmxb.getTotalPhysicalMemorySize() - osmxb .getFreePhysicalMemorySize())  / kb; 
+//    		memoryList.add(usedMemory);
+//    		// 剩余的物理内存 
+//    		long freePhysicalMemorySize = osmxb.getFreePhysicalMemorySize() / kb;
+//    		memoryList.add(freePhysicalMemorySize);
+//    		osmxb = (Operating
 		} catch (Exception e) {
 			 ExceptionManage.dispose(e, getClass());
 		}finally{
-			osmxb = null;
+//			osmxb = null;
 		}
 		return memoryList;
 	}
