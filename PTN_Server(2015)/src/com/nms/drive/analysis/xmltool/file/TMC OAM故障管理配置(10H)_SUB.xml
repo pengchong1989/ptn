@@ -32,5 +32,6 @@
 			<attribute length="1" description="LM帧配置" value="0" mapping="(00)"/>
 			<attribute length="1" description="DM帧配置" value="0" mapping="(00)"/>
 			<attribute length="1" description="LB TTL" value="0" mapping="(00)"/>
-			<attribute length="12" description="备用" value="0" mapping="(00)"/>
+			<attribute length="2" description="dm" value="0" mapping="(00)"/>
+			<attribute length="10" description="备用" value="0" mapping="(00)"/>
 </driveRoot>

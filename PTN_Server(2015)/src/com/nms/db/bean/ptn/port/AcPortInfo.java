@@ -46,6 +46,8 @@ public class AcPortInfo extends ViewDataObj implements Serializable{
 	private int acStatus; //激活状态  1=激活，2=未激活
 	private int macCount = 0;//mac地址表容量
 	private int lanId = 0;
+	private int downTpid;//下话tpid
+	
 	public String toString(){
 		StringBuffer sb=new StringBuffer().append(" id=").append(id)
 		.append(" ;siteId=").append(siteId).append(" ;portId=").append(portId)
@@ -309,4 +311,14 @@ public class AcPortInfo extends ViewDataObj implements Serializable{
 		// TODO Auto-generated method stub
 		
 	}
+
+	public int getDownTpid() {
+		return downTpid;
+	}
+
+	public void setDownTpid(int downTpid) {
+		this.downTpid = downTpid;
+	}
+	
+	
 }

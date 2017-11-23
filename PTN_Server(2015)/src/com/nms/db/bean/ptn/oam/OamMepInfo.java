@@ -71,6 +71,7 @@ public class OamMepInfo extends OamCommonInfo {
 	private String sourceMac;
 	private String endMac;
 	private boolean oamEnable;
+	private int dmlength;
 	
 	public int getOutVlanValue() {
 		return outVlanValue;
@@ -466,6 +467,14 @@ public class OamMepInfo extends OamCommonInfo {
 
 	public void setOamEnable(boolean oamEnable) {
 		this.oamEnable = oamEnable;
+	}
+
+	public int getDmlength() {
+		return dmlength;
+	}
+
+	public void setDmlength(int dmlength) {
+		this.dmlength = dmlength;
 	}
 
 	

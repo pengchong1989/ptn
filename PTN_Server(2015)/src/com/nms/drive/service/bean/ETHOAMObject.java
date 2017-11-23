@@ -60,7 +60,7 @@ public class ETHOAMObject {
 	private int reservel_5=0;//备用： 00
 	private int mipSlot=255;//MIP槽位号：255/10/12/13/14H=无/Slot10/Slot12/Slot13/Slot14
 	private String mipPort="0";// MIP端口号： 0/1/2/.../8 =无/PORT-1/PORT/-2/…/PORT-8
-    
+    private Integer dmLength=64;
 	public int getThernetOAMEnabl() {
 		return thernetOAMEnabl;
 	}
@@ -414,6 +414,12 @@ public class ETHOAMObject {
 	}
 	public void setReservel_5(int reservel_5) {
 		this.reservel_5 = reservel_5;
+	}
+	public Integer getDmLength() {
+		return dmLength;
+	}
+	public void setDmLength(Integer dmLength) {
+		this.dmLength = dmLength;
 	}
 	
 }

@@ -321,6 +321,9 @@ public class AnalysisETreeTable extends AnalysisBase {
 				if ("(端口)MAC地址学习".equals(driveAttribute.getDescription())) {
 					driveAttribute.setValue(treeUNIObject.getMacAddresslearn() + "");
 				}
+				if ("downTpidUNI".equals(driveAttribute.getDescription())) {
+					driveAttribute.setValue(treeUNIObject.getDownTpidUni() + "");
+				}
 				if ("流数目".equals(driveAttribute.getDescription())) {
 					driveAttribute.setValue(treeUNIObject.getVpwsBufferList().size() + "");
 
@@ -587,6 +590,9 @@ public class AnalysisETreeTable extends AnalysisBase {
 				}if ("控制字使能".equals(driveAttribute.getDescription())) {
 					driveAttribute.setValue(treeNNIObject.getControlEnabl() + "");
 				}
+				if ("downTpidNNI".equals(driveAttribute.getDescription())) {
+					driveAttribute.setValue(treeNNIObject.getDownTpidNni() + "");
+				}
 			}
 			listRoot.setDriveAttributeList(driveRoot.getDriveAttributeList());
 			// listRoot.getDriveAttributeList().addAll(driveRoot.getDriveAttributeList());
@@ -709,6 +715,10 @@ public class AnalysisETreeTable extends AnalysisBase {
 				if ("流数目".equals(driveAttribute.getDescription())) {
 					treeUNIObject.setVpwsBufferCount(Integer.parseInt(driveAttribute.getValue()));
 				}
+				if ("downTpidUNI".equals(driveAttribute.getDescription())) {
+					treeUNIObject.setDownTpidUni(Integer.parseInt(driveAttribute.getValue()));
+				}
+				
 			}
 		} catch (Exception e) {
 
@@ -935,7 +945,9 @@ public class AnalysisETreeTable extends AnalysisBase {
 				}if ("控制字使能".equals(driveAttribute.getDescription())) {
 					treeNNIObject.setControlEnabl(Integer.parseInt(driveAttribute.getValue()));
 				}
-
+				if ("downTpidNNI".equals(driveAttribute.getDescription())) {
+					treeNNIObject.setDownTpidNni(Integer.parseInt(driveAttribute.getValue()));
+				}
 			}
 
 		} catch (Exception e) {

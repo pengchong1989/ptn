@@ -305,6 +305,14 @@ public class AnalysisELineTable extends AnalysisBase {
 		if ("(UNI接口设置)VC流量监管使能".equals(driveAttribute.getDescription())) {
 			driveAttribute.setValue(elineObject.gettVCTrafficPolicing() + "");
 		}
+		//(UNI接口设置)下话TPID
+		if ("(UNI接口设置)下话TPID".equals(driveAttribute.getDescription())) {
+			driveAttribute.setValue(elineObject.getDownTpidUni() + "");
+		}
+		//(UNI接口设置)下话TPID
+		if ("(NNI接口设置)下话TPID".equals(driveAttribute.getDescription())) {
+			driveAttribute.setValue(elineObject.getDownTpidNni() + "");
+		}		
 	}
 
 	/**

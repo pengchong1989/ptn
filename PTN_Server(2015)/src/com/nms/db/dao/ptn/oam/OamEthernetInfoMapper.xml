@@ -57,6 +57,7 @@
     <result column="slot" property="slot" jdbcType="INTEGER" />
     <result column="mipSlot" property="mipSlot" jdbcType="INTEGER" />
     <result column="itemNumber" property="itemNumber" jdbcType="INTEGER" />
+    <result column="dmLength" property="dmLength" jdbcType="INTEGER" />
   </resultMap>
   <sql id="Base_Column_List" >
     id, siteId, thernetOAMEnabl, mdMLevel, mpLable, mdName, mdLevel, maName, ccmsend, 
@@ -66,7 +67,7 @@
     tstPurposeMepMac, tstPriority, sendWay, tstDiscard, tstTlvType, tstTlvLength, tstSendCycle, 
     lmENable, lmPriority, lmSendCycle, dmENable, dmPriority, dmSendCycle, remoteMepId1, 
     macAddress1, remoteMepId2, macAddress2, remoteMepId3, macAddress3, remoteMepId4, 
-    macAddress4, mipCreate, mipPort, slot, mipSlot, itemNumber, PortName, mipPortName
+    macAddress4, mipCreate, mipPort, slot, mipSlot, itemNumber, PortName, mipPortName,dmLength
   </sql>
   <insert id="insert" parameterType="OamEthernetInfo" useGeneratedKeys="true" keyProperty="id" >
     insert into ethernetoam (siteId, thernetOAMEnabl, 
@@ -86,7 +87,7 @@
       remoteMepId1, macAddress1, remoteMepId2, 
       macAddress2, remoteMepId3, macAddress3, 
       remoteMepId4, macAddress4, mipCreate, 
-      mipPort, slot, mipSlot, itemNumber
+      mipPort, slot, mipSlot, itemNumber,dmLength
       )
     values (#{siteId,jdbcType=INTEGER}, #{thernetOAMEnabl,jdbcType=INTEGER}, 
       #{mdMLevel,jdbcType=VARCHAR}, #{mpLable,jdbcType=INTEGER}, #{mdName,jdbcType=VARCHAR}, 
@@ -106,7 +107,7 @@
       #{macAddress2,jdbcType=VARCHAR}, #{remoteMepId3,jdbcType=VARCHAR}, #{macAddress3,jdbcType=VARCHAR}, 
       #{remoteMepId4,jdbcType=VARCHAR}, #{macAddress4,jdbcType=VARCHAR}, #{mipCreate,jdbcType=INTEGER}, 
       #{mipPort,jdbcType=VARCHAR}, #{slot,jdbcType=INTEGER}, #{mipSlot,jdbcType=INTEGER}, 
-      #{itemNumber,jdbcType=INTEGER}
+      #{itemNumber,jdbcType=INTEGER},#{dmLength,jdbcType=INTEGER}
       )
   </insert>
   <insert id="insertSelective" parameterType="OamEthernetInfo" >
@@ -689,7 +690,9 @@
       mipSlot = #{mipslot,jdbcType=INTEGER},
       itemNumber = #{itemnumber,jdbcType=INTEGER},
       PortName = #{portname,jdbcType=VARCHAR},
-      mipPortName = #{mipportname,jdbcType=VARCHAR}
+      mipPortName = #{mipportname,jdbcType=VARCHAR},
+      dmLength = #{dmLength,jdbcType=VARCHAR}
+      
     where id = #{id,jdbcType=INTEGER}
   </update>
   <select id="queryOamLinkInfoByConditionSide" resultMap="BaseResultMap" parameterType="OamEthernetInfo">
@@ -719,7 +722,7 @@
    and aisSendEnabel = #{aisSendEnabel} and lckSendEnabel = #{lckSendEnabel} and aisLckSendCycle = #{aisLckSendCycle} and tstSendEnabel = #{tstSendEnabel}  
    and sendWay = #{sendWay} and tstDiscard = #{tstDiscard} and tstTlvType = #{tstTlvType} and tstSendCycle = #{tstSendCycle} and lmENable = #{lmENable}  
    and lmSendCycle = #{lmSendCycle} and dmENable = #{dmENable} and dmSendCycle = #{dmSendCycle} and mipCreate = #{mipCreate}  
-   and slot = #{slot} and mipSlot = #{mipSlot} and itemNumber = #{itemNumber}
+   and slot = #{slot} and mipSlot = #{mipSlot} and itemNumber = #{itemNumber} and #{dmLength}
   </select>
   
   <delete id="delete" parameterType="OamEthernetInfo">
@@ -743,7 +746,7 @@
    , aisSendEnabel = #{aisSendEnabel} , lckSendEnabel = #{lckSendEnabel} , aisLckSendCycle = #{aisLckSendCycle} , tstSendEnabel = #{tstSendEnabel}  
    , sendWay = #{sendWay} , tstDiscard = #{tstDiscard} , tstTlvType = #{tstTlvType} , tstSendCycle = #{tstSendCycle} , lmENable = #{lmENable}  
    , lmSendCycle = #{lmSendCycle} , dmENable = #{dmENable} , dmSendCycle = #{dmSendCycle} , mipCreate = #{mipCreate}  
-   , slot = #{slot} , mipSlot = #{mipSlot} , itemNumber = #{itemNumber} where 1=1 
+   , slot = #{slot} , mipSlot = #{mipSlot} , itemNumber = #{itemNumber}, dmLength = #{dmLength} where 1=1 
    <if test="siteId > 0">
    and siteId = #{siteId}
    </if>

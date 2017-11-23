@@ -58,6 +58,7 @@
     <result column="sourceMac" property="sourceMac" jdbcType="VARCHAR" />
     <result column="endMac" property="endMac" jdbcType="VARCHAR" />
     <result column="oamEnable" property="oamEnable" jdbcType="INTEGER" />
+    <result column="dmlength" property="dmlength" jdbcType="INTEGER" />
   </resultMap>
   <sql id="Base_Column_List" >
     id, serviceId, siteId, objType, objId, megIcc, megUmc, mel, reserve1, reserve2, localMepId, 
@@ -65,7 +66,7 @@
     dmReserve1, reserve3, reserve4, reserve5, cv, cvCycle, cvReserve1, aps, ssm, sccTest, 
     fdi, ringEnable, ringCycle, ringTestWay, offLineTestTLV, ringTLVLength, ringTLVInfo, 
     tstEnable, tstCycle, tstTLVType, tstTLVLength, lspTc, csfEnable, pwTc, megid, ltEXP, 
-    ltTTL, ltEnable, lbTTL, vlanEnable, outVlanValue, tpId, sourceMac, endMac, oamEnable
+    ltTTL, ltEnable, lbTTL, vlanEnable, outVlanValue, tpId, sourceMac, endMac, oamEnable,dmlength
   </sql>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from oammepinfo
@@ -163,7 +164,7 @@
                          ringTLVInfo,tstEnable,tstCycle,tstTLVType,tstTLVLength,
                          lspTc,pwTc,megId,csfEnable,ltEXP,
                          ltTTL,ltEnable,lbTTL, vlanEnable, outVlanValue,
-                         tpId, sourceMac, endMac,oamEnable) 
+                         tpId, sourceMac, endMac,oamEnable,dmlength) 
   values(
   						#{objType},#{objId},#{localMepId},#{remoteMepId},#{mel},
   						#{cv},#{cvCycle},#{cvReserve1},#{reserve1},#{reserve2},
@@ -175,7 +176,7 @@
   						#{ringTLVInfo},#{tstEnable},#{tstCycle},#{tstTLVType},#{tstTLVLength},
   						#{lspTc},#{pwTc},#{megId},#{csfEnable},#{ltEXP},
   						#{ltTTL},#{ltEnable},#{lbTTL},#{vlanEnable},#{outVlanValue},
-  						#{tpId},#{sourceMac},#{endMac},#{oamEnable}
+  						#{tpId},#{sourceMac},#{endMac},#{oamEnable},#{dmlength}
   )
   </insert>
   
@@ -190,7 +191,7 @@
 			            ringTLVInfo = #{ringTLVInfo} ,tstEnable = #{tstEnable} , tstCycle = #{tstCycle} , tstTLVType= #{tstTLVType} ,
 			            tstTLVLength = #{tstTLVLength} ,lspTc = #{lspTc} , pwTc=#{pwTc} ,csfEnable=#{csfEnable} ,megId=#{megId} ,
 			            ltEXP=#{ltEXP} ,ltTTL=#{ltTTL} ,ltEnable=#{ltEnable} ,lbTTL=#{lbTTL}, vlanEnable=#{vlanEnable}, outVlanValue=#{outVlanValue},
-			            tpId=#{tpId}, sourceMac=#{sourceMac}, endMac=#{endMac} ,oamEnable=#{oamEnable}
+			            tpId=#{tpId}, sourceMac=#{sourceMac}, endMac=#{endMac} ,oamEnable=#{oamEnable},dmlength=#{dmlength}
   where objType = #{objType} and objId = #{objId} and serviceId = #{serviceId}
   <if test="siteId > 0">
   and siteId = #{siteId}

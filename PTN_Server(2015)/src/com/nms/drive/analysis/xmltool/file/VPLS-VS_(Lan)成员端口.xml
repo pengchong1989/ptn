@@ -18,7 +18,8 @@
 	<attribute length="2" description="(端口)下话增加VLAN ID" value="2" mapping="(2)"/>
 	<attribute length="1" description="(端口)下话增加VLAN PRI" value="0" mapping="(0)"/>
 	<attribute length="1" description="(端口)MAC地址学习" value="1" mapping="0/(1)=禁止/(使能)"/>
-	<attribute length="9" description="备用" value="0" mapping="(00)"/>
+	<attribute length="1" description="downTpidUNI" value="0" mapping="(00)"/>
+	<attribute length="8" description="备用" value="0" mapping="(00)"/>
 	<attribute length="1" description="流数目" value="1" mapping="(0)">
 		<listRoot file="src\com\ptn\drive\analysis\xmltool\file\VPLS-VS_流数目.xml">
 		</listRoot>

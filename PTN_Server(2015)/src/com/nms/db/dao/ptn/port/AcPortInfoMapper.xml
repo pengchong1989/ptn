@@ -26,11 +26,12 @@
     <result column="acStatus" property="acstatus" jdbcType="INTEGER" />
     <result column="macCount" property="maccount" jdbcType="INTEGER" />
     <result column="lanId" property="lanid" jdbcType="INTEGER" />
+    <result column="downTpid" property="lanid" jdbcType="INTEGER" />
   </resultMap>
   <sql id="Base_Column_List" >
     id, siteId, portId, lagId, portModel, operatorVlanId, clientVlanId, managerEnable, 
     exitRule, vlanId, vlancri, vlanpri, horizontalDivision, macAddressLearn, tagAction, 
-    jobStatus, acBusinessId, bufType, name, isUser, model, acStatus, macCount, lanId
+    jobStatus, acBusinessId, bufType, name, isUser, model, acStatus, macCount, lanId,downTpid
   </sql>
   <select id="queryByCondition" resultType="AcPortInfo" parameterType="AcPortInfo" >
     select 
@@ -67,7 +68,7 @@
       horizontalDivision, macAddressLearn, tagAction, 
       jobStatus, acBusinessId, bufType, 
       name, isUser, model, 
-      acStatus, macCount, lanId
+      acStatus, macCount, lanId,downTpid
       )
     values (#{id,jdbcType=INTEGER}, #{siteId,jdbcType=INTEGER}, #{portId,jdbcType=INTEGER}, 
       #{lagId,jdbcType=INTEGER}, #{portModel,jdbcType=INTEGER}, #{operatorVlanId,jdbcType=VARCHAR}, 
@@ -76,7 +77,7 @@
       #{horizontalDivision,jdbcType=INTEGER}, #{macAddressLearn,jdbcType=INTEGER}, #{tagAction,jdbcType=INTEGER}, 
       #{jobStatus,jdbcType=VARCHAR}, #{acBusinessId,jdbcType=INTEGER}, #{bufType,jdbcType=INTEGER}, 
       #{name,jdbcType=VARCHAR}, #{isUser,jdbcType=INTEGER}, #{model,jdbcType=INTEGER}, 
-      #{acStatus,jdbcType=INTEGER}, #{macCount,jdbcType=INTEGER}, #{lanId,jdbcType=INTEGER}
+      #{acStatus,jdbcType=INTEGER}, #{macCount,jdbcType=INTEGER}, #{lanId,jdbcType=INTEGER},#{downTpid,jdbcType=INTEGER}
       )
   </insert>
   <insert id="insertSelective" parameterType="AcPortInfo" >
@@ -329,7 +330,8 @@
       model = #{model,jdbcType=INTEGER},
       acStatus = #{acStatus,jdbcType=INTEGER},
       macCount = #{macCount,jdbcType=INTEGER},
-      lanId = #{lanId,jdbcType=INTEGER}
+      lanId = #{lanId,jdbcType=INTEGER},
+      downTpid = #{downTpid,jdbcType=INTEGER}
     where id = #{id,jdbcType=INTEGER}
   </update>
   

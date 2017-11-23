@@ -35,5 +35,6 @@
 			<attribute length="1" description="lt exp" value="0" mapping="(00)"/>
 			<attribute length="1" description="lt ttl" value="0" mapping="(00)"/>
 			<attribute length="1" description="LB TTL" value="0" mapping="(00)"/>
-			<attribute length="9" description="备用" value="0" mapping="(00)"/>
+			<attribute length="2" description="dm" value="0" mapping="(00)"/>
+			<attribute length="7" description="备用" value="0" mapping="(00)"/>
 </driveRoot>

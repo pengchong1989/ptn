@@ -58,7 +58,7 @@ public class OamEthernetInfo implements java.io.Serializable{
 	private int slot=255;//槽位号
 	private int mipSlot=255;//MIP槽位号
     private int itemNumber;//条目数	
-	
+    private int dmLength = 64;
 	
 public int getItemNumber() {
 		return itemNumber;
@@ -395,6 +395,12 @@ public int getItemNumber() {
 	}
 	public void setDmPriority(String dmPriority) {
 		this.dmPriority = dmPriority;
+	}
+	public int getDmLength() {
+		return dmLength;
+	}
+	public void setDmLength(int dmLength) {
+		this.dmLength = dmLength;
 	}
 	
 	

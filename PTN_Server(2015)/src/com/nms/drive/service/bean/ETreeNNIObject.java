@@ -10,6 +10,8 @@ public class ETreeNNIObject {
 	private int macAddresslearn = 0;// (仿真LAN口组)MAC地址学习0/(1)=禁止/(使能)
 	private int portSplitHorizon = 0;// (仿真LAN口组)水平分割(0)/1=(关)/开
 	private int controlEnabl=1;//控制字使能
+	private int downTpidNni;
+	
 	public int getLanPortId() {
 		return lanPortId;
 	}
@@ -80,6 +82,14 @@ public class ETreeNNIObject {
 
 	public void setControlEnabl(int controlEnabl) {
 		this.controlEnabl = controlEnabl;
+	}
+
+	public int getDownTpidNni() {
+		return downTpidNni;
+	}
+
+	public void setDownTpidNni(int downTpidNni) {
+		this.downTpidNni = downTpidNni;
 	}
 
 }

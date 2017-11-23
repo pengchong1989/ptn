@@ -22,7 +22,8 @@ public class ETreeUNIObject {
 	private int downTagValnPri = 0;// (端口)下话增加VLAN PRI
 	private int macAddresslearn = 0;// (端口)MAC地址学习0/(1)=禁止/(使能)
 	private int vpwsBufferCount = 0;// 流数目的总数
-
+	private int downTpidUni;
+	
 	private List<VpwsBuffer> vpwsBufferList = new ArrayList<VpwsBuffer>();// 流数目
 
 	public int getVpwsBufferCount() {
@@ -167,6 +168,14 @@ public class ETreeUNIObject {
 
 	public void setMacAddresslearn(int macAddresslearn) {
 		this.macAddresslearn = macAddresslearn;
+	}
+
+	public int getDownTpidUni() {
+		return downTpidUni;
+	}
+
+	public void setDownTpidUni(int downTpidUni) {
+		this.downTpidUni = downTpidUni;
 	}
 
 }

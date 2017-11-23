@@ -398,6 +398,10 @@ public class AnalysisETHOamConfig extends AnalysisBase {
 		if ("VLAN".equals(driveAttribute.getDescription())) {
 			ethOamObject.setVlan(driveAttribute.getValue());
 		}
+		if ("DM长度".equals(driveAttribute.getDescription())) {
+			ethOamObject.setDmLength(Integer.parseInt(driveAttribute.getValue()));
+		}
+		
 		if ("MEP ID".equals(driveAttribute.getDescription())) {
 			ethOamObject.setMepId(driveAttribute.getValue());
 		}
@@ -894,6 +898,10 @@ public class AnalysisETHOamConfig extends AnalysisBase {
 		}
 		if ("VLAN".equals(driveAttribute.getDescription())) {
 			driveAttribute.setValue(ethOamInfo.getVlan() + "");
+		}
+		
+		if ("DM长度".equals(driveAttribute.getDescription())) {
+			driveAttribute.setValue(ethOamInfo.getDmLength() + "");
 		}
 		if ("MEP ID".equals(driveAttribute.getDescription())) {
 			driveAttribute.setValue(ethOamInfo.getMepId());

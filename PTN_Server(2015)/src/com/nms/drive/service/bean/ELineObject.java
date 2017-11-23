@@ -36,7 +36,8 @@ public class ELineObject {
 	private List<VpwsBuffer> vpwsBufferList = new ArrayList<VpwsBuffer>();
 	private int type = 1;//业务类型:1/2=ELINE/CES
 	private int role = 0;
-	
+	private int downTpidUni;
+	private int downTpidNni;
 	public int getRole() {
 		return role;
 	}
@@ -229,4 +230,21 @@ public class ELineObject {
 		this.pbs = pbs;
 	}
 
+	public int getDownTpidUni() {
+		return downTpidUni;
+	}
+
+	public void setDownTpidUni(int downTpidUni) {
+		this.downTpidUni = downTpidUni;
+	}
+
+	public int getDownTpidNni() {
+		return downTpidNni;
+	}
+
+	public void setDownTpidNni(int downTpidNni) {
+		this.downTpidNni = downTpidNni;
+	}
+
+	
 }

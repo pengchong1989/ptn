@@ -35,5 +35,6 @@
 	<attribute length="1" description="源MAC地址4" value="0" mapping="(00)"/>
 	<attribute length="1" description="源MAC地址5" value="0" mapping="(00)"/>
 	<attribute length="1" description="源MAC地址6" value="1" mapping="(01)"/>
-	<attribute length="12" description="备用2" value="0" mapping="(0)"/>
+	<attribute length="2" description="dm" value="1" mapping="(01)"/>
+	<attribute length="10" description="备用2" value="0" mapping="(0)"/>
 </driveRoot>
