@@ -44,6 +44,7 @@ public class TMSOAMBugControlInfoObject {
 	private String dmReserve = "000000";// BIT2- BIT7 备用00
 	private int tc;//tc 0-7
 	private int lbTTL;//lbTTL
+	private int dmlength;
 	
 	public int getSlot() {
 		return slot;
@@ -284,5 +285,14 @@ public class TMSOAMBugControlInfoObject {
 	public void setLbTTL(int lbTTL) {
 		this.lbTTL = lbTTL;
 	}
+
+	public int getDmlength() {
+		return dmlength;
+	}
+
+	public void setDmlength(int dmlength) {
+		this.dmlength = dmlength;
+	}
+	
 	
 }

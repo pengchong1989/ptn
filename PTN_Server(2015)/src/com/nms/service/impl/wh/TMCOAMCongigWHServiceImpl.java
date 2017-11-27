@@ -266,6 +266,8 @@ public class TMCOAMCongigWHServiceImpl extends WHOperationBase implements Operat
 				System.out.println("本端mepId: "+oamInfo.getOamMep().getLocalMepId());
 				infoObject.setEquityMEP(oamInfo.getOamMep().getRemoteMepId());
 				System.out.println("远端mepId: "+oamInfo.getOamMep().getRemoteMepId());
+				infoObject.setDmlength(oamInfo.getOamMep().getDmlength());
+				System.out.println("dmlenth:"+oamInfo.getOamMep().getDmlength());
 				infoObjectList.add(infoObject);
 				id++;
 			}

@@ -249,6 +249,8 @@ public class TMSOAMConfigWHServiceImpl extends WHOperationBase implements Operat
 				System.out.println("lbTTL: " + oamInfo.getOamMep().getLbTTL());
 				infoObject.setSubclausesId(id);
 				System.out.println("id = "+id);
+				infoObject.setDmlength(oamInfo.getOamMep().getDmlength());
+				System.out.println("dmlenth:"+oamInfo.getOamMep().getDmlength());
 				infoObjectList.add(infoObject);
 				id++;
 			}

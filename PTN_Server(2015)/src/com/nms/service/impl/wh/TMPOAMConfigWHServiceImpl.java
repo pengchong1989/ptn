@@ -273,6 +273,8 @@ public class TMPOAMConfigWHServiceImpl extends WHOperationBase implements
 				infoObject.setLtEnable(oamInfo.getOamMep().getLtEnable());
 				infoObject.setLtEXP(oamInfo.getOamMep().getLtEXP());
 				infoObject.setLtTTL(oamInfo.getOamMep().getLtTTL());
+				infoObject.setDmlength(oamInfo.getOamMep().getDmlength());
+				System.out.println("dmlenth:"+oamInfo.getOamMep().getDmlength());
 				infoObjectList.add(infoObject);
 				id++;
 			}

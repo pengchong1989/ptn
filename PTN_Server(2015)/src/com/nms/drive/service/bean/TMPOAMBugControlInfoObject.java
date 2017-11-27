@@ -47,6 +47,7 @@ public class TMPOAMBugControlInfoObject {
 	private int ltEXP;//lt exp
 	private int ltTTL;//lt TTL
 	private int lbTTL;//lb TTL
+	private int dmlength;
 	
 	public int getLspId() {
 		return lspId;
@@ -302,6 +303,14 @@ public class TMPOAMBugControlInfoObject {
 
 	public void setLbTTL(int lbTTL) {
 		this.lbTTL = lbTTL;
+	}
+
+	public int getDmlength() {
+		return dmlength;
+	}
+
+	public void setDmlength(int dmlength) {
+		this.dmlength = dmlength;
 	}
 	
 }

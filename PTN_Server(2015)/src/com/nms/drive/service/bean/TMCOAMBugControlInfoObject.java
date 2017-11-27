@@ -50,7 +50,7 @@ public class TMCOAMBugControlInfoObject {
 	private String dmCycle = "0";// BIT1 DM帧发送周期：0/1=1s/100ms
 	private String dmReserve = "000000";// BIT2- BIT7 备用00
 	private int lbTTL;//lb TTL
-	
+	private int dmlength;
 	public int getPwid() {
 		return pwid;
 	}
@@ -322,5 +322,14 @@ public class TMCOAMBugControlInfoObject {
 	public void setLbTTL(int lbTTL) {
 		this.lbTTL = lbTTL;
 	}
+
+	public int getDmlength() {
+		return dmlength;
+	}
+
+	public void setDmlength(int dmlength) {
+		this.dmlength = dmlength;
+	}
+	
 	
 }

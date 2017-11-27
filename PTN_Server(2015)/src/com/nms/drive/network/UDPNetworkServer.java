@@ -126,4 +126,16 @@ public class UDPNetworkServer implements DriveServerI {
 		this.datagramPacket = datagramPacket;
 	}
 
+	public static void main(String[] args) {
+		UDPNetworkServer networkServer = new UDPNetworkServer();
+		try {
+			networkServer.connection("199.199.10.57", 9735, 9735);
+			byte[] commands = networkServer.get(1440);
+			String sourceIp = networkServer.getDatagramPacket().getAddress().toString();//设备ip
+		System.out.println("sourceIp：：："+sourceIp);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 }

@@ -74,6 +74,7 @@ public class MonitroMergerPagesThread extends Thread{
 				}
 				responseCommandMap.put(responseCommandObject.getUuid() + "-" + responseCommandObject.getPagesCount()+sourceIp, responseCommandObject);
 				if(CoderUtils.bytesToInt(pagesCount) == CoderUtils.bytesToInt(pagesMaxCount)){
+					
 					mergerPages(sourceIp);// 请求后响应的命令合并
 				}
 				

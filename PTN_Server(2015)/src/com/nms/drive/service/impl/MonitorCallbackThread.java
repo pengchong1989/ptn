@@ -103,7 +103,9 @@ public class MonitorCallbackThread extends Thread {
 			String uuid = "";
 			while (it.hasNext()) {
 				try {
+					
 					uuid = (String) it.next();
+					ExceptionManage.infor("UUID"+uuid, this.getClass());
 					driveUtilObject = driveUtilObjectList.get(uuid);
 					ptnDataObject = analysisPtnDataObject(driveUtilObject, uuid);
 					driveUtilObject.getOperationObject().returnResult(Integer.valueOf(driveUtilObject.getOperID()), ptnDataObject);
@@ -390,7 +392,7 @@ public class MonitorCallbackThread extends Thread {
 	public void CG13(PtnDataObject ptnDataObject, byte[] dataBody, byte[] pduHand) {
 		String message = "";
 		try {
-
+			ExceptionManage.infor("CG11收到", MonitorCallbackThread.class);
 			Properties props = new Properties();
 			InputStream propsIs = MonitorCallbackThread.class.getClassLoader().getResourceAsStream("com/nms/drive/service/impl/returnValue.properties");
 			props.load(propsIs);

@@ -374,6 +374,7 @@ public class ElineWHServiceImpl extends WHOperationBase implements OperationServ
 			eLineObject.setUpTagUNI(Integer.parseInt(UiUtil.getCodeById(acPortInfo.getTagAction()).getCodeValue()));
 			eLineObject.setVlanIdUNI(Integer.parseInt(acPortInfo.getVlanId()));
 			eLineObject.setVlanPriUNI(Integer.parseInt(acPortInfo.getVlanpri()));
+			eLineObject.setUpTagUNI(Integer.parseInt(UiUtil.getCodeById(acPortInfo.getDownTpid()).getCodeValue()));
 		} catch (Exception e) {
 			throw e;
 		} finally {
@@ -432,6 +433,7 @@ public class ElineWHServiceImpl extends WHOperationBase implements OperationServ
 		eLineObject.setVlanIdNNI(Integer.parseInt(pwNniInfo.getSvlan()));
 		eLineObject.setVlanPriNNI(Integer.parseInt(pwNniInfo.getVlanpri()));
 		eLineObject.setUpTagNNI(Integer.parseInt(UiUtil.getCodeById(pwNniInfo.getTagAction()).getCodeValue()));
+		eLineObject.setDownTpidNni(Integer.parseInt(UiUtil.getCodeById(pwNniInfo.getTpid()).getCodeValue()));
 		eLineObject.setControlEnabl(Integer.parseInt(UiUtil.getCodeById(pwNniInfo.getControlEnable()).getCodeValue()));
 	}
 

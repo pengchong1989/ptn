@@ -426,7 +426,7 @@ public class EtreeWHServiceImpl extends WHOperationBase implements OperationServ
 				} else if (siteId == pwInfo.getZSiteId()) {
 					eTreeNNIObject.setPwID(pwInfo.getZpwServiceId());
 				}
-
+				eTreeNNIObject.setDownTpidNni(Integer.parseInt(UiUtil.getCodeById(nniInfo.getTpid()).getCodeValue()));
 				eTreeNNIObject.setUpTagBehavior(Integer.parseInt(UiUtil.getCodeById(nniInfo.getExitRule()).getCodeValue()));
 				eTreeNNIObject.setUpTagValnId(Integer.parseInt(nniInfo.getSvlan()));
 				eTreeNNIObject.setUpTagValnPri(Integer.parseInt(nniInfo.getVlanpri()));			
@@ -512,6 +512,7 @@ public class EtreeWHServiceImpl extends WHOperationBase implements OperationServ
 						uniObj.setPir(qosInfo.getPir()/1000);
 					}
 					etreeObject.setMacCount(acPortInst.getMacCount());
+					uniObj.setDownTpidUni(Integer.parseInt(UiUtil.getCodeById(acPortInst.getDownTpid()).getCodeValue()));
 					uniObj.setDownTagBehavior(Integer.parseInt(UiUtil.getCodeById(acPortInst.getExitRule()).getCodeValue()));
 					uniObj.setDownTagValnId(Integer.parseInt(acPortInst.getVlanId()));
 					uniObj.setDownTagValnPri(Integer.parseInt(acPortInst.getVlanpri()));

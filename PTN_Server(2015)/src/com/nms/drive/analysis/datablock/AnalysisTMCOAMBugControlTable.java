@@ -263,6 +263,10 @@ public class AnalysisTMCOAMBugControlTable extends AnalysisBase {
 		if("LB TTL".equals(driveAttribute.getDescription())){
 			driveAttribute.setValue(tmcoaminfo.getLbTTL()+"");
 		}
+		if("dm".equals(driveAttribute.getDescription())){
+			driveAttribute.setValue(tmcoaminfo.getDmlength()+"");
+		}
+		
 	}
 	
 	/**
@@ -483,6 +487,10 @@ public class AnalysisTMCOAMBugControlTable extends AnalysisBase {
 		}
 		if("LB TTL".equals(driveAttribute.getDescription())){
 			tmcOAMInfo.setLbTTL(Integer.parseInt(driveAttribute.getValue()));
+		}
+		
+		if("dm".equals(driveAttribute.getDescription())){
+			tmcOAMInfo.setDmlength(Integer.parseInt(driveAttribute.getValue()));
 		}
 	}
 	/**

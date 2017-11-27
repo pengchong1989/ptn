@@ -438,6 +438,7 @@ public class ElanWHServiceImpl extends WHOperationBase implements OperationServi
 						uniObj.setPir(qosInfo.getPir()/1000);
 					}
 					//给驱动的对象赋值，下拉列表存储code表主键。 所以通过主键查询value 	kk
+					uniObj.setDownTpidUni(Integer.parseInt(UiUtil.getCodeById(acPortInfo.getDownTpid()).getCodeValue()));
 					uniObj.setDownTagBehavior(Integer.parseInt(UiUtil.getCodeById(acPortInfo.getExitRule()).getCodeValue()));
 					uniObj.setDownTagValnId(Integer.parseInt(acPortInfo.getVlanId()));
 					uniObj.setDownTagValnPri(Integer.parseInt(acPortInfo.getVlanpri()));
@@ -505,6 +506,7 @@ public class ElanWHServiceImpl extends WHOperationBase implements OperationServi
 				} else if (siteId == pwInfo.getZSiteId()) {
 					eTreeNNIObject.setPwID(pwInfo.getZpwServiceId());
 				}
+				eTreeNNIObject.setDownTpidNni(Integer.parseInt(UiUtil.getCodeById(nniInfo.getTpid()).getCodeValue()));
 				eTreeNNIObject.setUpTagBehavior(Integer.parseInt(UiUtil.getCodeById(nniInfo.getExitRule()).getCodeValue()));
 				eTreeNNIObject.setUpTagValnId(Integer.parseInt(nniInfo.getSvlan()));
 				eTreeNNIObject.setUpTagValnPri(Integer.parseInt(nniInfo.getVlanpri()));

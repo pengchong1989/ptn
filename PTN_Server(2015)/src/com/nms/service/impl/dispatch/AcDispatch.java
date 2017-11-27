@@ -35,7 +35,7 @@ public class AcDispatch extends DispatchBase implements DispatchInterface{
 			//虚拟网元操作
 			SiteUtil siteUtil = new SiteUtil();
 			String siteCheck = (String) siteUtil.irtualSiteAction(TypeAndActionUtil.ACTION_UPDATE,acPortInfo);
-			if(null!=siteCheck){
+			if(siteCheck!= null){
 				return siteCheck;
 			}
 			manufacturer = super.getManufacturer(acPortInfo.getSiteId());

@@ -255,6 +255,10 @@ public class AnalysisTMSOAMBugControlTable extends AnalysisBase {
 		if("LB TTL".equals(driveAttribute.getDescription())){
 			driveAttribute.setValue(tmsoamimfo.getLbTTL()+"");
 		}
+		
+		if("dm".equals(driveAttribute.getDescription())){
+			driveAttribute.setValue(tmsoamimfo.getDmlength()+"");
+		}
 	}
 	/**
 	 * LM帧转换为xml格式
@@ -475,6 +479,10 @@ public class AnalysisTMSOAMBugControlTable extends AnalysisBase {
 		//lb TTL
 		if("LB TTL".equals(driveAttribute.getDescription())){
 			tmspmOAMInfo.setLbTTL(Integer.parseInt(driveAttribute.getValue()));
+		}
+		
+		if("dm".equals(driveAttribute.getDescription())){
+			tmspmOAMInfo.setDmlength(Integer.parseInt(driveAttribute.getValue()));
 		}
 	}
 	/**
