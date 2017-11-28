@@ -94,9 +94,6 @@ public class OperationObject {
 							NEObject neObject = (NEObject) ptnDataObject.getReturnPtnObj();
 							actionObject.setNeObject(neObject);
 						}
-					} else if(ptnDataObject.getReturnPtnObj() != null && ptnDataObject.getReturnPtnObj() instanceof ActionObject){
-						//同步返回值,查询分块状态
-						synchroResult(actionObject, ptnDataObject);
 					}else if (actionObject.getType() != null && actionObject.getType().equals("queryLocaltionSn")) {
 						//查询本IP的SN
 						if (ptnDataObject.getReturnPtnObj() instanceof NEObject) {
@@ -130,8 +127,12 @@ public class OperationObject {
 					} else if (actionObject.getType() != null && actionObject.getType().equals("macvlan")) {
 						//查询vlan mac
 						if (ptnDataObject.getReturnPtnObj() instanceof ActionObject) {
-							actionObject = (ActionObject) ptnDataObject.getReturnPtnObj();
+							ActionObject actionObject2 = (ActionObject) ptnDataObject.getReturnPtnObj();
+							actionObject.setBs(actionObject2.getBs());
 						}
+					} else if(ptnDataObject.getReturnPtnObj() != null && ptnDataObject.getReturnPtnObj() instanceof ActionObject){
+						//同步返回值,查询分块状态
+						synchroResult(actionObject, ptnDataObject);
 					}
 				}
 			}

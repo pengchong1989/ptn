@@ -271,6 +271,7 @@ public class EthOAMConfigWHServiceImpl extends WHOperationBase implements Operat
 				ethoamInfo.setMacAddress3(CoderUtils.transformMac(oamEthernetInfo2.getMacAddress3()));
 				ethoamInfo.setMacAddress4(CoderUtils.transformMac(oamEthernetInfo2.getMacAddress4()));
 				ethoamInfo.setTstPurposeMepMac(CoderUtils.transformMac(oamEthernetInfo2.getTstPurposeMepMac()));
+				ethoamInfo.setDmLength(oamEthernetInfo2.getDmLength());
 				ethoamList.add(ethoamInfo);
 			}
 		} catch (Exception e) {

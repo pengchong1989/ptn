@@ -95,7 +95,7 @@
 	<attribute length="1" description="MA Name43" value="0" mapping="MA Name：（字符串显示）"/>
 	<attribute length="1" description="CCM发送间隔" value="2" mapping=" 2/3/4/5/6 =100ms /1s /10s /1min /10min"/>
 	<attribute length="2" description="VLAN" value="1" mapping="1-4094"/>
-	<attribute length="9" description="DM长度" value="0" mapping="00"/>
+	<attribute length="2" description="DM长度" value="0" mapping="00"/>
 	<attribute length="7" description="备用" value="0" mapping="00"/>
 	<attribute length="2" description="MEP ID" value="1" mapping="1-8191"/>
 	<attribute length="1" description="MEP类型" value="0" mapping="0/1=outward/ inward"/>
