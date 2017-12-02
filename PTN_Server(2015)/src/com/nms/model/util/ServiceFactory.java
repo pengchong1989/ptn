@@ -96,6 +96,7 @@ import com.nms.db.dao.system.OperationLogMapper;
 import com.nms.db.dao.system.PerformanceRamInfoMapper;
 import com.nms.db.dao.system.PtndbInstMapper;
 import com.nms.db.dao.system.SiteLockMapper;
+import com.nms.db.dao.system.SystemLogMapper;
 import com.nms.db.dao.system.TranferInfoMapper;
 import com.nms.db.dao.system.UdaAttrMapper;
 import com.nms.db.dao.system.UdaGroupMapper;
@@ -207,6 +208,7 @@ import com.nms.model.system.OperationLogService_MB;
 import com.nms.model.system.PerformanceRamService_MB;
 import com.nms.model.system.SiteLockService_MB;
 import com.nms.model.system.SubnetService_MB;
+import com.nms.model.system.SystemLogService_MB;
 import com.nms.model.system.TranferService_Mb;
 import com.nms.model.system.UdaAttrService_MB;
 import com.nms.model.system.UdaGroupService_MB;
@@ -935,6 +937,12 @@ public class ServiceFactory {
 			ospfWhServiceMB.setSqlSession(sqlSession);
 			ospfWhServiceMB.setFinfoWhMapper(sqlSession.getMapper(OSPFinfo_whMapper.class));
 			return ospfWhServiceMB;
+		case Services.SYSTEMLOG:
+			SystemLogService_MB systemLogServiceMB = new SystemLogService_MB();
+			systemLogServiceMB.setPtnuser(ptnuser);
+			systemLogServiceMB.setSqlSession(sqlSession);
+			systemLogServiceMB.setMapper(sqlSession.getMapper(SystemLogMapper.class));
+			return systemLogServiceMB;		
 		};
 		return null;
 	}

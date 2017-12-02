@@ -135,4 +135,5 @@ public class Services {
 	public static final int BFDMANAGEMENT =143;
 	public static final int ARP=144;
 	public static final int OSPF_WH = 145;
+	public static final int SYSTEMLOG = 149;
 }

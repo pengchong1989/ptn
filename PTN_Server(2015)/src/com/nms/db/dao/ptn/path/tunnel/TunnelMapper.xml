@@ -45,6 +45,11 @@
     <result column="zPortName" property="showPortZname" jdbcType="VARCHAR" />
 	<result column="atunnelbusinessid" property="aprotectId" jdbcType="INTEGER" />
     <result column="ztunnelbusinessid" property="zprotectId" jdbcType="INTEGER" />  
+    <result column="rotateWay" property="rotateWay" jdbcType="VARCHAR" />
+    <result column="rotateLocation" property="rotateLocation" jdbcType="VARCHAR" />
+    <result column="rotateMode" property="rotateMode" jdbcType="VARCHAR" />
+    <result column="tnpLayer" property="tnpLayer" jdbcType="INTEGER" />
+    <result column="rotateThreshold" property="rotateThreshold" jdbcType="INTEGER" />
   </resultMap>
   <sql id="Base_Column_List" >
     tunnelId, tunnelName, tunnelType, tunnelStatus, bandwidth, aSiteId, zSiteId, aPortId, 
@@ -52,7 +57,7 @@
     protectTunnelName, isSingle, jobStatus, waittime, delaytime, apsenable, position, 
     protectBack, aprotectId, zprotectId, sncpIds, inBandwidthControl, outBandwidthControl, 
     aVlanEnable, aOutVlanValue, aTp_id, zVlanEnable, zOutVlanValue, zTp_id, sourceMac, 
-    endMac, snmpTunnelName
+    endMac, snmpTunnelName,rotateWay,rotateLocation,rotateMode,tnpLayer,rotateThreshold
   </sql>
   <select id="selectByPrimaryKey" resultType="com.nms.db.bean.ptn.path.tunnel.Tunnel" parameterType="java.lang.Integer" >
     select 
@@ -80,7 +85,7 @@
       zprotectId, sncpIds, inBandwidthControl, 
       outBandwidthControl, aVlanEnable, aOutVlanValue, 
       aTp_id, zVlanEnable, zOutVlanValue, 
-      zTp_id, sourceMac, endMac)
+      zTp_id, sourceMac, endMac,rotateWay,rotateLocation,rotateMode,tnpLayer,rotateThreshold)
     values (#{tunnelId,jdbcType=INTEGER}, #{tunnelName,jdbcType=VARCHAR}, #{tunnelType,jdbcType=VARCHAR}, 
       #{tunnelStatus,jdbcType=INTEGER}, #{bandwidth,jdbcType=INTEGER}, #{aSiteId,jdbcType=INTEGER}, 
       #{zSiteId,jdbcType=INTEGER}, #{aPortId,jdbcType=INTEGER}, #{zPortId,jdbcType=INTEGER}, 
@@ -92,7 +97,9 @@
       #{zprotectId,jdbcType=INTEGER}, #{sncpIds,jdbcType=VARCHAR}, #{inBandwidthControl,jdbcType=INTEGER}, 
       #{outBandwidthControl,jdbcType=INTEGER}, #{aVlanEnable,jdbcType=INTEGER}, #{aOutVlanValue,jdbcType=INTEGER}, 
       #{aTp_id,jdbcType=INTEGER}, #{zVlanEnable,jdbcType=INTEGER}, #{zOutVlanValue,jdbcType=INTEGER}, 
-      #{zTp_id,jdbcType=INTEGER}, #{sourceMac,jdbcType=VARCHAR}, #{endMac,jdbcType=VARCHAR})
+      #{zTp_id,jdbcType=INTEGER}, #{sourceMac,jdbcType=VARCHAR}, #{endMac,jdbcType=VARCHAR},
+      #{rotateWay,jdbcType=VARCHAR},#{rotateLocation,jdbcType=VARCHAR},#{rotateMode,jdbcType=VARCHAR},
+      #{tnpLayer,jdbcType=INTEGER},#{rotateThreshold,jdbcType=INTEGER})
   </insert>
   <insert id="insertSelective" parameterType="com.nms.db.bean.ptn.path.tunnel.Tunnel" >
     insert into tunnel
@@ -431,6 +438,21 @@
       <if test="endMac != null" >
         endMac = #{endMac,jdbcType=VARCHAR},
       </if>
+       <if test="rotateWay != null" >
+        rotateWay = #{rotateWay,jdbcType=VARCHAR},
+      </if>
+      <if test="rotateLocation != null" >
+        rotateLocation = #{rotateLocation,jdbcType=VARCHAR},
+      </if>
+      <if test="rotateMode != null" >
+        rotateMode = #{rotateMode,jdbcType=VARCHAR},
+      </if>
+      <if test="tnpLayer != null" >
+        tnpLayer = #{tnpLayer,jdbcType=INTEGER},
+      </if>
+      <if test="rotateThreshold != null" >
+        rotateThreshold = #{rotateThreshold,jdbcType=INTEGER},
+      </if>
     </set>
     where tunnelId = #{tunnelId,jdbcType=INTEGER}
   </update>
@@ -470,7 +492,12 @@
       zOutVlanValue = #{zOutVlanValue,jdbcType=INTEGER},
       zTp_id = #{zTp_id,jdbcType=INTEGER},
       sourceMac = #{sourceMac,jdbcType=VARCHAR},
-      endMac = #{endMac,jdbcType=VARCHAR}
+      endMac = #{endMac,jdbcType=VARCHAR},
+      rotateWay = #{rotateWay,jdbcType=VARCHAR},
+      rotateLocation = #{rotateLocation,jdbcType=VARCHAR},
+      rotateMode = #{rotateMode,jdbcType=VARCHAR},
+      tnpLayer = #{tnpLayer,jdbcType=INTEGER},
+      rotateThreshold = #{rotateThreshold,jdbcType=INTEGER}
     where tunnelId = #{tunnelId,jdbcType=INTEGER}
   </update>
   <select id="selectAll" resultType="com.nms.db.bean.ptn.path.tunnel.Tunnel"  >
@@ -661,7 +688,7 @@
 	 t.outBandwidthControl,t.waittime,t.delaytime,t.apsenable, t.isSingle,t.jobStatus, t.tunnelId, t.tunnelName, t.tunnelType, 
 	 t.tunnelStatus, t.bandwidth, t.aSiteId, t.zSiteId, t.aPortId, t.zPortId, t.direction,t.isReverse, t.createTime, t.createUser, 
 	 sa.CellId AS aSiteName, sz.CellId AS zSiteName, pa.portName AS aPortName, pz.portName AS zPortName ,t.protectTunnelId,t.protectTunnelName ,
-	 t.protectType ,t.position ,t.protectBack,t.sncpIds FROM site_inst sa, site_inst sz, port_inst pa, port_inst pz, tunnel t  
+	 t.protectType ,t.position ,t.protectBack,t.sncpIds,t.rotateWay,t.rotateLocation,t.rotateMode,t.tnpLayer,t.rotateThreshold FROM site_inst sa, site_inst sz, port_inst pa, port_inst pz, tunnel t  
 	 WHERE t.aSiteId = sa.site_inst_id AND t.zSiteId = sz.site_inst_id AND t.aPortId = pa.portId AND t.zPortId = pz.portId AND t.tunnelId = t.tunnelId and tunneltype!='0' 
 	 and t.isSingle=#{isSingle} 
 	 <if test="tunnelName !=null and tunnelName !='' " >

@@ -386,5 +386,8 @@ public class StringKeysBtn {
 	 * 备用
 	 */
 	public static final String BTN_RESERVEPATH = "BTN_RESERVEPATH";
-	
+	/**
+	 * 
+	 */
+	public static final String BTN_TIME_SYNCHOR="BTN_TIME_SYNCHOR";	
 }

@@ -93,6 +93,52 @@ public class Tunnel extends ViewDataObj {
 	//8月20日 做单网元过滤时，康凯新增字段
 	private int cardId=0;
 	
+	private String rotateWay;// 倒换准则 SD/SF
+	private String rotateLocation;// 倒换位置 A端网元/Z端网元
+	private String rotateMode;// 倒换模式 人工倒换/自动倒换
+	private int tnpLayer;// TNP层速率 1-100
+	private int rotateThreshold;// 自动倒换阈值(%) 1-100
+	
+	public String getRotateWay() {
+		return rotateWay;
+	}
+
+	public void setRotateWay(String rotateWay) {
+		this.rotateWay = rotateWay;
+	}
+
+	public String getRotateLocation() {
+		return rotateLocation;
+	}
+
+	public void setRotateLocation(String rotateLocation) {
+		this.rotateLocation = rotateLocation;
+	}
+
+	public String getRotateMode() {
+		return rotateMode;
+	}
+
+	public void setRotateMode(String rotateMode) {
+		this.rotateMode = rotateMode;
+	}
+
+	public int getTnpLayer() {
+		return tnpLayer;
+	}
+
+	public void setTnpLayer(int tnpLayer) {
+		this.tnpLayer = tnpLayer;
+	}
+
+	public int getRotateThreshold() {
+		return rotateThreshold;
+	}
+
+	public void setRotateThreshold(int rotateThreshold) {
+		this.rotateThreshold = rotateThreshold;
+	}
+
 	public int getInBandwidthControl() {
 		return inBandwidthControl;
 	}

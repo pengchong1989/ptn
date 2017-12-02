@@ -642,7 +642,7 @@ public class PwInfoService_MB extends ObjectService_Mybatis{
 				manufacturerZ = siteService.getManufacturer(pwInfo.getZSiteId());
 			}
 			//判断isSingle，为0，则代表网络侧，为1，则代表单网元
-			if(pwInfo.getIsSingle() == 0){
+			if(pwInfo.getIsSingle() == 0 || (pwInfo.getInlabelValue() ==0 && pwInfo.getOutlabelValue() == 0)){
 				if (pwInfo.getInlabelValue() == 0) {
 					//普通类型的PW
 					if("0".equals(pwInfo.getBusinessType())){

@@ -2688,4 +2688,17 @@ public class StringKeysLbl {
 	public static final String LBL_SYNCTIME ="LBL_SYNCTIME";//同步时间
 	public static final String LBL_TIMESKEW_ATTRIBUTE ="LBL_TIMESKEW_ATTRIBUTE";//时间偏移属性
 	public static final String LBL_TIMESKEW ="LBL_TIMESKEW";//时间偏移量文本框
+	public static final String LBL_CURRENT_TIME="LBL_CURRENT_TIME";//当前系统时间
+	public static final String LBL_NET_ERROR="LBL_NET_ERROR";	//网络不通
+	public static final String LBL_ALARM_POLLING="LBL_ALARM_POLLING"; 
+	public static final String LBL_START_ALARM_POLLING="LBL_START_ALARM_POLLING"; 
+	public static final String LBL_END_ALARM_POLLING="LBL_END_ALARM_POLLING";
+	public static final String LBL_SNMP_SERVER="LBL_SNMP_SERVER";
+	public static final String LBL_START_SNMP_SERVER="LBL_START_SNMP_SERVER";
+	public static final String LBL_END_SNMP_SERVER="LBL_END_SNMP_SERVER";
+	public static final String LBL_NORTH_SERVER="LBL_NORTH_SERVER";
+	public static final String LBL_START_NORTH_SERVER="LBL_START_NORTH_SERVER";
+	public static final String LBL_END_NORTH_SERVER="LBL_END_NORTH_SERVER";	
+	public static final String LBL_RMI_PROCESS_CONFIG="LBL_RMI_PROCESS_CONFIG";
+	
 }

@@ -12,6 +12,7 @@
 </node>
 
 <node nodename="Import License" clickNodeClass="com.nms.rmi.ui.LicensePanel"></node>
-
+<node nodename="ProcessManager" clickNodeClass="com.nms.rmi.ui.ProcessPanel"></node>
 <node nodename="System Config" clickNodeClass="com.nms.rmi.ui.SystemConfigPanel"></node> 
+<node nodename="TimeSynchro" clickNodeClass="com.nms.rmi.ui.TimeSynchroPanel"></node> 
 </xml-body>

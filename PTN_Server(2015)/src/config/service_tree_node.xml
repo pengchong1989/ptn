@@ -12,6 +12,7 @@
 </node>
 
 <node nodename="License导入" clickNodeClass="com.nms.rmi.ui.LicensePanel"></node> 
-
+<node nodename="进程管理" clickNodeClass="com.nms.rmi.ui.ProcessPanel"></node>
 <node nodename="系统配置" clickNodeClass="com.nms.rmi.ui.SystemConfigPanel"></node> 
+<node nodename="时间同步" clickNodeClass="com.nms.rmi.ui.TimeSynchroPanel"></node> 
 </xml-body>

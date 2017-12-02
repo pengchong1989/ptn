@@ -453,7 +453,7 @@ public class TunnelService_MB extends ObjectService_Mybatis {
 			// 等于1是晨晓设备,入标签网元唯一
 			manufacturerA = siteServiceMB.getManufacturer(lsp.getASiteId());
 			manufacturerZ = siteServiceMB.getManufacturer(lsp.getZSiteId());
-			if (isSingle == 0) {
+			if (isSingle == 0 || (lsp.getFrontLabelValue() == 0 && lsp.getBackLabelValue() == 0)) {
 				// 没有填写标签值说明是批量创建Tunnel，自动分配前向标签
 				if (lsp.getFrontLabelValue() == 0) {
 					Map<String, Object> map = new HashMap<String, Object>();
