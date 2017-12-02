@@ -374,7 +374,7 @@ public class ElineWHServiceImpl extends WHOperationBase implements OperationServ
 			eLineObject.setUpTagUNI(Integer.parseInt(UiUtil.getCodeById(acPortInfo.getTagAction()).getCodeValue()));
 			eLineObject.setVlanIdUNI(Integer.parseInt(acPortInfo.getVlanId()));
 			eLineObject.setVlanPriUNI(Integer.parseInt(acPortInfo.getVlanpri()));
-			eLineObject.setUpTagUNI(Integer.parseInt(UiUtil.getCodeById(acPortInfo.getDownTpid()).getCodeValue()));
+			eLineObject.setDownTpidUni(Integer.parseInt(UiUtil.getCodeById(acPortInfo.getDownTpid()).getCodeValue()));
 		} catch (Exception e) {
 			throw e;
 		} finally {

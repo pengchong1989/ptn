@@ -825,7 +825,6 @@ public class CoderUtils {
 	public static String byteToString(byte[] bytes) {
 		StringBuffer buffer = new StringBuffer();
 		String[] strs = null;
-		StringBuffer str = new StringBuffer();
 		int count = 1;
 		for (int i = 0; i < bytes.length; i++) {
 			byte[] temp = new byte[4];
@@ -840,11 +839,7 @@ public class CoderUtils {
 			buffer.append(value16 + " ");
 			count++;
 		}
-		strs = buffer.toString().split(" ");
-		for(String string : strs){
-			str.append((char)Integer.parseInt(string, 16));
-		}
-		return str.toString();
+		return buffer.toString();
 	}
 	
 	/**
