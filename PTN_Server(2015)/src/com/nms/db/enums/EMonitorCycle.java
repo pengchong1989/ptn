@@ -9,7 +9,7 @@ import com.nms.ui.manager.keys.StringKeysObj;
  *
  */
 public enum EMonitorCycle implements IntEnum{
-	MIN15(1,15*60*1000),HOUR24(2,24*60*60*1000);
+	MIN15(1,15*60*1000),HOUR24(2,24*60*60*1000),M50(3,50*1000),MIN10(4,10*60*1000);
 	private int value;
 	private long interval;
 	private EMonitorCycle(int value,long interval) {
